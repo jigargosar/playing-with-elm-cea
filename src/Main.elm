@@ -133,7 +133,13 @@ view model =
         [ height fill, width fill ]
         (column [ height fill, width fill ]
             [ el [ padding 16, width fill, center ] <| Element.text "Header"
-            , row [ width fill, height fill, clip, scrollbars ]
+
+            -- Is clip required below?
+            , row
+                [ width fill, height fill, scrollbars
+
+                {- , clip -}
+                ]
                 [ column
                     [ padding 16, scrollbars, width (fill |> maximum 250), height fill ]
                     fillerElements
