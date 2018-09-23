@@ -131,8 +131,7 @@ view model =
     layout
         [ clip, height fill ]
         (column [ height fill, width fill ]
-            [ el [] (row [ padding 16 ] [ el [] (Element.text "Header") ])
-            , row [ padding 16, width fill ] [ Element.text "Header" ]
+            [ row [ padding 16, width fill ] [ Element.text "Header" ]
             , row [ scrollbars ,height fill, width fill ] [column [] fillerElements]
             , row [ padding 16, width fill ] [ Element.text "Footer" ]
             ]
