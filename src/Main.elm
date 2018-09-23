@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Color
-import Element exposing (Element, alignRight, clip, column, el, explain, fill, fillPortion, height, layout, minimum, rgb, rgb255, row, scrollbarY, shrink, width)
+import Element exposing (Element, alignRight, clip, column, el, explain, fill, fillPortion, height, layout, minimum, rgb, rgb255, row, scrollbarY, scrollbars, shrink, width)
 import Element.Background
 import Element.Border
 import Html exposing (Html, button, col, div, h1, h3, img, input, text)
@@ -119,28 +119,42 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     layout
-        [ clip, height fill, width fill, explain Debug.todo ]
-        (column [ width fill, height fill ]
-            [ row
-                [ width fill, explain Debug.todo ]
-                [ Element.text "Header" ]
-            , row [ width fill, height fill, explain Debug.todo ]
-                [ el
-                    [ explain Debug.todo
-                    , fill |> height
-                    , width (shrink |> minimum 200)
-                    ]
-                    (Element.text "Sidebar")
-                , el
-                    [ explain Debug.todo
-                    , fill |> height
-                    , fill |> width
-                    ]
-                    (Element.text "Content")
-                ]
-            , row
-                [ width fill, explain Debug.todo ]
-                [ Element.text "Footer" ]
+        [ clip
+        , height fill
+        , explain Debug.todo
+        ]
+        (column [ scrollbars, height fill ]
+            [ el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
+            , el [] (Element.text " Some column Content")
             ]
         )
 
