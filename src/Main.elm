@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Color
-import Element exposing (Element, alignRight, centerX, clip, column, el, explain, fill, fillPortion, height, layout, minimum, padding, rgb, rgb255, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, width)
+import Element exposing (Element, alignRight, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, layout, minimum, padding, rgb, rgb255, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, width)
 import Element.Background
 import Element.Border
 import Element.Font exposing (center)
@@ -130,15 +130,17 @@ view model =
             createElements 50
     in
     layout
-        [ clip, height fill, width fill ]
-        (column [ clip, height fill, width fill ]
+        [ height fill ]
+        (column [ height fill, width fill ]
             [ el [ padding 16, width fill, center ] (Element.text "Header")
-            , el [ width fill, height fill, scrollbars ]
-                (row []
-                    [ el [ padding 16 ] (Element.text "Sidebar")
-                    , el [ padding 16 ] (Element.text "Main")
-                    ]
-                )
+            , row [ width fill, height fill, clip, scrollbars ]
+                [ column
+                    [ padding 16, scrollbars, width fill, height fill ]
+                    fillerElements
+                , column
+                    [ padding 16, scrollbars, width fill, height fill ]
+                    fillerElements
+                ]
             , el [ padding 16, width fill, center ] (Element.text "Footer")
             ]
         )
