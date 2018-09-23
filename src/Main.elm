@@ -2,10 +2,10 @@ module Main exposing (Model, Msg(..), htmlView, init, main, update)
 
 import Browser
 import Color
-import Element exposing (Element, alignRight, el, fill, rgb, row, width)
+import Element exposing (Element, alignRight, column, el, fill, rgb, rgb255, row, width)
 import Element.Background
 import Element.Border
-import Html exposing (Html, button, div, h1, h3, img, input, text)
+import Html exposing (Html, button, col, div, h1, h3, img, input, text)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Random
@@ -127,12 +127,12 @@ view model =
 
 elementView : Html msg
 elementView =
-    Element.layout []
-        myElement
+    Element.layout [ Element.Background.color (rgb255 96 158 251) ]
+        myRowOfStuff
 
 
 myRowOfStuff =
-    row [ width fill ]
+    column [ width fill ]
         [ myElement
         , myElement
         , el [ alignRight ] myElement
@@ -142,8 +142,11 @@ myRowOfStuff =
 myElement : Element msg
 myElement =
     el
-        [ Element.Background.color (rgb 0.2 0.3 0.3)
-        , Element.Border.color (rgb 0.2 0.4 0.3)
+        [ width fill
+
+        --        , Element.Background.color (rgb255 96 158 251)
+        --        , Element.Border.color (rgb 0.2 0.4 0.3)
+        --        , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
         ]
         (Element.text "You've made a stylish element!")
 
