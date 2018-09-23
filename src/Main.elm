@@ -44,7 +44,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "pa2 bg-light-red", style "height" "100%" ]
+    div [ class "pa2 bg-light-red vh-100 vw-100" ]
         [ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
         , div []
             [ button [ onClick Decrement ] [ text "-" ]
