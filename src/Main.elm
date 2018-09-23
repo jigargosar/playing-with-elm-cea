@@ -123,10 +123,7 @@ view model =
          --          Element.Background.color (rgb255 96 158 251)
         ]
         (div
-            [ class "pa2 bg-light-red vh-100 vw-100"
-            , style "background-color" "hsla( 10 , 100% , 68% , 1)"
-            , style "background-color" (Color.hsla 0.6 0.95 0.68 1 |> Color.toCssString)
-            ]
+            [ class "pa2 vh-100 vw-100" ]
             [ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
             , div [ class "pa3" ]
                 [ div [ class "pl3 f3" ] [ text (String.fromInt model.counter) ]
