@@ -12,12 +12,12 @@ import Html.Events exposing (onClick)
 
 
 type alias Model =
-    Int
+    { counter : Int }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( 0, Cmd.none )
+    ( { counter = 0 }, Cmd.none )
 
 
 
@@ -33,10 +33,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Increment ->
-            ( model + 1, Cmd.none )
+            ( { model | counter = model.counter + 1 }, Cmd.none )
 
         Decrement ->
-            ( model - 1, Cmd.none )
+            ( { model | counter = model.counter - 1 }, Cmd.none )
 
 
 
@@ -53,7 +53,7 @@ view model =
         [ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
         , div []
             [ button [ onClick Decrement ] [ text "-" ]
-            , div [] [ text (String.fromInt model) ]
+            , div [] [ text (String.fromInt model.counter) ]
             , button [ onClick Increment ] [ text "+" ]
             ]
         ]
