@@ -1,0 +1,10 @@
+{
+  "name": "playing-with-elm-cea",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jigar Gosar <jigar.gosar@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "tachyons": "^4.11.1"
+  }
+}

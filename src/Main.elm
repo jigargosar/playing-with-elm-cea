@@ -45,8 +45,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working! with hmr!" ]
+        [ h1 [] [ text "Your Elm App is working! with hmr!" ]
         , div []
             [ button [ onClick Decrement ] [ text "-" ]
             , div [] [ text (String.fromInt model) ]
