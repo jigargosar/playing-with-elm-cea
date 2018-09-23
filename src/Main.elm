@@ -2,9 +2,10 @@ module Main exposing (main)
 
 import Browser
 import Color
-import Element exposing (Element, alignRight, clip, column, el, explain, fill, fillPortion, height, layout, minimum, padding, rgb, rgb255, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, width)
+import Element exposing (Element, alignRight, centerX, clip, column, el, explain, fill, fillPortion, height, layout, minimum, padding, rgb, rgb255, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, width)
 import Element.Background
 import Element.Border
+import Element.Font exposing (center)
 import Html exposing (Html, button, col, div, h1, h3, img, input, text)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -131,9 +132,9 @@ view model =
     layout
         [ clip, height fill , width fill ]
         (column [ clip, height fill, width fill ]
-            [ el [ padding 16, width fill ] ( Element.text "Header" )
+            [ el [ padding 16, width fill , center] ( Element.text "Header" )
             , el [ padding 16, width fill ] ( Element.text "Content" )
-            , el [ padding 16, width fill ] ( Element.text "Footer" )
+            , el [ padding 16, width fill , center] ( Element.text "Footer" )
             ]
         )
 
