@@ -2,9 +2,10 @@ module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
 import Color exposing (Color, hsla)
-import Html exposing (Html, button, div, h1, img, input, text)
+import Html exposing (Html, button, div, h1, h3, img, input, text)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
+import Random
 
 
 
@@ -17,6 +18,7 @@ type alias Model =
     , name : String
     , password : String
     , passwordAgain : String
+    , dieFace : Int
     }
 
 
@@ -27,6 +29,7 @@ init =
       , name = ""
       , password = ""
       , passwordAgain = ""
+      , dieFace = 1
       }
     , Cmd.none
     )
@@ -43,6 +46,8 @@ type Msg
     | Name String
     | Password String
     | PasswordAgain String
+    | Roll
+    | NewFace Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -66,6 +71,16 @@ update msg model =
         PasswordAgain password ->
             ( { model | passwordAgain = password }, Cmd.none )
 
+        Roll ->
+            ( model
+            , Random.generate NewFace (Random.int 1 6)
+            )
+
+        NewFace newFace ->
+            ( { model | dieFace = newFace }
+            , Cmd.none
+            )
+
 
 
 ---- VIEW ----
@@ -80,7 +95,7 @@ view model =
         ]
         [ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
         , div [ class "pa3" ]
-            [ div [ class "pl3" ] [ text (String.fromInt model.counter) ]
+            [ div [ class "pl3 f3" ] [ text (String.fromInt model.counter) ]
             , button [ onClick Decrement ] [ text "-" ]
             , button [ onClick Increment ] [ text "+" ]
             ]
@@ -93,6 +108,10 @@ view model =
             , viewInput "password" "Password" model.password Password
             , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
             , viewValidation model
+            ]
+        , div [ class "pa3" ]
+            [ div [ class "f3" ] [ text (String.fromInt model.dieFace) ]
+            , button [ onClick Roll ] [ text "Roll" ]
             ]
         ]
 
