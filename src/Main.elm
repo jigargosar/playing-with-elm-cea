@@ -6,6 +6,8 @@ import Html exposing (Html, button, div, h1, h3, img, input, text)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Random
+import Task
+import Time
 
 
 
@@ -19,6 +21,8 @@ type alias Model =
     , password : String
     , passwordAgain : String
     , dieFace : Int
+    , zone : Time.Zone
+    , time : Time.Posix
     }
 
 
@@ -30,8 +34,10 @@ init =
       , password = ""
       , passwordAgain = ""
       , dieFace = 1
+      , zone = Time.utc
+      , time = Time.millisToPosix 0
       }
-    , Cmd.none
+    , Task.perform AdjustTimeZone Time.here
     )
 
 
@@ -48,6 +54,8 @@ type Msg
     | PasswordAgain String
     | Roll
     | NewFace Int
+    | Tick Time.Posix
+    | AdjustTimeZone Time.Zone
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -81,6 +89,25 @@ update msg model =
             , Cmd.none
             )
 
+        Tick newTime ->
+            ( { model | time = newTime }
+            , Cmd.none
+            )
+
+        AdjustTimeZone newZone ->
+            ( { model | zone = newZone }
+            , Cmd.none
+            )
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Time.every 1000 Tick
+
 
 
 ---- VIEW ----
@@ -113,6 +140,7 @@ view model =
             [ div [ class "f3" ] [ text (String.fromInt model.dieFace) ]
             , button [ onClick Roll ] [ text "Roll" ]
             ]
+        , viewClock model
         ]
 
 
@@ -130,6 +158,21 @@ viewValidation model =
         div [ style "color" "red" ] [ text "Passwords do not match!" ]
 
 
+viewClock : Model -> Html Msg
+viewClock model =
+    let
+        hour =
+            String.fromInt (Time.toHour model.zone model.time)
+
+        minute =
+            String.fromInt (Time.toMinute model.zone model.time)
+
+        second =
+            String.fromInt (Time.toSecond model.zone model.time)
+    in
+    h1 [] [ text (hour ++ ":" ++ minute ++ ":" ++ second) ]
+
+
 
 ---- PROGRAM ----
 
@@ -140,5 +183,5 @@ main =
         { view = view
         , init = \_ -> init
         , update = update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }
