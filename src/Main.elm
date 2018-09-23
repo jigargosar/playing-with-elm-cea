@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Color
-import Element exposing (Element, alignRight, clip, column, el, explain, fill, height, minimum, rgb, rgb255, row, scrollbarY, shrink, width)
+import Element exposing (Element, alignRight, clip, column, el, explain, fill, fillPortion, height, layout, minimum, rgb, rgb255, row, scrollbarY, shrink, width)
 import Element.Background
 import Element.Border
 import Html exposing (Html, button, col, div, h1, h3, img, input, text)
@@ -118,43 +118,27 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    Element.layout
+    layout
         [ clip, height fill, width fill, explain Debug.todo ]
         (column [ width fill, height fill ]
-            [ viewHeader
+            [ row [ width fill, explain Debug.todo ] [ Element.text "Header" ]
             , row [ width fill, height fill ]
-                [ viewSidebar
-                , viewContent
+                [ row
+                    [ explain Debug.todo
+                    , fillPortion 1 |> height
+                    , width (shrink |> minimum 200)
+                    ]
+                    [ Element.text "Sidebar" ]
+                , row
+                    [ explain Debug.todo
+                    , fill |> height
+                    , fill |> width
+                    ]
+                    [ Element.text "Content" ]
                 ]
-            , viewFooter
+            , row [ width fill, explain Debug.todo ] [ Element.text "Footer" ]
             ]
         )
-
-
-viewHeader =
-    row [ width fill, explain Debug.todo ] [ Element.text "Header" ]
-
-
-viewSidebar =
-    row
-        [ explain Debug.todo
-        , Element.fillPortion 1 |> height
-        , width (shrink |> minimum 200)
-        ]
-        [ Element.text "Sidebar" ]
-
-
-viewContent =
-    row
-        [ explain Debug.todo
-        , Element.fill |> height
-        , Element.fill |> width
-        ]
-        [ Element.text "Content" ]
-
-
-viewFooter =
-    row [ width fill, explain Debug.todo ] [ Element.text "Footer" ]
 
 
 
