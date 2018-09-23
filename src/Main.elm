@@ -1,6 +1,7 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
+import Color exposing (Color, hsla)
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class, src, style)
 import Html.Events exposing (onClick)
@@ -44,7 +45,11 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "pa2 bg-light-red vh-100 vw-100" ]
+    div
+        [ class "pa2 bg-light-red vh-100 vw-100"
+        , style "background-color" "hsla( 10 , 100% , 68% , 1)"
+        , style "background-color" (hsla 0.6 0.95 0.68 1 |> Color.toCssString)
+        ]
         [ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
         , div []
             [ button [ onClick Decrement ] [ text "-" ]
