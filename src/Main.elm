@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), htmlView, init, main, update)
+module Main exposing (main)
 
 import Browser
 import Color
@@ -118,7 +118,39 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [] [ elementView, htmlView model ]
+    Element.layout
+        [--
+         --          Element.Background.color (rgb255 96 158 251)
+        ]
+        (div
+            [ class "pa2 bg-light-red vh-100 vw-100"
+            , style "background-color" "hsla( 10 , 100% , 68% , 1)"
+            , style "background-color" (Color.hsla 0.6 0.95 0.68 1 |> Color.toCssString)
+            ]
+            [ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
+            , div [ class "pa3" ]
+                [ div [ class "pl3 f3" ] [ text (String.fromInt model.counter) ]
+                , button [ onClick Decrement ] [ text "-" ]
+                , button [ onClick Increment ] [ text "+" ]
+                ]
+            , div [ class "pa3" ]
+                [ input [ placeholder "Text to reverse", value model.content, onInput Change ] []
+                , div [] [ text (String.reverse model.content) ]
+                ]
+            , div [ class "pa3" ]
+                [ viewInput "text" "Name" model.name Name
+                , viewInput "password" "Password" model.password Password
+                , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
+                , viewValidation model
+                ]
+            , div [ class "pa3" ]
+                [ div [ class "f3" ] [ text (String.fromInt model.dieFace) ]
+                , button [ onClick Roll ] [ text "Roll" ]
+                ]
+            , viewClock model
+            ]
+            |> Element.html
+        )
 
 
 
@@ -149,37 +181,6 @@ myElement =
 
 
 ---- HTML VIEW ----
-
-
-htmlView : Model -> Html Msg
-htmlView model =
-    div
-        [ class "pa2 bg-light-red vh-100 vw-100"
-        , style "background-color" "hsla( 10 , 100% , 68% , 1)"
-        , style "background-color" (Color.hsla 0.6 0.95 0.68 1 |> Color.toCssString)
-        ]
-        [ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
-        , div [ class "pa3" ]
-            [ div [ class "pl3 f3" ] [ text (String.fromInt model.counter) ]
-            , button [ onClick Decrement ] [ text "-" ]
-            , button [ onClick Increment ] [ text "+" ]
-            ]
-        , div [ class "pa3" ]
-            [ input [ placeholder "Text to reverse", value model.content, onInput Change ] []
-            , div [] [ text (String.reverse model.content) ]
-            ]
-        , div [ class "pa3" ]
-            [ viewInput "text" "Name" model.name Name
-            , viewInput "password" "Password" model.password Password
-            , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
-            , viewValidation model
-            ]
-        , div [ class "pa3" ]
-            [ div [ class "f3" ] [ text (String.fromInt model.dieFace) ]
-            , button [ onClick Roll ] [ text "Roll" ]
-            ]
-        , viewClock model
-        ]
 
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
