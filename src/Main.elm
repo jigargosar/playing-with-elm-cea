@@ -133,7 +133,8 @@ view model =
         [ clip, height fill, width fill ]
         (column [ clip, height fill, width fill ]
             [ el [ padding 16, width fill, center ] (Element.text "Header")
-            , el [ padding 16, width fill, height fill ] (Element.text "Content")
+            , el [ padding 16, width fill, height fill, scrollbars ]
+                (column [] fillerElements)
             , el [ padding 16, width fill, center ] (Element.text "Footer")
             ]
         )
