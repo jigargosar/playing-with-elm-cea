@@ -1,7 +1,10 @@
-module Main exposing (Model, Msg(..), init, main, update, view)
+module Main exposing (Model, Msg(..), htmlView, init, main, update)
 
 import Browser
-import Color exposing (Color, hsla)
+import Color
+import Element exposing (Element, alignRight, el, fill, rgb, row, width)
+import Element.Background
+import Element.Border
 import Html exposing (Html, button, div, h1, h3, img, input, text)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -110,15 +113,51 @@ subscriptions model =
 
 
 
----- VIEW ----
+---- Element VIEW ----
 
 
 view : Model -> Html Msg
 view model =
+    div [] [ elementView, htmlView model ]
+
+
+
+---- Element VIEW ----
+
+
+elementView : Html msg
+elementView =
+    Element.layout []
+        myElement
+
+
+myRowOfStuff =
+    row [ width fill ]
+        [ myElement
+        , myElement
+        , el [ alignRight ] myElement
+        ]
+
+
+myElement : Element msg
+myElement =
+    el
+        [ Element.Background.color (rgb 0.2 0.3 0.3)
+        , Element.Border.color (rgb 0.2 0.4 0.3)
+        ]
+        (Element.text "You've made a stylish element!")
+
+
+
+---- HTML VIEW ----
+
+
+htmlView : Model -> Html Msg
+htmlView model =
     div
         [ class "pa2 bg-light-red vh-100 vw-100"
         , style "background-color" "hsla( 10 , 100% , 68% , 1)"
-        , style "background-color" (hsla 0.6 0.95 0.68 1 |> Color.toCssString)
+        , style "background-color" (Color.hsla 0.6 0.95 0.68 1 |> Color.toCssString)
         ]
         [ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
         , div [ class "pa3" ]
