@@ -116,11 +116,17 @@ subscriptions model =
 --- View Layout Test ---
 
 
+deb : Element.Attribute msg
+deb =
+    --    Html.Attributes.attribute "" "" |> Element.htmlAttribute
+    explain Debug.todo
+
+
 view : Model -> Html Msg
 view model =
     let
         createElements count =
-            el [ padding 16, explain Debug.todo ] (Element.text "some filler text")
+            el [ padding 16, deb ] (Element.text "some filler text")
                 |> List.repeat count
 
         fillerElements =
@@ -129,7 +135,7 @@ view model =
     layout
         [ clip
         , height fill
-        , explain Debug.todo
+        , deb
         ]
         (column [ scrollbars, height fill ] fillerElements)
 
