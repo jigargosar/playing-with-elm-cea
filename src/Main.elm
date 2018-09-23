@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Color
-import Element exposing (Element, alignRight, clip, column, el, explain, fill, fillPortion, height, layout, minimum, padding, rgb, rgb255, row, scrollbarY, scrollbars, shrink, width)
+import Element exposing (Element, alignRight, clip, column, el, explain, fill, fillPortion, height, layout, minimum, padding, rgb, rgb255, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, width)
 import Element.Background
 import Element.Border
 import Html exposing (Html, button, col, div, h1, h3, img, input, text)
@@ -116,28 +116,27 @@ subscriptions model =
 --- View Layout Test ---
 
 
-deb : Element.Attribute msg
+deb : List (Element.Attribute msg)
 deb =
     --    Html.Attributes.attribute "" "" |> Element.htmlAttribute
-    explain Debug.todo
+    [ explain Debug.todo, padding 8, spacing 8 ]
 
 
 view : Model -> Html Msg
 view model =
     let
         createElements count =
-            el [ padding 16, deb ] (Element.text "some filler text")
+            el
+                deb
+                (Element.text "some filler text")
                 |> List.repeat count
 
         fillerElements =
             createElements 50
     in
     layout
-        [ clip
-        , height fill
-        , deb
-        ]
-        (column [ scrollbars, height fill ] fillerElements)
+        ([ clip, height fill ] ++ deb)
+        (column ([ scrollbars, height fill ] ++ deb) fillerElements)
 
 
 
