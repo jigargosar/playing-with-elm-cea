@@ -130,11 +130,11 @@ view model =
             createElements 50
     in
     layout
-        [ clip, height fill , width fill ]
+        [ clip, height fill, width fill ]
         (column [ clip, height fill, width fill ]
-            [ el [ padding 16, width fill , center] ( Element.text "Header" )
-            , el [ padding 16, width fill ] ( Element.text "Content" )
-            , el [ padding 16, width fill , center] ( Element.text "Footer" )
+            [ el [ padding 16, width fill, center ] (Element.text "Header")
+            , el [ padding 16, width fill, height fill ] (Element.text "Content")
+            , el [ padding 16, width fill, center ] (Element.text "Footer")
             ]
         )
 
