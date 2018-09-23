@@ -129,12 +129,11 @@ view model =
             createElements 50
     in
     layout
-        [ clip, height fill ]
-        (column [ height fill, width fill ]
-            [ row [ padding 16, width fill ] [ Element.text "Header" ]
-            , row [
-                scrollbars ,height fill, width fill ] [column [] fillerElements]
-            , row [ padding 16, width fill ] [ Element.text "Footer" ]
+        [ clip, height fill , width fill ]
+        (column [ clip, height fill, width fill ]
+            [ el [ padding 16, width fill ] ( Element.text "Header" )
+            , el [ padding 16, width fill ] ( Element.text "Content" )
+            , el [ padding 16, width fill ] ( Element.text "Footer" )
             ]
         )
 
