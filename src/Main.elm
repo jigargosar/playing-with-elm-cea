@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Color
-import Element exposing (Element, alignRight, column, el, fill, rgb, rgb255, row, width)
+import Element exposing (Element, alignRight, clip, column, el, fill, height, rgb, rgb255, row, scrollbarY, shrink, width)
 import Element.Background
 import Element.Border
 import Html exposing (Html, button, col, div, h1, h3, img, input, text)
@@ -114,40 +114,52 @@ subscriptions model =
 
 
 ---- Element VIEW ----
+--          Element.Background.color (rgb255 96 158 251)
 
 
 view : Model -> Html Msg
 view model =
     Element.layout
-        [--
-         --          Element.Background.color (rgb255 96 158 251)
-        ]
-        (column
-            [ class "pa2 vh-100 vw-100" |> Element.htmlAttribute ]
-            ([ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
-             , div [ class "pa3" ]
-                [ div [ class "pl3 f3" ] [ text (String.fromInt model.counter) ]
-                , button [ onClick Decrement ] [ text "-" ]
-                , button [ onClick Increment ] [ text "+" ]
-                ]
-             , div [ class "pa3" ]
-                [ input [ placeholder "Text to reverse", value model.content, onInput Change ] []
-                , div [] [ text (String.reverse model.content) ]
-                ]
-             , div [ class "pa3" ]
-                [ viewInput "text" "Name" model.name Name
-                , viewInput "password" "Password" model.password Password
-                , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
-                , viewValidation model
-                ]
-             , div [ class "pa3" ]
-                [ div [ class "f3" ] [ text (String.fromInt model.dieFace) ]
-                , button [ onClick Roll ] [ text "Roll" ]
-                ]
-             , viewClock model
-             ]
-                |> List.map Element.html
-            )
+        [ clip, height fill ]
+        (view2 model)
+
+
+view2 model =
+    column
+        [ class "pa2 vh-100 vw-100" |> Element.htmlAttribute ]
+        ([ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
+         , div [ class "pa3" ]
+            [ div [ class "pl3 f3" ] [ text (String.fromInt model.counter) ]
+            , button [ onClick Decrement ] [ text "-" ]
+            , button [ onClick Increment ] [ text "+" ]
+            ]
+         , div [ class "pa3" ]
+            [ input [ placeholder "Text to reverse", value model.content, onInput Change ] []
+            , div [] [ text (String.reverse model.content) ]
+            ]
+         , div [ class "pa3" ]
+            [ viewInput "text" "Name" model.name Name
+            , viewInput "password" "Password" model.password Password
+            , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
+            , viewValidation model
+            ]
+         , div [ class "pa3" ]
+            [ div [ class "f3" ] [ text (String.fromInt model.dieFace) ]
+            , button [ onClick Roll ] [ text "Roll" ]
+            ]
+         , viewClock model
+         , viewClock model
+         , viewClock model
+         , viewClock model
+         , viewClock model
+         , viewClock model
+         , viewClock model
+         , viewClock model
+         , viewClock model
+         , viewClock model
+         , viewClock model
+         ]
+            |> List.map Element.html
         )
 
 
