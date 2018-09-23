@@ -1,3 +1,4 @@
 html, body, #root, [data-elm-hot=true]{
   height: 100%;
+  font-size: 16px;
 }
