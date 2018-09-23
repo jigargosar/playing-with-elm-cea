@@ -121,22 +121,26 @@ view model =
     layout
         [ clip, height fill, width fill, explain Debug.todo ]
         (column [ width fill, height fill ]
-            [ row [ width fill, explain Debug.todo ] [ Element.text "Header" ]
-            , row [ width fill, height fill ]
-                [ row
+            [ row
+                [ width fill, explain Debug.todo ]
+                [ Element.text "Header" ]
+            , row [ width fill, height fill, explain Debug.todo ]
+                [ el
                     [ explain Debug.todo
-                    , fillPortion 1 |> height
+                    , fill |> height
                     , width (shrink |> minimum 200)
                     ]
-                    [ Element.text "Sidebar" ]
-                , row
+                    (Element.text "Sidebar")
+                , el
                     [ explain Debug.todo
                     , fill |> height
                     , fill |> width
                     ]
-                    [ Element.text "Content" ]
+                    (Element.text "Content")
                 ]
-            , row [ width fill, explain Debug.todo ] [ Element.text "Footer" ]
+            , row
+                [ width fill, explain Debug.todo ]
+                [ Element.text "Footer" ]
             ]
         )
 
