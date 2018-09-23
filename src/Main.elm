@@ -143,12 +143,7 @@ myRowOfStuff =
 myElement : Element msg
 myElement =
     el
-        [ width fill
-
-        --        , Element.Background.color (rgb255 96 158 251)
-        --        , Element.Border.color (rgb 0.2 0.4 0.3)
-        --        , Element.Border.widthEach { bottom = 1, left = 0, right = 0, top = 0 }
-        ]
+        [ width fill ]
         (Element.text "You've made a stylish element!")
 
 
