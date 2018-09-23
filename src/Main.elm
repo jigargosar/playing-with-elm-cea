@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Color
-import Element exposing (Element, alignRight, clip, column, el, explain, fill, fillPortion, height, layout, minimum, rgb, rgb255, row, scrollbarY, scrollbars, shrink, width)
+import Element exposing (Element, alignRight, clip, column, el, explain, fill, fillPortion, height, layout, minimum, padding, rgb, rgb255, row, scrollbarY, scrollbars, shrink, width)
 import Element.Background
 import Element.Border
 import Html exposing (Html, button, col, div, h1, h3, img, input, text)
@@ -118,45 +118,20 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
+    let
+        createElements count =
+            el [ padding 16, explain Debug.todo ] (Element.text "some filler text")
+                |> List.repeat count
+
+        fillerElements =
+            createElements 50
+    in
     layout
         [ clip
         , height fill
         , explain Debug.todo
         ]
-        (column [ scrollbars, height fill ]
-            [ el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            , el [] (Element.text " Some column Content")
-            ]
-        )
+        (column [ scrollbars, height fill ] fillerElements)
 
 
 
