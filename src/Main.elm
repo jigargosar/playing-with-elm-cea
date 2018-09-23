@@ -133,6 +133,7 @@ view model =
         (column [ height fill, width fill ]
             [ column [ padding 16 ] [ Element.text "Header" ]
             , column [ scrollbars, height fill ] fillerElements
+            , column [ padding 16 ] [ Element.text "Footer" ]
             ]
         )
 
