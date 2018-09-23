@@ -2,7 +2,7 @@ module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
 import Html exposing (Html, button, div, h1, img, text)
-import Html.Attributes exposing (src)
+import Html.Attributes exposing (class, src, style)
 import Html.Events exposing (onClick)
 
 
@@ -44,8 +44,8 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ h1 [] [ text "Your Elm App is working! with hmr!" ]
+    div [ class "pa2 bg-light-red", style "height" "100%" ]
+        [ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
         , div []
             [ button [ onClick Decrement ] [ text "-" ]
             , div [] [ text (String.fromInt model) ]
