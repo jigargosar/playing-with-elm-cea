@@ -127,7 +127,8 @@ view model =
 
 elementView : Html msg
 elementView =
-    Element.layout [ Element.Background.color (rgb255 96 158 251) ]
+    Element.layout
+        [ Element.Background.color (rgb255 96 158 251) ]
         myRowOfStuff
 
 
