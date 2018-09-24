@@ -9,8 +9,12 @@ type Alpha
     = Alpha Float
 
 
+type alias RGBARecord =
+    { r : CH255, g : CH255, b : CH255, a : Alpha }
+
+
 type RGBA
-    = RGBA CH255 CH255 CH255 Alpha
+    = RGBA RGBARecord
 
 
 intToCH255 : Int -> CH255
@@ -25,9 +29,11 @@ floatToAlpha =
 
 rgba : Int -> Int -> Int -> Float -> RGBA
 rgba r g b a =
-    RGBA (intToCH255 r) (intToCH255 g) (intToCH255 b) (floatToAlpha a)
+    RGBARecord (intToCH255 r) (intToCH255 g) (intToCH255 b) (floatToAlpha a)
+        |> RGBA
 
 
 rgb : Int -> Int -> Int -> RGBA
 rgb r g b =
-    RGBA (intToCH255 r) (intToCH255 g) (intToCH255 b) (floatToAlpha 1)
+    RGBARecord (intToCH255 r) (intToCH255 g) (intToCH255 b) (floatToAlpha 1)
+        |> RGBA
