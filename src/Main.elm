@@ -170,7 +170,7 @@ view model =
     Element.layout [ fz 1 ,  height fill, width fill, clip ]
         (column
             [ height fill, width fill, clip ]
-            [ el [height fill, width fill, clip, scrollbars]
+            [ el [p 8, height fill, width fill, clip, scrollbars]
                 ( column [height fill, width fill]
                     [el
                     [ p 1, {- width fill, Font.center, -} Element.centerX, fz 4 ]
