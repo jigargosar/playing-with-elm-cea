@@ -167,13 +167,19 @@ p =
 
 view : Model -> Html Msg
 view model =
-    Element.layout [ fz 1 ]
+    Element.layout [ fz 1 ,  height fill, width fill, clip ]
         (column
-            [ height fill, width fill ]
-            [ el
-                [ p 1, {- width fill, Font.center, -} Element.centerX, fz 4 ]
-                (text "Hello World")
-            , el [ width fill, height fill, Element.centerX ] (svgView |> Element.html)
+            [ height fill, width fill, clip ]
+            [ el [height fill, width fill, clip, scrollbars]
+                ( column [height fill, width fill]
+                    [el
+                    [ p 1, {- width fill, Font.center, -} Element.centerX, fz 4 ]
+                    (text "Hello World")
+                , el [ width fill, height fill, Element.centerX ] (svgView |> Element.html)]
+                )
+            , el
+                [ height (fill |> maximum 250 |> minimum 100), width fill ]
+                (text "Controller")
             ]
         )
 
