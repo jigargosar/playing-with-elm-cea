@@ -121,6 +121,17 @@ update msg model =
             ( { model | alpha = newAlpha }, Cmd.none )
 
         Hue hue ->
+            let
+                { saturation } =
+                    modelToHSLA
+
+                saturation =
+                    if hue > 0 && model.saturation <= 0 then
+                        0.01
+
+                    else
+                        saturation
+            in
             ( model |> updateHSLA (\r -> { r | hue = hue })
             , Cmd.none
             )
