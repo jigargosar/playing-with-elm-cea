@@ -3,9 +3,10 @@ module Main exposing (main)
 import Browser
 import Color
 import Element exposing (Element, alignRight, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, maximum, minimum, padding, paddingXY, rgb, rgb255, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, text, width)
-import Element.Background
-import Element.Border
+import Element.Background as Background
+import Element.Border as Border
 import Element.Font as Font
+import Element.Input as Input
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -29,6 +30,7 @@ type alias Model =
     , dieFace : Int
     , zone : Time.Zone
     , time : Time.Posix
+    , red : Float
     }
 
 
@@ -42,6 +44,7 @@ init =
       , dieFace = 1
       , zone = Time.utc
       , time = Time.millisToPosix 0
+      , red = 0
       }
     , Task.perform AdjustTimeZone Time.here
     )
@@ -62,11 +65,19 @@ type Msg
     | NewFace Int
     | Tick Time.Posix
     | AdjustTimeZone Time.Zone
+    | Nop
+    | Red Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Nop ->
+            ( model, Cmd.none )
+
+        Red newRed ->
+            ( { model | red = newRed }, Cmd.none )
+
         Increment ->
             ( { model | counter = model.counter + 1 }, Cmd.none )
 
@@ -158,15 +169,12 @@ view model =
             [ el
                 [ p 1
                 , fz 1
-                , height fill
                 , width fill
-                , clip
                 , scrollbars
                 ]
                 (el
-                    [ height fill
-                    , width fill
-                    , Element.Border.width 1
+                    [ width fill
+                    , Border.width 1
                     , style "background-color" "white" |> Element.htmlAttribute
                     ]
                     (column [ height fill, width fill, p 1 ]
@@ -186,16 +194,45 @@ view model =
                 , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
                 , p -4
                 , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
-                , Element.Border.shadow
+                , Border.shadow
                     { offset = ( 0, 8 )
                     , size = 8
                     , blur = 32
                     , color = rgb 0 0 0
                     }
                 ]
-                (text "Controller")
+                (viewKnobs model)
             ]
         )
+
+
+viewKnobs : Model -> Element Msg
+viewKnobs model =
+    column [ width fill ]
+        [ text "Controller"
+        , Input.slider
+            [ spacing 16
+            , Element.behindContent
+                (Element.el
+                    [ Element.width Element.fill
+                    , Element.height (Element.px 2)
+                    , Element.centerY
+                    , Background.color (rgb 0.5 0.5 0.5)
+                    , Border.rounded 2
+                    ]
+                    Element.none
+                )
+            ]
+            { onChange = Red
+            , label = Input.labelLeft [] (text "Red")
+            , min = 0
+            , max = 1
+            , step = Nothing
+            , value = model.red
+            , thumb =
+                Input.defaultThumb
+            }
+        ]
 
 
 svgView : Html msg
