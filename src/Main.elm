@@ -230,13 +230,13 @@ viewKnobs model =
             }
         ]
         [ text "Controller"
-        , colorSlider model.red
-        , colorSlider model.red
-        , colorSlider model.red
+        , colorSlider model.red "R" Red
+        , colorSlider model.green "G" Green
+        , colorSlider model.blue "B" Blue
         ]
 
 
-colorSlider channelFloatValue =
+colorSlider channelFloatValue labelText onChange =
     row [ spacing 16, width fill ]
         [ Input.slider
             [ spacing 16
@@ -251,8 +251,8 @@ colorSlider channelFloatValue =
                     Element.none
                 )
             ]
-            { onChange = Red
-            , label = Input.labelLeft [] (text "Red")
+            { onChange = onChange
+            , label = Input.labelLeft [] (text labelText)
             , min = 0
             , max = 1
             , step = Just 0.01
@@ -276,7 +276,7 @@ colorSlider channelFloatValue =
                             String.toFloat val
                     in
                     maybeRed
-                        |> Maybe.map (\red -> red |> clamp 0 1 |> Red)
+                        |> Maybe.map (\red -> red |> clamp 0 1 |> onChange)
                         |> Maybe.withDefault Nop
             , label = Input.labelLeft [] Element.none
             , text = channelFloatValue |> Round.round 2
