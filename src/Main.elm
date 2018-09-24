@@ -177,10 +177,16 @@ view model =
             , el
                 [ height (fill |> maximum 250 |> minimum 100)
                 , width fill
-                , style "background-color" "hsl(0,0%,20%)" |> Element.htmlAttribute
+                , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
                 , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
                 , p -4
                 , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
+                , Element.Border.shadow
+                    { offset = ( 0, 8 )
+                    , size = 8
+                    , blur = 32
+                    , color = rgb 0 0 0
+                    }
                 ]
                 (text "Controller")
             ]
