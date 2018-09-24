@@ -153,13 +153,23 @@ scaledInt =
     scaled >> round
 
 
+fz : Int -> Element.Attr decorative msg
+fz =
+    scaledInt >> Font.size
+
+
+p : Int -> Element.Attribute msg
+p =
+    scaledInt >> padding
+
+
 view : Model -> Html Msg
 view model =
-    Element.layout [ Font.size (scaledInt 1) ]
+    Element.layout [ fz 1 ]
         (column
             [ height fill, width fill ]
             [ el
-                [ padding 16, width fill, Font.center, Font.size (scaledInt 4) ]
+                [ p 1, width fill, Font.center, fz 4 ]
                 (text "Hello World")
             ]
         )
