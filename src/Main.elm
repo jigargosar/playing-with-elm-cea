@@ -159,7 +159,7 @@ view model =
 --- Old View ---
 
 
-view2 model =
+oldView model =
     column
         [ class "pa2 vh-100 vw-100" |> Element.htmlAttribute ]
         ([ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
