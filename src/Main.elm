@@ -6,7 +6,7 @@ import Element exposing (Element, alignRight, centerX, centerY, clip, column, el
 import Element.Background
 import Element.Border
 import Element.Font exposing (center)
-import Html exposing (Html, button, col, div, h1, h3, img, input, text)
+import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Random
@@ -114,11 +114,25 @@ subscriptions model =
 
 
 
---- View Layout Test ---
+--- View ---
 
 
 view : Model -> Html Msg
 view model =
+    layout []
+        (column
+            []
+            [ el [] (Element.text "Hello World")
+            ]
+        )
+
+
+
+--- View Layout Test ---
+
+
+view_ : Model -> Html Msg
+view_ model =
     let
         createElements count =
             el
@@ -162,15 +176,15 @@ view model =
 oldView model =
     column
         [ class "pa2 vh-100 vw-100" |> Element.htmlAttribute ]
-        ([ div [ class "f2 pa2" ] [ text "Your Elm App is working! with hmr!" ]
+        ([ div [ class "f2 pa2" ] [ Html.text "Your Elm App is working! with hmr!" ]
          , div [ class "pa3" ]
-            [ div [ class "pl3 f3" ] [ text (String.fromInt model.counter) ]
-            , button [ onClick Decrement ] [ text "-" ]
-            , button [ onClick Increment ] [ text "+" ]
+            [ div [ class "pl3 f3" ] [ Html.text (String.fromInt model.counter) ]
+            , button [ onClick Decrement ] [ Html.text "-" ]
+            , button [ onClick Increment ] [ Html.text "+" ]
             ]
          , div [ class "pa3" ]
             [ input [ placeholder "Text to reverse", value model.content, onInput Change ] []
-            , div [] [ text (String.reverse model.content) ]
+            , div [] [ Html.text (String.reverse model.content) ]
             ]
          , div [ class "pa3" ]
             [ viewInput "text" "Name" model.name Name
@@ -179,8 +193,8 @@ oldView model =
             , viewValidation model
             ]
          , div [ class "pa3" ]
-            [ div [ class "f3" ] [ text (String.fromInt model.dieFace) ]
-            , button [ onClick Roll ] [ text "Roll" ]
+            [ div [ class "f3" ] [ Html.text (String.fromInt model.dieFace) ]
+            , button [ onClick Roll ] [ Html.text "Roll" ]
             ]
          , viewClock model
          ]
@@ -196,10 +210,10 @@ viewInput t p v toMsg =
 viewValidation : Model -> Html msg
 viewValidation model =
     if model.password == model.passwordAgain then
-        div [ style "color" "green" ] [ text "OK" ]
+        div [ style "color" "green" ] [ Html.text "OK" ]
 
     else
-        div [ style "color" "red" ] [ text "Passwords do not match!" ]
+        div [ style "color" "red" ] [ Html.text "Passwords do not match!" ]
 
 
 viewClock : Model -> Html Msg
@@ -214,7 +228,7 @@ viewClock model =
         second =
             String.fromInt (Time.toSecond model.zone model.time)
     in
-    h1 [] [ text (hour ++ ":" ++ minute ++ ":" ++ second) ]
+    h1 [] [ Html.text (hour ++ ":" ++ minute ++ ":" ++ second) ]
 
 
 
