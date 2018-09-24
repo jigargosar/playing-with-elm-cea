@@ -78,6 +78,23 @@ type Msg
     | Green Float
     | Blue Float
     | Alpha Float
+    | Hue Float
+    | Saturation Float
+    | Lightness Float
+
+
+modelToHSLA model =
+    Color.rgba model.red model.green model.blue model.alpha
+        |> Color.toHsla
+
+
+updateModelHSLA fn model =
+    model
+        |> modelToHSLA
+        |> fn
+        |> Color.fromHsla
+        |> Color.toRgba
+        |> (\r -> { model | red = r.red, green = r.green, blue = r.blue, alpha = r.alpha })
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -97,6 +114,17 @@ update msg model =
 
         Alpha newAlpha ->
             ( { model | alpha = newAlpha }, Cmd.none )
+
+        Hue hue ->
+            ( model |> updateModelHSLA (\r -> { r | hue = hue })
+            , Cmd.none
+            )
+
+        Saturation newSaturation ->
+            ( model |> updateModelHSLA (\r -> { r | saturation = newSaturation }), Cmd.none )
+
+        Lightness newLightness ->
+            ( model |> updateModelHSLA (\r -> { r | lightness = newLightness }), Cmd.none )
 
         Increment ->
             ( { model | counter = model.counter + 1 }, Cmd.none )
@@ -239,6 +267,10 @@ view model =
 
 viewKnobs : Model -> Element Msg
 viewKnobs model =
+    let
+        { hue, saturation, lightness } =
+            modelToHSLA model
+    in
     column
         [ width fill
         , height fill
@@ -259,7 +291,10 @@ viewKnobs model =
         , colorSlider model.red "R" Red
         , colorSlider model.green "G" Green
         , colorSlider model.blue "B" Blue
-        , colorSlider model.blue "A" Alpha
+        , colorSlider model.alpha "A" Alpha
+        , colorSlider hue "H" Hue
+        , colorSlider saturation "S" Saturation
+        , colorSlider lightness "L" Lightness
         ]
 
 
@@ -280,8 +315,8 @@ colorSlider channelFloatValue labelText onChange =
             ]
             { onChange = onChange
             , label = Input.labelLeft [] (text labelText)
-            , min = 0
-            , max = 1
+            , min = 0.01
+            , max = 0.99
             , step = Just 0.01
             , value = channelFloatValue
             , thumb =
@@ -293,8 +328,8 @@ colorSlider channelFloatValue labelText onChange =
             , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
             , Html.Attributes.type_ "number" |> Element.htmlAttribute
             , Html.Attributes.step "0.01" |> Element.htmlAttribute
-            , Html.Attributes.min "0" |> Element.htmlAttribute
-            , Html.Attributes.max "1" |> Element.htmlAttribute
+            , Html.Attributes.min "0.01" |> Element.htmlAttribute
+            , Html.Attributes.max "0.99" |> Element.htmlAttribute
             ]
             { onChange =
                 \val ->
@@ -303,7 +338,7 @@ colorSlider channelFloatValue labelText onChange =
                             String.toFloat val
                     in
                     maybeRed
-                        |> Maybe.map (\red -> red |> clamp 0 1 |> onChange)
+                        |> Maybe.map (\red -> red |> clamp 0 0.99 |> onChange)
                         |> Maybe.withDefault Nop
             , label = Input.labelLeft [] Element.none
             , text = channelFloatValue |> Round.round 2
