@@ -179,15 +179,6 @@ view model =
 
 
 svgView =
-    let
-        size =
-            String.fromInt 240
-
-        --        viewBoxSize =
-        --            String.fromInt 120
-        --        viewBox =
-        --            "0 0 " ++ viewBoxSize ++ " " ++ viewBoxSize
-    in
     Svg.svg
         [ SA.id "svg-demo-1"
         , SA.width "100%"
