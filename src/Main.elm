@@ -139,6 +139,11 @@ p =
     scaledInt >> padding
 
 
+p2 : Int -> Int -> Element.Attribute msg
+p2 x y =
+    paddingXY (scaledInt x) (scaledInt y)
+
+
 view : Model -> Html Msg
 view model =
     Element.layout
@@ -164,10 +169,10 @@ view model =
                     , Element.Border.width 1
                     , style "background-color" "white" |> Element.htmlAttribute
                     ]
-                    (column [ height fill, width fill, paddingXY 16 16 ]
+                    (column [ height fill, width fill, p2 1 1 ]
                         [ el
                             [ p 1, Element.centerX, fz 4 ]
-                            (text "Hello World")
+                            (text "Color Converter")
                         , el
                             [ width fill, height fill, Element.centerX ]
                             (svgView |> Element.html)
