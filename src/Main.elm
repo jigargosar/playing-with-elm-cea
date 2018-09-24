@@ -174,7 +174,7 @@ view model =
                             [ p 1, centerX, fz 4 ]
                             (text "Color Converter")
                         , el
-                            [ width fill, height fill, centerX ]
+                            [ width fill, height fill ]
                             (svgView |> Element.html)
                         ]
                     )
