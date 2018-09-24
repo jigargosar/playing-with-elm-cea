@@ -180,7 +180,7 @@ view model =
                     , Border.shadow
                         { offset = ( 2, 2 )
                         , size = 0
-                        , blur = 8
+                        , blur = 4
                         , color = rgba 0 0 0 0.4
                         }
                     ]
@@ -210,10 +210,10 @@ viewKnobs model =
         , p -4
         , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
         , Border.shadow
-            { offset = ( 0, 8 )
-            , size = 8
-            , blur = 32
-            , color = rgb 0 0 0
+            { offset = ( 0, -2 )
+            , size = 0
+            , blur = 16
+            , color = rgba 0 0 0 0.4
             }
         ]
         [ text "Controller"
