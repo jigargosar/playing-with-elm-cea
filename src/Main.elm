@@ -139,8 +139,8 @@ p =
     scaledInt >> padding
 
 
-p2 : Int -> Int -> Element.Attribute msg
-p2 x y =
+pXY : Int -> Int -> Element.Attribute msg
+pXY x y =
     paddingXY (scaledInt x) (scaledInt y)
 
 
@@ -169,7 +169,7 @@ view model =
                     , Element.Border.width 1
                     , style "background-color" "white" |> Element.htmlAttribute
                     ]
-                    (column [ height fill, width fill, p2 1 1 ]
+                    (column [ height fill, width fill, p 1 ]
                         [ el
                             [ p 1, Element.centerX, fz 4 ]
                             (text "Color Converter")
