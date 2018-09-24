@@ -71,8 +71,8 @@ hsla h s l a =
 
 
 hsl : Int -> Int -> Int -> HSLA
-hsl h s l a =
-    hsla h s l a 1
+hsl h s l =
+    hsla h s l 1
 
 
 
