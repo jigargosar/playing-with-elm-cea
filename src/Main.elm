@@ -5,12 +5,14 @@ import Color
 import Element exposing (Element, alignRight, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, maximum, minimum, padding, paddingXY, rgb, rgb255, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, text, width)
 import Element.Background as Background
 import Element.Border as Border
+import Element.Events
 import Element.Font as Font
 import Element.Input as Input
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Random
+import Round
 import Svg as Svg
 import Svg.Attributes as SA
 import Task
@@ -228,7 +230,7 @@ viewKnobs model =
                 , label = Input.labelLeft [] (text "Red")
                 , min = 0
                 , max = 1
-                , step = Nothing
+                , step = Just 0.01
                 , value = model.red
                 , thumb =
                     Input.defaultThumb
@@ -237,11 +239,24 @@ viewKnobs model =
                 [ spacing 0
                 , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
                 , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
+
+                --                , Element.Events.onClick (\_ -> Nop)
                 , Html.Attributes.type_ "number" |> Element.htmlAttribute
+                , Html.Attributes.step "0.01" |> Element.htmlAttribute
+                , Html.Attributes.min "0" |> Element.htmlAttribute
+                , Html.Attributes.max "1" |> Element.htmlAttribute
                 ]
-                { onChange = \_ -> Nop
+                { onChange =
+                    \val ->
+                        let
+                            maybeRed =
+                                String.toFloat val
+                        in
+                        maybeRed
+                            |> Maybe.map (\red -> red |> clamp 0 1 |> Red)
+                            |> Maybe.withDefault Nop
                 , label = Input.labelLeft [] Element.none
-                , text = model.red |> String.fromFloat
+                , text = model.red |> Round.round 2
                 , placeholder = Nothing
                 }
             ]
