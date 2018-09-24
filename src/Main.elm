@@ -278,7 +278,7 @@ viewKnobs model =
 
         black : ColorX.RGBA
         black =
-            ColorX.rgba 1 1 1 1
+            ColorX.rgba 0 0 0 1
     in
     column
         [ width fill
