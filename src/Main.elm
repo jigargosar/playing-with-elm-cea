@@ -319,9 +319,9 @@ colorSlider channelFloatValue labelText onChange =
             ]
             { onChange = onChange
             , label = Input.labelLeft [] (text labelText)
-            , min = 0.01
-            , max = 0.99
-            , step = Just 0.01
+            , min = 0
+            , max = 1
+            , step = Nothing
             , value = channelFloatValue
             , thumb =
                 Input.defaultThumb
