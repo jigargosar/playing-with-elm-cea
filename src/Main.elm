@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Color
-import Element exposing (Element, alignRight, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, maximum, minimum, padding, paddingXY, rgb, rgb255, rgba, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, text, width)
+import Element exposing (Element, alignRight, behindContent, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, maximum, minimum, padding, paddingXY, px, rgb, rgb255, rgba, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
@@ -207,7 +207,8 @@ viewKnobs model =
         , width fill
         , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
         , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
-        , p -4
+        , p 1
+        , spacing 16
         , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
         , Border.shadow
             { offset = ( 0, -2 )
@@ -220,11 +221,11 @@ viewKnobs model =
         , row [ spacing 16, width fill ]
             [ Input.slider
                 [ spacing 16
-                , Element.behindContent
-                    (Element.el
-                        [ Element.width Element.fill
-                        , Element.height (Element.px 2)
-                        , Element.centerY
+                , behindContent
+                    (el
+                        [ width fill
+                        , height (px 2)
+                        , centerY
                         , Background.color (rgb 0.5 0.5 0.5)
                         , Border.rounded 2
                         ]
@@ -244,8 +245,6 @@ viewKnobs model =
                 [ spacing 0
                 , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
                 , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
-
-                --                , Element.Events.onClick (\_ -> Nop)
                 , Html.Attributes.type_ "number" |> Element.htmlAttribute
                 , Html.Attributes.step "0.01" |> Element.htmlAttribute
                 , Html.Attributes.min "0" |> Element.htmlAttribute
