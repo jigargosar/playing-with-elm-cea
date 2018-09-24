@@ -120,22 +120,57 @@ update msg model =
         Alpha newAlpha ->
             ( { model | alpha = newAlpha }, Cmd.none )
 
-        Hue hue ->
+        Hue newHue ->
             let
-                saturation =
-                    if hue > 0 && (modelToHSLA model).saturation <= 0 then
-                        0.01
+                ( newSaturation, newLightness ) =
+                    let
+                        { hue, saturation, lightness } =
+                            modelToHSLA model
+                    in
+                    if newHue > 0 && saturation <= 0 && lightness >= 1 then
+                        ( 0.01, 0.99 )
 
                     else
-                        saturation
+                        ( saturation, lightness )
             in
-            ( model |> updateHSLA (\r -> { r | hue = hue })
+            ( model
+                |> updateHSLA
+                    (\r ->
+                        { r
+                            | hue = newHue
+                            , saturation = newSaturation
+                            , lightness = newLightness
+                        }
+                    )
             , Cmd.none
             )
 
         Saturation newSaturation ->
-            ( model |> updateHSLA (\r -> { r | saturation = newSaturation }), Cmd.none )
+            let
+                ( newHue, newLightness ) =
+                    let
+                        { hue, saturation, lightness } =
+                            modelToHSLA model
+                    in
+                    if hue <= 0 && newSaturation > 0 && lightness >= 1 then
+                        ( 0.01, 0.99 )
 
+                    else
+                        ( hue, lightness )
+            in
+            ( model
+                |> updateHSLA
+                    (\r ->
+                        { r
+                            | hue = newHue
+                            , saturation = newSaturation
+                            , lightness = newLightness
+                        }
+                    )
+            , Cmd.none
+            )
+
+        --            ( model |> updateHSLA (\r -> { r | saturation = newSaturation }), Cmd.none )
         Lightness newLightness ->
             ( model |> updateHSLA (\r -> { r | lightness = newLightness }), Cmd.none )
 
