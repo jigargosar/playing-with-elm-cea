@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Color
+import ColorX
 import Element exposing (Element, alignRight, behindContent, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, maximum, minimum, padding, paddingXY, px, rgb, rgb255, rgba, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, text, width)
 import Element.Background as Background
 import Element.Border as Border
@@ -274,6 +275,10 @@ viewKnobs model =
     let
         { hue, saturation, lightness } =
             modelToHSLA model
+
+        black : ColorX.RGBA
+        black =
+            ColorX.rgba 1 1 1 1
     in
     column
         [ width fill
