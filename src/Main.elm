@@ -198,6 +198,7 @@ view model =
         )
 
 
+svgView : Html msg
 svgView =
     Svg.svg
         [ SA.id "svg-demo-1"
