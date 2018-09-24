@@ -210,28 +210,41 @@ viewKnobs : Model -> Element Msg
 viewKnobs model =
     column [ width fill ]
         [ text "Controller"
-        , Input.slider
-            [ spacing 16
-            , Element.behindContent
-                (Element.el
-                    [ Element.width Element.fill
-                    , Element.height (Element.px 2)
-                    , Element.centerY
-                    , Background.color (rgb 0.5 0.5 0.5)
-                    , Border.rounded 2
-                    ]
-                    Element.none
-                )
+        , row [ spacing 16, width fill ]
+            [ Input.slider
+                [ spacing 16
+                , Element.behindContent
+                    (Element.el
+                        [ Element.width Element.fill
+                        , Element.height (Element.px 2)
+                        , Element.centerY
+                        , Background.color (rgb 0.5 0.5 0.5)
+                        , Border.rounded 2
+                        ]
+                        Element.none
+                    )
+                ]
+                { onChange = Red
+                , label = Input.labelLeft [] (text "Red")
+                , min = 0
+                , max = 1
+                , step = Nothing
+                , value = model.red
+                , thumb =
+                    Input.defaultThumb
+                }
+            , Input.text
+                [ spacing 0
+                , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
+                , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
+                , Html.Attributes.type_ "number" |> Element.htmlAttribute
+                ]
+                { onChange = \_ -> Nop
+                , label = Input.labelLeft [] Element.none
+                , text = model.red |> String.fromFloat
+                , placeholder = Nothing
+                }
             ]
-            { onChange = Red
-            , label = Input.labelLeft [] (text "Red")
-            , min = 0
-            , max = 1
-            , step = Nothing
-            , value = model.red
-            , thumb =
-                Input.defaultThumb
-            }
         ]
 
 
