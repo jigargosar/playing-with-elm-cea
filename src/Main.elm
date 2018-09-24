@@ -241,7 +241,7 @@ viewKnobs : Model -> Element Msg
 viewKnobs model =
     column
         [ width fill
-        , height (fill |> maximum 250 |> minimum 100)
+        , height fill
         , width fill
         , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
         , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
@@ -259,6 +259,7 @@ viewKnobs model =
         , colorSlider model.red "R" Red
         , colorSlider model.green "G" Green
         , colorSlider model.blue "B" Blue
+        , colorSlider model.blue "A" Alpha
         ]
 
 
