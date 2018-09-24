@@ -122,11 +122,8 @@ update msg model =
 
         Hue hue ->
             let
-                { saturation } =
-                    modelToHSLA
-
                 saturation =
-                    if hue > 0 && model.saturation <= 0 then
+                    if hue > 0 && (modelToHSLA model).saturation <= 0 then
                         0.01
 
                     else
