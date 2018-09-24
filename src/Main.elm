@@ -2,10 +2,36 @@ module Main exposing (main)
 
 import Browser
 import Color
-import Element exposing (Element, alignRight, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, layout, maximum, minimum, padding, rgb, rgb255, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, width)
+import Element
+    exposing
+        ( Element
+        , alignRight
+        , centerX
+        , centerY
+        , clip
+        , column
+        , el
+        , explain
+        , fill
+        , fillPortion
+        , height
+        , maximum
+        , minimum
+        , padding
+        , rgb
+        , rgb255
+        , row
+        , scrollbarY
+        , scrollbars
+        , shrink
+        , spacing
+        , spacingXY
+        , text
+        , width
+        )
 import Element.Background
 import Element.Border
-import Element.Font exposing (center)
+import Element.Font as Font
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -117,121 +143,125 @@ subscriptions model =
 --- View ---
 
 
+scaled : Int -> Float
+scaled =
+    Element.modular 16 1.25
+
+
+scaledInt : Int -> Int
+scaledInt =
+    scaled >> round
+
+
 view : Model -> Html Msg
 view model =
-    layout []
+    Element.layout [ Font.size (scaledInt 1) ]
         (column
-            []
-            [ el [] (Element.text "Hello World")
+            [ height fill, width fill ]
+            [ el
+                [ padding 16, width fill, Font.center, Font.size (scaledInt 4) ]
+                (text "Hello World")
             ]
         )
 
 
 
 --- View Layout Test ---
-
-
-view_ : Model -> Html Msg
-view_ model =
-    let
-        createElements count =
-            el
-                []
-                (Element.text "some filler text")
-                |> List.repeat count
-
-        fillerElements =
-            createElements 50
-    in
-    layout
-        [ height fill, width fill ]
-        (column [ height fill, width fill ]
-            [ el [ padding 16, width fill, center ] <| Element.text "Header"
-
-            -- Is clip required below?
-            , row
-                [ width fill
-                , height fill
-                , scrollbars
-
-                {- , clip -}
-                ]
-                [ column
-                    [ padding 16, scrollbars, width (fill |> maximum 250), height fill ]
-                    fillerElements
-                , column
-                    [ padding 16, scrollbars, width fill, height fill ]
-                    fillerElements
-                ]
-            , el [ padding 16, width fill, center ] <| Element.text "Footer"
-            ]
-        )
-
-
-
+--view_ : Model -> Html Msg
+--view_ model =
+--    let
+--        createElements count =
+--            el
+--                []
+--                (Element.text "some filler text")
+--                |> List.repeat count
+--
+--        fillerElements =
+--            createElements 50
+--    in
+--    layout
+--        [ height fill, width fill ]
+--        (column [ height fill, width fill ]
+--            [ el [ padding 16, width fill, center ] <| Element.text "Header"
+--
+--            -- Is clip required below?
+--            , row
+--                [ width fill
+--                , height fill
+--                , scrollbars
+--
+--                {- , clip -}
+--                ]
+--                [ column
+--                    [ padding 16, scrollbars, width (fill |> maximum 250), height fill ]
+--                    fillerElements
+--                , column
+--                    [ padding 16, scrollbars, width fill, height fill ]
+--                    fillerElements
+--                ]
+--            , el [ padding 16, width fill, center ] <| Element.text "Footer"
+--            ]
+--        )
+--
+--
 --          Element.Background.color (rgb255 96 158 251)
 --- Old View ---
-
-
-oldView model =
-    column
-        [ class "pa2 vh-100 vw-100" |> Element.htmlAttribute ]
-        ([ div [ class "f2 pa2" ] [ Html.text "Your Elm App is working! with hmr!" ]
-         , div [ class "pa3" ]
-            [ div [ class "pl3 f3" ] [ Html.text (String.fromInt model.counter) ]
-            , button [ onClick Decrement ] [ Html.text "-" ]
-            , button [ onClick Increment ] [ Html.text "+" ]
-            ]
-         , div [ class "pa3" ]
-            [ input [ placeholder "Text to reverse", value model.content, onInput Change ] []
-            , div [] [ Html.text (String.reverse model.content) ]
-            ]
-         , div [ class "pa3" ]
-            [ viewInput "text" "Name" model.name Name
-            , viewInput "password" "Password" model.password Password
-            , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
-            , viewValidation model
-            ]
-         , div [ class "pa3" ]
-            [ div [ class "f3" ] [ Html.text (String.fromInt model.dieFace) ]
-            , button [ onClick Roll ] [ Html.text "Roll" ]
-            ]
-         , viewClock model
-         ]
-            |> List.map Element.html
-        )
-
-
-viewInput : String -> String -> String -> (String -> msg) -> Html msg
-viewInput t p v toMsg =
-    input [ type_ t, placeholder p, value v, onInput toMsg ] []
-
-
-viewValidation : Model -> Html msg
-viewValidation model =
-    if model.password == model.passwordAgain then
-        div [ style "color" "green" ] [ Html.text "OK" ]
-
-    else
-        div [ style "color" "red" ] [ Html.text "Passwords do not match!" ]
-
-
-viewClock : Model -> Html Msg
-viewClock model =
-    let
-        hour =
-            String.fromInt (Time.toHour model.zone model.time)
-
-        minute =
-            String.fromInt (Time.toMinute model.zone model.time)
-
-        second =
-            String.fromInt (Time.toSecond model.zone model.time)
-    in
-    h1 [] [ Html.text (hour ++ ":" ++ minute ++ ":" ++ second) ]
-
-
-
+--oldView model =
+--    column
+--        [ class "pa2 vh-100 vw-100" |> Element.htmlAttribute ]
+--        ([ div [ class "f2 pa2" ] [ Html.text "Your Elm App is working! with hmr!" ]
+--         , div [ class "pa3" ]
+--            [ div [ class "pl3 f3" ] [ Html.text (String.fromInt model.counter) ]
+--            , button [ onClick Decrement ] [ Html.text "-" ]
+--            , button [ onClick Increment ] [ Html.text "+" ]
+--            ]
+--         , div [ class "pa3" ]
+--            [ input [ placeholder "Text to reverse", value model.content, onInput Change ] []
+--            , div [] [ Html.text (String.reverse model.content) ]
+--            ]
+--         , div [ class "pa3" ]
+--            [ viewInput "text" "Name" model.name Name
+--            , viewInput "password" "Password" model.password Password
+--            , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
+--            , viewValidation model
+--            ]
+--         , div [ class "pa3" ]
+--            [ div [ class "f3" ] [ Html.text (String.fromInt model.dieFace) ]
+--            , button [ onClick Roll ] [ Html.text "Roll" ]
+--            ]
+--         , viewClock model
+--         ]
+--            |> List.map Element.html
+--        )
+--
+--
+--viewInput : String -> String -> String -> (String -> msg) -> Html msg
+--viewInput t p v toMsg =
+--    input [ type_ t, placeholder p, value v, onInput toMsg ] []
+--
+--
+--viewValidation : Model -> Html msg
+--viewValidation model =
+--    if model.password == model.passwordAgain then
+--        div [ style "color" "green" ] [ Html.text "OK" ]
+--
+--    else
+--        div [ style "color" "red" ] [ Html.text "Passwords do not match!" ]
+--
+--
+--viewClock : Model -> Html Msg
+--viewClock model =
+--    let
+--        hour =
+--            String.fromInt (Time.toHour model.zone model.time)
+--
+--        minute =
+--            String.fromInt (Time.toMinute model.zone model.time)
+--
+--        second =
+--            String.fromInt (Time.toSecond model.zone model.time)
+--    in
+--    h1 [] [ Html.text (hour ++ ":" ++ minute ++ ":" ++ second) ]
 ---- PROGRAM ----
 
 
