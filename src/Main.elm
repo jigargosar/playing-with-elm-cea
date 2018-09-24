@@ -35,6 +35,7 @@ type alias Model =
     , red : Float
     , green : Float
     , blue : Float
+    , alpha : Float
     }
 
 
@@ -51,6 +52,7 @@ init =
       , red = 1
       , green = 1
       , blue = 1
+      , alpha = 1
       }
     , Task.perform AdjustTimeZone Time.here
     )
@@ -75,6 +77,7 @@ type Msg
     | Red Float
     | Green Float
     | Blue Float
+    | Alpha Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -91,6 +94,9 @@ update msg model =
 
         Blue newBlue ->
             ( { model | blue = newBlue }, Cmd.none )
+
+        Alpha newAlpha ->
+            ( { model | alpha = newAlpha }, Cmd.none )
 
         Increment ->
             ( { model | counter = model.counter + 1 }, Cmd.none )
