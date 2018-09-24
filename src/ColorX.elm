@@ -1,4 +1,4 @@
-module ColorX exposing (HSLA, RGBA, hsl, hsla, rgb, rgba)
+module ColorX exposing (HSLA, RGBA, hsl, hsla, rgb, rgba, setHue)
 
 
 type Alpha
@@ -73,6 +73,11 @@ hsla h s l a =
 hsl : Int -> Int -> Int -> HSLA
 hsl h s l =
     hsla h s l 1
+
+
+setHue : Int -> HSLA -> HSLA
+setHue hue (HSLA rec) =
+    { rec | h = intToHue hue } |> HSLA
 
 
 

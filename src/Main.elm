@@ -37,8 +37,6 @@ type alias Model =
     , green : Float
     , blue : Float
     , alpha : Float
-    , hsla : ColorX.HSLA
-    , rgba : ColorX.RGBA
     }
 
 
@@ -56,8 +54,6 @@ init =
       , green = 1
       , blue = 1
       , alpha = 1
-      , hsla = ColorX.hsl 0 100 100
-      , rgba = ColorX.rgb 255 255 255
       }
     , Task.perform AdjustTimeZone Time.here
     )
@@ -93,7 +89,7 @@ modelToHSLA model =
         |> Color.toHsla
 
 
-updateModelHSLA fn model =
+updateHSLA fn model =
     model
         |> modelToHSLA
         |> fn
@@ -125,15 +121,15 @@ update msg model =
             ( { model | alpha = newAlpha }, Cmd.none )
 
         Hue hue ->
-            ( model |> updateModelHSLA (\r -> { r | hue = hue })
+            ( model |> updateHSLA (\r -> { r | hue = hue })
             , Cmd.none
             )
 
         Saturation newSaturation ->
-            ( model |> updateModelHSLA (\r -> { r | saturation = newSaturation }), Cmd.none )
+            ( model |> updateHSLA (\r -> { r | saturation = newSaturation }), Cmd.none )
 
         Lightness newLightness ->
-            ( model |> updateModelHSLA (\r -> { r | lightness = newLightness }), Cmd.none )
+            ( model |> updateHSLA (\r -> { r | lightness = newLightness }), Cmd.none )
 
         Increment ->
             ( { model | counter = model.counter + 1 }, Cmd.none )
