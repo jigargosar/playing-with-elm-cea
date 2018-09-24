@@ -48,9 +48,9 @@ init =
       , dieFace = 1
       , zone = Time.utc
       , time = Time.millisToPosix 0
-      , red = 0
-      , green = 0
-      , blue = 0
+      , red = 1
+      , green = 1
+      , blue = 1
       }
     , Task.perform AdjustTimeZone Time.here
     )
@@ -188,7 +188,7 @@ view model =
                 ]
                 (el
                     [ width fill
-                    , style "background-color" "white" |> Element.htmlAttribute
+                    , Background.color (rgb model.red model.green model.blue)
                     , Border.shadow
                         { offset = ( 2, 2 )
                         , size = 0
