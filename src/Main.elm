@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Color
-import Element exposing (Element, alignRight, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, maximum, minimum, padding, paddingXY, rgb, rgb255, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, text, width)
+import Element exposing (Element, alignRight, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, maximum, minimum, padding, paddingXY, rgb, rgb255, rgba, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
@@ -163,7 +163,6 @@ view model =
         [ fz 1
         , height fill
         , width fill
-        , clip
         , style "background-color" "lightgray" |> Element.htmlAttribute
         ]
         (column
@@ -172,12 +171,18 @@ view model =
                 [ p 1
                 , fz 1
                 , width fill
+                , height fill
                 , scrollbars
                 ]
                 (el
                     [ width fill
-                    , Border.width 1
                     , style "background-color" "white" |> Element.htmlAttribute
+                    , Border.shadow
+                        { offset = ( 2, 2 )
+                        , size = 0
+                        , blur = 8
+                        , color = rgba 0 0 0 0.4
+                        }
                     ]
                     (column [ height fill, width fill, p 1 ]
                         [ el
@@ -189,28 +194,28 @@ view model =
                         ]
                     )
                 )
-            , el
-                [ height (fill |> maximum 250 |> minimum 100)
-                , width fill
-                , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
-                , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
-                , p -4
-                , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
-                , Border.shadow
-                    { offset = ( 0, 8 )
-                    , size = 8
-                    , blur = 32
-                    , color = rgb 0 0 0
-                    }
-                ]
-                (viewKnobs model)
+            , viewKnobs model
             ]
         )
 
 
 viewKnobs : Model -> Element Msg
 viewKnobs model =
-    column [ width fill ]
+    column
+        [ width fill
+        , height (fill |> maximum 250 |> minimum 100)
+        , width fill
+        , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
+        , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
+        , p -4
+        , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
+        , Border.shadow
+            { offset = ( 0, 8 )
+            , size = 8
+            , blur = 32
+            , color = rgb 0 0 0
+            }
+        ]
         [ text "Controller"
         , row [ spacing 16, width fill ]
             [ Input.slider
@@ -270,7 +275,7 @@ svgView =
         , SA.width "100%"
 
         --        , SA.height "100%"
-        , SA.viewBox "0 0 500 500"
+        , SA.viewBox "0 0 500 100"
         , SA.style "flex:1 1 auto"
         ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#361110" ] []
