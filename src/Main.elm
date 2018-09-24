@@ -194,7 +194,7 @@ svgView =
 
 roundedRect =
     Svg.rect
-        [ SA.x "450"
+        [ SA.x "100"
         , SA.y "10"
         , SA.width "100"
         , SA.height "100"
