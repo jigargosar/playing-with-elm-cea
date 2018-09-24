@@ -2,33 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Color
-import Element
-    exposing
-        ( Element
-        , alignRight
-        , centerX
-        , centerY
-        , clip
-        , column
-        , el
-        , explain
-        , fill
-        , fillPortion
-        , height
-        , maximum
-        , minimum
-        , padding
-        , rgb
-        , rgb255
-        , row
-        , scrollbarY
-        , scrollbars
-        , shrink
-        , spacing
-        , spacingXY
-        , text
-        , width
-        )
+import Element exposing (Element, alignRight, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, maximum, minimum, padding, paddingXY, rgb, rgb255, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, text, width)
 import Element.Background
 import Element.Border
 import Element.Font as Font
@@ -167,34 +141,47 @@ p =
 
 view : Model -> Html Msg
 view model =
-    Element.layout [ fz 1, height fill, width fill, clip ]
+    Element.layout
+        [ fz 1
+        , height fill
+        , width fill
+        , clip
+        , style "background-color" "lightgray" |> Element.htmlAttribute
+        ]
         (column
             [ height fill, width fill, clip ]
             [ el
-                [ p 8
+                [ p 1
+                , fz 1
                 , height fill
                 , width fill
                 , clip
                 , scrollbars
                 ]
                 (el
-                    [ p 8
-                    , height fill
+                    [ height fill
                     , width fill
-                    , clip
-                    , scrollbars
                     , Element.Border.width 1
+                    , style "background-color" "white" |> Element.htmlAttribute
                     ]
-                    (column [ height fill, width fill ]
+                    (column [ height fill, width fill, paddingXY 16 16 ]
                         [ el
-                            [ p 1, {- width fill, Font.center, -} Element.centerX, fz 4 ]
+                            [ p 1, Element.centerX, fz 4 ]
                             (text "Hello World")
-                        , el [ width fill, height fill, Element.centerX ] (svgView |> Element.html)
+                        , el
+                            [ width fill, height fill, Element.centerX ]
+                            (svgView |> Element.html)
                         ]
                     )
                 )
             , el
-                [ height (fill |> maximum 250 |> minimum 100), width fill ]
+                [ height (fill |> maximum 250 |> minimum 100)
+                , width fill
+                , style "background-color" "hsl(0,0%,20%)" |> Element.htmlAttribute
+                , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
+                , p -4
+                , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
+                ]
                 (text "Controller")
             ]
         )
@@ -206,7 +193,7 @@ svgView =
         , SA.width "100%"
 
         --        , SA.height "100%"
-        , SA.viewBox "0 0 500 250"
+        , SA.viewBox "0 0 500 500"
         , SA.style "flex:1 1 auto"
         ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#361110" ] []
