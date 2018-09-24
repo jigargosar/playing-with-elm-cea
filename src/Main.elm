@@ -36,6 +36,8 @@ import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Random
+import Svg as Svg
+import Svg.Attributes as SA
 import Task
 import Time
 
@@ -169,13 +171,52 @@ view model =
         (column
             [ height fill, width fill ]
             [ el
-                [ p 1, width fill, Font.center, fz 4 ]
+                [ p 1, {- width fill, Font.center, -} Element.centerX, fz 4 ]
                 (text "Hello World")
+            , el [ width fill, height fill, Element.centerX ] (svgView |> Element.html)
             ]
         )
 
 
+svgView =
+    let
+        size =
+            String.fromInt 240
 
+        --        viewBoxSize =
+        --            String.fromInt 120
+        --        viewBox =
+        --            "0 0 " ++ viewBoxSize ++ " " ++ viewBoxSize
+    in
+    Svg.svg
+        [ SA.id "svg-demo-1"
+        , SA.width "100%"
+
+        --        , SA.height "100%"
+        , SA.viewBox "0 0 500 250"
+        , SA.style "flex:1 1 auto"
+        ]
+        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#361110" ] []
+        , roundedRect
+        ]
+
+
+roundedRect =
+    Svg.rect
+        [ SA.x "450"
+        , SA.y "10"
+        , SA.width "100"
+        , SA.height "100"
+        , SA.rx "15"
+        , SA.ry "15"
+        , SA.color "red"
+        , SA.fill "#caf3f5"
+        ]
+        []
+
+
+
+--#361110 : #caf3f5
 --- View Layout Test ---
 --view_ : Model -> Html Msg
 --view_ model =
