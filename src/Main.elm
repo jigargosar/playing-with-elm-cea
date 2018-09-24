@@ -33,6 +33,8 @@ type alias Model =
     , zone : Time.Zone
     , time : Time.Posix
     , red : Float
+    , green : Float
+    , blue : Float
     }
 
 
@@ -47,6 +49,8 @@ init =
       , zone = Time.utc
       , time = Time.millisToPosix 0
       , red = 0
+      , green = 0
+      , blue = 0
       }
     , Task.perform AdjustTimeZone Time.here
     )
@@ -69,6 +73,8 @@ type Msg
     | AdjustTimeZone Time.Zone
     | Nop
     | Red Float
+    | Green Float
+    | Blue Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -79,6 +85,12 @@ update msg model =
 
         Red newRed ->
             ( { model | red = newRed }, Cmd.none )
+
+        Green newGreen ->
+            ( { model | green = newGreen }, Cmd.none )
+
+        Blue newBlue ->
+            ( { model | blue = newBlue }, Cmd.none )
 
         Increment ->
             ( { model | counter = model.counter + 1 }, Cmd.none )
@@ -218,52 +230,58 @@ viewKnobs model =
             }
         ]
         [ text "Controller"
-        , row [ spacing 16, width fill ]
-            [ Input.slider
-                [ spacing 16
-                , behindContent
-                    (el
-                        [ width fill
-                        , height (px 2)
-                        , centerY
-                        , Background.color (rgb 0.5 0.5 0.5)
-                        , Border.rounded 2
-                        ]
-                        Element.none
-                    )
-                ]
-                { onChange = Red
-                , label = Input.labelLeft [] (text "Red")
-                , min = 0
-                , max = 1
-                , step = Just 0.01
-                , value = model.red
-                , thumb =
-                    Input.defaultThumb
-                }
-            , Input.text
-                [ spacing 0
-                , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
-                , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
-                , Html.Attributes.type_ "number" |> Element.htmlAttribute
-                , Html.Attributes.step "0.01" |> Element.htmlAttribute
-                , Html.Attributes.min "0" |> Element.htmlAttribute
-                , Html.Attributes.max "1" |> Element.htmlAttribute
-                ]
-                { onChange =
-                    \val ->
-                        let
-                            maybeRed =
-                                String.toFloat val
-                        in
-                        maybeRed
-                            |> Maybe.map (\red -> red |> clamp 0 1 |> Red)
-                            |> Maybe.withDefault Nop
-                , label = Input.labelLeft [] Element.none
-                , text = model.red |> Round.round 2
-                , placeholder = Nothing
-                }
+        , colorSlider model.red
+        , colorSlider model.red
+        , colorSlider model.red
+        ]
+
+
+colorSlider channelFloatValue =
+    row [ spacing 16, width fill ]
+        [ Input.slider
+            [ spacing 16
+            , behindContent
+                (el
+                    [ width fill
+                    , height (px 2)
+                    , centerY
+                    , Background.color (rgb 0.5 0.5 0.5)
+                    , Border.rounded 2
+                    ]
+                    Element.none
+                )
             ]
+            { onChange = Red
+            , label = Input.labelLeft [] (text "Red")
+            , min = 0
+            , max = 1
+            , step = Just 0.01
+            , value = channelFloatValue
+            , thumb =
+                Input.defaultThumb
+            }
+        , Input.text
+            [ spacing 0
+            , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
+            , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
+            , Html.Attributes.type_ "number" |> Element.htmlAttribute
+            , Html.Attributes.step "0.01" |> Element.htmlAttribute
+            , Html.Attributes.min "0" |> Element.htmlAttribute
+            , Html.Attributes.max "1" |> Element.htmlAttribute
+            ]
+            { onChange =
+                \val ->
+                    let
+                        maybeRed =
+                            String.toFloat val
+                    in
+                    maybeRed
+                        |> Maybe.map (\red -> red |> clamp 0 1 |> Red)
+                        |> Maybe.withDefault Nop
+            , label = Input.labelLeft [] Element.none
+            , text = channelFloatValue |> Round.round 2
+            , placeholder = Nothing
+            }
         ]
 
 
