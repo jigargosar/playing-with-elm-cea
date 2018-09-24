@@ -1,4 +1,4 @@
-module ColorX exposing (RGBA, rgba)
+module ColorX exposing (HSLA, RGBA, hsl, hsla, rgb, rgba)
 
 
 type Alpha

@@ -37,6 +37,8 @@ type alias Model =
     , green : Float
     , blue : Float
     , alpha : Float
+    , hsla : ColorX.HSLA
+    , rgba : ColorX.RGBA
     }
 
 
@@ -54,6 +56,8 @@ init =
       , green = 1
       , blue = 1
       , alpha = 1
+      , hsla = ColorX.hsl 0 100 100
+      , rgba = ColorX.rgb 255 255 255
       }
     , Task.perform AdjustTimeZone Time.here
     )
