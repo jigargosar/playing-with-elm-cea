@@ -99,6 +99,10 @@ updateModelHSLA fn model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        foo =
+            Debug.log "Msg" msg
+    in
     case msg of
         Nop ->
             ( model, Cmd.none )
@@ -338,7 +342,7 @@ colorSlider channelFloatValue labelText onChange =
                             String.toFloat val
                     in
                     maybeRed
-                        |> Maybe.map (\red -> red |> clamp 0 0.99 |> onChange)
+                        |> Maybe.map (\red -> red |> clamp 0 0.9999999 |> onChange)
                         |> Maybe.withDefault Nop
             , label = Input.labelLeft [] Element.none
             , text = channelFloatValue |> Round.round 2
