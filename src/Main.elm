@@ -171,10 +171,10 @@ view model =
                     ]
                     (column [ height fill, width fill, p 1 ]
                         [ el
-                            [ p 1, Element.centerX, fz 4 ]
+                            [ p 1, centerX, fz 4 ]
                             (text "Color Converter")
                         , el
-                            [ width fill, height fill, Element.centerX ]
+                            [ width fill, height fill, centerX ]
                             (svgView |> Element.html)
                         ]
                     )
