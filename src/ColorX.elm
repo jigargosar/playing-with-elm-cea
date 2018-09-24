@@ -1,12 +1,17 @@
 module ColorX exposing (RGBA, rgba)
 
 
-type CH255
-    = CH255 Int
-
-
 type Alpha
     = Alpha Float
+
+
+floatToAlpha : Float -> Alpha
+floatToAlpha =
+    clamp 0 1 >> Alpha
+
+
+type CH255
+    = CH255 Int
 
 
 type alias RGBARecord =
@@ -22,11 +27,6 @@ intToCH255 =
     clamp 0 255 >> CH255
 
 
-floatToAlpha : Float -> Alpha
-floatToAlpha =
-    clamp 0 1 >> Alpha
-
-
 rgba : Int -> Int -> Int -> Float -> RGBA
 rgba r g b a =
     RGBARecord (intToCH255 r) (intToCH255 g) (intToCH255 b) (floatToAlpha a)
@@ -35,5 +35,53 @@ rgba r g b a =
 
 rgb : Int -> Int -> Int -> RGBA
 rgb r g b =
-    RGBARecord (intToCH255 r) (intToCH255 g) (intToCH255 b) (floatToAlpha 1)
-        |> RGBA
+    rgba r g b 1
+
+
+type HUE
+    = HUE Int
+
+
+type SL100
+    = SL100 Int
+
+
+type alias HSLARecord =
+    { h : HUE, s : SL100, l : SL100, a : Alpha }
+
+
+type HSLA
+    = HSLA HSLARecord
+
+
+intToHue : Int -> HUE
+intToHue =
+    clamp 0 360 >> HUE
+
+
+intToSL100 : Int -> SL100
+intToSL100 =
+    clamp 0 360 >> SL100
+
+
+hsla : Int -> Int -> Int -> Float -> HSLA
+hsla h s l a =
+    HSLARecord (intToHue h) (intToSL100 s) (intToSL100 l) (floatToAlpha a)
+        |> HSLA
+
+
+hsl : Int -> Int -> Int -> HSLA
+hsl h s l a =
+    hsla h s l a 1
+
+
+
+--rgb : Int -> Int -> Int -> RGBA
+--rgb r g b =
+--    RGBARecord (intToCH255 r) (intToCH255 g) (intToCH255 b) (floatToAlpha 1)
+--        |> RGBA
+--hsla : Int -> Int -> Int -> Float -> RGBA
+--hsla h s v a =
+--    RGBARecord (intToCH255 r) (intToCH255 g) (intToCH255 b) (floatToAlpha a)
+--        |> RGBA
+--
