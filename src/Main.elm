@@ -176,6 +176,19 @@ hsla h s l a =
         |> (\{ red, green, blue, alpha } -> rgba red green blue alpha)
 
 
+type alias HSLA =
+    { hue : Float, saturation : Float, lightness : Float, alpha : Float }
+
+
+type alias RGBA =
+    { red : Float, green : Float, blue : Float, alpha : Float }
+
+
+toHSLA : Element.Color -> HSLA
+toHSLA =
+    Element.toRgb >> Color.fromRgba >> Color.toHsla
+
+
 view : Model -> Html Msg
 view model =
     Element.layout
