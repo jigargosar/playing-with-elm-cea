@@ -136,7 +136,9 @@ view model =
 
             -- Is clip required below?
             , row
-                [ width fill, height fill, scrollbars
+                [ width fill
+                , height fill
+                , scrollbars
 
                 {- , clip -}
                 ]
@@ -153,15 +155,8 @@ view model =
 
 
 
----- Element VIEW ----
 --          Element.Background.color (rgb255 96 158 251)
-
-
-view_ : Model -> Html Msg
-view_ model =
-    Element.layout
-        [ clip, height fill ]
-        (view2 model)
+--- Old View ---
 
 
 view2 model =
@@ -188,49 +183,9 @@ view2 model =
             , button [ onClick Roll ] [ text "Roll" ]
             ]
          , viewClock model
-         , viewClock model
-         , viewClock model
-         , viewClock model
-         , viewClock model
-         , viewClock model
-         , viewClock model
-         , viewClock model
-         , viewClock model
-         , viewClock model
-         , viewClock model
          ]
             |> List.map Element.html
         )
-
-
-
----- Element VIEW ----
-
-
-elementView : Html msg
-elementView =
-    Element.layout
-        [ Element.Background.color (rgb255 96 158 251) ]
-        myRowOfStuff
-
-
-myRowOfStuff =
-    column [ width fill ]
-        [ myElement
-        , myElement
-        , el [ alignRight ] myElement
-        ]
-
-
-myElement : Element msg
-myElement =
-    el
-        [ width fill ]
-        (Element.text "You've made a stylish element!")
-
-
-
----- HTML VIEW ----
 
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
