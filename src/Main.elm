@@ -169,6 +169,13 @@ pXY x y =
     paddingXY (scaledInt x) (scaledInt y)
 
 
+hsl : Float -> Float -> Float -> Float -> Element.Color
+hsl h s l a =
+    Color.hsla h s l a
+        |> Color.toRgba
+        |> (\{ red, green, blue, alpha } -> rgba red green blue alpha)
+
+
 view : Model -> Html Msg
 view model =
     Element.layout
