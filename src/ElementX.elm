@@ -1,7 +1,23 @@
-module ElementX exposing (HSLA, RGBA, black, fz, hsla, lightGray, p, pXY, scaled, scaledInt, toHSLA, white)
+module ElementX exposing
+    ( HSLA
+    , RGBA
+    , bg
+    , black
+    , fg
+    , fz
+    , hsla
+    , lightGray
+    , p
+    , pXY
+    , scaled
+    , scaledInt
+    , toHSLA
+    , white
+    )
 
 import Color
 import Element
+import Element.Background
 import Element.Font
 
 
@@ -63,3 +79,13 @@ white =
 black : Element.Color
 black =
     hsla 0 0 0 1
+
+
+bg : Element.Color -> Element.Attr decorative msg
+bg =
+    Element.Background.color
+
+
+fg : Element.Color -> Element.Attr decorative msg
+fg =
+    Element.Font.color

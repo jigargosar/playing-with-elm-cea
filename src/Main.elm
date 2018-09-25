@@ -9,7 +9,7 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX exposing (fz, hsla, lightGray, p)
+import ElementX exposing (bg, fg, fz, hsla, lightGray, p)
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -278,8 +278,8 @@ viewKnobs model =
         [ width fill
         , height fill
         , width fill
-        , Background.color (hsla 0 0 0.1 1)
-        , Font.color (hsla 0 0 0.9 1)
+        , bg (hsla 0 0 0.1 1)
+        , fg (hsla 0 0 0.9 1)
         , p 1
         , spacing 16
         , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
