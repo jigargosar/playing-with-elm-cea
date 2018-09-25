@@ -318,8 +318,6 @@ viewKnobs model =
         , height (fill |> maximum 300)
         , bc (grayscale 0.1)
         , fc (grayscale 0.9)
-
-        --        , spacing 16
         , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
         , Border.shadow
             { offset = ( 0, -2 )
@@ -328,10 +326,7 @@ viewKnobs model =
             , color = rgba 0 0 0 0.4
             }
         ]
-        [ el
-            [ p 1
-            ]
-            (text "Controller")
+        [ el [ p 1 ] (text "Controller")
         , colorSliders model
             |> column
                 ([ pXY 1 -999, spacing 16 ]
