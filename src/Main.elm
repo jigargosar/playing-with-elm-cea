@@ -311,10 +311,6 @@ withAttributes l1 element l2 =
     element (List.append l1 l2)
 
 
-colorSliderConfig =
-    { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
-
-
 viewKnobs : Model -> Element Msg
 viewKnobs model =
     let
@@ -348,29 +344,44 @@ viewKnobs model =
         ]
 
 
+colorSliderConfig =
+    { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
+
+
 viewColorSliders model =
     let
         conf =
             colorSliderConfig
 
-        alphaSlider =
-            colorSlider { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
+        hslSliders =
+            let
+                { hue, saturation, lightness } =
+                    modelToHSLA model
+            in
+            [ { conf | value = hue, labelText = "hue", onChange = Hue, max = 0.99 }
+            , { conf | value = saturation, labelText = "saturation", onChange = Saturation }
+            , { conf | value = lightness, labelText = "lightness", onChange = Lightness }
+            ]
+                |> List.map colorSlider
 
-        column1 =
-            column
-                [ spRem 1, width fill ]
-                (rgbSliders model)
-
-        column2 =
-            column
-                [ spRem 1, width fill ]
-                (hslSliders model)
+        rgbSliders =
+            [ { conf | value = model.red, labelText = "red", onChange = Red }
+            , { conf | value = model.green, labelText = "green", onChange = Green }
+            , { conf | value = model.blue, labelText = "blue", onChange = Blue }
+            ]
+                |> List.map colorSlider
 
         row1 =
-            row [ width fill, spRem 1 ] [ column1, column2 ]
+            row [ width fill, spRem 1 ]
+                [ column [ spRem 1, width fill ] rgbSliders
+                , column [ spRem 1, width fill ] hslSliders
+                ]
 
         modelElementColor =
             rgba model.red model.green model.blue model.alpha
+
+        alphaSlider =
+            colorSlider { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
 
         row2 =
             row [ width fill, spRem 1 ]
@@ -388,36 +399,6 @@ viewColorSliders model =
     el
         ([ p 1 ] ++ scrollFillWH)
         (column (fillWH ++ [ spRem 1 ]) [ row1, row2 ])
-
-
-hslSliders model =
-    let
-        { hue, saturation, lightness } =
-            modelToHSLA model
-
-        conf =
-            colorSliderConfig
-    in
-    [ { conf | value = hue, labelText = "hue", onChange = Hue, max = 0.99 }
-    , { conf | value = saturation, labelText = "saturation", onChange = Saturation }
-    , { conf | value = lightness, labelText = "lightness", onChange = Lightness }
-    ]
-        |> List.map colorSlider
-
-
-rgbSliders model =
-    let
-        { hue, saturation, lightness } =
-            modelToHSLA model
-
-        conf =
-            colorSliderConfig
-    in
-    [ { conf | value = model.red, labelText = "red", onChange = Red }
-    , { conf | value = model.green, labelText = "green", onChange = Green }
-    , { conf | value = model.blue, labelText = "blue", onChange = Blue }
-    ]
-        |> List.map colorSlider
 
 
 colorSlider :
