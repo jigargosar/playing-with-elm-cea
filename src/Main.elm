@@ -336,13 +336,17 @@ viewKnobs model =
             , Border.widthEach { each | bottom = 1 }
             ]
             (text "Controller")
-        , colorSliders model
-            |> List.concat
-            |> column
-                ([ p 1, spRem 1 ]
-                    ++ scrollFillWH
-                )
+        , viewColorSliders model
         ]
+
+
+viewColorSliders model =
+    colorSliders model
+        |> List.concat
+        |> column
+            ([ p 1, spRem 1 ]
+                ++ scrollFillWH
+            )
 
 
 colorSliders model =
