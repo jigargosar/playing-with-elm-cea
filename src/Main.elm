@@ -387,7 +387,7 @@ viewColorSliders model =
                 , onChange = Saturation
                 , alt =
                     { defAlt
-                        | max = 99
+                        | max = 100
                     }
               }
             , { conf
@@ -396,7 +396,7 @@ viewColorSliders model =
                 , onChange = Lightness
                 , alt =
                     { defAlt
-                        | max = 99
+                        | max = 100
                     }
               }
             ]
