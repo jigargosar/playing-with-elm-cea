@@ -7,4 +7,6 @@ Elm.Main.init({
   node: document.getElementById('root')
 });
 
+//<editor-fold desc="Description">
 registerServiceWorker();
+//</editor-fold>
