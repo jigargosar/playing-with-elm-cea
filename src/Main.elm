@@ -350,21 +350,23 @@ viewColorSliders model =
 
         column1 =
             column
-                ([ p 1, spRem 1 ]
-                    ++ scrollFillWH
-                )
+                [ spRem 1, width fill ]
                 (rgbSliders model)
 
         column2 =
             column
-                ([ p 1, spRem 1 ]
-                    ++ scrollFillWH
-                )
+                [ spRem 1, width fill ]
                 (hslSliders model)
+
+        row1 =
+            row [ width fill, spRem 1 ] [ column1, column2 ]
+
+        row2 =
+            row [ width fill, spRem 1 ] [ alphaSlider, el [ width fill ] Element.none ]
     in
     el
-        ([ p 1, spRem 1 ] ++ scrollFillWH)
-        (row (fillWH ++ []) [ column1, column2 ])
+        ([ p 1 ] ++ scrollFillWH)
+        (column (fillWH ++ [ spRem 1 ]) [ row1, row2 ])
 
 
 hslSliders model =
