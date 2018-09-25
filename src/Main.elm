@@ -372,7 +372,10 @@ colorSlider { onChange, labelText, value, max } =
                 )
             ]
             { onChange = onChange
-            , label = Input.labelLeft [ width (shrink |> minimum 50) ] (text labelText)
+            , label =
+                Input.labelLeft
+                    [ width (shrink |> minimum 50) ]
+                    (el [ alignRight ] (text labelText))
             , min = min
             , max = max
             , step = Just step
