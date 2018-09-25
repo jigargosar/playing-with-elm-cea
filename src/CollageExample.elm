@@ -46,5 +46,5 @@ view =
         , shift ( -50, 50 ) wheel
         , carBody
         ]
-        |> debug
+--        |> debug
         |> svg
