@@ -399,7 +399,7 @@ colorSlider { onChange, labelText, value, max } =
                 Input.defaultThumb
             }
         , inputNumber
-            [ spRem 0 ]
+            [ spRem 0, p -4 ]
             { onChange = onChange
             , min = min
             , max = max
