@@ -64,7 +64,7 @@ minRem =
 
 
 sp =
-    remToInt >> Element.spacing
+    scaledInt >> Element.spacing
 
 
 labelNone =

@@ -8,7 +8,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
-import Element.Input as Input
+import Element.Input as Input exposing (thumb)
 import ElementX exposing (bc, bcInherit, brc, clipFillWH, elevation, fc, fillWH, fz, grayscale, hsla, inputNumber, labelNone, lightGray, maxRem, minRem, p, pXY, scaledInt, scrollFillWH, sp, white)
 import Hex
 import Hsla
@@ -40,6 +40,7 @@ type alias Model =
     , time : Time.Posix
     , hsla : Hsla.HSLA
     , rgba : Rgba.RGBA
+    , isControllerCollapsed : Bool
     }
 
 
@@ -60,6 +61,7 @@ init =
       , time = Time.millisToPosix 0
       , rgba = initialRGBA
       , hsla = Rgba.toHSLA initialRGBA
+      , isControllerCollapsed = False
       }
     , Task.perform AdjustTimeZone Time.here
     )
@@ -88,6 +90,7 @@ type Msg
     | Hue Float
     | Saturation Float
     | Lightness Float
+    | ToggleController
 
 
 type alias ModelFn =
@@ -121,6 +124,9 @@ update msg model =
     case msg of
         Nop ->
             ( model, Cmd.none )
+
+        ToggleController ->
+            ( { model | isControllerCollapsed = not model.isControllerCollapsed }, Cmd.none )
 
         Red val ->
             ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
@@ -291,7 +297,7 @@ viewController model =
 
         --  , elevation 24
         ]
-        [ el [ width fill, p 1, elevation 4 ] (text "Controller")
+        [ el [ width fill, p -2, elevation 4 ] (text "Controller")
         , viewColorSliders model
         ]
 
@@ -389,9 +395,9 @@ viewColorSliders model =
                 |> List.map colorSlider
 
         row1 =
-            row [ width fill, sp 1 ]
-                [ column [ sp 1, width fill ] rgbSliders
-                , column [ sp 1, width fill ] hslSliders
+            row [ width fill, sp -4 ]
+                [ column [ sp -4, width fill ] rgbSliders
+                , column [ sp -4, width fill ] hslSliders
                 ]
 
         row2 =
@@ -415,7 +421,7 @@ viewColorSliders model =
                     el [ width fill ]
                         (text hexA |> el ([ centerX, p -4 ] ++ attrs))
             in
-            row [ width fill, sp 1 ]
+            row [ width fill, sp -2 ]
                 [ alphaSlider
                 , row [ width fill, fz -1 ]
                     [ previewEl [ fc color ]
@@ -424,8 +430,8 @@ viewColorSliders model =
                 ]
     in
     el
-        ([ p 1 ] ++ scrollFillWH)
-        (column (fillWH ++ [ sp 1 ]) [ row1, row2 ])
+        ([ p -2 ] ++ scrollFillWH)
+        (column (fillWH ++ [ sp -4 ]) [ row1, row2 ])
 
 
 colorSlider : ColorSliderConfig msg -> Element msg
@@ -434,16 +440,16 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
         finalLabelText =
             labelText |> String.left 1 |> String.toUpper
     in
-    row [ sp 1, width fill ]
+    row [ sp -6, width fill ]
         [ Input.slider
-            [ sp 1
+            [ sp -4
             , behindContent
                 (el
                     [ width fill
-                    , height (px 2)
+                    , height (px 1)
                     , centerY
                     , Background.color (Element.rgb 0.5 0.5 0.5)
-                    , Border.rounded 2
+                    , Border.rounded 20
                     ]
                     Element.none
                 )
@@ -461,10 +467,18 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
             , step = Just alt.step
             , value = value * alt.max |> clamp alt.min alt.max
             , thumb =
-                Input.defaultThumb
+                thumb
+                    [ Element.scale 1
+                    , Element.width (Element.px 16)
+                    , Element.height (Element.px 16)
+                    , Border.rounded 8
+                    , Border.width 1
+                    , Border.color (Element.rgb 0.5 0.5 0.5)
+                    , Background.color (Element.rgb 1 1 1)
+                    ]
             }
         , inputNumber
-            [ sp 0, p -4 ]
+            [ sp -6, p -6 ]
             { onChange =
                 (\v -> v / alt.max)
                     >> clamp alt.min alt.max
