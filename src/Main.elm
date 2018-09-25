@@ -369,7 +369,11 @@ viewColorSliders model =
             row [ width fill, spRem 1 ] [ column1, column2 ]
 
         row2 =
-            row [ width fill, spRem 1 ] [ alphaSlider, el [ width fill ] Element.none ]
+            row [ width fill, spRem 1 ]
+                [ alphaSlider
+                , el [ width fill ]
+                    (modelToHEXA model |> text)
+                ]
     in
     el
         ([ p 1 ] ++ scrollFillWH)
