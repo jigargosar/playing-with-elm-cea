@@ -3,7 +3,11 @@ module ElementX exposing
     , bcInherit
     , black
     , brc
+    , clipFillWH
+    , each
+    , elevation1
     , fc
+    , fillWH
     , fromRGBA
     , fz
     , grayscale
@@ -14,9 +18,12 @@ module ElementX exposing
     , maxRem
     , minRem
     , p
+    , pEach
     , pXY
+    , remToInt
     , scaled
     , scaledInt
+    , scrollFillWH
     , spRem
     , toHSLA
     , white
@@ -28,6 +35,7 @@ import Element.Background
 import Element.Border
 import Element.Font
 import Element.Input
+import Hsla
 import Html.Attributes
 import Round
 
@@ -93,15 +101,7 @@ hsla h s l a =
         |> (\{ red, green, blue, alpha } -> Element.rgba red green blue alpha)
 
 
-type alias HSLA =
-    { hue : Float, saturation : Float, lightness : Float, alpha : Float }
-
-
-type alias RGBA =
-    { red : Float, green : Float, blue : Float, alpha : Float }
-
-
-toHSLA : Element.Color -> HSLA
+toHSLA : Element.Color -> Hsla.HSLA
 toHSLA =
     Element.toRgb >> Color.fromRgba >> Color.toHsla
 
@@ -198,3 +198,30 @@ inputNumber attributes config =
 
 fromRGBA { red, green, blue, alpha } =
     Element.rgba red green blue alpha
+
+
+fillWH : List (Element.Attribute msg)
+fillWH =
+    [ Element.height Element.fill
+    , Element.width Element.fill
+    ]
+
+
+clipFillWH : List (Element.Attribute msg)
+clipFillWH =
+    fillWH ++ [ Element.clip ]
+
+
+scrollFillWH : List (Element.Attribute msg)
+scrollFillWH =
+    fillWH ++ [ Element.scrollbars ]
+
+
+elevation1 : Element.Attr decorative msg
+elevation1 =
+    Element.Border.shadow
+        { offset = ( 2, 2 )
+        , size = 0
+        , blur = 4
+        , color = Element.rgba 0 0 0 0.4
+        }

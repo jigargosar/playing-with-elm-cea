@@ -2,14 +2,35 @@ module Main exposing (main)
 
 import Browser
 import Color
-import ColorX
-import Element exposing (Element, alignRight, behindContent, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, padding, paddingXY, px, rgb, rgb255, rgba, row, scrollbarY, scrollbars, shrink, text, width)
+import Element exposing (Element, alignRight, behindContent, centerX, centerY, column, el, fill, height, px, row, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX exposing (bc, bcInherit, brc, fc, fz, grayscale, hsla, inputNumber, labelNone, lightGray, maxRem, minRem, p, pXY, scaledInt, spRem, white)
+import ElementX
+    exposing
+        ( bc
+        , bcInherit
+        , brc
+        , clipFillWH
+        , fc
+        , fillWH
+        , fz
+        , grayscale
+        , hsla
+        , inputNumber
+        , labelNone
+        , lightGray
+        , maxRem
+        , minRem
+        , p
+        , pXY
+        , scaledInt
+        , scrollFillWH
+        , spRem
+        , white
+        )
 import Hex
 import Hsla
 import Html exposing (Html, button, col, div, h1, h3, img, input)
@@ -200,39 +221,6 @@ subscriptions model =
 --- View ---
 
 
-fillWH : List (Element.Attribute msg)
-fillWH =
-    [ height fill
-    , width fill
-    ]
-
-
-clipFillWH : List (Element.Attribute msg)
-clipFillWH =
-    [ height fill
-    , width fill
-    , clip
-    ]
-
-
-scrollFillWH : List (Element.Attribute msg)
-scrollFillWH =
-    [ height fill
-    , width fill
-    , scrollbars
-    ]
-
-
-elevation1 : Element.Attr decorative msg
-elevation1 =
-    Border.shadow
-        { offset = ( 2, 2 )
-        , size = 0
-        , blur = 4
-        , color = rgba 0 0 0 0.4
-        }
-
-
 view : Model -> Html Msg
 view model =
     Element.layout
@@ -297,7 +285,7 @@ viewKnobs model =
             { offset = ( 0, -2 )
             , size = 0
             , blur = 16
-            , color = rgba 0 0 0 0.4
+            , color = Element.rgba 0 0 0 0.4
             }
         ]
         [ el
@@ -457,7 +445,7 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
                     [ width fill
                     , height (px 2)
                     , centerY
-                    , Background.color (rgb 0.5 0.5 0.5)
+                    , Background.color (Element.rgb 0.5 0.5 0.5)
                     , Border.rounded 2
                     ]
                     Element.none
