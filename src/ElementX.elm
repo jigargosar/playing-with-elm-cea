@@ -4,6 +4,7 @@ module ElementX exposing
     , bc
     , bcInherit
     , black
+    , brc
     , fc
     , fz
     , grayscale
@@ -25,6 +26,7 @@ module ElementX exposing
 import Color
 import Element
 import Element.Background
+import Element.Border
 import Element.Font
 import Element.Input
 import Html.Attributes
@@ -123,6 +125,11 @@ black =
 bc : Element.Color -> Element.Attr decorative msg
 bc =
     Element.Background.color
+
+
+brc : Element.Color -> Element.Attr decorative msg
+brc =
+    Element.Border.color
 
 
 bcInherit : Element.Attribute msg
