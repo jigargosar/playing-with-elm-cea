@@ -3,13 +3,13 @@ module Main exposing (main)
 import Browser
 import Color
 import ColorX
-import Element exposing (Element, alignRight, behindContent, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, padding, paddingXY, px, rgb, rgb255, rgba, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, text, width)
+import Element exposing (Element, alignRight, behindContent, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, padding, paddingXY, px, rgb, rgb255, rgba, row, scrollbarY, scrollbars, shrink, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, inputNumber, lightGray, maxRem, minRem, p, pXY, scaledInt, white)
+import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, inputNumber, lightGray, maxRem, minRem, p, pXY, scaledInt, spRem, white)
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -332,7 +332,7 @@ viewKnobs model =
         [ el [ width fill, p 1, Border.color white, Border.widthEach { each | bottom = 1 } ] (text "Controller")
         , colorSliders model
             |> column
-                ([ p 1, spacing 16 ]
+                ([ p 1, spRem 1 ]
                     ++ scrollFillWH
                 )
         ]
@@ -372,9 +372,9 @@ colorSlider { onChange, labelText, value, max } =
         step =
             0.01
     in
-    row [ spacing 16, width fill ]
+    row [ spRem 1, width fill ]
         [ Input.slider
-            [ spacing 16
+            [ spRem 1
             , behindContent
                 (el
                     [ width fill
@@ -399,7 +399,7 @@ colorSlider { onChange, labelText, value, max } =
                 Input.defaultThumb
             }
         , inputNumber
-            [ spacing 0 ]
+            [ spRem 0 ]
             { onChange = onChange
             , min = min
             , max = max

@@ -16,6 +16,7 @@ module ElementX exposing
     , pXY
     , scaled
     , scaledInt
+    , spRem
     , toHSLA
     , white
     )
@@ -50,6 +51,10 @@ maxRem =
 
 minRem =
     remToInt >> Element.minimum
+
+
+spRem =
+    remToInt >> Element.spacing
 
 
 fz : Int -> Element.Attr decorative msg
