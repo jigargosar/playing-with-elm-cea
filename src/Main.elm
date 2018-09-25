@@ -346,13 +346,13 @@ colorSliders model =
         conf =
             { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
     in
-    [ { conf | value = model.red, labelText = "R", onChange = Red }
-    , { conf | value = model.green, labelText = "G", onChange = Green }
-    , { conf | value = model.blue, labelText = "B", onChange = Blue }
-    , { conf | value = model.alpha, labelText = "A", onChange = Alpha }
-    , { conf | value = hue, labelText = "H", onChange = Hue, max = 0.99 }
-    , { conf | value = saturation, labelText = "S", onChange = Saturation }
-    , { conf | value = lightness, labelText = "L", onChange = Lightness }
+    [ { conf | value = model.red, labelText = "red", onChange = Red }
+    , { conf | value = model.green, labelText = "green", onChange = Green }
+    , { conf | value = model.blue, labelText = "blue", onChange = Blue }
+    , { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
+    , { conf | value = hue, labelText = "hue", onChange = Hue, max = 0.99 }
+    , { conf | value = saturation, labelText = "saturation", onChange = Saturation }
+    , { conf | value = lightness, labelText = "lightness", onChange = Lightness }
     ]
         |> List.map colorSlider
 
@@ -389,7 +389,7 @@ colorSlider { onChange, labelText, value, max } =
             { onChange = onChange
             , label =
                 Input.labelLeft
-                    [ width (shrink |> minRem 3) ]
+                    [ width (shrink |> minRem 3), fz -2 ]
                     (el [ alignRight ] (text labelText))
             , min = min
             , max = max
