@@ -363,9 +363,7 @@ viewColorSliders model =
                 (hslSliders model)
     in
     row
-        ([ p 1, spRem 1 ]
-            ++ scrollFillWH
-        )
+        ([ p 1, spRem 1 ] ++ scrollFillWH)
         [ column1, column2 ]
 
 
