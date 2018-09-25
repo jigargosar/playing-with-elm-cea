@@ -1,6 +1,6 @@
 module CollageExample exposing (view)
 
-import Collage exposing (circle, defaultLineStyle, dot, filled, line, rectangle, shift, styled, thick, traced, transparent, uniform)
+import Collage exposing (circle, defaultLineStyle, dot, filled, line, rectangle, rotate, shift, styled, thick, traced, transparent, uniform)
 import Collage.Layout exposing (at, bottom, bottomLeft, bottomRight, center, debug, distances, impose, place, right, stack, topLeft)
 import Collage.Render exposing (svg)
 import Color255 exposing (blue, red, white, yellow)
@@ -46,5 +46,6 @@ view =
         , shift ( -50, 50 ) wheel
         , carBody
         ]
---        |> debug
+        |> rotate (degrees 30)
+        |> debug
         |> svg
