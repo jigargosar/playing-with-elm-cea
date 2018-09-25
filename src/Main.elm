@@ -49,6 +49,7 @@ type alias Model =
 init : ( Model, Cmd Msg )
 init =
     let
+        initialRGBA : RGBA.RGBA
         initialRGBA =
             RGBA.create 1 1 1 1
     in
@@ -117,12 +118,16 @@ updateHSLA fn model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        ( hslaColor, rgbaColor ) =
+            ( model.hsla, model.rgba )
+    in
     case msg of
         Nop ->
             ( model, Cmd.none )
 
-        Red newRed ->
-            ( { model | red = newRed }, Cmd.none )
+        Red val ->
+            ( { model | red = val }, Cmd.none )
 
         Green newGreen ->
             ( { model | green = newGreen }, Cmd.none )
