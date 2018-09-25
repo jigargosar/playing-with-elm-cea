@@ -276,7 +276,7 @@ view model =
         [ fz 1
         , height fill
         , width fill
-        , style "background-color" "lightgray" |> Element.htmlAttribute
+        , Background.color (hsla 0 0 0.83 1)
         ]
         (column
             [ height fill, width fill, clip ]
