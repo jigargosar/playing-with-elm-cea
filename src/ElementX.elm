@@ -5,7 +5,7 @@ module ElementX exposing
     , brc
     , clipFillWH
     , each
-    , elevation1
+    , elevation
     , fc
     , fillWH
     , fromRGBA
@@ -217,11 +217,18 @@ scrollFillWH =
     fillWH ++ [ Element.scrollbars ]
 
 
-elevation1 : Element.Attr decorative msg
-elevation1 =
-    Element.Border.shadow
-        { offset = ( 2, 2 )
-        , size = 0
-        , blur = 4
-        , color = Element.rgba 0 0 0 0.4
-        }
+
+--elevation1 : Element.Attr decorative msg
+--elevation1 =
+--    Element.Border.shadow
+--        { offset = ( 2, 2 )
+--        , size = 0
+--        , blur = 4
+--        , color = Element.rgba 0 0 0 0.4
+--        }
+
+
+elevation i =
+    ("mdc-elevation--z" ++ String.fromInt i)
+        |> Html.Attributes.class
+        |> Element.htmlAttribute

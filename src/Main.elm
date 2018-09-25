@@ -8,29 +8,7 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX
-    exposing
-        ( bc
-        , bcInherit
-        , brc
-        , clipFillWH
-        , fc
-        , fillWH
-        , fz
-        , grayscale
-        , hsla
-        , inputNumber
-        , labelNone
-        , lightGray
-        , maxRem
-        , minRem
-        , p
-        , pXY
-        , scaledInt
-        , scrollFillWH
-        , sp
-        , white
-        )
+import ElementX exposing (bc, bcInherit, brc, clipFillWH, elevation, fc, fillWH, fz, grayscale, hsla, inputNumber, labelNone, lightGray, maxRem, minRem, p, pXY, scaledInt, scrollFillWH, sp, white)
 import Hex
 import Hsla
 import Html exposing (Html, button, col, div, h1, h3, img, input)
@@ -274,7 +252,7 @@ viewContent model =
         (el
             [ width fill
             , bc (modelColor model)
-            , elevation 24
+            , elevation 3
             ]
             (column (fillWH ++ [ p 1 ])
                 [ el [ p 1, centerX, fz 4 ] (text "Color Converter")
@@ -282,12 +260,6 @@ viewContent model =
                 ]
             )
         )
-
-
-elevation i =
-    ("mdc-elevation--z" ++ String.fromInt i)
-        |> Html.Attributes.class
-        |> Element.htmlAttribute
 
 
 viewController : Model -> Element Msg
