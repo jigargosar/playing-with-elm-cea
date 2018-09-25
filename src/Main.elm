@@ -107,13 +107,30 @@ modelToHEXA =
     RGBA.fromPartial >> RGBA.toHexAString
 
 
-updateHSLA fn model =
-    model
-        |> modelToHSLA
-        |> fn
-        |> Color.fromHsla
-        |> Color.toRgba
-        |> (\r -> { model | red = r.red, green = r.green, blue = r.blue, alpha = r.alpha })
+
+--updateHSLA fn model =
+--    model
+--        |> modelToHSLA
+--        |> fn
+--        |> Color.fromHsla
+--        |> Color.toRgba
+--        |> (\r -> { model | red = r.red, green = r.green, blue = r.blue, alpha = r.alpha })
+
+
+updateRGBA fn m =
+    let
+        newRGBA =
+            fn m.rgba
+    in
+    { m | rgba = newRGBA, hsla = RGBA.toHSLA newRGBA }
+
+
+updateHSLA fn m =
+    let
+        newHSLA =
+            fn m.hsla
+    in
+    { m | hsla = newHSLA, rgba = HSLA.toRGBA newHSLA }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -127,29 +144,31 @@ update msg model =
             ( model, Cmd.none )
 
         Red val ->
-            ( { model | red = val }, Cmd.none )
+            ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
 
-        Green newGreen ->
-            ( { model | green = newGreen }, Cmd.none )
+        Green val ->
+            ( updateRGBA (\c -> { c | green = val }) model, Cmd.none )
 
-        Blue newBlue ->
-            ( { model | blue = newBlue }, Cmd.none )
+        Blue val ->
+            ( updateRGBA (\c -> { c | blue = val }) model, Cmd.none )
 
-        Alpha newAlpha ->
-            ( { model | alpha = newAlpha }, Cmd.none )
-
-        Hue newHue ->
-            ( model |> updateHSLA (\r -> { r | hue = newHue })
+        Alpha val ->
+            ( model |> updateHSLA (\r -> { r | alpha = val })
             , Cmd.none
             )
 
-        Saturation newSaturation ->
-            ( model |> updateHSLA (\r -> { r | saturation = newSaturation })
+        Hue val ->
+            ( model |> updateHSLA (\r -> { r | hue = val })
             , Cmd.none
             )
 
-        Lightness newLightness ->
-            ( model |> updateHSLA (\r -> { r | lightness = newLightness }), Cmd.none )
+        Saturation val ->
+            ( model |> updateHSLA (\r -> { r | saturation = val })
+            , Cmd.none
+            )
+
+        Lightness val ->
+            ( model |> updateHSLA (\r -> { r | lightness = val }), Cmd.none )
 
         Increment ->
             ( { model | counter = model.counter + 1 }, Cmd.none )
