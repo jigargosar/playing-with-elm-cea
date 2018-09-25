@@ -1,24 +1,44 @@
 module CollageExample exposing (view)
 
-import Collage exposing (circle, filled, rectangle, uniform)
-import Collage.Layout exposing (at, topLeft)
+import Collage exposing (circle, defaultLineStyle, dot, filled, line, rectangle, shift, styled, thick, traced, transparent, uniform)
+import Collage.Layout exposing (at, bottom, bottomLeft, bottomRight, center, debug, distances, impose, place, right, stack, topLeft)
 import Collage.Render exposing (svg)
-import Color
+import Color255 exposing (blue, red, white, yellow)
 import Html exposing (Html)
 import Rgba
+
+
+outlineNone =
+    { defaultLineStyle | thickness = 0 }
 
 
 view : Html msg
 view =
     let
-        circ =
-            circle 50
-                |> filled (uniform (Color.toRgba Color.red |> Rgba.to255A))
+        wheel =
+            circle 25
+                |> styled ( uniform white, defaultLineStyle )
 
-        rect =
+        ln =
+            line 100
+                |> traced (dot 10 (uniform yellow))
+
+        carBody =
             rectangle 200 100
-                |> filled (uniform (Color.toRgba Color.blue |> Rgba.to255A))
+                |> styled ( uniform blue, outlineNone )
+
+        carBodyTransparent =
+            rectangle 200 100
+                |> styled ( transparent, outlineNone )
+
+        w1 =
+            carBodyTransparent
+                |> at bottomRight wheel
+
+        w2 =
+            carBodyTransparent
+                |> at bottomLeft wheel
     in
-    rect
-        |> at topLeft circ
+    stack [ shift ( -50, -50 ) wheel, shift ( 50, -50 ) wheel, carBody ]
+        |> debug
         |> svg
