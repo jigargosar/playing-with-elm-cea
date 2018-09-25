@@ -406,10 +406,11 @@ viewColorSliders model =
 
 
 colorSlider :
-    { value : Float
-    , labelText : String
-    , onChange : Float -> msg
-    , max : Float
+    { a
+        | value : Float
+        , labelText : String
+        , onChange : Float -> msg
+        , max : Float
     }
     -> Element msg
 colorSlider { onChange, labelText, value, max } =
