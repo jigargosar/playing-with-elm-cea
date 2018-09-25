@@ -297,7 +297,13 @@ viewController model =
 
         --  , elevation 24
         ]
-        [ el [ width fill, p -2, elevation 4 ] (text "Controller")
+        [ el
+            [ width fill
+            , p -2
+            , elevation 4
+            , Element.Events.onClick ToggleController
+            ]
+            (text "Controller")
         , viewColorSliders model
         ]
 
