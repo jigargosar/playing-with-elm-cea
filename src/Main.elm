@@ -135,11 +135,11 @@ update msg model =
                         { hue, saturation, lightness } =
                             modelToHSLA model
                     in
-                    if newHue > 0 && saturation <= 0 && lightness >= 1 then
-                        ( 0.01, 0.99 )
-
-                    else
-                        ( saturation, lightness )
+                    --                    if newHue > 0 && saturation <= 0 && lightness >= 1 then
+                    --                        ( 0.01, 0.99 )
+                    --
+                    --                    else
+                    ( saturation, lightness )
             in
             ( model
                 |> updateHSLA
@@ -160,11 +160,11 @@ update msg model =
                         { hue, saturation, lightness } =
                             modelToHSLA model
                     in
-                    if hue <= 0 && newSaturation > 0 && lightness >= 1 then
-                        ( 0.01, 0.99 )
-
-                    else
-                        ( hue, lightness )
+                    --                    if hue <= 0 && newSaturation > 0 && lightness >= 1 then
+                    --                        ( 0.01, 0.99 )
+                    --
+                    --                    else
+                    ( hue, lightness )
             in
             ( model
                 |> updateHSLA
@@ -348,9 +348,7 @@ type alias ColorSliderConfig msg =
     { alt :
         { max : Float
         , min : Float
-        , reverseTransform : Float -> Float
         , step : Float
-        , transform : Float -> Float
         }
     , labelText : String
     , max : Float
@@ -372,9 +370,7 @@ colorSliderConfig =
     , alt =
         { min = 0.0
         , max = 255.0
-        , transform = (*) 255.0
         , step = 1.0
-        , reverseTransform = (/) 255.0
         }
     }
 
@@ -484,38 +480,45 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
                     Element.none
                 )
             ]
-            { onChange = onChange
+            { onChange =
+                (\v -> v / alt.max)
+                    >> clamp alt.min alt.max
+                    >> onChange
             , label =
                 Input.labelLeft
                     []
                     (el [ alignRight ] (text finalLabelText))
-            , min = min
-            , max = max
-            , step = Just step
-            , value = value
+            , min = alt.min
+            , max = alt.max
+            , step = Just alt.step
+            , value = value * alt.max |> clamp alt.min alt.max
             , thumb =
                 Input.defaultThumb
             }
+
+        --        , inputNumber
+        --            [ spRem 0, p -4 ]
+        --            { onChange = onChange
+        --            , min = min
+        --            , max = max
+        --            , step = step
+        --            , round = 2
+        --            , label = labelNone
+        --            , value = value
+        --            , placeholder = Nothing
+        --            }
         , inputNumber
             [ spRem 0, p -4 ]
-            { onChange = onChange
-            , min = min
-            , max = max
-            , step = step
-            , round = 2
-            , label = labelNone
-            , value = value
-            , placeholder = Nothing
-            }
-        , inputNumber
-            [ spRem 0, p -4 ]
-            { onChange = (/) alt.max >> onChange
+            { onChange =
+                (\v -> v / alt.max)
+                    >> clamp alt.min alt.max
+                    >> onChange
             , min = alt.min
             , max = alt.max
             , step = alt.step
             , round = 0
             , label = labelNone
-            , value = value * alt.max
+            , value = value * alt.max |> clamp alt.min alt.max
             , placeholder = Nothing
             }
         ]

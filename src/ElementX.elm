@@ -186,9 +186,10 @@ inputNumber attributes config =
         )
         { onChange =
             String.toFloat
-                >> Maybe.withDefault config.value
+                >> Maybe.withDefault config.min
+                >> clamp config.min config.max
                 >> config.onChange
         , label = config.label
-        , text = config.value |> Round.round config.round
+        , text = config.value |> clamp config.min config.max |> Round.round config.round
         , placeholder = config.placeholder
         }
