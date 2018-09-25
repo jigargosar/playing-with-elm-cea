@@ -278,6 +278,7 @@ viewController model =
     column
         [ width fill
         , height (fill |> maxRem 20)
+        , fz -2
         , bc (grayscale 0.1)
         , fc (grayscale 0.9)
         , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
@@ -416,7 +417,7 @@ viewColorSliders model =
             in
             row [ width fill, sp 1 ]
                 [ alphaSlider
-                , row [ width fill, fz 2 ]
+                , row [ width fill, fz -1 ]
                     [ previewEl [ fc color ]
                     , previewEl [ bc color ]
                     ]
@@ -454,7 +455,7 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
             , label =
                 Input.labelLeft
                     []
-                    (el [ alignRight ] (text finalLabelText))
+                    (el [ alignRight, centerY ] (text finalLabelText))
             , min = alt.min
             , max = alt.max
             , step = Just alt.step
