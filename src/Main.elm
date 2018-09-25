@@ -426,7 +426,12 @@ viewColorSliders model =
             RGBA.toHexAString model.rgba
 
         alphaSlider =
-            colorSlider { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
+            colorSlider
+                { conf
+                    | value = model.rgba.alpha
+                    , labelText = "alpha"
+                    , onChange = Alpha
+                }
 
         row2 =
             let
