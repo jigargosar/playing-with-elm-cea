@@ -387,11 +387,16 @@ viewColorSliders model =
             colorSlider { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
 
         row2 =
+            let
+                previewEl attrs =
+                    el [ width fill ]
+                        (text hexA |> el ([ centerX, p -4 ] ++ attrs))
+            in
             row [ width fill, spRem 1 ]
                 [ alphaSlider
                 , row [ width fill, fz 2 ]
-                    [ el [ width fill ] (text hexA |> el [ fc modelElementColor, centerX ])
-                    , el [ width fill ] (text hexA |> el [ bc modelElementColor, centerX ])
+                    [ previewEl [ fc modelElementColor ]
+                    , previewEl [ bc modelElementColor ]
                     ]
                 ]
     in
