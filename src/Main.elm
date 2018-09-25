@@ -265,7 +265,7 @@ view model =
                 (List.concat [ [ p 1 ], scrollFillWH ])
                 (el
                     [ width fill
-                    , bc (rgba model.red model.green model.blue model.alpha)
+                    , bc (ElementX.fromRGBA model.rgba)
 
                     --                    , elevation1
                     , Html.Attributes.class "mdc-elevation--z24" |> Element.htmlAttribute
@@ -403,9 +403,13 @@ viewColorSliders model =
                 |> List.map colorSlider
 
         rgbSliders =
-            [ { conf | value = model.red, labelText = "red", onChange = Red }
-            , { conf | value = model.green, labelText = "green", onChange = Green }
-            , { conf | value = model.blue, labelText = "blue", onChange = Blue }
+            let
+                { red, green, blue } =
+                    model.rgba
+            in
+            [ { conf | value = red, labelText = "red", onChange = Red }
+            , { conf | value = green, labelText = "green", onChange = Green }
+            , { conf | value = blue, labelText = "blue", onChange = Blue }
             ]
                 |> List.map colorSlider
 

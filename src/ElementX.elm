@@ -4,6 +4,7 @@ module ElementX exposing
     , black
     , brc
     , fc
+    , fromRGBA
     , fz
     , grayscale
     , hsla
@@ -193,3 +194,7 @@ inputNumber attributes config =
         , text = config.value |> clamp config.min config.max |> Round.round config.round
         , placeholder = config.placeholder
         }
+
+
+fromRGBA { red, green, blue, alpha } =
+    Element.rgba red green blue alpha
