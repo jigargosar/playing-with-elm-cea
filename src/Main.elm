@@ -9,6 +9,7 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
+import ElementX exposing (fz, hsla, lightGray, p)
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -223,66 +224,6 @@ subscriptions model =
 
 
 --- View ---
-
-
-scaled : Int -> Float
-scaled =
-    Element.modular 16 1.25
-
-
-scaledInt : Int -> Int
-scaledInt =
-    scaled >> round
-
-
-fz : Int -> Element.Attr decorative msg
-fz =
-    scaledInt >> Font.size
-
-
-p : Int -> Element.Attribute msg
-p =
-    scaledInt >> padding
-
-
-pXY : Int -> Int -> Element.Attribute msg
-pXY x y =
-    paddingXY (scaledInt x) (scaledInt y)
-
-
-hsla : Float -> Float -> Float -> Float -> Element.Color
-hsla h s l a =
-    Color.hsla h s l a
-        |> Color.toRgba
-        |> (\{ red, green, blue, alpha } -> rgba red green blue alpha)
-
-
-type alias HSLA =
-    { hue : Float, saturation : Float, lightness : Float, alpha : Float }
-
-
-type alias RGBA =
-    { red : Float, green : Float, blue : Float, alpha : Float }
-
-
-toHSLA : Element.Color -> HSLA
-toHSLA =
-    Element.toRgb >> Color.fromRgba >> Color.toHsla
-
-
-lightGray : Element.Color
-lightGray =
-    hsla 0 0 0.83 1
-
-
-white : Element.Color
-white =
-    hsla 1 1 1 1
-
-
-black : Element.Color
-black =
-    hsla 0 0 0 1
 
 
 view : Model -> Html Msg
