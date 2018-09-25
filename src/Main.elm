@@ -380,19 +380,18 @@ viewColorSliders model =
         modelElementColor =
             rgba model.red model.green model.blue model.alpha
 
+        hexA =
+            modelToHEXA model
+
         alphaSlider =
             colorSlider { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
 
         row2 =
             row [ width fill, spRem 1 ]
                 [ alphaSlider
-                , row [ width fill, fz 2, spRem 1 ]
-                    [ modelToHEXA model
-                        |> text
-                        |> el [ fc modelElementColor ]
-                    , modelToHEXA model
-                        |> text
-                        |> el [ bc modelElementColor ]
+                , row [ width fill, fz 2 ]
+                    [ el [ width fill ] (text hexA |> el [ fc modelElementColor, centerX ])
+                    , el [ width fill ] (text hexA |> el [ bc modelElementColor, centerX ])
                     ]
                 ]
     in
