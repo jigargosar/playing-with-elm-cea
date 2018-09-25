@@ -414,12 +414,6 @@ viewColorSliders model =
 
         row2 =
             let
-                color =
-                    ElementX.fromRGBA model.rgba
-
-                hexA =
-                    Rgba.toHexAString model.rgba
-
                 alphaSlider =
                     colorSlider
                         { conf
@@ -431,7 +425,13 @@ viewColorSliders model =
 
                 previewEl attrs =
                     el [ width fill ]
-                        (text hexA |> el ([ centerX, p -4 ] ++ attrs))
+                        (Rgba.toHexAString model.rgba
+                            |> text
+                            |> el ([ centerX, p -4 ] ++ attrs)
+                        )
+
+                color =
+                    ElementX.fromRGBA model.rgba
             in
             row [ width fill, sp -2 ]
                 [ alphaSlider
