@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Browser
+import CollageExample
 import Color
 import Element exposing (Element, alignRight, behindContent, centerX, centerY, column, el, fill, height, px, row, text, width)
 import Element.Background as Background
@@ -257,6 +258,7 @@ viewContent model =
             (column (fillWH ++ [ p 1 ])
                 [ el [ p 1, centerX, fz 4 ] (text "Color Converter")
                 , el fillWH (Element.html svgView)
+                , CollageExample.view |> Element.html |> el fillWH
                 ]
             )
         )
