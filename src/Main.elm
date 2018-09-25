@@ -375,8 +375,7 @@ colorSlider channelFloatValue labelText onChange =
             }
         , Input.text
             [ spacing 0
-            , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
-            , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
+            , Html.Attributes.style "background-color" "inherit" |> Element.htmlAttribute
             , Html.Attributes.type_ "number" |> Element.htmlAttribute
             , Html.Attributes.step "0.01" |> Element.htmlAttribute
             , Html.Attributes.min "0.01" |> Element.htmlAttribute
