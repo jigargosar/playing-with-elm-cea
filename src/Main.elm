@@ -345,7 +345,18 @@ viewKnobs model =
 
 
 colorSliderConfig =
-    { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
+    { value = 0.0
+    , labelText = ""
+    , onChange = \_ -> Nop
+    , max = 1
+    , alt =
+        { min = 0
+        , max = 255
+        , transform = (*) 255.0 >> Round.truncate
+        , step = 1
+        , reverseTransform = (/) 255.0
+        }
+    }
 
 
 viewColorSliders model =
