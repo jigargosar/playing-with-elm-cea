@@ -290,12 +290,7 @@ viewController model =
 
         --  , elevation 24
         ]
-        [ el
-            [ width fill
-            , p 1
-            , elevation 4
-            ]
-            (text "Controller")
+        [ el [ width fill, p 1, elevation 4 ] (text "Controller")
         , viewColorSliders model
         ]
 

@@ -5,14 +5,14 @@ import Geometry.Svg as Svg
 import LineSegment2d
 import Point2d exposing (Point2d)
 import Svg exposing (Svg)
-import Svg.Attributes as Attributes
+import Svg.Attributes as SA
 
 
 lineSegment : Svg msg
 lineSegment =
     Svg.lineSegment2d
-        [ Attributes.stroke "blue"
-        , Attributes.strokeWidth "5"
+        [ SA.stroke "blue"
+        , SA.strokeWidth "5"
         ]
         (LineSegment2d.fromEndpoints
             ( Point2d.fromCoordinates ( 0, 0 )
@@ -31,7 +31,7 @@ topLeftFrame =
 
 view =
     Svg.svg
-        [ Attributes.width "300"
-        , Attributes.height "300"
+        [ SA.width "300"
+        , SA.height "300"
         ]
         [ Svg.relativeTo topLeftFrame lineSegment ]
