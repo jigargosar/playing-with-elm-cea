@@ -354,6 +354,8 @@ type alias ColorSliderConfig msg =
         }
     , labelText : String
     , max : Float
+    , min : Float
+    , step : Float
     , onChange : Float -> msg
     , value : Float
     }
@@ -364,7 +366,9 @@ colorSliderConfig =
     { value = 0.0
     , labelText = ""
     , onChange = \_ -> Nop
+    , min = 0.0
     , max = 1.0
+    , step = 0.01
     , alt =
         { min = 0
         , max = 255
@@ -433,14 +437,8 @@ viewColorSliders model =
 
 
 colorSlider : ColorSliderConfig msg -> Element msg
-colorSlider { onChange, labelText, value, max } =
+colorSlider { onChange, labelText, value, max, min, step, alt } =
     let
-        min =
-            0
-
-        step =
-            0.01
-
         finalLabelText =
             labelText |> String.left 1 |> String.toUpper
     in
