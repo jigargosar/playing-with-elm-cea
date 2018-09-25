@@ -225,11 +225,7 @@ view : Model -> Html Msg
 view model =
     Element.layout
         (List.concat
-            [ fillWH
-            , [ fz 1
-              , Background.color lightGray
-              ]
-            ]
+            [ fillWH, [ fz 1, bc lightGray ] ]
         )
         (column
             (List.concat [ clipFillWH ])
