@@ -331,6 +331,7 @@ viewKnobs model =
         ]
         [ el [ width fill, p 1, Border.color white, Border.widthEach { each | bottom = 1 } ] (text "Controller")
         , colorSliders model
+            |> List.concat
             |> column
                 ([ p 1, spRem 1 ]
                     ++ scrollFillWH
@@ -345,16 +346,20 @@ colorSliders model =
 
         conf =
             { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
+
+        sliders =
+            [ { conf | value = model.red, labelText = "red", onChange = Red }
+            , { conf | value = model.green, labelText = "green", onChange = Green }
+            , { conf | value = model.blue, labelText = "blue", onChange = Blue }
+            , { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
+            , { conf | value = hue, labelText = "hue", onChange = Hue, max = 0.99 }
+            , { conf | value = saturation, labelText = "saturation", onChange = Saturation }
+            , { conf | value = lightness, labelText = "lightness", onChange = Lightness }
+            ]
+                |> List.map colorSlider
     in
-    [ { conf | value = model.red, labelText = "red", onChange = Red }
-    , { conf | value = model.green, labelText = "green", onChange = Green }
-    , { conf | value = model.blue, labelText = "blue", onChange = Blue }
-    , { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
-    , { conf | value = hue, labelText = "hue", onChange = Hue, max = 0.99 }
-    , { conf | value = saturation, labelText = "saturation", onChange = Saturation }
-    , { conf | value = lightness, labelText = "lightness", onChange = Lightness }
-    ]
-        |> List.map colorSlider
+    [ List.take 3, List.drop 3 >> List.take 1, List.drop 4 ]
+        |> List.map (\fn -> fn sliders)
 
 
 colorSlider :
