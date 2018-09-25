@@ -350,7 +350,7 @@ type alias ColorSliderConfig msg =
         , min : Float
         , reverseTransform : Float -> Float
         , step : Float
-        , transform : Float -> Int
+        , transform : Float -> Float
         }
     , labelText : String
     , max : Float
@@ -372,7 +372,7 @@ colorSliderConfig =
     , alt =
         { min = 0
         , max = 255
-        , transform = (*) 255.0 >> Round.truncate
+        , transform = (*) 255.0
         , step = 1
         , reverseTransform = (/) 255.0
         }
@@ -481,13 +481,13 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
             }
         , inputNumber
             [ spRem 0, p -4 ]
-            { onChange = onChange
-            , min = min
-            , max = max
-            , step = step
-            , round = 2
+            { onChange = alt.reverseTransform >> onChange
+            , min = alt.min
+            , max = alt.max
+            , step = alt.step
+            , round = 0
             , label = labelNone
-            , value = value
+            , value = alt.transform value
             , placeholder = Nothing
             }
         ]
