@@ -371,13 +371,7 @@ colorSlider channelFloatValue labelText onChange =
                 Input.defaultThumb
             }
         , inputNumber
-            [ spacing 0
-            , bcInherit
-            , Html.Attributes.type_ "number" |> Element.htmlAttribute
-            , Html.Attributes.step "0.01" |> Element.htmlAttribute
-            , Html.Attributes.min "0" |> Element.htmlAttribute
-            , Html.Attributes.max "1" |> Element.htmlAttribute
-            ]
+            [ spacing 0 ]
             { onChange = onChange
             , min = min
             , max = max
