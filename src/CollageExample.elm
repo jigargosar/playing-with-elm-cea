@@ -1,11 +1,12 @@
 module CollageExample exposing (view)
 
-import Collage exposing (circle, defaultLineStyle, dot, filled, line, rectangle, rotate, shift, styled, thick, traced, transparent, uniform)
-import Collage.Layout exposing (at, bottom, bottomLeft, bottomRight, center, debug, distances, impose, place, right, stack, topLeft)
+import Collage exposing (circle, defaultLineStyle, dot, filled, line, rectangle, rotate, shift, shiftX, styled, thick, traced, transparent, uniform)
+import Collage.Layout exposing (at, base, bottom, bottomLeft, bottomRight, center, debug, distances, impose, left, place, right, spacer, stack, topLeft)
 import Collage.Render exposing (svg)
 import Color255 exposing (blue, red, white, yellow)
 import Html exposing (Html)
 import Rgba
+import Round
 
 
 outlineNone =
@@ -39,13 +40,17 @@ view deg =
             carBodyTransparent
                 |> at bottomLeft wheel
     in
-    stack
-        [ shift ( -50, -50 ) wheel
-        , shift ( 50, -50 ) wheel
-        , shift ( 50, 50 ) wheel
-        , shift ( -50, 50 ) wheel
-        , carBody
-        ]
-        |> rotate (degrees deg)
+    spacer 300 300
+        |> at right
+            (stack
+                [ shift ( -50, -50 ) wheel
+                , shift ( 50, -50 ) wheel
+                , shift ( 50, 50 ) wheel
+                , shift ( -50, 50 ) wheel
+                , carBody
+                ]
+                |> shiftX (Round.truncate deg |> modBy 300 |> toFloat |> negate)
+                |> rotate (degrees deg)
+            )
         |> debug
         |> svg
