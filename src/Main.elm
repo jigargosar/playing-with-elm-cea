@@ -9,7 +9,7 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, inputNumber, lightGray, p)
+import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, inputNumber, lightGray, p, pXY)
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -316,11 +316,10 @@ viewKnobs model =
     column
         [ width fill
         , height (fill |> maximum 300)
-        , scrollbars
         , bc (grayscale 0.1)
         , fc (grayscale 0.9)
-        , p 1
-        , spacing 16
+
+        --        , spacing 16
         , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
         , Border.shadow
             { offset = ( 0, -2 )
@@ -329,18 +328,35 @@ viewKnobs model =
             , color = rgba 0 0 0 0.4
             }
         ]
-        ([ text "Controller" ]
-            ++ ([ { conf | value = model.red, labelText = "R", onChange = Red }
-                , { conf | value = model.green, labelText = "G", onChange = Green }
-                , { conf | value = model.blue, labelText = "B", onChange = Blue }
-                , { conf | value = model.alpha, labelText = "A", onChange = Alpha }
-                , { conf | value = hue, labelText = "H", onChange = Hue, max = 0.99 }
-                , { conf | value = saturation, labelText = "S", onChange = Saturation }
-                , { conf | value = lightness, labelText = "L", onChange = Lightness }
-                ]
-                    |> List.map colorSlider
-               )
-        )
+        [ el
+            [ p 1
+            ]
+            (text "Controller")
+        , colorSliders model
+            |> column
+                ([ pXY 1 -999, spacing 16 ]
+                    ++ scrollFillWH
+                )
+        ]
+
+
+colorSliders model =
+    let
+        { hue, saturation, lightness } =
+            modelToHSLA model
+
+        conf =
+            { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
+    in
+    [ { conf | value = model.red, labelText = "R", onChange = Red }
+    , { conf | value = model.green, labelText = "G", onChange = Green }
+    , { conf | value = model.blue, labelText = "B", onChange = Blue }
+    , { conf | value = model.alpha, labelText = "A", onChange = Alpha }
+    , { conf | value = hue, labelText = "H", onChange = Hue, max = 0.99 }
+    , { conf | value = saturation, labelText = "S", onChange = Saturation }
+    , { conf | value = lightness, labelText = "L", onChange = Lightness }
+    ]
+        |> List.map colorSlider
 
 
 colorSlider :
