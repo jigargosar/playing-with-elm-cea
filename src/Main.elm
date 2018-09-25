@@ -304,7 +304,11 @@ viewController model =
             , Element.Events.onClick ToggleController
             ]
             (text "Controller")
-        , viewColorSliders model
+        , if model.isControllerCollapsed then
+            Element.none
+
+          else
+            viewColorSliders model
         ]
 
 
