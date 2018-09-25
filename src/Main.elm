@@ -20,6 +20,7 @@ import Rgba
 import Round
 import Svg as Svg
 import Svg.Attributes as SA
+import SvgGeometryExample
 import Task
 import Time
 
@@ -257,6 +258,7 @@ viewContent model =
             ]
             (column (fillWH ++ [ p 1 ])
                 [ el [ p 1, centerX, fz 4 ] (text "Color Converter")
+                , SvgGeometryExample.view |> Element.html
                 , el fillWH (Element.html svgView)
                 , CollageExample.view (toFloat model.counter) |> Element.html |> el []
                 ]
