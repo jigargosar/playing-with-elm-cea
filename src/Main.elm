@@ -289,7 +289,7 @@ view model =
                 ]
                 (el
                     [ width fill
-                    , Background.color (rgb model.red model.green model.blue)
+                    , Background.color (rgba model.red model.green model.blue model.alpha)
                     , Border.shadow
                         { offset = ( 2, 2 )
                         , size = 0
