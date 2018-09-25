@@ -332,6 +332,7 @@ type alias ColorSliderConfig msg =
         { max : Float
         , min : Float
         , step : Float
+        , round : Int
         }
     , labelText : String
     , max : Float
@@ -354,6 +355,7 @@ colorSliderConfig =
         { min = 0.0
         , max = 255.0
         , step = 1.0
+        , round = 0
         }
     }
 
@@ -426,11 +428,16 @@ viewColorSliders model =
             RGBA.toHexAString model.rgba
 
         alphaSlider =
+            let
+                defAlt =
+                    conf.alt
+            in
             colorSlider
                 { conf
                     | value = model.rgba.alpha
                     , labelText = "alpha"
                     , onChange = Alpha
+                    , alt = { defAlt | min = 0.0, max = 1.0, step = 0.01, round = 2 }
                 }
 
         row2 =
@@ -508,7 +515,7 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
             , min = alt.min
             , max = alt.max
             , step = alt.step
-            , round = 0
+            , round = alt.round
             , label = labelNone
             , value = value * alt.max |> clamp alt.min alt.max
             , placeholder = Nothing
