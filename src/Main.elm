@@ -270,13 +270,18 @@ toHSLA =
     Element.toRgb >> Color.fromRgba >> Color.toHsla
 
 
+lightGray : Element.Color
+lightGray =
+    hsla 0 0 0.83 1
+
+
 view : Model -> Html Msg
 view model =
     Element.layout
         [ fz 1
         , height fill
         , width fill
-        , Background.color (hsla 0 0 0.83 1)
+        , Background.color lightGray
         ]
         (column
             [ height fill, width fill, clip ]
