@@ -37,9 +37,6 @@ type alias Model =
     , dieFace : Int
     , zone : Time.Zone
     , time : Time.Posix
-    , red : Float
-    , green : Float
-    , blue : Float
     , hsla : HSLA.HSLA
     , rgba : RGBA.RGBA
     }
@@ -60,9 +57,6 @@ init =
       , dieFace = 1
       , zone = Time.utc
       , time = Time.millisToPosix 0
-      , red = 1
-      , green = 1
-      , blue = 1
       , rgba = initialRGBA
       , hsla = RGBA.toHSLA initialRGBA
       }
