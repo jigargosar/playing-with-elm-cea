@@ -277,7 +277,6 @@ viewKnobs model =
     column
         [ width fill
         , height fill
-        , width fill
         , bg (grayscale 0.1)
         , fg (grayscale 0.9)
         , p 1
