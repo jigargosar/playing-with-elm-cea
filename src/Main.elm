@@ -341,8 +341,14 @@ colorSlider channelFloatValue labelText onChange =
         min =
             0
 
+        max : Float
         max =
-            1
+            case labelText of
+                "H" ->
+                    0.99
+
+                _ ->
+                    1.0
 
         step =
             0.01
