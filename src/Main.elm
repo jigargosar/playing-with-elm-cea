@@ -344,11 +344,27 @@ viewKnobs model =
         ]
 
 
+type alias ColorSliderConfig msg =
+    { alt :
+        { max : Float
+        , min : Float
+        , reverseTransform : Float -> Float
+        , step : Float
+        , transform : Float -> Int
+        }
+    , labelText : String
+    , max : Float
+    , onChange : Float -> msg
+    , value : Float
+    }
+
+
+colorSliderConfig : ColorSliderConfig Msg
 colorSliderConfig =
     { value = 0.0
     , labelText = ""
     , onChange = \_ -> Nop
-    , max = 1
+    , max = 1.0
     , alt =
         { min = 0
         , max = 255
