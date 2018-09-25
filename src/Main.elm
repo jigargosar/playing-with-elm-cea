@@ -9,7 +9,7 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX exposing (bc, fc, fz, grayscale, hsla, lightGray, p)
+import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, lightGray, p)
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -372,7 +372,7 @@ colorSlider channelFloatValue labelText onChange =
             }
         , Input.text
             [ spacing 0
-            , Html.Attributes.style "background-color" "inherit" |> Element.htmlAttribute
+            , bcInherit
             , Html.Attributes.type_ "number" |> Element.htmlAttribute
             , Html.Attributes.step "0.01" |> Element.htmlAttribute
             , Html.Attributes.min "0" |> Element.htmlAttribute

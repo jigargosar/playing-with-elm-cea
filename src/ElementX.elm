@@ -2,6 +2,7 @@ module ElementX exposing
     ( HSLA
     , RGBA
     , bc
+    , bcInherit
     , black
     , fc
     , fz
@@ -20,6 +21,7 @@ import Color
 import Element
 import Element.Background
 import Element.Font
+import Html.Attributes
 
 
 scaled : Int -> Float
@@ -85,6 +87,11 @@ black =
 bc : Element.Color -> Element.Attr decorative msg
 bc =
     Element.Background.color
+
+
+bcInherit : Element.Attribute msg
+bcInherit =
+    Html.Attributes.style "background-color" "inherit" |> Element.htmlAttribute
 
 
 fc : Element.Color -> Element.Attr decorative msg
