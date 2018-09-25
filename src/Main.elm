@@ -97,26 +97,19 @@ type Msg
     | Lightness Float
 
 
-modelToHSLA model =
-    Color.rgba model.red model.green model.blue model.alpha
-        |> Color.toHsla
+type alias ModelFn =
+    Model -> Model
 
 
-modelToHEXA : Model -> String
-modelToHEXA =
-    RGBA.fromPartial >> RGBA.toHexAString
+type alias RGBAFn =
+    RGBA.RGBA -> RGBA.RGBA
 
 
-
---updateHSLA fn model =
---    model
---        |> modelToHSLA
---        |> fn
---        |> Color.fromHsla
---        |> Color.toRgba
---        |> (\r -> { model | red = r.red, green = r.green, blue = r.blue, alpha = r.alpha })
+type alias HSLAFn =
+    HSLA.HSLA -> HSLA.HSLA
 
 
+updateRGBA : RGBAFn -> ModelFn
 updateRGBA fn m =
     let
         newRGBA =
@@ -125,6 +118,7 @@ updateRGBA fn m =
     { m | rgba = newRGBA, hsla = RGBA.toHSLA newRGBA }
 
 
+updateHSLA : HSLAFn -> ModelFn
 updateHSLA fn m =
     let
         newHSLA =
@@ -304,7 +298,7 @@ viewKnobs : Model -> Element Msg
 viewKnobs model =
     let
         { hue, saturation, lightness } =
-            modelToHSLA model
+            model.hsla
 
         each =
             { bottom = 0, top = 0, left = 0, right = 0 }
@@ -372,7 +366,7 @@ viewColorSliders model =
         hslSliders =
             let
                 { hue, saturation, lightness } =
-                    modelToHSLA model
+                    model.hsla
 
                 defAlt =
                     conf.alt
@@ -425,7 +419,7 @@ viewColorSliders model =
             rgba model.red model.green model.blue model.alpha
 
         hexA =
-            modelToHEXA model
+            RGBA.toHexAString model.rgba
 
         alphaSlider =
             colorSlider { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
