@@ -31,8 +31,8 @@ toHexAString color =
 
 
 rgba : Float -> Float -> Float -> Float -> RGBA
-rgba r g b a =
-    { red = r, green = g, blue = b, alpha = a }
+rgba =
+    RGBA
 
 
 fromPartial : PartialRGBA a -> RGBA
