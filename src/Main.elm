@@ -311,14 +311,15 @@ withAttributes l1 element l2 =
     element (List.append l1 l2)
 
 
+colorSliderConfig =
+    { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
+
+
 viewKnobs : Model -> Element Msg
 viewKnobs model =
     let
         { hue, saturation, lightness } =
             modelToHSLA model
-
-        conf =
-            { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
 
         each =
             { bottom = 0, top = 0, left = 0, right = 0 }
@@ -350,7 +351,7 @@ viewKnobs model =
 viewColorSliders model =
     let
         conf =
-            { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
+            colorSliderConfig
 
         alphaSlider =
             colorSlider { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
@@ -368,11 +369,20 @@ viewColorSliders model =
         row1 =
             row [ width fill, spRem 1 ] [ column1, column2 ]
 
+        modelElementColor =
+            rgba model.red model.green model.blue model.alpha
+
         row2 =
             row [ width fill, spRem 1 ]
                 [ alphaSlider
-                , el [ width fill, fz 2 ]
-                    (modelToHEXA model |> text)
+                , row [ width fill, fz 2, spRem 1 ]
+                    [ modelToHEXA model
+                        |> text
+                        |> el [ fc modelElementColor ]
+                    , modelToHEXA model
+                        |> text
+                        |> el [ bc modelElementColor ]
+                    ]
                 ]
     in
     el
@@ -386,7 +396,7 @@ hslSliders model =
             modelToHSLA model
 
         conf =
-            { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
+            colorSliderConfig
     in
     [ { conf | value = hue, labelText = "hue", onChange = Hue, max = 0.99 }
     , { conf | value = saturation, labelText = "saturation", onChange = Saturation }
@@ -401,7 +411,7 @@ rgbSliders model =
             modelToHSLA model
 
         conf =
-            { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
+            colorSliderConfig
     in
     [ { conf | value = model.red, labelText = "red", onChange = Red }
     , { conf | value = model.green, labelText = "green", onChange = Green }

@@ -19,7 +19,13 @@ toHexAString color =
             color
     in
     [ red, green, blue, alpha ]
-        |> List.map (clamp 0 1 >> (*) 255 >> Round.truncate >> Hex.toString)
+        |> List.map
+            (clamp 0 1
+                >> (*) 255
+                >> Round.truncate
+                >> Hex.toString
+                >> String.padLeft 2 '0'
+            )
         |> (::) "#"
         |> String.join ""
 
