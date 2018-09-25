@@ -432,14 +432,7 @@ viewColorSliders model =
         (column (fillWH ++ [ spRem 1 ]) [ row1, row2 ])
 
 
-colorSlider :
-    { a
-        | value : Float
-        , labelText : String
-        , onChange : Float -> msg
-        , max : Float
-    }
-    -> Element msg
+colorSlider : ColorSliderConfig msg -> Element msg
 colorSlider { onChange, labelText, value, max } =
     let
         min =
