@@ -129,27 +129,7 @@ update msg model =
             ( { model | alpha = newAlpha }, Cmd.none )
 
         Hue newHue ->
-            let
-                ( newSaturation, newLightness ) =
-                    let
-                        { hue, saturation, lightness } =
-                            modelToHSLA model
-                    in
-                    --                    if newHue > 0 && saturation <= 0 && lightness >= 1 then
-                    --                        ( 0.01, 0.99 )
-                    --
-                    --                    else
-                    ( saturation, lightness )
-            in
-            ( model
-                |> updateHSLA
-                    (\r ->
-                        { r
-                            | hue = newHue
-                            , saturation = newSaturation
-                            , lightness = newLightness
-                        }
-                    )
+            ( model |> updateHSLA (\r -> { r | hue = newHue })
             , Cmd.none
             )
 
@@ -170,9 +150,10 @@ update msg model =
                 |> updateHSLA
                     (\r ->
                         { r
-                            | hue = newHue
-                            , saturation = newSaturation
-                            , lightness = newLightness
+                            | saturation = newSaturation
+
+                            --                            , hue = newHue
+                            --                            , lightness = newLightness
                         }
                     )
             , Cmd.none
