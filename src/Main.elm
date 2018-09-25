@@ -277,22 +277,19 @@ viewController model =
         , bc (grayscale 0.1)
         , fc (grayscale 0.9)
         , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
+        , Border.shadow
+            { offset = ( 0, -2 )
+            , size = 0
+            , blur = 16
+            , color = Element.rgba 0 0 0 0.4
+            }
 
-        --        , Border.shadow
-        --            { offset = ( 0, -2 )
-        --            , size = 0
-        --            , blur = 16
-        --            , color = Element.rgba 0 0 0 0.4
-        --            }
-        , elevation 24
+        --  , elevation 24
         ]
         [ el
             [ width fill
             , p 1
-
-            --            , brc white
-            --            , Border.widthEach { each | bottom = 1 }
-            , elevation 6
+            , elevation 4
             ]
             (text "Controller")
         , viewColorSliders model
