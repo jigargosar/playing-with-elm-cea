@@ -226,32 +226,57 @@ subscriptions model =
 --- View ---
 
 
+fillWH : List (Element.Attribute msg)
+fillWH =
+    [ height fill
+    , width fill
+    ]
+
+
+clipFillWH : List (Element.Attribute msg)
+clipFillWH =
+    [ height fill
+    , width fill
+    , clip
+    ]
+
+
+scrollFillWH : List (Element.Attribute msg)
+scrollFillWH =
+    [ height fill
+    , width fill
+    , scrollbars
+    ]
+
+
+elevation1 : Element.Attr decorative msg
+elevation1 =
+    Border.shadow
+        { offset = ( 2, 2 )
+        , size = 0
+        , blur = 4
+        , color = rgba 0 0 0 0.4
+        }
+
+
 view : Model -> Html Msg
 view model =
     Element.layout
-        [ fz 1
-        , height fill
-        , width fill
-        , Background.color lightGray
-        ]
+        (List.concat
+            [ fillWH
+            , [ fz 1
+              , Background.color lightGray
+              ]
+            ]
+        )
         (column
-            [ height fill, width fill, clip ]
+            (List.concat [ clipFillWH ])
             [ el
-                [ p 1
-                , fz 1
-                , width fill
-                , height fill
-                , scrollbars
-                ]
+                (List.concat [ [ p 1 ], scrollFillWH ])
                 (el
                     [ width fill
-                    , Background.color (rgba model.red model.green model.blue model.alpha)
-                    , Border.shadow
-                        { offset = ( 2, 2 )
-                        , size = 0
-                        , blur = 4
-                        , color = rgba 0 0 0 0.4
-                        }
+                    , bg (rgba model.red model.green model.blue model.alpha)
+                    , elevation1
                     ]
                     (column [ height fill, width fill, p 1 ]
                         [ el
@@ -266,6 +291,15 @@ view model =
             , viewKnobs model
             ]
         )
+
+
+withAttributes :
+    List b
+    -> (List b -> a)
+    -> List b
+    -> a
+withAttributes l1 element l2 =
+    element (List.append l1 l2)
 
 
 viewKnobs : Model -> Element Msg
