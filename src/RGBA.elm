@@ -36,5 +36,5 @@ rgba =
 
 
 fromPartial : PartialRGBA a -> RGBA
-fromPartial ({ red, green, blue, alpha } as partial) =
-    RGBA red green blue alpha
+fromPartial { red, green, blue, alpha } =
+    rgba red green blue alpha
