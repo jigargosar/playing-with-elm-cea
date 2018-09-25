@@ -5,6 +5,7 @@ module ElementX exposing
     , black
     , fg
     , fz
+    , grayscale
     , hsla
     , lightGray
     , p
@@ -89,3 +90,8 @@ bg =
 fg : Element.Color -> Element.Attr decorative msg
 fg =
     Element.Font.color
+
+
+grayscale : Float -> Element.Color
+grayscale l =
+    hsla 0 0 l 1
