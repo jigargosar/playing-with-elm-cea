@@ -378,17 +378,13 @@ colorSlider channelFloatValue labelText onChange =
             , Html.Attributes.min "0" |> Element.htmlAttribute
             , Html.Attributes.max "1" |> Element.htmlAttribute
             ]
-            { onChange =
-                \val ->
-                    let
-                        maybeRed =
-                            String.toFloat val
-                    in
-                    maybeRed
-                        |> Maybe.map (\red -> red |> clamp 0 0.9999999 |> onChange)
-                        |> Maybe.withDefault Nop
+            { onChange = onChange
+            , min = min
+            , max = max
+            , step = step
+            , round = 2
             , label = Input.labelLeft [] Element.none
-            , text = channelFloatValue |> Round.round 2
+            , number = channelFloatValue
             , placeholder = Nothing
             }
         ]
