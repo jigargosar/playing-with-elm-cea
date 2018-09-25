@@ -420,7 +420,7 @@ viewColorSliders model =
                 ]
 
         modelElementColor =
-            rgba model.red model.green model.blue model.alpha
+            ElementX.fromRGBA model.rgba
 
         hexA =
             RGBA.toHexAString model.rgba
