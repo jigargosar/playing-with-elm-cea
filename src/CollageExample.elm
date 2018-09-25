@@ -39,6 +39,12 @@ view =
             carBodyTransparent
                 |> at bottomLeft wheel
     in
-    stack [ shift ( -50, -50 ) wheel, shift ( 50, -50 ) wheel, carBody ]
+    stack
+        [ shift ( -50, -50 ) wheel
+        , shift ( 50, -50 ) wheel
+        , shift ( 50, 50 ) wheel
+        , shift ( -50, 50 ) wheel
+        , carBody
+        ]
         |> debug
         |> svg
