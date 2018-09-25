@@ -117,10 +117,6 @@ updateHSLA fn model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        foo =
-            Debug.log "Msg" msg
-    in
     case msg of
         Nop ->
             ( model, Cmd.none )
