@@ -252,7 +252,7 @@ view model =
                         ]
                     )
                 )
-            , viewKnobs model
+            , viewController model
             ]
         )
 
@@ -266,8 +266,8 @@ withAttributes l1 element l2 =
     element (List.append l1 l2)
 
 
-viewKnobs : Model -> Element Msg
-viewKnobs model =
+viewController : Model -> Element Msg
+viewController model =
     let
         { hue, saturation, lightness } =
             model.hsla
