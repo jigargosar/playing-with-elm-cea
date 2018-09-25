@@ -257,15 +257,6 @@ view model =
         )
 
 
-withAttributes :
-    List b
-    -> (List b -> a)
-    -> List b
-    -> a
-withAttributes l1 element l2 =
-    element (List.append l1 l2)
-
-
 viewController : Model -> Element Msg
 viewController model =
     let
