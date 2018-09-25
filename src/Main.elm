@@ -328,15 +328,18 @@ viewKnobs model =
             , color = rgba 0 0 0 0.4
             }
         ]
-        [ text "Controller"
-        , colorSlider { conf | value = model.red, labelText = "R", onChange = Red }
-        , colorSlider { conf | value = model.green, labelText = "G", onChange = Green }
-        , colorSlider { conf | value = model.blue, labelText = "B", onChange = Blue }
-        , colorSlider { conf | value = model.alpha, labelText = "A", onChange = Alpha }
-        , colorSlider { conf | value = hue, labelText = "H", onChange = Hue, max = 0.99 }
-        , colorSlider { conf | value = saturation, labelText = "S", onChange = Saturation }
-        , colorSlider { conf | value = lightness, labelText = "L", onChange = Lightness }
-        ]
+        ([ text "Controller" ]
+            ++ ([ { conf | value = model.red, labelText = "R", onChange = Red }
+                , { conf | value = model.green, labelText = "G", onChange = Green }
+                , { conf | value = model.blue, labelText = "B", onChange = Blue }
+                , { conf | value = model.alpha, labelText = "A", onChange = Alpha }
+                , { conf | value = hue, labelText = "H", onChange = Hue, max = 0.99 }
+                , { conf | value = saturation, labelText = "S", onChange = Saturation }
+                , { conf | value = lightness, labelText = "L", onChange = Lightness }
+                ]
+                    |> List.map colorSlider
+               )
+        )
 
 
 colorSlider :
