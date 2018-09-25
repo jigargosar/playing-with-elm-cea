@@ -275,6 +275,16 @@ lightGray =
     hsla 0 0 0.83 1
 
 
+white : Element.Color
+white =
+    hsla 1 1 1 1
+
+
+black : Element.Color
+black =
+    hsla 0 0 0 1
+
+
 view : Model -> Html Msg
 view model =
     Element.layout
@@ -322,10 +332,6 @@ viewKnobs model =
     let
         { hue, saturation, lightness } =
             modelToHSLA model
-
-        black : ColorX.RGBA
-        black =
-            ColorX.rgba 0 0 0 1
     in
     column
         [ width fill
