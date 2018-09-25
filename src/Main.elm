@@ -407,7 +407,7 @@ viewColorSliders model =
                 |> List.map colorSlider
 
         row1 =
-            row [ width fill, sp -4 ]
+            row [ width fill, sp -2 ]
                 [ column [ sp -4, width fill ] rgbSliders
                 , column [ sp -4, width fill ] hslSliders
                 ]
