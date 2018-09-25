@@ -342,38 +342,61 @@ viewKnobs model =
 
 viewColorSliders model =
     let
-        children =
-            colorSliders model
-                |> List.concat
+        conf =
+            { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
+
+        alphaSlider =
+            colorSlider { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
+
+        column1 =
+            column
+                ([ p 1, spRem 1 ]
+                    ++ scrollFillWH
+                )
+                (rgbSliders model)
+
+        column2 =
+            column
+                ([ p 1, spRem 1 ]
+                    ++ scrollFillWH
+                )
+                (hslSliders model)
     in
-    column
+    row
         ([ p 1, spRem 1 ]
             ++ scrollFillWH
         )
-        children
+        [ column1, column2 ]
 
 
-colorSliders model =
+hslSliders model =
     let
         { hue, saturation, lightness } =
             modelToHSLA model
 
         conf =
             { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
-
-        sliders =
-            [ { conf | value = model.red, labelText = "red", onChange = Red }
-            , { conf | value = model.green, labelText = "green", onChange = Green }
-            , { conf | value = model.blue, labelText = "blue", onChange = Blue }
-            , { conf | value = model.alpha, labelText = "alpha", onChange = Alpha }
-            , { conf | value = hue, labelText = "hue", onChange = Hue, max = 0.99 }
-            , { conf | value = saturation, labelText = "saturation", onChange = Saturation }
-            , { conf | value = lightness, labelText = "lightness", onChange = Lightness }
-            ]
-                |> List.map colorSlider
     in
-    [ List.take 3, List.drop 3 >> List.take 1, List.drop 4 ]
-        |> List.map (\fn -> fn sliders)
+    [ { conf | value = hue, labelText = "hue", onChange = Hue, max = 0.99 }
+    , { conf | value = saturation, labelText = "saturation", onChange = Saturation }
+    , { conf | value = lightness, labelText = "lightness", onChange = Lightness }
+    ]
+        |> List.map colorSlider
+
+
+rgbSliders model =
+    let
+        { hue, saturation, lightness } =
+            modelToHSLA model
+
+        conf =
+            { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
+    in
+    [ { conf | value = model.red, labelText = "red", onChange = Red }
+    , { conf | value = model.green, labelText = "green", onChange = Green }
+    , { conf | value = model.blue, labelText = "blue", onChange = Blue }
+    ]
+        |> List.map colorSlider
 
 
 colorSlider :
