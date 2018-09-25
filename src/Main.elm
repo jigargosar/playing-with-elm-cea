@@ -310,8 +310,8 @@ viewKnobs model =
         { hue, saturation, lightness } =
             modelToHSLA model
 
-        defaultConfig =
-            { value = 0.0, labelText = "", onChange = \_ -> Nop }
+        conf =
+            { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
     in
     column
         [ width fill
@@ -329,13 +329,13 @@ viewKnobs model =
             }
         ]
         [ text "Controller"
-        , colorSlider { defaultConfig | value = model.red, labelText = "R", onChange = Red }
-        , colorSlider { defaultConfig | value = model.green, labelText = "G", onChange = Green }
-        , colorSlider { defaultConfig | value = model.blue, labelText = "B", onChange = Blue }
-        , colorSlider { defaultConfig | value = model.alpha, labelText = "A", onChange = Alpha }
-        , colorSlider { defaultConfig | value = hue, labelText = "H", onChange = Hue }
-        , colorSlider { defaultConfig | value = saturation, labelText = "S", onChange = Saturation }
-        , colorSlider { defaultConfig | value = lightness, labelText = "L", onChange = Lightness }
+        , colorSlider { conf | value = model.red, labelText = "R", onChange = Red }
+        , colorSlider { conf | value = model.green, labelText = "G", onChange = Green }
+        , colorSlider { conf | value = model.blue, labelText = "B", onChange = Blue }
+        , colorSlider { conf | value = model.alpha, labelText = "A", onChange = Alpha }
+        , colorSlider { conf | value = hue, labelText = "H", onChange = Hue, max = 0.99 }
+        , colorSlider { conf | value = saturation, labelText = "S", onChange = Saturation }
+        , colorSlider { conf | value = lightness, labelText = "L", onChange = Lightness }
         ]
 
 
@@ -343,21 +343,13 @@ colorSlider :
     { value : Float
     , labelText : String
     , onChange : Float -> msg
+    , max : Float
     }
     -> Element msg
-colorSlider { onChange, labelText, value } =
+colorSlider { onChange, labelText, value, max } =
     let
         min =
             0
-
-        max : Float
-        max =
-            case labelText of
-                "H" ->
-                    0.99
-
-                _ ->
-                    1.0
 
         step =
             0.01
