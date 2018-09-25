@@ -274,14 +274,20 @@ viewContent model =
         (el
             [ width fill
             , bc (modelColor model)
-            , Html.Attributes.class "mdc-elevation--z24" |> Element.htmlAttribute
+            , elevation 24
             ]
             (column (fillWH ++ [ p 1 ])
                 [ el [ p 1, centerX, fz 4 ] (text "Color Converter")
-                , el [ width fill, height fill ] (svgView |> Element.html)
+                , el fillWH (Element.html svgView)
                 ]
             )
         )
+
+
+elevation i =
+    ("mdc-elevation--z" ++ String.fromInt i)
+        |> Html.Attributes.class
+        |> Element.htmlAttribute
 
 
 viewController : Model -> Element Msg
