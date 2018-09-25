@@ -12,8 +12,8 @@ outlineNone =
     { defaultLineStyle | thickness = 0 }
 
 
-view : Html msg
-view =
+view : Float -> Html msg
+view deg =
     let
         wheel =
             circle 25
@@ -46,6 +46,6 @@ view =
         , shift ( -50, 50 ) wheel
         , carBody
         ]
-        |> rotate (degrees 30)
+        |> rotate (degrees deg)
         |> debug
         |> svg
