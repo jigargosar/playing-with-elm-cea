@@ -10,13 +10,13 @@ import Element.Events
 import Element.Font as Font
 import Element.Input as Input
 import ElementX exposing (bc, bcInherit, brc, fc, fz, grayscale, hsla, inputNumber, labelNone, lightGray, maxRem, minRem, p, pXY, scaledInt, spRem, white)
-import HSLA
 import Hex
+import Hsla
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
-import RGBA exposing (RGBA)
 import Random
+import Rgba
 import Round
 import Svg as Svg
 import Svg.Attributes as SA
@@ -37,17 +37,17 @@ type alias Model =
     , dieFace : Int
     , zone : Time.Zone
     , time : Time.Posix
-    , hsla : HSLA.HSLA
-    , rgba : RGBA.RGBA
+    , hsla : Hsla.HSLA
+    , rgba : Rgba.RGBA
     }
 
 
 init : ( Model, Cmd Msg )
 init =
     let
-        initialRGBA : RGBA.RGBA
+        initialRGBA : Rgba.RGBA
         initialRGBA =
-            RGBA.create 1 1 1 1
+            Rgba.create 1 1 1 1
     in
     ( { counter = 0
       , content = ""
@@ -58,7 +58,7 @@ init =
       , zone = Time.utc
       , time = Time.millisToPosix 0
       , rgba = initialRGBA
-      , hsla = RGBA.toHSLA initialRGBA
+      , hsla = Rgba.toHSLA initialRGBA
       }
     , Task.perform AdjustTimeZone Time.here
     )
@@ -93,30 +93,22 @@ type alias ModelFn =
     Model -> Model
 
 
-type alias RGBAFn =
-    RGBA.RGBA -> RGBA.RGBA
-
-
-type alias HSLAFn =
-    HSLA.HSLA -> HSLA.HSLA
-
-
-updateRGBA : RGBAFn -> ModelFn
+updateRGBA : Rgba.Fn -> ModelFn
 updateRGBA fn m =
     let
         newRGBA =
             fn m.rgba
     in
-    { m | rgba = newRGBA, hsla = RGBA.toHSLA newRGBA }
+    { m | rgba = newRGBA, hsla = Rgba.toHSLA newRGBA }
 
 
-updateHSLA : HSLAFn -> ModelFn
+updateHSLA : Hsla.Fn -> ModelFn
 updateHSLA fn m =
     let
         newHSLA =
             fn m.hsla
     in
-    { m | hsla = newHSLA, rgba = HSLA.toRGBA newHSLA }
+    { m | hsla = newHSLA, rgba = Hsla.toRGBA newHSLA }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -417,7 +409,7 @@ viewColorSliders model =
             ElementX.fromRGBA model.rgba
 
         hexA =
-            RGBA.toHexAString model.rgba
+            Rgba.toHexAString model.rgba
 
         alphaSlider =
             let

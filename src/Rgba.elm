@@ -1,4 +1,4 @@
-module RGBA exposing (RGBA, create, fromPartial, toHSLA, toHexAString)
+module Rgba exposing (Fn, RGBA, create, fromPartial, toHSLA, toHexAString)
 
 import Color
 import Hex
@@ -12,6 +12,10 @@ type alias RGBA =
 
 type alias PartialRGBA a =
     { a | red : Float, green : Float, blue : Float, alpha : Float }
+
+
+type alias Fn =
+    RGBA -> RGBA
 
 
 toHexAString : RGBA -> String

@@ -1,12 +1,16 @@
-module HSLA exposing (HSLA, create, fromPartial, toHexAString, toRGBA)
+module Hsla exposing (Fn, HSLA, create, fromPartial, toHexAString, toRGBA)
 
 import Color
 import InternalColor
-import RGBA
+import Rgba
 
 
 type alias HSLA =
     InternalColor.HSLA
+
+
+type alias Fn =
+    HSLA -> HSLA
 
 
 type alias PartialHSLA a =
@@ -30,4 +34,4 @@ toRGBA =
 
 toHexAString : HSLA -> String
 toHexAString =
-    toRGBA >> RGBA.toHexAString
+    toRGBA >> Rgba.toHexAString
