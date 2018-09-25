@@ -40,7 +40,6 @@ type alias Model =
     , red : Float
     , green : Float
     , blue : Float
-    , alpha : Float
     , hsla : HSLA.HSLA
     , rgba : RGBA.RGBA
     }
@@ -64,7 +63,6 @@ init =
       , red = 1
       , green = 1
       , blue = 1
-      , alpha = 1
       , rgba = initialRGBA
       , hsla = RGBA.toHSLA initialRGBA
       }
