@@ -1,9 +1,9 @@
 module ElementX exposing
     ( HSLA
     , RGBA
-    , bg
+    , bc
     , black
-    , fg
+    , fc
     , fz
     , grayscale
     , hsla
@@ -82,13 +82,13 @@ black =
     hsla 0 0 0 1
 
 
-bg : Element.Color -> Element.Attr decorative msg
-bg =
+bc : Element.Color -> Element.Attr decorative msg
+bc =
     Element.Background.color
 
 
-fg : Element.Color -> Element.Attr decorative msg
-fg =
+fc : Element.Color -> Element.Attr decorative msg
+fc =
     Element.Font.color
 
 

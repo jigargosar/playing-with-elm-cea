@@ -9,7 +9,7 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX exposing (bg, fg, fz, grayscale, hsla, lightGray, p)
+import ElementX exposing (bc, fc, fz, grayscale, hsla, lightGray, p)
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -275,8 +275,10 @@ view model =
                 (List.concat [ [ p 1 ], scrollFillWH ])
                 (el
                     [ width fill
-                    , bg (rgba model.red model.green model.blue model.alpha)
-                    , elevation1
+                    , bc (rgba model.red model.green model.blue model.alpha)
+
+                    --                    , elevation1
+                    , Html.Attributes.class "mdc-elevation--z24" |> Element.htmlAttribute
                     ]
                     (column [ height fill, width fill, p 1 ]
                         [ el
@@ -311,8 +313,8 @@ viewKnobs model =
     column
         [ width fill
         , height fill
-        , bg (grayscale 0.1)
-        , fg (grayscale 0.9)
+        , bc (grayscale 0.1)
+        , fc (grayscale 0.9)
         , p 1
         , spacing 16
         , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
@@ -335,6 +337,16 @@ viewKnobs model =
 
 
 colorSlider channelFloatValue labelText onChange =
+    let
+        min =
+            0
+
+        max =
+            1
+
+        step =
+            0.01
+    in
     row [ spacing 16, width fill ]
         [ Input.slider
             [ spacing 16
@@ -351,9 +363,9 @@ colorSlider channelFloatValue labelText onChange =
             ]
             { onChange = onChange
             , label = Input.labelLeft [] (text labelText)
-            , min = 0
-            , max = 1
-            , step = Nothing
+            , min = min
+            , max = max
+            , step = Just step
             , value = channelFloatValue
             , thumb =
                 Input.defaultThumb
@@ -363,8 +375,8 @@ colorSlider channelFloatValue labelText onChange =
             , Html.Attributes.style "background-color" "inherit" |> Element.htmlAttribute
             , Html.Attributes.type_ "number" |> Element.htmlAttribute
             , Html.Attributes.step "0.01" |> Element.htmlAttribute
-            , Html.Attributes.min "0.01" |> Element.htmlAttribute
-            , Html.Attributes.max "0.99" |> Element.htmlAttribute
+            , Html.Attributes.min "0" |> Element.htmlAttribute
+            , Html.Attributes.max "1" |> Element.htmlAttribute
             ]
             { onChange =
                 \val ->

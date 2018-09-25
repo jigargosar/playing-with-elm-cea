@@ -5,6 +5,7 @@
   "author": "Jigar Gosar <jigar.gosar@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@material/elevation": "^0.40.0",
     "tachyons": "^4.11.1"
   }
 }

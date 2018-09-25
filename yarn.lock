@@ -2,6 +2,21 @@
 # yarn lockfile v1
 
 
+"@material/animation@^0.39.0":
+  version "0.39.0"
+  resolved "https://registry.yarnpkg.com/@material/animation/-/animation-0.39.0.tgz#d3d503c9f87ac1193dc4a5b0cccfaedb39478439"
+
+"@material/elevation@^0.40.0":
+  version "0.40.0"
+  resolved "https://registry.yarnpkg.com/@material/elevation/-/elevation-0.40.0.tgz#9740f3c147aecfbfdba38ff50dfea560360ecc5c"
+  dependencies:
+    "@material/animation" "^0.39.0"
+    "@material/theme" "^0.40.0"
+
+"@material/theme@^0.40.0":
+  version "0.40.0"
+  resolved "https://registry.yarnpkg.com/@material/theme/-/theme-0.40.0.tgz#0b91750bf6334fa7bebf2b1aabb8ec727f519e13"
+
 tachyons@^4.11.1:
   version "4.11.1"
   resolved "https://registry.yarnpkg.com/tachyons/-/tachyons-4.11.1.tgz#4e3666e7299e47aea7d820e0580dd4dc07cf3feb"
