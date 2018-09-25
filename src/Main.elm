@@ -9,7 +9,7 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input exposing (thumb)
-import ElementX exposing (bc, bcInherit, brc, clipFillWH, elevation, fc, fillWH, fz, grayscale, hsla, inputNumber, labelNone, lightGray, maxRem, minRem, p, pXY, scaledInt, scrollFillWH, sp, white)
+import ElementX exposing (bc, bcInherit, black, brc, clipFillWH, elevation, fc, fillWH, fz, grayscale, hsla, inputNumber, labelNone, lightGray, maxRem, minRem, p, pXY, scaledInt, scrollFillWH, sp, white)
 import Hex
 import Hsla
 import Html exposing (Html, button, col, div, h1, h3, img, input)
@@ -302,6 +302,8 @@ viewController model =
             , p -2
             , elevation 4
             , Element.Events.onClick ToggleController
+            , Element.pointer
+            , bc black
             ]
             (text "Controller")
         , if model.isControllerCollapsed then
@@ -441,7 +443,7 @@ viewColorSliders model =
     in
     el
         ([ p -2 ] ++ scrollFillWH)
-        (column (fillWH ++ [ sp -4 ]) [ row1, row2 ])
+        (column (fillWH ++ [ sp -6 ]) [ row1, row2 ])
 
 
 colorSlider : ColorSliderConfig msg -> Element msg
