@@ -337,13 +337,13 @@ viewColorSliders model =
         conf =
             colorSliderConfig
 
+        defAlt =
+            conf.alt
+
         hslSliders =
             let
                 { hue, saturation, lightness } =
                     model.hsla
-
-                defAlt =
-                    conf.alt
             in
             [ { conf
                 | value = hue
@@ -393,19 +393,6 @@ viewColorSliders model =
                 , column [ sp 1, width fill ] hslSliders
                 ]
 
-        alphaSlider =
-            let
-                defAlt =
-                    conf.alt
-            in
-            colorSlider
-                { conf
-                    | value = model.rgba.alpha
-                    , labelText = "alpha"
-                    , onChange = Alpha
-                    , alt = { defAlt | min = 0.0, max = 1.0, step = 0.01, round = 2 }
-                }
-
         row2 =
             let
                 color =
@@ -413,6 +400,15 @@ viewColorSliders model =
 
                 hexA =
                     Rgba.toHexAString model.rgba
+
+                alphaSlider =
+                    colorSlider
+                        { conf
+                            | value = model.rgba.alpha
+                            , labelText = "alpha"
+                            , onChange = Alpha
+                            , alt = { defAlt | min = 0.0, max = 1.0, step = 0.01, round = 2 }
+                        }
 
                 previewEl attrs =
                     el [ width fill ]
