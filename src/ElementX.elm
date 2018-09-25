@@ -138,7 +138,7 @@ inputNumber config =
         ]
         { onChange =
             String.toFloat
-                >> Maybe.withDefault 0
+                >> Maybe.withDefault config.number
                 >> config.onChange
         , label = Element.Input.labelLeft [] Element.none
         , text = config.number |> Round.round config.round
