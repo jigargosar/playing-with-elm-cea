@@ -177,7 +177,7 @@ update msg model =
             )
 
         Tick newTime ->
-            ( { model | time = newTime }
+            ( { model | time = newTime, counter = model.counter + 1 }
             , Cmd.none
             )
 
@@ -193,7 +193,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Time.every 1000 Tick
+    Time.every (1000 / 60) Tick
 
 
 
@@ -258,7 +258,7 @@ viewContent model =
             (column (fillWH ++ [ p 1 ])
                 [ el [ p 1, centerX, fz 4 ] (text "Color Converter")
                 , el fillWH (Element.html svgView)
-                , CollageExample.view -30 |> Element.html |> el []
+                , CollageExample.view (toFloat model.counter) |> Element.html |> el []
                 ]
             )
         )
