@@ -371,7 +371,7 @@ viewColorSliders model =
         row2 =
             row [ width fill, spRem 1 ]
                 [ alphaSlider
-                , el [ width fill ]
+                , el [ width fill, fz 2 ]
                     (modelToHEXA model |> text)
                 ]
     in
