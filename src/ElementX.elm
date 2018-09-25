@@ -9,6 +9,7 @@ module ElementX exposing
     , grayscale
     , hsla
     , inputNumber
+    , labelNone
     , lightGray
     , maxRem
     , minRem
@@ -55,6 +56,10 @@ minRem =
 
 spRem =
     remToInt >> Element.spacing
+
+
+labelNone =
+    Element.Input.labelLeft [] Element.none
 
 
 fz : Int -> Element.Attr decorative msg

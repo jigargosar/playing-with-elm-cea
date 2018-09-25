@@ -9,7 +9,7 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, inputNumber, lightGray, maxRem, minRem, p, pXY, scaledInt, spRem, white)
+import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, inputNumber, labelNone, lightGray, maxRem, minRem, p, pXY, scaledInt, spRem, white)
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -405,7 +405,7 @@ colorSlider { onChange, labelText, value, max } =
             , max = max
             , step = step
             , round = 2
-            , label = Input.labelLeft [] Element.none
+            , label = labelNone
             , value = value
             , placeholder = Nothing
             }
