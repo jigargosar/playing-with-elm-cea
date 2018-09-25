@@ -1,4 +1,4 @@
-module RGBA exposing (RGBA, create, fromPartial, toHexAString)
+module RGBA exposing (RGBA, create, fromPartial, toHSLA, toHexAString)
 
 import Color
 import Hex

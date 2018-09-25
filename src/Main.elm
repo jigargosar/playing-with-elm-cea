@@ -42,11 +42,16 @@ type alias Model =
     , blue : Float
     , alpha : Float
     , hsla : HSLA.HSLA
+    , rgba : RGBA.RGBA
     }
 
 
 init : ( Model, Cmd Msg )
 init =
+    let
+        initialRGBA =
+            RGBA.create 1 1 1 1
+    in
     ( { counter = 0
       , content = ""
       , name = ""
@@ -59,7 +64,8 @@ init =
       , green = 1
       , blue = 1
       , alpha = 1
-      , hsla = HSLA.create 1 1 1 1
+      , rgba = initialRGBA
+      , hsla = RGBA.toHSLA initialRGBA
       }
     , Task.perform AdjustTimeZone Time.here
     )
