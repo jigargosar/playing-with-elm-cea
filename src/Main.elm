@@ -315,7 +315,8 @@ viewKnobs model =
     in
     column
         [ width fill
-        , height fill
+        , height (fill |> maximum 300)
+        , scrollbars
         , bc (grayscale 0.1)
         , fc (grayscale 0.9)
         , p 1
