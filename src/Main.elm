@@ -329,13 +329,13 @@ viewKnobs model =
             }
         ]
         [ text "Controller"
-        , colorSlider { defaultConfig | value = model.red, labelText = "R" } Red
-        , colorSlider { defaultConfig | value = model.green, labelText = "G" } Green
-        , colorSlider { defaultConfig | value = model.blue, labelText = "B" } Blue
-        , colorSlider { defaultConfig | value = model.alpha, labelText = "A" } Alpha
-        , colorSlider { defaultConfig | value = hue, labelText = "H" } Hue
-        , colorSlider { defaultConfig | value = saturation, labelText = "S" } Saturation
-        , colorSlider { defaultConfig | value = lightness, labelText = "L" } Lightness
+        , colorSlider { defaultConfig | value = model.red, labelText = "R", onChange = Red }
+        , colorSlider { defaultConfig | value = model.green, labelText = "G", onChange = Green }
+        , colorSlider { defaultConfig | value = model.blue, labelText = "B", onChange = Blue }
+        , colorSlider { defaultConfig | value = model.alpha, labelText = "A", onChange = Alpha }
+        , colorSlider { defaultConfig | value = hue, labelText = "H", onChange = Hue }
+        , colorSlider { defaultConfig | value = saturation, labelText = "S", onChange = Saturation }
+        , colorSlider { defaultConfig | value = lightness, labelText = "L", onChange = Lightness }
         ]
 
 
@@ -344,13 +344,9 @@ colorSlider :
     , labelText : String
     , onChange : Float -> msg
     }
-    -> (Float -> msg)
     -> Element msg
-colorSlider config onChange =
+colorSlider { onChange, labelText, value } =
     let
-        labelText =
-            config.labelText
-
         min =
             0
 
@@ -365,9 +361,6 @@ colorSlider config onChange =
 
         step =
             0.01
-
-        value =
-            config.value
     in
     row [ spacing 16, width fill ]
         [ Input.slider
