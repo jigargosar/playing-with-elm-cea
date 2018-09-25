@@ -170,7 +170,6 @@ update msg model =
             , Cmd.none
             )
 
-        --            ( model |> updateHSLA (\r -> { r | saturation = newSaturation }), Cmd.none )
         Lightness newLightness ->
             ( model |> updateHSLA (\r -> { r | lightness = newLightness }), Cmd.none )
 
@@ -327,8 +326,8 @@ viewKnobs model =
         [ width fill
         , height fill
         , width fill
-        , style "background-color" "hsl(0,0%,10%)" |> Element.htmlAttribute
-        , style "color" "hsl(0,0%,90%)" |> Element.htmlAttribute
+        , Background.color (hsla 0 0 0.1 1)
+        , Font.color (hsla 0 0 0.9 1)
         , p 1
         , spacing 16
         , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
