@@ -371,6 +371,9 @@ colorSlider { onChange, labelText, value, max } =
 
         step =
             0.01
+
+        finalLabelText =
+            labelText |> String.left 1 |> String.toUpper
     in
     row [ spRem 1, width fill ]
         [ Input.slider
@@ -389,8 +392,8 @@ colorSlider { onChange, labelText, value, max } =
             { onChange = onChange
             , label =
                 Input.labelLeft
-                    [ width (shrink |> minRem 3), fz -2 ]
-                    (el [ alignRight ] (text labelText))
+                    []
+                    (el [ alignRight ] (text finalLabelText))
             , min = min
             , max = max
             , step = Just step
