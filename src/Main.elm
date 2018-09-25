@@ -309,6 +309,9 @@ viewKnobs model =
     let
         { hue, saturation, lightness } =
             modelToHSLA model
+
+        defaultConfig =
+            { value = 0.0, labelText = "" }
     in
     column
         [ width fill
@@ -326,18 +329,18 @@ viewKnobs model =
             }
         ]
         [ text "Controller"
-        , colorSlider { value = model.red } model.red "R" Red
-        , colorSlider { value = model.green } model.green "G" Green
-        , colorSlider { value = model.blue } model.blue "B" Blue
-        , colorSlider { value = model.alpha } model.alpha "A" Alpha
-        , colorSlider { value = hue } hue "H" Hue
-        , colorSlider { value = saturation } saturation "S" Saturation
-        , colorSlider { value = lightness } lightness "L" Lightness
+        , colorSlider { defaultConfig | value = model.red } "R" Red
+        , colorSlider { defaultConfig | value = model.green } "G" Green
+        , colorSlider { defaultConfig | value = model.blue } "B" Blue
+        , colorSlider { defaultConfig | value = model.alpha } "A" Alpha
+        , colorSlider { defaultConfig | value = hue } "H" Hue
+        , colorSlider { defaultConfig | value = saturation } "S" Saturation
+        , colorSlider { defaultConfig | value = lightness } "L" Lightness
         ]
 
 
-colorSlider : { value : Float } -> Float -> String -> (Float -> msg) -> Element msg
-colorSlider config _ labelText onChange =
+colorSlider : { value : Float, labelText : String } -> String -> (Float -> msg) -> Element msg
+colorSlider config labelText onChange =
     let
         min =
             0
@@ -354,7 +357,7 @@ colorSlider config _ labelText onChange =
         step =
             0.01
 
-        channelFloatValue =
+        value =
             config.value
     in
     row [ spacing 16, width fill ]
@@ -376,7 +379,7 @@ colorSlider config _ labelText onChange =
             , min = min
             , max = max
             , step = Just step
-            , value = channelFloatValue
+            , value = value
             , thumb =
                 Input.defaultThumb
             }
@@ -388,7 +391,7 @@ colorSlider config _ labelText onChange =
             , step = step
             , round = 2
             , label = Input.labelLeft [] Element.none
-            , number = channelFloatValue
+            , value = value
             , placeholder = Nothing
             }
         ]

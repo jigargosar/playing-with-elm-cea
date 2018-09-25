@@ -114,7 +114,7 @@ inputNumber :
         , step : Float
         , min : Float
         , max : Float
-        , number : Float
+        , value : Float
         , round : Int
         , label : Element.Input.Label msg
         , placeholder : Maybe (Element.Input.Placeholder msg)
@@ -148,9 +148,9 @@ inputNumber attributes config =
         )
         { onChange =
             String.toFloat
-                >> Maybe.withDefault config.number
+                >> Maybe.withDefault config.value
                 >> config.onChange
         , label = config.label
-        , text = config.number |> Round.round config.round
+        , text = config.value |> Round.round config.round
         , placeholder = config.placeholder
         }
