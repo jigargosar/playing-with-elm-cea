@@ -393,12 +393,6 @@ viewColorSliders model =
                 , column [ sp 1, width fill ] hslSliders
                 ]
 
-        modelElementColor =
-            ElementX.fromRGBA model.rgba
-
-        hexA =
-            Rgba.toHexAString model.rgba
-
         alphaSlider =
             let
                 defAlt =
@@ -414,6 +408,12 @@ viewColorSliders model =
 
         row2 =
             let
+                color =
+                    ElementX.fromRGBA model.rgba
+
+                hexA =
+                    Rgba.toHexAString model.rgba
+
                 previewEl attrs =
                     el [ width fill ]
                         (text hexA |> el ([ centerX, p -4 ] ++ attrs))
@@ -421,8 +421,8 @@ viewColorSliders model =
             row [ width fill, sp 1 ]
                 [ alphaSlider
                 , row [ width fill, fz 2 ]
-                    [ previewEl [ fc modelElementColor ]
-                    , previewEl [ bc modelElementColor ]
+                    [ previewEl [ fc color ]
+                    , previewEl [ bc color ]
                     ]
                 ]
     in
