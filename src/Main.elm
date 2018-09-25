@@ -9,7 +9,7 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, lightGray, p)
+import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, inputNumber, lightGray, p)
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -370,7 +370,7 @@ colorSlider channelFloatValue labelText onChange =
             , thumb =
                 Input.defaultThumb
             }
-        , Input.text
+        , inputNumber
             [ spacing 0
             , bcInherit
             , Html.Attributes.type_ "number" |> Element.htmlAttribute

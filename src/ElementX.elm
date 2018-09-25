@@ -8,6 +8,7 @@ module ElementX exposing
     , fz
     , grayscale
     , hsla
+    , inputNumber
     , lightGray
     , p
     , pXY
@@ -107,15 +108,19 @@ grayscale l =
 
 
 inputNumber :
-    { onChange : Float -> msg
-    , step : Float
-    , min : Float
-    , max : Float
-    , number : Float
-    , round : Int
-    }
+    List (Element.Attribute msg)
+    ->
+        { onChange : Float -> msg
+        , step : Float
+        , min : Float
+        , max : Float
+        , number : Float
+        , round : Int
+        , label : Element.Input.Label msg
+        , placeholder : Maybe (Element.Input.Placeholder msg)
+        }
     -> Element.Element msg
-inputNumber config =
+inputNumber attributes config =
     let
         typeNumber =
             Html.Attributes.type_ "number" |> Element.htmlAttribute
@@ -128,19 +133,24 @@ inputNumber config =
 
         max val =
             Html.Attributes.max (String.fromFloat val) |> Element.htmlAttribute
+
+        emptyAttribute =
+            Html.Attributes.attribute "" "" |> Element.htmlAttribute
     in
     Element.Input.text
-        [ bcInherit
-        , typeNumber
-        , step config.step
-        , min config.min
-        , max config.max
-        ]
+        ([ bcInherit ]
+            ++ attributes
+            ++ [ typeNumber
+               , step config.step
+               , min config.min
+               , max config.max
+               ]
+        )
         { onChange =
             String.toFloat
                 >> Maybe.withDefault config.number
                 >> config.onChange
-        , label = Element.Input.labelLeft [] Element.none
+        , label = config.label
         , text = config.number |> Round.round config.round
-        , placeholder = Nothing
+        , placeholder = config.placeholder
         }
