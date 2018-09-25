@@ -312,6 +312,9 @@ viewKnobs model =
 
         conf =
             { value = 0.0, labelText = "", onChange = \_ -> Nop, max = 1 }
+
+        each =
+            { bottom = 0, top = 0, left = 0, right = 0 }
     in
     column
         [ width fill
@@ -326,10 +329,10 @@ viewKnobs model =
             , color = rgba 0 0 0 0.4
             }
         ]
-        [ el [ p 1, Border.color white ] (text "Controller")
+        [ el [ width fill, p 1, Border.color white, Border.widthEach { each | bottom = 1 } ] (text "Controller")
         , colorSliders model
             |> column
-                ([ pXY 1 -999, spacing 16 ]
+                ([ p 1, spacing 16 ]
                     ++ scrollFillWH
                 )
         ]

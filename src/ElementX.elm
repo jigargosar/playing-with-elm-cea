@@ -52,6 +52,14 @@ pXY x y =
     Element.paddingXY (scaledInt x) (scaledInt y)
 
 
+each =
+    { bottom = 0, top = 0, left = 0, right = 0 }
+
+
+pEach eachRec =
+    Element.paddingEach eachRec
+
+
 hsla : Float -> Float -> Float -> Float -> Element.Color
 hsla h s l a =
     Color.hsla h s l a
