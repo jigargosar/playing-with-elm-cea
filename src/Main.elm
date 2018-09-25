@@ -336,6 +336,7 @@ viewKnobs model =
         ]
 
 
+colorSlider : Float -> String -> (Float -> msg) -> Element msg
 colorSlider channelFloatValue labelText onChange =
     let
         min =
