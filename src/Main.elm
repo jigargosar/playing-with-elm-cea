@@ -326,18 +326,18 @@ viewKnobs model =
             }
         ]
         [ text "Controller"
-        , colorSlider model.red "R" Red
-        , colorSlider model.green "G" Green
-        , colorSlider model.blue "B" Blue
-        , colorSlider model.alpha "A" Alpha
-        , colorSlider hue "H" Hue
-        , colorSlider saturation "S" Saturation
-        , colorSlider lightness "L" Lightness
+        , colorSlider { value = model.red } model.red "R" Red
+        , colorSlider { value = model.green } model.green "G" Green
+        , colorSlider { value = model.blue } model.blue "B" Blue
+        , colorSlider { value = model.alpha } model.alpha "A" Alpha
+        , colorSlider { value = hue } hue "H" Hue
+        , colorSlider { value = saturation } saturation "S" Saturation
+        , colorSlider { value = lightness } lightness "L" Lightness
         ]
 
 
-colorSlider : Float -> String -> (Float -> msg) -> Element msg
-colorSlider channelFloatValue labelText onChange =
+colorSlider : { value : Float } -> Float -> String -> (Float -> msg) -> Element msg
+colorSlider config _ labelText onChange =
     let
         min =
             0
@@ -353,6 +353,9 @@ colorSlider channelFloatValue labelText onChange =
 
         step =
             0.01
+
+        channelFloatValue =
+            config.value
     in
     row [ spacing 16, width fill ]
         [ Input.slider
