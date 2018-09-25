@@ -370,10 +370,10 @@ colorSliderConfig =
     , max = 1.0
     , step = 0.01
     , alt =
-        { min = 0
-        , max = 255
+        { min = 0.0
+        , max = 255.0
         , transform = (*) 255.0
-        , step = 1
+        , step = 1.0
         , reverseTransform = (/) 255.0
         }
     }
@@ -388,10 +388,38 @@ viewColorSliders model =
             let
                 { hue, saturation, lightness } =
                     modelToHSLA model
+
+                defAlt =
+                    conf.alt
             in
-            [ { conf | value = hue, labelText = "hue", onChange = Hue, max = 0.99 }
-            , { conf | value = saturation, labelText = "saturation", onChange = Saturation }
-            , { conf | value = lightness, labelText = "lightness", onChange = Lightness }
+            [ { conf
+                | value = hue
+                , labelText = "hue"
+                , onChange = Hue
+                , max = 0.99
+                , alt =
+                    { defAlt
+                        | max = 359
+                    }
+              }
+            , { conf
+                | value = saturation
+                , labelText = "saturation"
+                , onChange = Saturation
+                , alt =
+                    { defAlt
+                        | max = 99
+                    }
+              }
+            , { conf
+                | value = lightness
+                , labelText = "lightness"
+                , onChange = Lightness
+                , alt =
+                    { defAlt
+                        | max = 99
+                    }
+              }
             ]
                 |> List.map colorSlider
 
@@ -481,13 +509,13 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
             }
         , inputNumber
             [ spRem 0, p -4 ]
-            { onChange = alt.reverseTransform >> onChange
+            { onChange = (/) alt.max >> onChange
             , min = alt.min
             , max = alt.max
             , step = alt.step
             , round = 0
             , label = labelNone
-            , value = alt.transform value
+            , value = value * alt.max
             , placeholder = Nothing
             }
         ]
