@@ -329,7 +329,13 @@ viewKnobs model =
             , color = rgba 0 0 0 0.4
             }
         ]
-        [ el [ width fill, p 1, Border.color white, Border.widthEach { each | bottom = 1 } ] (text "Controller")
+        [ el
+            [ width fill
+            , p 1
+            , Border.color white
+            , Border.widthEach { each | bottom = 1 }
+            ]
+            (text "Controller")
         , colorSliders model
             |> List.concat
             |> column
