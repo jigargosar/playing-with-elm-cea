@@ -24,7 +24,7 @@ module ElementX exposing
     , scaled
     , scaledInt
     , scrollFillWH
-    , spRem
+    , sp
     , toHSLA
     , white
     )
@@ -63,7 +63,7 @@ minRem =
     remToInt >> Element.minimum
 
 
-spRem =
+sp =
     remToInt >> Element.spacing
 
 

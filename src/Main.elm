@@ -28,7 +28,7 @@ import ElementX
         , pXY
         , scaledInt
         , scrollFillWH
-        , spRem
+        , sp
         , white
         )
 import Hex
@@ -388,9 +388,9 @@ viewColorSliders model =
                 |> List.map colorSlider
 
         row1 =
-            row [ width fill, spRem 1 ]
-                [ column [ spRem 1, width fill ] rgbSliders
-                , column [ spRem 1, width fill ] hslSliders
+            row [ width fill, sp 1 ]
+                [ column [ sp 1, width fill ] rgbSliders
+                , column [ sp 1, width fill ] hslSliders
                 ]
 
         modelElementColor =
@@ -418,7 +418,7 @@ viewColorSliders model =
                     el [ width fill ]
                         (text hexA |> el ([ centerX, p -4 ] ++ attrs))
             in
-            row [ width fill, spRem 1 ]
+            row [ width fill, sp 1 ]
                 [ alphaSlider
                 , row [ width fill, fz 2 ]
                     [ previewEl [ fc modelElementColor ]
@@ -428,7 +428,7 @@ viewColorSliders model =
     in
     el
         ([ p 1 ] ++ scrollFillWH)
-        (column (fillWH ++ [ spRem 1 ]) [ row1, row2 ])
+        (column (fillWH ++ [ sp 1 ]) [ row1, row2 ])
 
 
 colorSlider : ColorSliderConfig msg -> Element msg
@@ -437,9 +437,9 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
         finalLabelText =
             labelText |> String.left 1 |> String.toUpper
     in
-    row [ spRem 1, width fill ]
+    row [ sp 1, width fill ]
         [ Input.slider
-            [ spRem 1
+            [ sp 1
             , behindContent
                 (el
                     [ width fill
@@ -466,20 +466,8 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
             , thumb =
                 Input.defaultThumb
             }
-
-        --        , inputNumber
-        --            [ spRem 0, p -4 ]
-        --            { onChange = onChange
-        --            , min = min
-        --            , max = max
-        --            , step = step
-        --            , round = 2
-        --            , label = labelNone
-        --            , value = value
-        --            , placeholder = Nothing
-        --            }
         , inputNumber
-            [ spRem 0, p -4 ]
+            [ sp 0, p -4 ]
             { onChange =
                 (\v -> v / alt.max)
                     >> clamp alt.min alt.max
