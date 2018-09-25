@@ -21,7 +21,9 @@ import Color
 import Element
 import Element.Background
 import Element.Font
+import Element.Input
 import Html.Attributes
+import Round
 
 
 scaled : Int -> Float
@@ -102,3 +104,43 @@ fc =
 grayscale : Float -> Element.Color
 grayscale l =
     hsla 0 0 l 1
+
+
+inputNumber :
+    { onChange : Float -> msg
+    , step : Float
+    , min : Float
+    , max : Float
+    , number : Float
+    , round : Int
+    }
+    -> Element.Element msg
+inputNumber config =
+    let
+        typeNumber =
+            Html.Attributes.type_ "number" |> Element.htmlAttribute
+
+        step val =
+            Html.Attributes.step (String.fromFloat val) |> Element.htmlAttribute
+
+        min val =
+            Html.Attributes.min (String.fromFloat val) |> Element.htmlAttribute
+
+        max val =
+            Html.Attributes.max (String.fromFloat val) |> Element.htmlAttribute
+    in
+    Element.Input.text
+        [ bcInherit
+        , typeNumber
+        , step config.step
+        , min config.min
+        , max config.max
+        ]
+        { onChange =
+            String.toFloat
+                >> Maybe.withDefault 0
+                >> config.onChange
+        , label = Element.Input.labelLeft [] Element.none
+        , text = config.number |> Round.round config.round
+        , placeholder = Nothing
+        }
