@@ -10,6 +10,7 @@ import Element.Events
 import Element.Font as Font
 import Element.Input as Input
 import ElementX exposing (bc, bcInherit, brc, fc, fz, grayscale, hsla, inputNumber, labelNone, lightGray, maxRem, minRem, p, pXY, scaledInt, spRem, white)
+import HSLA
 import Hex
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
@@ -40,6 +41,7 @@ type alias Model =
     , green : Float
     , blue : Float
     , alpha : Float
+    , hsla : HSLA.HSLA
     }
 
 
@@ -57,6 +59,7 @@ init =
       , green = 1
       , blue = 1
       , alpha = 1
+      , hsla = HSLA.create 1 1 1 1
       }
     , Task.perform AdjustTimeZone Time.here
     )

@@ -1,4 +1,4 @@
-module HSLA exposing (HSLA, fromPartial, hsla, toHexAString)
+module HSLA exposing (HSLA, create, fromPartial, toHexAString)
 
 import Color
 import InternalColor
@@ -13,14 +13,14 @@ type alias PartialHSLA a =
     { a | hue : Float, saturation : Float, lightness : Float, alpha : Float }
 
 
-hsla : Float -> Float -> Float -> Float -> HSLA
-hsla =
+create : Float -> Float -> Float -> Float -> HSLA
+create =
     InternalColor.HSLA
 
 
 fromPartial : PartialHSLA a -> HSLA
 fromPartial { hue, saturation, lightness, alpha } =
-    hsla hue saturation lightness alpha
+    create hue saturation lightness alpha
 
 
 toRGBA : HSLA -> InternalColor.RGBA

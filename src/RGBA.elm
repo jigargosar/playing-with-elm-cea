@@ -1,4 +1,4 @@
-module RGBA exposing (RGBA, fromPartial, rgba, toHexAString)
+module RGBA exposing (RGBA, create, fromPartial, toHexAString)
 
 import Color
 import Hex
@@ -32,14 +32,14 @@ toHexAString color =
         |> String.join ""
 
 
-rgba : Float -> Float -> Float -> Float -> RGBA
-rgba =
+create : Float -> Float -> Float -> Float -> RGBA
+create =
     InternalColor.RGBA
 
 
 fromPartial : PartialRGBA a -> RGBA
 fromPartial { red, green, blue, alpha } =
-    rgba red green blue alpha
+    create red green blue alpha
 
 
 toHSLA : RGBA -> InternalColor.HSLA
