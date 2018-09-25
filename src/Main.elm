@@ -472,6 +472,17 @@ colorSlider { onChange, labelText, value, max } =
             , value = value
             , placeholder = Nothing
             }
+        , inputNumber
+            [ spRem 0, p -4 ]
+            { onChange = onChange
+            , min = min
+            , max = max
+            , step = step
+            , round = 2
+            , label = labelNone
+            , value = value
+            , placeholder = Nothing
+            }
         ]
 
 
