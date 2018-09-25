@@ -14,6 +14,7 @@ import Hex
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
+import RGBA exposing (RGBA)
 import Random
 import Round
 import Svg as Svg
@@ -89,6 +90,11 @@ type Msg
 modelToHSLA model =
     Color.rgba model.red model.green model.blue model.alpha
         |> Color.toHsla
+
+
+modelToHEXA : Model -> String
+modelToHEXA =
+    RGBA.fromPartial >> RGBA.toHexAString
 
 
 updateHSLA fn model =
