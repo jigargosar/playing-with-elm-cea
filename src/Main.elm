@@ -221,35 +221,66 @@ subscriptions model =
 --- View ---
 
 
+modelColor : Model -> Element.Color
+modelColor =
+    .rgba >> ElementX.fromRGBA
+
+
 view : Model -> Html Msg
 view model =
     Element.layout
-        (List.concat
-            [ fillWH, [ fz 1, bc lightGray ] ]
-        )
+        (fillWH ++ [ fz 1, bc lightGray ])
         (column
-            (List.concat [ clipFillWH ])
-            [ el
-                (List.concat [ [ p 1 ], scrollFillWH ])
-                (el
-                    [ width fill
-                    , bc (ElementX.fromRGBA model.rgba)
-
-                    --                    , elevation1
-                    , Html.Attributes.class "mdc-elevation--z24" |> Element.htmlAttribute
-                    ]
-                    (column [ height fill, width fill, p 1 ]
-                        [ el
-                            [ p 1, centerX, fz 4 ]
-                            (text "Color Converter")
-                        , el
-                            [ width fill, height fill ]
-                            (svgView |> Element.html)
-                        ]
-                    )
-                )
+            (clipFillWH ++ [])
+            [ viewContent model
             , viewController model
             ]
+        )
+
+
+viewContent : Model -> Element msg
+viewContent model =
+    let
+        roundedRect : Html msg
+        roundedRect =
+            Svg.rect
+                [ SA.x "100"
+                , SA.y "10"
+                , SA.width "100"
+                , SA.height "100"
+                , SA.rx "15"
+                , SA.ry "15"
+                , SA.color "red"
+                , SA.fill "#caf3f5"
+                ]
+                []
+
+        svgView : Html msg
+        svgView =
+            Svg.svg
+                [ SA.id "svg-demo-1"
+                , SA.width "100%"
+
+                --        , SA.height "100%"
+                , SA.viewBox "0 0 500 100"
+                , SA.style "flex:1 1 auto"
+                ]
+                [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#361110" ] []
+                , roundedRect
+                ]
+    in
+    el
+        (scrollFillWH ++ [ p 1 ])
+        (el
+            [ width fill
+            , bc (modelColor model)
+            , Html.Attributes.class "mdc-elevation--z24" |> Element.htmlAttribute
+            ]
+            (column (fillWH ++ [ p 1 ])
+                [ el [ p 1, centerX, fz 4 ] (text "Color Converter")
+                , el [ width fill, height fill ] (svgView |> Element.html)
+                ]
+            )
         )
 
 
@@ -284,6 +315,10 @@ viewController model =
             (text "Controller")
         , viewColorSliders model
         ]
+
+
+
+--- View : Color Slider ---
 
 
 type alias ColorSliderConfig msg =
@@ -464,35 +499,6 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
             , placeholder = Nothing
             }
         ]
-
-
-svgView : Html msg
-svgView =
-    Svg.svg
-        [ SA.id "svg-demo-1"
-        , SA.width "100%"
-
-        --        , SA.height "100%"
-        , SA.viewBox "0 0 500 100"
-        , SA.style "flex:1 1 auto"
-        ]
-        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#361110" ] []
-        , roundedRect
-        ]
-
-
-roundedRect =
-    Svg.rect
-        [ SA.x "100"
-        , SA.y "10"
-        , SA.width "100"
-        , SA.height "100"
-        , SA.rx "15"
-        , SA.ry "15"
-        , SA.color "red"
-        , SA.fill "#caf3f5"
-        ]
-        []
 
 
 
