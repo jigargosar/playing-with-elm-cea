@@ -311,7 +311,7 @@ viewKnobs model =
             modelToHSLA model
 
         defaultConfig =
-            { value = 0.0, labelText = "" }
+            { value = 0.0, labelText = "", onChange = \_ -> Nop }
     in
     column
         [ width fill
@@ -339,7 +339,13 @@ viewKnobs model =
         ]
 
 
-colorSlider : { value : Float, labelText : String } -> (Float -> msg) -> Element msg
+colorSlider :
+    { value : Float
+    , labelText : String
+    , onChange : Float -> msg
+    }
+    -> (Float -> msg)
+    -> Element msg
 colorSlider config onChange =
     let
         labelText =
