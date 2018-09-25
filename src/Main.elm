@@ -341,12 +341,16 @@ viewKnobs model =
 
 
 viewColorSliders model =
-    colorSliders model
-        |> List.concat
-        |> column
-            ([ p 1, spRem 1 ]
-                ++ scrollFillWH
-            )
+    let
+        children =
+            colorSliders model
+                |> List.concat
+    in
+    column
+        ([ p 1, spRem 1 ]
+            ++ scrollFillWH
+        )
+        children
 
 
 colorSliders model =
