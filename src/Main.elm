@@ -9,7 +9,7 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, inputNumber, lightGray, p, pXY)
+import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, inputNumber, lightGray, p, pXY, white)
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -326,7 +326,7 @@ viewKnobs model =
             , color = rgba 0 0 0 0.4
             }
         ]
-        [ el [ p 1 ] (text "Controller")
+        [ el [ p 1, Border.color white ] (text "Controller")
         , colorSliders model
             |> column
                 ([ pXY 1 -999, spacing 16 ]
