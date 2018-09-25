@@ -10,6 +10,8 @@ module ElementX exposing
     , hsla
     , inputNumber
     , lightGray
+    , maxRem
+    , minRem
     , p
     , pXY
     , scaled
@@ -35,6 +37,19 @@ scaled =
 scaledInt : Int -> Int
 scaledInt =
     scaled >> round
+
+
+remToInt : Float -> Int
+remToInt remVal =
+    remVal * 16 |> round
+
+
+maxRem =
+    remToInt >> Element.maximum
+
+
+minRem =
+    remToInt >> Element.minimum
 
 
 fz : Int -> Element.Attr decorative msg

@@ -3,13 +3,13 @@ module Main exposing (main)
 import Browser
 import Color
 import ColorX
-import Element exposing (Element, alignRight, behindContent, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, maximum, minimum, padding, paddingXY, px, rgb, rgb255, rgba, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, text, width)
+import Element exposing (Element, alignRight, behindContent, centerX, centerY, clip, column, el, explain, fill, fillPortion, height, padding, paddingXY, px, rgb, rgb255, rgba, row, scrollbarY, scrollbars, shrink, spacing, spacingXY, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, inputNumber, lightGray, p, pXY, scaledInt, white)
+import ElementX exposing (bc, bcInherit, fc, fz, grayscale, hsla, inputNumber, lightGray, maxRem, minRem, p, pXY, scaledInt, white)
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -318,7 +318,7 @@ viewKnobs model =
     in
     column
         [ width fill
-        , height (fill |> maximum 300)
+        , height (fill |> maxRem 20)
         , bc (grayscale 0.1)
         , fc (grayscale 0.9)
         , Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
@@ -389,7 +389,7 @@ colorSlider { onChange, labelText, value, max } =
             { onChange = onChange
             , label =
                 Input.labelLeft
-                    [ width (shrink |> minimum (scaledInt 6)) ]
+                    [ width (shrink |> minRem 3) ]
                     (el [ alignRight ] (text labelText))
             , min = min
             , max = max
