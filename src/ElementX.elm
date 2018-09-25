@@ -1,7 +1,5 @@
 module ElementX exposing
-    ( HSLA
-    , RGBA
-    , bc
+    ( bc
     , bcInherit
     , black
     , brc
