@@ -9,7 +9,8 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
-import ElementX exposing (bc, bcInherit, brc, fc, fz, grayscale, hsla, inputNumber, labelNone, lightGray, maxRem, minRem, p, pXY, scaledInt, spRem, white)
+import ElementX exposing (RGBA, bc, bcInherit, brc, fc, fz, grayscale, hsla, inputNumber, labelNone, lightGray, maxRem, minRem, p, pXY, scaledInt, spRem, white)
+import Hex
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -88,6 +89,18 @@ type Msg
 modelToHSLA model =
     Color.rgba model.red model.green model.blue model.alpha
         |> Color.toHsla
+
+
+toHexA : RGBA -> String
+toHexA color =
+    let
+        { red, green, blue, alpha } =
+            color
+    in
+    [ red, green, blue, alpha ]
+        |> List.map (clamp 0 1 >> (*) 255 >> Round.truncate >> Hex.toString)
+        |> (::) "#"
+        |> String.join ""
 
 
 updateHSLA fn model =
