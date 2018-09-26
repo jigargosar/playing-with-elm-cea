@@ -249,6 +249,9 @@ viewTodoListPage model =
             in
             el [ centerX ] (column [ sp 1 ] todoItems)
 
+        pageTitle =
+            el [ centerX, fz 4 ] (text "Repeat Todo")
+
         listPaper =
             el
                 [ width fill
@@ -257,12 +260,14 @@ viewTodoListPage model =
                 , elevation 3
                 ]
                 (column fillWH
-                    [ el [ p 1, centerX, fz 4 ] (text "Repeat Todo")
-                    , viewTodoList
+                    [ viewTodoList
                     ]
                 )
+
+        pageContainer =
+            column (scrollFillWH ++ [ p 1, sp 1 ])
     in
-    el (scrollFillWH ++ [ p 1 ]) listPaper
+    pageContainer [ pageTitle, listPaper ]
 
 
 viewSampleContent : Model -> Element msg
