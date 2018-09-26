@@ -95,7 +95,7 @@ getFlags { isConfigCollapsed } =
 
 
 type alias Todo =
-    { text : String, done : Bool }
+    { id : String, text : String, done : Bool }
 
 
 type alias TodoFn =
@@ -107,7 +107,7 @@ type alias TodoList =
 
 
 defaultTodoList =
-    [ Todo "Get Some Milk!" False, Todo "Build Quick Prototype !!" False ]
+    [ Todo "0" "Get Some Milk!" False, Todo "1" "Build Quick Prototype !!" False ]
 
 
 type alias Model =
@@ -197,7 +197,7 @@ updateTodo fn todo model =
 addTodo : ModelFn
 addTodo model =
     model.todoList
-        |> (::) (Todo "Fake Text" False)
+        |> (::) (Todo (model.todoList |> List.length >> String.fromInt) "Fake Text" False)
         |> (\todoList -> { model | todoList = todoList })
 
 
