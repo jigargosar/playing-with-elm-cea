@@ -2,6 +2,7 @@ port module Main exposing (ColorSliderConfig, Flags, Model, ModelFn, Msg(..), ca
 
 import Browser
 import Color
+import Dict exposing (Dict)
 import Element exposing (Element, alignRight, behindContent, centerX, centerY, column, el, fill, height, px, row, shrink, text, width)
 import Element.Background as Background
 import Element.Border as Border
@@ -40,10 +41,12 @@ import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Json.Decode as D
 import Json.Encode as E
+import List.Extra
 import Ramda exposing (whenEq)
 import Random
 import Rgba
 import Round
+import Set
 import Svg as Svg
 import Svg.Attributes as SA
 import SvgView
@@ -185,9 +188,11 @@ updateHSLA fn m =
 
 updateTodo : TodoFn -> Todo -> ModelFn
 updateTodo fn todo model =
-    model
-        |> getCurrentTodoList
-        |> List.map (whenEq todo fn)
+    model.todoList
+        |> List.map (\t -> ( t.text, t ))
+        |> Dict.fromList
+        |> Dict.update todo.text identity
+        |> Dict.values
         |> (\todoList -> { model | todoList = todoList })
 
 
