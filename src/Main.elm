@@ -205,9 +205,9 @@ addTodo todo model =
         |> (\todoList -> { model | todoList = todoList })
 
 
-todoGenerator : Random.Generator { id : String }
+todoGenerator : Random.Generator Todo
 todoGenerator =
-    idGenerator |> Random.andThen (\id -> Random.constant { id = id })
+    idGenerator |> Random.map (\id -> Todo id "GEN" False)
 
 
 idGenerator : Random.Generator String
@@ -217,8 +217,7 @@ idGenerator =
         idCharGenerator =
             Random.Extra.frequency
                 ( 10, Random.Char.char 48 (48 + 9) )
-                --        [ ( 26 * 2, Random.Char.english ) ]
-                []
+                [ ( 26 * 2, Random.Char.english ) ]
     in
     Random.String.string 14 idCharGenerator
 
