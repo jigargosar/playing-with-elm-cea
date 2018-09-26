@@ -231,9 +231,8 @@ view model =
         (column
             (clipFillWH ++ [])
             [ --
-              el [ height fill ] Element.none
+              el [] Element.none
             , viewTodoListContent model
-            , el [ height fill ] Element.none
             , viewConfig model
             ]
         )
@@ -245,7 +244,7 @@ viewTodoListContent model =
         (scrollFillWH ++ [ p 1 ])
         (el
             [ width fill
-            , height (fill |> minRem 40)
+            , height fill
             , bc (modelColor model)
             , elevation 3
             ]
