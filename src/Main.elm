@@ -72,6 +72,11 @@ type alias Flags =
     { isConfigCollapsed : Bool }
 
 
+encodeFlags : Flags -> E.Value
+encodeFlags flags =
+    E.object [ ( "isConfigCollapsed", E.bool flags.isConfigCollapsed ) ]
+
+
 init : Flags -> ( Model, Cmd Msg )
 init { isConfigCollapsed } =
     let
@@ -83,7 +88,7 @@ init { isConfigCollapsed } =
       , hsla = Rgba.toHSLA initialRGBA
       , isConfigCollapsed = isConfigCollapsed
       }
-    , cache (E.object [ ( "isConfigCollapsed", E.bool True ) ])
+    , cache (encodeFlags { isConfigCollapsed = isConfigCollapsed })
     )
 
 
