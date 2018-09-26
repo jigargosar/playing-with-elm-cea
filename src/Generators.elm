@@ -19,13 +19,17 @@ boolGenerator =
     Random.Extra.bool
 
 
+numericGenerator =
+    Random.Char.char 48 (48 + 9)
+
+
 idGenerator : Random.Generator String
 idGenerator =
     let
         idCharGenerator : Random.Generator Char
         idCharGenerator =
             Random.Extra.frequency
-                ( 10, Random.Char.char 48 (48 + 9) )
+                ( 10, numericGenerator )
                 [ ( 26 * 2, Random.Char.english ) ]
     in
     Random.String.string 14 idCharGenerator
