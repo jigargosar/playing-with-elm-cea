@@ -40,6 +40,7 @@ import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Json.Decode as D
 import Json.Encode as E
+import Ramda exposing (whenEq)
 import Random
 import Rgba
 import Round
@@ -175,30 +176,6 @@ updateHSLA fn m =
             fn m.hsla
     in
     { m | hsla = newHSLA, rgba = Hsla.toRGBA newHSLA }
-
-
-ifElse pred t f v =
-    if pred v then
-        t v
-
-    else
-        f v
-
-
-eq =
-    (==)
-
-
-when pred t v =
-    if pred v then
-        t v
-
-    else
-        v
-
-
-whenEq v1 fn v2 =
-    when (eq v1) fn v2
 
 
 updateTodo : TodoFn -> Todo -> ModelFn
