@@ -13,8 +13,8 @@ const app = Elm.Main.init({
 
 console.log('app', app, Elm)
 
-app.ports.config.subscribe(function (data) {
-  localStorage.setItem('config', JSON.stringify(data))
+app.ports.store.subscribe(function ([key, data]) {
+  localStorage.setItem(key, JSON.stringify(data))
 })
 
 registerServiceWorker()

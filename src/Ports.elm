@@ -1,9 +1,6 @@
-port module Ports exposing (config, store)
+port module Ports exposing (store)
 
 import Json.Encode exposing (Value)
-
-
-port config : Value -> Cmd msg
 
 
 port store : ( String, Value ) -> Cmd msg
