@@ -51,6 +51,7 @@ import Random.String
 import Rgba
 import Round
 import Set
+import String.Extra
 import Svg as Svg
 import Svg.Attributes as SA
 import SvgView
@@ -208,7 +209,7 @@ addTodo todo model =
 
 todoGenerator : Random.Generator Todo
 todoGenerator =
-    Random.map3 (\id words done -> Todo id words done)
+    Random.map3 (\id words done -> Todo id (words |> String.Extra.toTitleCase) done)
         idGenerator
         wordsGenerator
         boolGenerator
