@@ -42,7 +42,7 @@ import Html.Events exposing (onClick, onInput)
 import Json.Decode as D
 import Json.Encode as E
 import List.Extra
-import Ramda exposing (whenEq)
+import Ramda exposing (equals, whenEq)
 import Random
 import Rgba
 import Round
@@ -189,10 +189,7 @@ updateHSLA fn m =
 updateTodo : TodoFn -> Todo -> ModelFn
 updateTodo fn todo model =
     model.todoList
-        |> List.map (\t -> ( t.text, t ))
-        |> Dict.fromList
-        |> Dict.update todo.text identity
-        |> Dict.values
+        |> List.Extra.updateIf (equals todo) fn
         |> (\todoList -> { model | todoList = todoList })
 
 

@@ -1,4 +1,4 @@
-module Ramda exposing (eq, ifElse, when, whenEq)
+module Ramda exposing (equals, ifElse, when, whenEq)
 
 
 ifElse pred t f v =
@@ -9,7 +9,7 @@ ifElse pred t f v =
         f v
 
 
-eq =
+equals =
     (==)
 
 
@@ -22,4 +22,4 @@ when pred t v =
 
 
 whenEq v1 fn v2 =
-    when (eq v1) fn v2
+    when (equals v1) fn v2
