@@ -250,7 +250,7 @@ viewTodoListPage model =
             el [ centerX ] (column [ sp 1 ] todoItems)
 
         pageTitle =
-            el [ centerX, fz 4 ] (text "Repeat Todo")
+            el [ centerX, fz -1, fc (grayscale 0.3) ] (text "Repeat Todo")
 
         listPaper =
             el
