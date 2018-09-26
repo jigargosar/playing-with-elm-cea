@@ -145,6 +145,7 @@ type alias Model =
     , rgba : Rgba.RGBA
     , isConfigCollapsed : Bool
     , todoCollection : TodoCollection
+    , config : Config
     }
 
 
@@ -167,9 +168,10 @@ init flagsValue =
             , hsla = Rgba.toHSLA initialRGBA
             , isConfigCollapsed = flags.config.isConfigCollapsed
             , todoCollection = Dict.empty
+            , config = flags.config
             }
     in
-    update (Init (Time.millisToPosix 1000)) model
+    update (Init flags.time) model
 
 
 getCurrentTodoList : Model -> TodoList
@@ -264,11 +266,6 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Init time ->
-            let
-                nowMillis =
-                    Time.posixToMillis time
-                        |> Debug.log "TS"
-            in
             ( model
             , Cmd.batch
                 [ persistConfigCmd model
