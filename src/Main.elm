@@ -34,6 +34,7 @@ import ElementX
         , sp
         , white
         )
+import Generators exposing (boolGenerator, idGenerator)
 import Hex
 import Hsla
 import Html exposing (Html, button, col, div, h1, h3, img, input)
@@ -209,19 +210,7 @@ todoGenerator : Random.Generator Todo
 todoGenerator =
     Random.map2 (\id done -> Todo id "GEN" done)
         idGenerator
-        Random.Extra.bool
-
-
-idGenerator : Random.Generator String
-idGenerator =
-    let
-        idCharGenerator : Random.Generator Char
-        idCharGenerator =
-            Random.Extra.frequency
-                ( 10, Random.Char.char 48 (48 + 9) )
-                [ ( 26 * 2, Random.Char.english ) ]
-    in
-    Random.String.string 14 idCharGenerator
+        boolGenerator
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
