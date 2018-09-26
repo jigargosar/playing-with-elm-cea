@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (ColorSliderConfig, Flags, Model, ModelFn, Msg(..), cache, colorSlider, colorSliderConfig, init, main, modelColor, subscriptions, update, updateHSLA, updateRGBA, view, viewColorSliders, viewConfig, viewContent)
 
 import Browser
 import Color
@@ -38,6 +38,8 @@ import Hsla
 import Html exposing (Html, button, col, div, h1, h3, img, input)
 import Html.Attributes exposing (class, placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
+import Json.Decode as D
+import Json.Encode as E
 import Random
 import Rgba
 import Round
@@ -46,6 +48,13 @@ import Svg.Attributes as SA
 import SvgView
 import Task
 import Time
+
+
+
+--- Ports ---
+
+
+port cache : E.Value -> Cmd msg
 
 
 
@@ -74,7 +83,7 @@ init { isConfigCollapsed } =
       , hsla = Rgba.toHSLA initialRGBA
       , isConfigCollapsed = isConfigCollapsed
       }
-    , Cmd.none {- Task.perform AdjustTimeZone Time.here -}
+    , cache (E.string "foo") {- Cmd.none -} {- Task.perform AdjustTimeZone Time.here -}
     )
 
 
