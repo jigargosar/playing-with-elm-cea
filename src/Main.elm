@@ -157,10 +157,6 @@ updateHSLA fn m =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        ( hslaColor, rgbaColor ) =
-            ( model.hsla, model.rgba )
-    in
     case msg of
         Nop ->
             ( model, Cmd.none )
