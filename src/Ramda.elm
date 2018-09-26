@@ -1,4 +1,4 @@
-module Ramda exposing (equals, ifElse, when, whenEq)
+module Ramda exposing (eqBy, equals, ifElse, when, whenEq)
 
 
 ifElse pred t f v =
@@ -11,6 +11,10 @@ ifElse pred t f v =
 
 equals =
     (==)
+
+
+eqBy f v1 v2 =
+    f v1 == f v2
 
 
 when pred t v =
