@@ -21,3 +21,47 @@ idGenerator =
                 [ ( 26 * 2, Random.Char.english ) ]
     in
     Random.String.string 14 idCharGenerator
+
+
+adjectives =
+    { shape =
+        [ "broad"
+        , "crooked"
+        , "curved"
+        , "deep"
+        , "even"
+        , "flat"
+        , "hilly"
+        , "jagged"
+        , "round"
+        , "shallow"
+        , "square"
+        , "steep"
+        , "straight"
+        , "thick"
+        , "thin"
+        , "triangular"
+        , "uneven"
+        ]
+    , size =
+        [ "average"
+        , "big"
+        , "fat"
+        , "gigantic"
+        , "huge"
+        , "large"
+        , "little"
+        , "long"
+        , "massive"
+        , "medium"
+        , "miniature"
+        , "narrow"
+        , "petite"
+        , "short"
+        , "skinny"
+        , "small"
+        , "tall"
+        , "tiny"
+        , "wide"
+        ]
+    }
