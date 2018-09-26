@@ -92,6 +92,11 @@ decodeFlags =
     D.decodeValue flagsDecoder
 
 
+getFlags : Model -> Flags
+getFlags { isConfigCollapsed } =
+    { isConfigCollapsed = isConfigCollapsed }
+
+
 init : E.Value -> ( Model, Cmd Msg )
 init flagsValue =
     let
