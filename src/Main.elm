@@ -161,6 +161,16 @@ init flagsValue =
         |> modelCmdAndThen update AddClicked
 
 
+getCurrentTodoList : Model -> TodoList
+getCurrentTodoList =
+    .todoCollection >> Dict.values
+
+
+
+{- ( model, cache (encodeFlags flags) ) -}
+---- UPDATE ----
+
+
 type alias ModelCmd msg model =
     ( model, Cmd msg )
 
@@ -180,16 +190,6 @@ modelCmdAndThen updateFn msg ( model, cmd ) =
             updateFn msg model
     in
     ( model2, Cmd.batch [ cmd, cmd2 ] )
-
-
-getCurrentTodoList : Model -> TodoList
-getCurrentTodoList =
-    .todoCollection >> Dict.values
-
-
-
-{- ( model, cache (encodeFlags flags) ) -}
----- UPDATE ----
 
 
 type Msg
