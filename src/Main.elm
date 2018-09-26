@@ -137,6 +137,11 @@ init flagsValue =
     update Cache model
 
 
+getTodoList : Model -> TodoList
+getTodoList =
+    .todoList
+
+
 
 {- ( model, cache (encodeFlags flags) ) -}
 ---- UPDATE ----
@@ -180,7 +185,8 @@ updateHSLA fn m =
 
 updateTodo : TodoFn -> Todo -> ModelFn
 updateTodo fn todo model =
-    model.todoList
+    model
+        |> getTodoList
         |> List.map (whenEq todo fn)
         |> (\todoList -> { model | todoList = todoList })
 
@@ -262,7 +268,8 @@ viewTodoListPage : Model -> Element Msg
 viewTodoListPage model =
     let
         todoItems =
-            model.todoList
+            model
+                |> getTodoList
                 |> List.map
                     (\todo ->
                         el []
