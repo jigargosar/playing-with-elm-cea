@@ -201,13 +201,13 @@ update msg model =
             ( model, Cmd.none )
 
         Done todo done ->
-            update PersistConfig
-                (Todo.updateTodo
-                    (\t -> { t | done = done })
-                    todo
-                    model.todoCollection
-                    |> setTodoCollectionIn model
-                )
+            ( Todo.updateTodo
+                (\t -> { t | done = done })
+                todo
+                model.todoCollection
+                |> setTodoCollectionIn model
+            , Cmd.none
+            )
 
         PersistConfig ->
             ( model, persistConfigCmd model )
