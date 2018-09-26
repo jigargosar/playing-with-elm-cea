@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Color
+import Config
 import Dict exposing (Dict)
 import Element exposing (Element, alignRight, behindContent, centerX, centerY, column, el, fill, height, px, row, shrink, text, width)
 import Element.Background as Background
@@ -66,13 +67,13 @@ import Time
 
 
 type alias Flags =
-    { config : Config
+    { config : Config.Model
     , time : Time.Posix
     }
 
 
 defaultFlags =
-    Flags defaultConfig (Time.millisToPosix 0)
+    Flags Config.default (Time.millisToPosix 0)
 
 
 flagsDecoder : D.Decoder Flags
@@ -82,34 +83,13 @@ flagsDecoder =
             D.map Time.millisToPosix D.int
     in
     D.map2 Flags
-        (D.field "config" configDecoder)
+        (D.field "config" Config.decoder)
         (D.field "time" decodePosixTime)
 
 
-type alias Config =
-    { isConfigCollapsed : Bool }
-
-
-defaultConfig =
-    Config True
-
-
-configDecoder : D.Decoder Config
-configDecoder =
-    D.map Config
-        (D.field "isConfigCollapsed" D.bool)
-
-
-encodeConfig : Config -> E.Value
-encodeConfig config =
-    E.object
-        [ ( "isConfigCollapsed", E.bool config.isConfigCollapsed )
-        ]
-
-
-getConfig : Model -> Config
-getConfig { isConfigCollapsed } =
-    Config isConfigCollapsed
+getConfig : Model -> Config.Model
+getConfig =
+    .config
 
 
 type alias Todo =
@@ -143,9 +123,8 @@ defaultTodoCollection =
 type alias Model =
     { hsla : Hsla.HSLA
     , rgba : Rgba.RGBA
-    , isConfigCollapsed : Bool
     , todoCollection : TodoCollection
-    , config : Config
+    , config : Config.Model
     }
 
 
@@ -166,7 +145,6 @@ init flagsValue =
         model =
             { rgba = initialRGBA
             , hsla = Rgba.toHSLA initialRGBA
-            , isConfigCollapsed = flags.config.isConfigCollapsed
             , todoCollection = Dict.empty
             , config = flags.config
             }
@@ -251,7 +229,7 @@ todoGenerator =
 
 
 persistConfigCmd model =
-    Ports.config (model |> getConfig >> encodeConfig)
+    Ports.config (model |> getConfig >> Config.encode)
 
 
 generateAndAddTodoCmd =
@@ -259,7 +237,7 @@ generateAndAddTodoCmd =
 
 
 toggleConfigCollapsed model =
-    { model | isConfigCollapsed = not model.isConfigCollapsed }
+    { model | config = Config.toggleConfigCollapsed model.config }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -443,7 +421,7 @@ viewConfig model =
             , bc black
             ]
             (text "Config")
-        , if model.isConfigCollapsed then
+        , if (getConfig model).isConfigCollapsed then
             Element.none
 
           else
