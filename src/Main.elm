@@ -1,7 +1,6 @@
 module Main exposing (main)
 
 import Browser
-import CollageExample
 import Color
 import Element exposing (Element, alignRight, behindContent, centerX, centerY, column, el, fill, height, px, row, shrink, text, width)
 import Element.Background as Background
