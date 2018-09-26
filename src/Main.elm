@@ -263,8 +263,9 @@ viewTodoListPage model =
                 , elevation 3
                 , p 1
                 ]
-                (column fillWH
-                    [ el [] (column [ sp 1 ] todoItems) ]
+                (column
+                    (fillWH ++ [ sp 1 ])
+                    todoItems
                 )
 
         pageContainer =
