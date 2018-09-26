@@ -1,4 +1,10 @@
-module Generators exposing (boolGenerator, idGenerator)
+module Generators exposing
+    ( adjectiveGenerator
+    , boolGenerator
+    , idGenerator
+    , objectNameGenerator
+    , wordsGenerator
+    )
 
 import Array exposing (Array)
 import Random
@@ -25,14 +31,20 @@ idGenerator =
     Random.String.string 14 idCharGenerator
 
 
-generateAdjective : Random.Generator String
-generateAdjective =
+adjectiveGenerator : Random.Generator String
+adjectiveGenerator =
     allAdjectives |> Random.Array.sample >> Random.map (Maybe.withDefault "broad")
 
 
-generateObjectNames : Random.Generator String
-generateObjectNames =
+objectNameGenerator : Random.Generator String
+objectNameGenerator =
     objectNames |> Random.Array.sample >> Random.map (Maybe.withDefault "broad")
+
+
+wordsGenerator =
+    Random.map2 (\w1 w2 -> w1 ++ " " ++ w2)
+        adjectiveGenerator
+        objectNameGenerator
 
 
 
