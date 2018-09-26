@@ -251,17 +251,17 @@ viewTodoListPage model =
     in
     el
         (scrollFillWH ++ [ p 1 ])
-        (column
+        (el
             [ width fill
             , height fill
             , bc white
             , elevation 3
             ]
-            [ column fillWH
+            (column fillWH
                 [ el [ p 1, centerX, fz 4 ] (text "Repeat Todo")
                 , viewTodoList
                 ]
-            ]
+            )
         )
 
 
