@@ -34,7 +34,7 @@ import ElementX
         , sp
         , white
         )
-import Generators exposing (boolGenerator, idGenerator)
+import Generators exposing (boolGenerator, idGenerator, wordsGenerator)
 import Hex
 import Hsla
 import Html exposing (Html, button, col, div, h1, h3, img, input)
@@ -208,8 +208,9 @@ addTodo todo model =
 
 todoGenerator : Random.Generator Todo
 todoGenerator =
-    Random.map2 (\id done -> Todo id "GEN" done)
+    Random.map3 (\id words done -> Todo id words done)
         idGenerator
+        wordsGenerator
         boolGenerator
 
 
