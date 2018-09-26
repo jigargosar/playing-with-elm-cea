@@ -197,10 +197,14 @@ when pred t v =
         v
 
 
+whenEq v1 fn v2 =
+    when (eq v1) fn v2
+
+
 updateTodo : TodoFn -> Todo -> ModelFn
 updateTodo fn todo model =
     model.todoList
-        |> List.map (when (eq todo) fn)
+        |> List.map (whenEq todo fn)
         |> (\todoList -> { model | todoList = todoList })
 
 
