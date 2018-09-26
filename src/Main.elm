@@ -258,7 +258,7 @@ generateAndAddTodoCmd =
     Random.generate AddTodo todoGenerator
 
 
-toggleConfig model =
+toggleConfigCollapsed model =
     { model | isConfigCollapsed = not model.isConfigCollapsed }
 
 
@@ -284,7 +284,7 @@ update msg model =
             ( model, persistConfigCmd model )
 
         ToggleConfig ->
-            update PersistConfig (toggleConfig model)
+            update PersistConfig (toggleConfigCollapsed model)
 
         AddTodo todo ->
             ( addTodo todo model, Cmd.none )
