@@ -55,7 +55,7 @@ import Time
 type alias Model =
     { hsla : Hsla.HSLA
     , rgba : Rgba.RGBA
-    , isControllerCollapsed : Bool
+    , isConfigCollapsed : Bool
     }
 
 
@@ -68,7 +68,7 @@ init =
     in
     ( { rgba = initialRGBA
       , hsla = Rgba.toHSLA initialRGBA
-      , isControllerCollapsed = False
+      , isConfigCollapsed = False
       }
     , Cmd.none {- Task.perform AdjustTimeZone Time.here -}
     )
@@ -87,7 +87,7 @@ type Msg
     | Hue Float
     | Saturation Float
     | Lightness Float
-    | ToggleController
+    | ToggleConfig
 
 
 type alias ModelFn =
@@ -122,8 +122,8 @@ update msg model =
         Nop ->
             ( model, Cmd.none )
 
-        ToggleController ->
-            ( { model | isControllerCollapsed = not model.isControllerCollapsed }, Cmd.none )
+        ToggleConfig ->
+            ( { model | isConfigCollapsed = not model.isConfigCollapsed }, Cmd.none )
 
         Red val ->
             ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
@@ -178,7 +178,7 @@ view model =
         (column
             (clipFillWH ++ [])
             [ viewContent model
-            , viewController model
+            , viewConfig model
             ]
         )
 
@@ -201,8 +201,8 @@ viewContent model =
         )
 
 
-viewController : Model -> Element Msg
-viewController model =
+viewConfig : Model -> Element Msg
+viewConfig model =
     column
         [ width fill
 
@@ -224,12 +224,12 @@ viewController model =
             [ width fill
             , p -2
             , elevation 4
-            , Element.Events.onClick ToggleController
+            , Element.Events.onClick ToggleConfig
             , Element.pointer
             , bc black
             ]
-            (text "Controller")
-        , if model.isControllerCollapsed then
+            (text "Config")
+        , if model.isConfigCollapsed then
             Element.none
 
           else
