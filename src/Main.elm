@@ -162,6 +162,7 @@ type Msg
     | ToggleConfig
     | Cache
     | Done Todo Bool
+    | AddClicked
 
 
 type alias ModelFn =
@@ -207,6 +208,9 @@ update msg model =
 
         ToggleConfig ->
             update Cache { model | isConfigCollapsed = not model.isConfigCollapsed }
+
+        AddClicked ->
+            ( model, Cmd.none )
 
         Red val ->
             ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
@@ -296,7 +300,7 @@ viewTodoListPage model =
                 ("Repeat Todo" |> String.toUpper >> text)
 
         listPaper =
-            el
+            column
                 [ width (fill |> maxRem 30)
                 , height fill
                 , centerX
@@ -304,10 +308,9 @@ viewTodoListPage model =
                 , elevation 3
                 , p 1
                 ]
-                (column
-                    (fillWH ++ [ sp 1 ])
-                    todoItems
-                )
+                [ column (fillWH ++ [ sp 1 ]) todoItems
+                , Input.button [ pXY 1 -6 ] { onPress = Just AddClicked, label = text "Add" }
+                ]
 
         pageContainer =
             column (scrollFillWH ++ [ p 1, sp 1 ])
