@@ -185,11 +185,22 @@ ifElse pred t f v =
         f v
 
 
+eq =
+    (==)
+
+
+when pred t v =
+    if pred v then
+        t v
+
+    else
+        v
+
+
 updateTodo : TodoFn -> Todo -> ModelFn
 updateTodo fn todo model =
     model.todoList
-        |> List.map
-            (ifElse ((==) todo) fn identity)
+        |> List.map (when (eq todo) fn)
         |> (\todoList -> { model | todoList = todoList })
 
 
