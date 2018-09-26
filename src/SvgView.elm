@@ -31,6 +31,7 @@ svgView =
         ]
 
 
+view : Html msg
 view =
     svg
         [ width "120"
