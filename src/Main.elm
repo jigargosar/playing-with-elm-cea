@@ -157,7 +157,7 @@ init flagsValue =
             , todoCollection = Dict.empty
             }
     in
-    update Init model
+    update (Init (Time.millisToPosix 1000)) model
 
 
 getCurrentTodoList : Model -> TodoList
@@ -172,7 +172,7 @@ getCurrentTodoList =
 
 type Msg
     = Nop
-    | Init
+    | Init Time.Posix
     | Red Float
     | Green Float
     | Blue Float
@@ -247,7 +247,12 @@ generateAndAddTodoCmd =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Init ->
+        Init time ->
+            let
+                nowMillis =
+                    Time.posixToMillis time
+                        |> Debug.log "TS"
+            in
             ( model
             , Cmd.batch
                 [ updateCacheCmd model
