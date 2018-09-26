@@ -247,7 +247,7 @@ viewTodoListPage model =
                     model.todoList
                         |> List.map (\todo -> el [] (text todo.text))
             in
-            el [ centerX ] (column [ sp 1 ] todoItems)
+            el [  ] (column [ sp 1 ] todoItems)
 
         pageTitle =
             el
