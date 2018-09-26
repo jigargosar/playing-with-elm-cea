@@ -94,6 +94,10 @@ type alias Todo =
     { text : String, done : Bool }
 
 
+type alias TodoFn =
+    Todo -> Todo
+
+
 type alias TodoList =
     List Todo
 
@@ -173,6 +177,20 @@ updateHSLA fn m =
     { m | hsla = newHSLA, rgba = Hsla.toRGBA newHSLA }
 
 
+updateTodo : TodoFn -> Todo -> ModelFn
+updateTodo fn todo model =
+    model.todoList
+        |> List.map
+            (\t ->
+                if t == todo then
+                    fn t
+
+                else
+                    t
+            )
+        |> (\todoList -> { model | todoList = todoList })
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -180,7 +198,7 @@ update msg model =
             ( model, Cmd.none )
 
         Done todo done ->
-            ( model, Cmd.none )
+            ( updateTodo (\t -> { t | done = done }) todo model, Cmd.none )
 
         Cache ->
             ( model, cache (model |> getFlags >> encodeFlags) )
