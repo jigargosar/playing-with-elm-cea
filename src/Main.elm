@@ -94,7 +94,7 @@ decodeFlags =
 
 getFlags : Model -> Flags
 getFlags { isConfigCollapsed } =
-    { isConfigCollapsed = isConfigCollapsed }
+    Flags isConfigCollapsed
 
 
 init : E.Value -> ( Model, Cmd Msg )
