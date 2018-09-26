@@ -232,25 +232,34 @@ view model =
             (clipFillWH ++ [])
             [ --
               el [] Element.none
-            , viewTodoListContent model
+            , viewTodoListPage model
             , viewConfig model
             ]
         )
 
 
-viewTodoListContent : Model -> Element msg
-viewTodoListContent model =
+viewTodoListPage : Model -> Element msg
+viewTodoListPage model =
+    let
+        viewTodoList =
+            let
+                todoItems =
+                    model.todoList
+                        |> List.map (\todo -> el [] (text todo.text))
+            in
+            el [ centerX ] (column [] todoItems)
+    in
     el
         (scrollFillWH ++ [ p 1 ])
         (el
             [ width fill
             , height fill
-            , bc (modelColor model)
+            , bc white
             , elevation 3
             ]
-            (column (fillWH ++ [ p 1 ])
-                [ el [ p 1, centerX, fz 4 ] (text "Color Converter")
-                , el fillWH (Element.html SvgView.view)
+            (column fillWH
+                [ el [ p 1, centerX, fz 4 ] (text "Repeat Todo")
+                , viewTodoList
                 ]
             )
         )
