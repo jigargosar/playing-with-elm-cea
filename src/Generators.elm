@@ -38,13 +38,24 @@ adjectiveGenerator =
 
 objectNameGenerator : Random.Generator String
 objectNameGenerator =
-    objectNames |> Random.Array.sample >> Random.map (Maybe.withDefault "broad")
+    objectNames |> Random.Array.sample >> Random.map (Maybe.withDefault "bottle")
 
 
 wordsGenerator =
-    Random.map2 (\w1 w2 -> w1 ++ " " ++ w2)
+    Random.map3 (\w1 w2 w3 -> [ w1, w2, w3 ] |> String.join " ")
+        verbGenerator
         adjectiveGenerator
         objectNameGenerator
+
+
+sampleArrayWithDefault : String -> Array String -> Random.Generator String
+sampleArrayWithDefault default =
+    Random.Array.sample >> Random.map (Maybe.withDefault default)
+
+
+verbGenerator : Random.Generator String
+verbGenerator =
+    sampleArrayWithDefault "heap" verbArray
 
 
 
@@ -320,5 +331,110 @@ objectNames =
     , "model car"
     , "coasters"
     , "computer"
+    ]
+        |> Array.fromList
+
+
+verbArray =
+    [ "heap"
+    , "care"
+    , "return"
+    , "peck"
+    , "brake"
+    , "hang"
+    , "hunt"
+    , "wonder"
+    , "remind"
+    , "drag"
+    , "land"
+    , "frighten"
+    , "warm"
+    , "bury"
+    , "prefer"
+    , "sip"
+    , "visit"
+    , "remain"
+    , "spill"
+    , "occur"
+    , "groan"
+    , "identify"
+    , "cure"
+    , "introduce"
+    , "carve"
+    , "flower"
+    , "confuse"
+    , "whine"
+    , "float"
+    , "suck"
+    , "blind"
+    , "heat"
+    , "raise"
+    , "kill"
+    , "stroke"
+    , "carry"
+    , "join"
+    , "zoom"
+    , "sack"
+    , "repair"
+    , "enjoy"
+    , "cover"
+    , "rush"
+    , "protect"
+    , "fool"
+    , "burn"
+    , "hope"
+    , "extend"
+    , "offend"
+    , "hook"
+    , "precede"
+    , "mess up"
+    , "disagree"
+    , "trip"
+    , "coach"
+    , "damage"
+    , "examine"
+    , "prepare"
+    , "borrow"
+    , "strip"
+    , "bless"
+    , "beam"
+    , "produce"
+    , "jam"
+    , "drain"
+    , "gather"
+    , "spoil"
+    , "scare"
+    , "bolt"
+    , "remember"
+    , "remove"
+    , "pretend"
+    , "roll"
+    , "guess"
+    , "glue"
+    , "transport"
+    , "boil"
+    , "hammer"
+    , "time"
+    , "complete"
+    , "pass"
+    , "wander"
+    , "reply"
+    , "save"
+    , "relax"
+    , "embarrass"
+    , "drip"
+    , "drown"
+    , "recognise"
+    , "water"
+    , "rinse"
+    , "trick"
+    , "amuse"
+    , "taste"
+    , "multiply"
+    , "lick"
+    , "attempt"
+    , "knot"
+    , "fasten"
+    , "appreciate"
     ]
         |> Array.fromList
