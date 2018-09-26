@@ -12,12 +12,11 @@ const app = Elm.Main.init({
   flags: JSON.parse(localStorage.getItem('cache')),
 })
 
+console.log('app', app, Elm)
 
-console.log("app",app, Elm)
-
-app.ports.cache.subscribe(function(data) {
-  localStorage.setItem('cache', JSON.stringify(data));
-});
+app.ports.cache.subscribe(function (data) {
+  localStorage.setItem('cache', JSON.stringify(data))
+})
 
 //<editor-fold desc="Description">
 registerServiceWorker()
