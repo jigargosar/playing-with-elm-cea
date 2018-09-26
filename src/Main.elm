@@ -72,22 +72,31 @@ port cache : E.Value -> Cmd msg
 
 
 type alias Flags =
-    { isConfigCollapsed : Bool }
+    { isConfigCollapsed : Bool
+    , time : Time.Posix
+    }
 
 
 defaultFlags =
-    Flags True
+    Flags True (Time.millisToPosix 0)
 
 
-encodeFlags : Flags -> E.Value
-encodeFlags flags =
-    E.object [ ( "isConfigCollapsed", E.bool flags.isConfigCollapsed ) ]
+encodeConfig : Config -> E.Value
+encodeConfig config =
+    E.object
+        [ ( "isConfigCollapsed", E.bool config.isConfigCollapsed )
+        ]
+
+
+decodePosixTime =
+    D.map Time.millisToPosix D.int
 
 
 flagsDecoder : D.Decoder Flags
 flagsDecoder =
-    D.map Flags
+    D.map2 Flags
         (D.field "isConfigCollapsed" D.bool)
+        (D.field "time" decodePosixTime)
 
 
 decodeFlags : E.Value -> Result D.Error Flags
@@ -95,9 +104,13 @@ decodeFlags =
     D.decodeValue flagsDecoder
 
 
-getFlags : Model -> Flags
-getFlags { isConfigCollapsed } =
-    Flags isConfigCollapsed
+type alias Config =
+    { isConfigCollapsed : Bool }
+
+
+getConfig : Model -> Config
+getConfig { isConfigCollapsed } =
+    Config isConfigCollapsed
 
 
 type alias Todo =
@@ -237,7 +250,7 @@ todoGenerator =
 
 
 updateCacheCmd model =
-    cache (model |> getFlags >> encodeFlags)
+    cache (model |> getConfig >> encodeConfig)
 
 
 generateAndAddTodoCmd =
