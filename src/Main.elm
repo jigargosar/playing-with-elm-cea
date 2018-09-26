@@ -216,7 +216,10 @@ view model =
         (fillWH ++ [ fz 1, bc lightGray ])
         (column
             (clipFillWH ++ [])
-            [ viewContent model
+            [ --
+              el [ height fill ] Element.none
+            , viewContent model
+            , el [ height fill ] Element.none
             , viewConfig model
             ]
         )
