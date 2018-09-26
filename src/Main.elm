@@ -217,7 +217,17 @@ update msg model =
             update Cache { model | isConfigCollapsed = not model.isConfigCollapsed }
 
         AddClicked ->
-            ( addTodo model, Cmd.none )
+            ( addTodo model
+            , Random.generate
+                (\i ->
+                    let
+                        _ =
+                            Debug.log "Random Int" i
+                    in
+                    Nop
+                )
+                (Random.int 1 6)
+            )
 
         Red val ->
             ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
