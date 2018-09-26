@@ -60,11 +60,11 @@ type alias Model =
 
 
 type alias Flags =
-    ()
+    { isConfigCollapsed : Bool }
 
 
 init : Flags -> ( Model, Cmd Msg )
-init i =
+init { isConfigCollapsed } =
     let
         initialRGBA : Rgba.RGBA
         initialRGBA =
@@ -72,7 +72,7 @@ init i =
     in
     ( { rgba = initialRGBA
       , hsla = Rgba.toHSLA initialRGBA
-      , isConfigCollapsed = False
+      , isConfigCollapsed = isConfigCollapsed
       }
     , Cmd.none {- Task.perform AdjustTimeZone Time.here -}
     )
