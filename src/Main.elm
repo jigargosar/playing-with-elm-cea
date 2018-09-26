@@ -34,6 +34,7 @@ import ElementX
         , sp
         , white
         )
+import Experiments exposing (modelCmdAndThen)
 import Generators exposing (boolGenerator, idGenerator, wordsGenerator)
 import Hex
 import Hsla
@@ -156,9 +157,7 @@ init flagsValue =
             , todoCollection = Dict.empty
             }
     in
-    update Cache model
-        |> modelCmdAndThen update AddClicked
-        |> modelCmdAndThen update AddClicked
+    update Init model
 
 
 getCurrentTodoList : Model -> TodoList
@@ -171,29 +170,9 @@ getCurrentTodoList =
 ---- UPDATE ----
 
 
-type alias ModelCmd msg model =
-    ( model, Cmd msg )
-
-
-type alias ModelCmdF msg model =
-    ModelCmd msg model -> ModelCmd msg model
-
-
-type alias UpdateFunction msg model =
-    msg -> model -> ( model, Cmd msg )
-
-
-modelCmdAndThen : UpdateFunction msg model -> msg -> ModelCmdF msg model
-modelCmdAndThen updateFn msg ( model, cmd ) =
-    let
-        ( model2, cmd2 ) =
-            updateFn msg model
-    in
-    ( model2, Cmd.batch [ cmd, cmd2 ] )
-
-
 type Msg
     = Nop
+    | Init
     | Red Float
     | Green Float
     | Blue Float
@@ -260,6 +239,11 @@ todoGenerator =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Init ->
+            update Cache model
+                |> modelCmdAndThen update AddClicked
+                |> modelCmdAndThen update AddClicked
+
         Nop ->
             ( model, Cmd.none )
 
