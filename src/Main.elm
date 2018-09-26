@@ -247,21 +247,21 @@ viewTodoListPage model =
                     model.todoList
                         |> List.map (\todo -> el [] (text todo.text))
             in
-            el [ centerX ] (column [] todoItems)
+            el [ centerX ] (column [ sp 1 ] todoItems)
     in
     el
         (scrollFillWH ++ [ p 1 ])
-        (el
+        (column
             [ width fill
             , height fill
             , bc white
             , elevation 3
             ]
-            (column fillWH
+            [ column fillWH
                 [ el [ p 1, centerX, fz 4 ] (text "Repeat Todo")
                 , viewTodoList
                 ]
-            )
+            ]
         )
 
 
