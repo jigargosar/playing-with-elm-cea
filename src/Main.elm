@@ -207,7 +207,9 @@ addTodo todo model =
 
 todoGenerator : Random.Generator Todo
 todoGenerator =
-    idGenerator |> Random.map (\id -> Todo id "GEN" False)
+    Random.map2 (\id _ -> Todo id "GEN" False)
+        idGenerator
+        Random.Extra.bool
 
 
 idGenerator : Random.Generator String
