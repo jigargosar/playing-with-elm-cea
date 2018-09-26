@@ -1,4 +1,4 @@
-port module Main exposing (ColorSliderConfig, Flags, Model, ModelF, Msg(..), cache, colorSlider, colorSliderConfig, init, main, modelColor, subscriptions, update, updateHSLA, updateRGBA, view, viewColorSliders, viewConfig, viewSampleContent)
+module Main exposing (main)
 
 import Browser
 import Color
@@ -44,6 +44,7 @@ import Html.Events exposing (onClick, onInput)
 import Json.Decode as D
 import Json.Encode as E
 import List.Extra
+import Ports
 import Ramda exposing (eqBy, equals, whenEq)
 import Random
 import Random.Char
@@ -61,24 +62,42 @@ import Time
 
 
 
---- Ports ---
-
-
-port cache : E.Value -> Cmd msg
-
-
-
 ---- MODEL ----
 
 
 type alias Flags =
-    { isConfigCollapsed : Bool
+    { config : Config
     , time : Time.Posix
     }
 
 
 defaultFlags =
-    Flags True (Time.millisToPosix 0)
+    Flags defaultConfig (Time.millisToPosix 0)
+
+
+flagsDecoder : D.Decoder Flags
+flagsDecoder =
+    let
+        decodePosixTime =
+            D.map Time.millisToPosix D.int
+    in
+    D.map2 Flags
+        (D.field "config" configDecoder)
+        (D.field "time" decodePosixTime)
+
+
+type alias Config =
+    { isConfigCollapsed : Bool }
+
+
+defaultConfig =
+    Config True
+
+
+configDecoder : D.Decoder Config
+configDecoder =
+    D.map Config
+        (D.field "isConfigCollapsed" D.bool)
 
 
 encodeConfig : Config -> E.Value
@@ -86,26 +105,6 @@ encodeConfig config =
     E.object
         [ ( "isConfigCollapsed", E.bool config.isConfigCollapsed )
         ]
-
-
-decodePosixTime =
-    D.map Time.millisToPosix D.int
-
-
-flagsDecoder : D.Decoder Flags
-flagsDecoder =
-    D.map2 Flags
-        (D.field "isConfigCollapsed" D.bool)
-        (D.field "time" decodePosixTime)
-
-
-decodeFlags : E.Value -> Result D.Error Flags
-decodeFlags =
-    D.decodeValue flagsDecoder
-
-
-type alias Config =
-    { isConfigCollapsed : Bool }
 
 
 getConfig : Model -> Config
@@ -158,7 +157,7 @@ init flagsValue =
 
         flags : Flags
         flags =
-            decodeFlags flagsValue
+            D.decodeValue flagsDecoder flagsValue
                 |> Result.mapError (Debug.log "ERROR decoding flags")
                 |> Result.withDefault defaultFlags
 
@@ -166,7 +165,7 @@ init flagsValue =
         model =
             { rgba = initialRGBA
             , hsla = Rgba.toHSLA initialRGBA
-            , isConfigCollapsed = flags.isConfigCollapsed
+            , isConfigCollapsed = flags.config.isConfigCollapsed
             , todoCollection = Dict.empty
             }
     in
@@ -249,8 +248,8 @@ todoGenerator =
         boolGenerator
 
 
-updateCacheCmd model =
-    cache (model |> getConfig >> encodeConfig)
+persistConfigCmd model =
+    Ports.config (model |> getConfig >> encodeConfig)
 
 
 generateAndAddTodoCmd =
@@ -272,7 +271,7 @@ update msg model =
             in
             ( model
             , Cmd.batch
-                [ updateCacheCmd model
+                [ persistConfigCmd model
                 , generateAndAddTodoCmd
                 , generateAndAddTodoCmd
                 ]
@@ -285,7 +284,7 @@ update msg model =
             update PersistConfig (updateTodo (\t -> { t | done = done }) todo model)
 
         PersistConfig ->
-            ( model, updateCacheCmd model )
+            ( model, persistConfigCmd model )
 
         ToggleConfig ->
             update PersistConfig (toggleConfig model)

@@ -8,13 +8,13 @@ import { Elm } from './Main.elm'
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
-  flags: {time: Date.now(),cache:JSON.parse(localStorage.getItem('cache'))},
+  flags: {time: Date.now(),config:JSON.parse(localStorage.getItem('config'))},
 })
 
 console.log('app', app, Elm)
 
-app.ports.cache.subscribe(function (data) {
-  localStorage.setItem('cache', JSON.stringify(data))
+app.ports.config.subscribe(function (data) {
+  localStorage.setItem('config', JSON.stringify(data))
 })
 
 registerServiceWorker()
