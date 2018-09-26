@@ -11,9 +11,9 @@ view =
         [ width "100%"
         , viewBox "0 0 500 120"
         ]
-        [ Svg.rect [ width "100%", height "100%", fill "#fff" ] []
+        [ Svg.rect [ width "100%", height "100%", fill "#fff", stroke "black" ] []
         , rect
-            [ x "10"
+            [ x "300"
             , y "10"
             , width "100"
             , height "100"
