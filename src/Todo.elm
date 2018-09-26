@@ -1,4 +1,14 @@
-module Todo exposing (Todo, TodoCollection, TodoF, TodoList, addTodos, defaultTodoCollection, generator, updateTodo)
+module Todo exposing
+    ( Todo
+    , TodoCollection
+    , TodoF
+    , TodoList
+    , addTodos
+    , defaultTodoCollection
+    , generate
+    , generator
+    , updateTodo
+    )
 
 import Dict exposing (Dict)
 import Generators exposing (boolGenerator, idGenerator, wordsGenerator)
@@ -44,6 +54,10 @@ generator =
         idGenerator
         wordsGenerator
         boolGenerator
+
+
+generate msg ct =
+    Random.generate msg (Random.list ct generator)
 
 
 updateTodo : TodoF -> Todo -> TodoCollectionF
