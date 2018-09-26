@@ -1,4 +1,4 @@
-port module Main exposing (ColorSliderConfig, Flags, Model, ModelFn, Msg(..), cache, colorSlider, colorSliderConfig, init, main, modelColor, subscriptions, update, updateHSLA, updateRGBA, view, viewColorSliders, viewConfig, viewSampleContent)
+port module Main exposing (ColorSliderConfig, Flags, Model, ModelF, Msg(..), cache, colorSlider, colorSliderConfig, init, main, modelColor, subscriptions, update, updateHSLA, updateRGBA, view, viewColorSliders, viewConfig, viewSampleContent)
 
 import Browser
 import Color
@@ -111,15 +111,27 @@ type alias TodoList =
     List Todo
 
 
+type alias TodoCollection =
+    Dict String Todo
+
+
+defaultTodoList : TodoList
 defaultTodoList =
     [ Todo "0" "Get Some Milk!" False, Todo "1" "Build Quick Prototype !!" False ]
+
+
+defaultTodoCollection : TodoCollection
+defaultTodoCollection =
+    [ Todo "0" "Get Some Milk!" False, Todo "1" "Build Quick Prototype !!" False ]
+        |> List.map (\t -> ( t.id, t ))
+        |> Dict.fromList
 
 
 type alias Model =
     { hsla : Hsla.HSLA
     , rgba : Rgba.RGBA
     , isConfigCollapsed : Bool
-    , todoList : TodoList
+    , todoCollection : TodoCollection
     }
 
 
@@ -130,16 +142,18 @@ init flagsValue =
         initialRGBA =
             Rgba.create 1 1 1 1
 
+        flags : Flags
         flags =
             decodeFlags flagsValue
                 |> Result.mapError (Debug.log "ERROR decoding flags")
                 |> Result.withDefault defaultFlags
 
+        model : Model
         model =
             { rgba = initialRGBA
             , hsla = Rgba.toHSLA initialRGBA
             , isConfigCollapsed = flags.isConfigCollapsed
-            , todoList = defaultTodoList
+            , todoCollection = defaultTodoCollection
             }
     in
     update Cache model
@@ -147,7 +161,7 @@ init flagsValue =
 
 getCurrentTodoList : Model -> TodoList
 getCurrentTodoList =
-    .todoList
+    .todoCollection >> Dict.values
 
 
 
@@ -171,11 +185,11 @@ type Msg
     | AddTodo Todo
 
 
-type alias ModelFn =
+type alias ModelF =
     Model -> Model
 
 
-updateRGBA : Rgba.Fn -> ModelFn
+updateRGBA : Rgba.Fn -> ModelF
 updateRGBA fn m =
     let
         newRGBA =
@@ -184,7 +198,7 @@ updateRGBA fn m =
     { m | rgba = newRGBA, hsla = Rgba.toHSLA newRGBA }
 
 
-updateHSLA : Hsla.Fn -> ModelFn
+updateHSLA : Hsla.Fn -> ModelF
 updateHSLA fn m =
     let
         newHSLA =
@@ -193,18 +207,23 @@ updateHSLA fn m =
     { m | hsla = newHSLA, rgba = Hsla.toRGBA newHSLA }
 
 
-updateTodo : TodoFn -> Todo -> ModelFn
+setTodoCollection : TodoCollection -> ModelF
+setTodoCollection todoCollection model =
+    { model | todoCollection = todoCollection }
+
+
+updateTodo : TodoFn -> Todo -> ModelF
 updateTodo fn todo model =
-    model.todoList
-        |> List.Extra.updateIf (eqBy .id todo) fn
-        |> (\todoList -> { model | todoList = todoList })
+    model.todoCollection
+        |> Dict.update todo.id (Maybe.map fn)
+        |> (\tc -> setTodoCollection tc model)
 
 
-addTodo : Todo -> ModelFn
+addTodo : Todo -> ModelF
 addTodo todo model =
-    model.todoList
-        |> (::) todo
-        |> (\todoList -> { model | todoList = todoList })
+    model.todoCollection
+        |> Dict.insert todo.id todo
+        |> (\tc -> setTodoCollection tc model)
 
 
 todoGenerator : Random.Generator Todo
@@ -298,8 +317,7 @@ viewTodoListPage : Model -> Element Msg
 viewTodoListPage model =
     let
         todoItems =
-            model
-                |> getCurrentTodoList
+            getCurrentTodoList model
                 |> List.map
                     (\todo ->
                         el []
