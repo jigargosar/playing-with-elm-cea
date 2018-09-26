@@ -194,7 +194,7 @@ type Msg
     | Saturation Float
     | Lightness Float
     | ToggleConfig
-    | Cache
+    | PersistConfig
     | Done Todo Bool
     | AddClicked
     | AddTodo Todo
@@ -257,6 +257,10 @@ generateAndAddTodoCmd =
     Random.generate AddTodo todoGenerator
 
 
+toggleConfig model =
+    { model | isConfigCollapsed = not model.isConfigCollapsed }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -278,13 +282,13 @@ update msg model =
             ( model, Cmd.none )
 
         Done todo done ->
-            update Cache (updateTodo (\t -> { t | done = done }) todo model)
+            update PersistConfig (updateTodo (\t -> { t | done = done }) todo model)
 
-        Cache ->
+        PersistConfig ->
             ( model, updateCacheCmd model )
 
         ToggleConfig ->
-            update Cache { model | isConfigCollapsed = not model.isConfigCollapsed }
+            update PersistConfig (toggleConfig model)
 
         AddTodo todo ->
             ( addTodo todo model, Cmd.none )
