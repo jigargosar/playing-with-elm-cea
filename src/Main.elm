@@ -198,7 +198,7 @@ update msg model =
             ( model, Cmd.none )
 
         Done todo done ->
-            ( updateTodo (\t -> { t | done = done }) todo model, Cmd.none )
+            update Cache (updateTodo (\t -> { t | done = done }) todo model)
 
         Cache ->
             ( model, cache (model |> getFlags >> encodeFlags) )
