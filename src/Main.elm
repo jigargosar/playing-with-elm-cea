@@ -248,21 +248,21 @@ viewTodoListPage model =
                         |> List.map (\todo -> el [] (text todo.text))
             in
             el [ centerX ] (column [ sp 1 ] todoItems)
-    in
-    el
-        (scrollFillWH ++ [ p 1 ])
-        (el
-            [ width fill
-            , height fill
-            , bc white
-            , elevation 3
-            ]
-            (column fillWH
-                [ el [ p 1, centerX, fz 4 ] (text "Repeat Todo")
-                , viewTodoList
+
+        listPaper =
+            el
+                [ width fill
+                , height fill
+                , bc white
+                , elevation 3
                 ]
-            )
-        )
+                (column fillWH
+                    [ el [ p 1, centerX, fz 4 ] (text "Repeat Todo")
+                    , viewTodoList
+                    ]
+                )
+    in
+    el (scrollFillWH ++ [ p 1 ]) listPaper
 
 
 viewSampleContent : Model -> Element msg
