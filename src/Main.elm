@@ -157,11 +157,24 @@ init flagsValue =
             }
     in
     update Cache model
-        |> andThenUpdate update AddClicked
-        |> andThenUpdate update AddClicked
+        |> modelCmdAndThen update AddClicked
+        |> modelCmdAndThen update AddClicked
 
 
-andThenUpdate updateFn msg ( model, cmd ) =
+type alias ModelCmd msg model =
+    ( model, Cmd msg )
+
+
+type alias ModelCmdF msg model =
+    ModelCmd msg model -> ModelCmd msg model
+
+
+type alias UpdateFunction msg model =
+    msg -> model -> ( model, Cmd msg )
+
+
+modelCmdAndThen : UpdateFunction msg model -> msg -> ModelCmdF msg model
+modelCmdAndThen updateFn msg ( model, cmd ) =
     let
         ( model2, cmd2 ) =
             updateFn msg model
