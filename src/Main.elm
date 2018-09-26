@@ -177,17 +177,19 @@ updateHSLA fn m =
     { m | hsla = newHSLA, rgba = Hsla.toRGBA newHSLA }
 
 
+ifElse pred t f v =
+    if pred v then
+        t v
+
+    else
+        f v
+
+
 updateTodo : TodoFn -> Todo -> ModelFn
 updateTodo fn todo model =
     model.todoList
         |> List.map
-            (\t ->
-                if t == todo then
-                    fn t
-
-                else
-                    t
-            )
+            (ifElse ((==) todo) fn identity)
         |> (\todoList -> { model | todoList = todoList })
 
 
