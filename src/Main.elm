@@ -115,14 +115,14 @@ type alias TodoCollection =
     Dict String Todo
 
 
-defaultTodoList : TodoList
-defaultTodoList =
-    [ Todo "0" "Get Some Milk!" False, Todo "1" "Build Quick Prototype !!" False ]
-
-
 defaultTodoCollection : TodoCollection
 defaultTodoCollection =
-    [ Todo "0" "Get Some Milk!" False, Todo "1" "Build Quick Prototype !!" False ]
+    let
+        defaultTodoList : TodoList
+        defaultTodoList =
+            [ Todo "0" "Get Some Milk!" False, Todo "1" "Build Quick Prototype !!" False ]
+    in
+    defaultTodoList
         |> List.map (\t -> ( t.id, t ))
         |> Dict.fromList
 
