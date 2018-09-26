@@ -238,12 +238,28 @@ view model =
         )
 
 
-viewTodoListPage : Model -> Element msg
+nop1 =
+    \_ -> Nop
+
+
+viewTodoListPage : Model -> Element Msg
 viewTodoListPage model =
     let
         todoItems =
             model.todoList
-                |> List.map (\todo -> el [] (row [] [ text todo.text ]))
+                |> List.map
+                    (\todo ->
+                        el []
+                            (row []
+                                [ Input.checkbox []
+                                    { onChange = nop1
+                                    , icon = Input.defaultCheckbox
+                                    , checked = todo.done
+                                    , label = Input.labelRight [] (text todo.text)
+                                    }
+                                ]
+                            )
+                    )
 
         pageTitle =
             el
