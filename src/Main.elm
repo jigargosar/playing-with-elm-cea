@@ -59,8 +59,12 @@ type alias Model =
     }
 
 
-init : ( Model, Cmd Msg )
-init =
+type alias Flags =
+    ()
+
+
+init : Flags -> ( Model, Cmd Msg )
+init i =
     let
         initialRGBA : Rgba.RGBA
         initialRGBA =
@@ -433,11 +437,11 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
 ---- PROGRAM ----
 
 
-main : Program () Model Msg
+main : Program Flags Model Msg
 main =
     Browser.element
         { view = view
-        , init = \_ -> init
+        , init = init
         , update = update
         , subscriptions = subscriptions
         }
