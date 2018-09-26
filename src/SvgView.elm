@@ -1,4 +1,4 @@
-module SvgView exposing (svgView, view)
+module SvgView exposing (view)
 
 import Html exposing (Html)
 import Svg exposing (..)
