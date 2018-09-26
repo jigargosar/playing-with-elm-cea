@@ -52,5 +52,5 @@ view deg =
                 |> shiftX (Round.truncate deg |> modBy 300 |> toFloat |> negate)
                 |> rotate (degrees deg)
             )
-        |> debug
+--        |> debug
         |> svg
