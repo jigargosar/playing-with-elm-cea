@@ -8,7 +8,7 @@ import { Elm } from './Main.elm'
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
-  flags: JSON.parse(localStorage.getItem('cache')),
+  flags: {time: Date.now(),cache:JSON.parse(localStorage.getItem('cache'))},
 })
 
 console.log('app', app, Elm)
