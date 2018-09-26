@@ -44,6 +44,9 @@ import Json.Encode as E
 import List.Extra
 import Ramda exposing (equals, whenEq)
 import Random
+import Random.Char
+import Random.Extra
+import Random.String
 import Rgba
 import Round
 import Set
@@ -202,6 +205,24 @@ addTodo todo model =
         |> (\todoList -> { model | todoList = todoList })
 
 
+todoGenerator : Random.Generator { id : String }
+todoGenerator =
+    idGenerator |> Random.andThen (\id -> Random.constant { id = id })
+
+
+idGenerator : Random.Generator String
+idGenerator =
+    let
+        idCharGenerator : Random.Generator Char
+        idCharGenerator =
+            Random.Extra.frequency
+                ( 10, Random.Char.char 48 (48 + 9) )
+                --        [ ( 26 * 2, Random.Char.english ) ]
+                []
+    in
+    Random.String.string 14 idCharGenerator
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -223,17 +244,14 @@ update msg model =
         AddClicked ->
             ( model
             , Random.generate
-                (\i ->
+                (\{ id } ->
                     let
                         _ =
-                            Debug.log "Random Int" i
-
-                        id =
-                            String.fromInt i
+                            Debug.log "Random Int" id
                     in
                     Todo id ("Too Far " ++ id) False |> AddTodo
                 )
-                (Random.int 1 999999)
+                todoGenerator
             )
 
         Red val ->
