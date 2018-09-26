@@ -23,10 +23,8 @@ roundedRect =
 svgView : Html msg
 svgView =
     Svg.svg
-        [ id "svg-demo-1"
-        , width "100%"
+        [ width "100%"
         , viewBox "0 0 500 100"
-        , Svg.Attributes.style "flex:1 1 auto"
         ]
         [ Svg.rect [ width "100%", height "100%", fill "#361110" ] []
         , roundedRect
@@ -37,6 +35,7 @@ view =
     svg
         [ width "120"
         , height "120"
+        , width "100%"
         , viewBox "0 0 120 120"
         ]
         [ rect
@@ -54,4 +53,5 @@ view =
             , r "50"
             ]
             []
+        , svgView
         ]
