@@ -73,7 +73,7 @@ type alias Flags =
 
 
 defaultFlags =
-    { isConfigCollapsed = False }
+    { isConfigCollapsed = True }
 
 
 encodeFlags : Flags -> E.Value
@@ -106,18 +106,20 @@ init flagsValue =
 
         flags =
             decodeFlags flagsValue
-                |> Result.mapError (Debug.log "Flags decoding failed ;)")
+                |> Result.mapError (Debug.log "ERROR decoding flags")
                 |> Result.withDefault defaultFlags
+
+        model =
+            { rgba = initialRGBA
+            , hsla = Rgba.toHSLA initialRGBA
+            , isConfigCollapsed = flags.isConfigCollapsed
+            }
     in
-    ( { rgba = initialRGBA
-      , hsla = Rgba.toHSLA initialRGBA
-      , isConfigCollapsed = flags.isConfigCollapsed
-      }
-    , cache (encodeFlags flags)
-    )
+    update Cache model
 
 
 
+{- ( model, cache (encodeFlags flags) ) -}
 ---- UPDATE ----
 
 
