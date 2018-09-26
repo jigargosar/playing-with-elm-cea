@@ -157,6 +157,7 @@ init flagsValue =
             }
     in
     update Cache model
+        |> (\( m, c ) -> update AddClicked m |> (\( m2, c2 ) -> ( m2, Cmd.batch [ c, c2 ] )))
 
 
 getCurrentTodoList : Model -> TodoList
