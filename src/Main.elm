@@ -131,6 +131,7 @@ type Msg
     | Saturation Float
     | Lightness Float
     | ToggleConfig
+    | Cache
 
 
 type alias ModelFn =
@@ -161,12 +162,11 @@ update msg model =
         Nop ->
             ( model, Cmd.none )
 
+        Cache ->
+            ( model, cache (model |> getFlags >> encodeFlags) )
+
         ToggleConfig ->
-            let
-                newModel =
-                    { model | isConfigCollapsed = not model.isConfigCollapsed }
-            in
-            ( newModel, cache (newModel |> getFlags >> encodeFlags) )
+            update Cache { model | isConfigCollapsed = not model.isConfigCollapsed }
 
         Red val ->
             ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
