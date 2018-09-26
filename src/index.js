@@ -9,9 +9,8 @@ import { Elm } from './Main.elm'
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
-  flags: { isConfigCollapsed: true },
+  flags: JSON.parse(localStorage.getItem('cache')),
 })
-
 
 
 console.log("app",app, Elm)
