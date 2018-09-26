@@ -72,23 +72,43 @@ type alias Flags =
     { isConfigCollapsed : Bool }
 
 
+defaultFlags =
+    { isConfigCollapsed = False }
+
+
 encodeFlags : Flags -> E.Value
 encodeFlags flags =
     E.object [ ( "isConfigCollapsed", E.bool flags.isConfigCollapsed ) ]
 
 
-init : Flags -> ( Model, Cmd Msg )
-init { isConfigCollapsed } =
+flagsDecoder : D.Decoder Flags
+flagsDecoder =
+    D.map Flags
+        (D.field "isConfigCollapsed" D.bool)
+
+
+decodeFlags : E.Value -> Result D.Error Flags
+decodeFlags =
+    D.decodeValue flagsDecoder
+
+
+init : E.Value -> ( Model, Cmd Msg )
+init flagsValue =
     let
         initialRGBA : Rgba.RGBA
         initialRGBA =
             Rgba.create 1 1 1 1
+
+        flags =
+            decodeFlags flagsValue
+                |> Result.mapError (Debug.log "Flags decoding failed ;)")
+                |> Result.withDefault defaultFlags
     in
     ( { rgba = initialRGBA
       , hsla = Rgba.toHSLA initialRGBA
-      , isConfigCollapsed = isConfigCollapsed
+      , isConfigCollapsed = flags.isConfigCollapsed
       }
-    , cache (encodeFlags { isConfigCollapsed = isConfigCollapsed })
+    , cache (encodeFlags flags)
     )
 
 
@@ -451,7 +471,7 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
 ---- PROGRAM ----
 
 
-main : Program Flags Model Msg
+main : Program E.Value Model Msg
 main =
     Browser.element
         { view = view
