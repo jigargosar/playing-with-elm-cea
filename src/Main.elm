@@ -207,7 +207,7 @@ addTodo todo model =
 
 todoGenerator : Random.Generator Todo
 todoGenerator =
-    Random.map2 (\id _ -> Todo id "GEN" False)
+    Random.map2 (\id done -> Todo id "GEN" done)
         idGenerator
         Random.Extra.bool
 
@@ -243,17 +243,7 @@ update msg model =
             ( addTodo todo model, Cmd.none )
 
         AddClicked ->
-            ( model
-            , Random.generate
-                (\{ id } ->
-                    let
-                        _ =
-                            Debug.log "Random Int" id
-                    in
-                    Todo id ("Too Far " ++ id) False |> AddTodo
-                )
-                todoGenerator
-            )
+            ( model, Random.generate AddTodo todoGenerator )
 
         Red val ->
             ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
