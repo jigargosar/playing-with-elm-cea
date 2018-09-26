@@ -153,7 +153,7 @@ init flagsValue =
             { rgba = initialRGBA
             , hsla = Rgba.toHSLA initialRGBA
             , isConfigCollapsed = flags.isConfigCollapsed
-            , todoCollection = defaultTodoCollection
+            , todoCollection = Dict.empty
             }
     in
     update Cache model
