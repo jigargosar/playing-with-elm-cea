@@ -1,4 +1,4 @@
-port module Main exposing (ColorSliderConfig, Flags, Model, ModelFn, Msg(..), cache, colorSlider, colorSliderConfig, init, main, modelColor, subscriptions, update, updateHSLA, updateRGBA, view, viewColorSliders, viewConfig, viewContent)
+port module Main exposing (ColorSliderConfig, Flags, Model, ModelFn, Msg(..), cache, colorSlider, colorSliderConfig, init, main, modelColor, subscriptions, update, updateHSLA, updateRGBA, view, viewColorSliders, viewConfig, viewSampleContent)
 
 import Browser
 import Color
@@ -232,15 +232,15 @@ view model =
             (clipFillWH ++ [])
             [ --
               el [ height fill ] Element.none
-            , viewContent model
+            , viewSampleContent model
             , el [ height fill ] Element.none
             , viewConfig model
             ]
         )
 
 
-viewContent : Model -> Element msg
-viewContent model =
+viewSampleContent : Model -> Element msg
+viewSampleContent model =
     el
         (scrollFillWH ++ [ p 1 ])
         (el
