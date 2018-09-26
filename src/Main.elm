@@ -3,22 +3,7 @@ module Main exposing (main)
 import Browser
 import CollageExample
 import Color
-import Element
-    exposing
-        ( Element
-        , alignRight
-        , behindContent
-        , centerX
-        , centerY
-        , column
-        , el
-        , fill
-        , height
-        , px
-        , row
-        , text
-        , width
-        )
+import Element exposing (Element, alignRight, behindContent, centerX, centerY, column, el, fill, height, px, row, shrink, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
@@ -298,6 +283,7 @@ viewContent model =
         (scrollFillWH ++ [ p 1 ])
         (el
             [ width fill
+            , height (fill |> minRem 40)
             , bc (modelColor model)
             , elevation 3
             ]
@@ -320,7 +306,7 @@ viewController model =
     in
     column
         [ width fill
-        , height (fill |> maxRem 20)
+        , height (shrink |> maxRem 20)
         , fz -2
         , bc (grayscale 0.1)
         , fc (grayscale 0.9)
