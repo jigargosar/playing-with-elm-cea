@@ -54,15 +54,7 @@ import Time
 
 
 type alias Model =
-    { counter : Int
-    , content : String
-    , name : String
-    , password : String
-    , passwordAgain : String
-    , dieFace : Int
-    , zone : Time.Zone
-    , time : Time.Posix
-    , hsla : Hsla.HSLA
+    { hsla : Hsla.HSLA
     , rgba : Rgba.RGBA
     , isControllerCollapsed : Bool
     }
@@ -75,19 +67,11 @@ init =
         initialRGBA =
             Rgba.create 1 1 1 1
     in
-    ( { counter = 0
-      , content = ""
-      , name = ""
-      , password = ""
-      , passwordAgain = ""
-      , dieFace = 1
-      , zone = Time.utc
-      , time = Time.millisToPosix 0
-      , rgba = initialRGBA
+    ( { rgba = initialRGBA
       , hsla = Rgba.toHSLA initialRGBA
       , isControllerCollapsed = False
       }
-    , Task.perform AdjustTimeZone Time.here
+    , Cmd.none {- Task.perform AdjustTimeZone Time.here -}
     )
 
 
@@ -96,9 +80,7 @@ init =
 
 
 type Msg
-    = Tick Time.Posix
-    | AdjustTimeZone Time.Zone
-    | Nop
+    = Nop
     | Red Float
     | Green Float
     | Blue Float
@@ -171,16 +153,6 @@ update msg model =
         Lightness val ->
             ( model |> updateHSLA (\r -> { r | lightness = val }), Cmd.none )
 
-        Tick newTime ->
-            ( { model | time = newTime, counter = model.counter + 1 }
-            , Cmd.none
-            )
-
-        AdjustTimeZone newZone ->
-            ( { model | zone = newZone }
-            , Cmd.none
-            )
-
 
 
 -- SUBSCRIPTIONS
@@ -188,7 +160,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Time.every (1000 / 60) Tick
+    Sub.none
 
 
 
