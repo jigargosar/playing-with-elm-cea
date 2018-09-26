@@ -232,10 +232,28 @@ view model =
             (clipFillWH ++ [])
             [ --
               el [ height fill ] Element.none
-            , viewSampleContent model
+            , viewTodoListContent model
             , el [ height fill ] Element.none
             , viewConfig model
             ]
+        )
+
+
+viewTodoListContent : Model -> Element msg
+viewTodoListContent model =
+    el
+        (scrollFillWH ++ [ p 1 ])
+        (el
+            [ width fill
+            , height (fill |> minRem 40)
+            , bc (modelColor model)
+            , elevation 3
+            ]
+            (column (fillWH ++ [ p 1 ])
+                [ el [ p 1, centerX, fz 4 ] (text "Color Converter")
+                , el fillWH (Element.html SvgView.view)
+                ]
+            )
         )
 
 
