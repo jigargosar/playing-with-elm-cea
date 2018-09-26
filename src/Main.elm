@@ -236,13 +236,25 @@ todoGenerator =
         boolGenerator
 
 
+updateCacheCmd model =
+    cache (model |> getFlags >> encodeFlags)
+
+
+generateAndAddTodoCmd =
+    Random.generate AddTodo todoGenerator
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Init ->
-            update Cache model
-                |> modelCmdAndThen update AddClicked
-                |> modelCmdAndThen update AddClicked
+            ( model
+            , Cmd.batch
+                [ updateCacheCmd model
+                , generateAndAddTodoCmd
+                , generateAndAddTodoCmd
+                ]
+            )
 
         Nop ->
             ( model, Cmd.none )
@@ -251,7 +263,7 @@ update msg model =
             update Cache (updateTodo (\t -> { t | done = done }) todo model)
 
         Cache ->
-            ( model, cache (model |> getFlags >> encodeFlags) )
+            ( model, updateCacheCmd model )
 
         ToggleConfig ->
             update Cache { model | isConfigCollapsed = not model.isConfigCollapsed }
@@ -260,7 +272,7 @@ update msg model =
             ( addTodo todo model, Cmd.none )
 
         AddClicked ->
-            ( model, Random.generate AddTodo todoGenerator )
+            ( model, generateAndAddTodoCmd )
 
         Red val ->
             ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
