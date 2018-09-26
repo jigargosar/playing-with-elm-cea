@@ -254,15 +254,14 @@ viewTodoListPage model =
 
         listPaper =
             el
-                [ width fill
+                [ width (fill |> maxRem 30)
                 , height fill
+                , centerX
                 , bc white
                 , elevation 3
+                , p 1
                 ]
-                (column fillWH
-                    [ viewTodoList
-                    ]
-                )
+                (column fillWH [ viewTodoList ])
 
         pageContainer =
             column (scrollFillWH ++ [ p 1, sp 1 ])
