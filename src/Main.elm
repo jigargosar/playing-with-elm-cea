@@ -73,7 +73,7 @@ type alias Flags =
 
 
 defaultFlags =
-    { isConfigCollapsed = True }
+    Flags True
 
 
 encodeFlags : Flags -> E.Value
