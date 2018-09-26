@@ -3,13 +3,52 @@ module Main exposing (main)
 import Browser
 import CollageExample
 import Color
-import Element exposing (Element, alignRight, behindContent, centerX, centerY, column, el, fill, height, px, row, text, width)
+import Element
+    exposing
+        ( Element
+        , alignRight
+        , behindContent
+        , centerX
+        , centerY
+        , column
+        , el
+        , fill
+        , height
+        , px
+        , row
+        , text
+        , width
+        )
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input exposing (thumb)
-import ElementX exposing (bc, bcInherit, black, brc, clipFillWH, elevation, fc, fillWH, fz, grayscale, hsla, inputNumber, labelNone, lightGray, maxRem, minRem, p, pXY, scaledInt, scrollFillWH, sp, white)
+import ElementX
+    exposing
+        ( bc
+        , bcInherit
+        , black
+        , brc
+        , clipFillWH
+        , elevation
+        , fc
+        , fillWH
+        , fz
+        , grayscale
+        , hsla
+        , inputNumber
+        , labelNone
+        , lightGray
+        , maxRem
+        , minRem
+        , p
+        , pXY
+        , scaledInt
+        , scrollFillWH
+        , sp
+        , white
+        )
 import Hex
 import Hsla
 import Html exposing (Html, button, col, div, h1, h3, img, input)
@@ -266,7 +305,6 @@ viewContent model =
                 [ el [ p 1, centerX, fz 4 ] (text "Color Converter")
                 , SvgGeometryExample.view |> Element.html
                 , el fillWH (Element.html svgView)
-                , CollageExample.view (toFloat model.counter) |> Element.html |> el []
                 ]
             )
         )
