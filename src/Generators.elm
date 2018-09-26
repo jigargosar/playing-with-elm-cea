@@ -27,7 +27,7 @@ idGenerator =
 
 generateAdjective : Random.Generator String
 generateAdjective =
-    allAdjectives |> Random.Array.sample >> Random.map (Maybe.withDefault "")
+    allAdjectives |> Random.Array.sample >> Random.map (Maybe.withDefault "broad")
 
 
 
