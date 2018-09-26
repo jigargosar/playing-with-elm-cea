@@ -8,7 +8,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
-import Element.Input as Input exposing (thumb)
+import Element.Input as Input
 import ElementX
     exposing
         ( bc
@@ -403,7 +403,7 @@ colorSlider { onChange, labelText, value, max, min, step, alt } =
             , step = Just alt.step
             , value = value * alt.max |> clamp alt.min alt.max
             , thumb =
-                thumb
+                Input.thumb
                     [ Element.scale 1
                     , Element.width (Element.px 16)
                     , Element.height (Element.px 16)
