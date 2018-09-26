@@ -148,7 +148,7 @@ type Msg
     | PersistConfig
     | Done Todo.Todo Bool
     | AddClicked
-    | AddTodo Todo.Todo
+    | AddTodos Todo.TodoList
 
 
 type alias ModelF =
@@ -183,7 +183,11 @@ persistConfigCmd model =
 
 
 generateAndAddTodoCmd =
-    Random.generate AddTodo Todo.generator
+    generateAndAddTodosCmd 1
+
+
+generateAndAddTodosCmd ct =
+    Random.generate AddTodos (Random.list ct Todo.generator)
 
 
 toggleConfigCollapsed model =
@@ -197,8 +201,7 @@ update msg model =
             ( model
             , Cmd.batch
                 [ persistConfigCmd model
-                , generateAndAddTodoCmd
-                , generateAndAddTodoCmd
+                , generateAndAddTodosCmd 10
                 ]
             )
 
@@ -220,8 +223,8 @@ update msg model =
         ToggleConfig ->
             update PersistConfig (toggleConfigCollapsed model)
 
-        AddTodo todo ->
-            ( Todo.addTodo todo model.todoCollection |> setTodoCollectionIn model
+        AddTodos todos ->
+            ( Todo.addTodos todos model.todoCollection |> setTodoCollectionIn model
             , Cmd.none
             )
 

@@ -1,4 +1,4 @@
-module Todo exposing (Todo, TodoCollection, TodoF, TodoList, addTodo, defaultTodoCollection, generator, updateTodo)
+module Todo exposing (Todo, TodoCollection, TodoF, TodoList, addTodos, defaultTodoCollection, generator, updateTodo)
 
 import Dict exposing (Dict)
 import Generators exposing (boolGenerator, idGenerator, wordsGenerator)
@@ -49,6 +49,11 @@ generator =
 updateTodo : TodoF -> Todo -> TodoCollectionF
 updateTodo fn todo =
     Dict.update todo.id (Maybe.map fn)
+
+
+addTodos : TodoList -> TodoCollectionF
+addTodos todos dict =
+    List.foldl addTodo dict todos
 
 
 addTodo : Todo -> TodoCollectionF
