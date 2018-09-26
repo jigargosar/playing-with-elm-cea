@@ -166,7 +166,7 @@ update msg model =
                 newModel =
                     { model | isConfigCollapsed = not model.isConfigCollapsed }
             in
-            ( newModel, cache (getFlags newModel) )
+            ( newModel, cache (newModel |> getFlags >> encodeFlags) )
 
         Red val ->
             ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
