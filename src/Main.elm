@@ -148,6 +148,7 @@ type Msg
     | Lightness Float
     | ToggleConfig
     | Cache
+    | Done Todo Bool
 
 
 type alias ModelFn =
@@ -176,6 +177,9 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Nop ->
+            ( model, Cmd.none )
+
+        Done todo done ->
             ( model, Cmd.none )
 
         Cache ->
@@ -252,7 +256,7 @@ viewTodoListPage model =
                         el []
                             (row []
                                 [ Input.checkbox []
-                                    { onChange = nop1
+                                    { onChange = Done todo
                                     , icon = Input.defaultCheckbox
                                     , checked = todo.done
                                     , label = Input.labelRight [] (text todo.text)
