@@ -1,4 +1,4 @@
-module SvgView exposing (view)
+module SvgView exposing (svgView, view)
 
 import Html exposing (Html)
 import Svg exposing (..)
@@ -26,7 +26,7 @@ svgView =
         [ id "svg-demo-1"
         , width "100%"
         , viewBox "0 0 500 100"
-        , style "flex:1 1 auto"
+        , Svg.Attributes.style "flex:1 1 auto"
         ]
         [ Svg.rect [ width "100%", height "100%", fill "#361110" ] []
         , roundedRect

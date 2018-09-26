@@ -59,6 +59,7 @@ import Rgba
 import Round
 import Svg as Svg
 import Svg.Attributes as SA
+import SvgView
 import Task
 import Time
 
@@ -302,7 +303,7 @@ viewContent model =
             ]
             (column (fillWH ++ [ p 1 ])
                 [ el [ p 1, centerX, fz 4 ] (text "Color Converter")
-                , el fillWH (Element.html svgView)
+                , el fillWH (Element.html SvgView.view)
                 ]
             )
         )
