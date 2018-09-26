@@ -163,6 +163,7 @@ type Msg
     | Cache
     | Done Todo Bool
     | AddClicked
+    | AddTodo Todo
 
 
 type alias ModelFn =
@@ -194,10 +195,10 @@ updateTodo fn todo model =
         |> (\todoList -> { model | todoList = todoList })
 
 
-addTodo : ModelFn
-addTodo model =
+addTodo : Todo -> ModelFn
+addTodo todo model =
     model.todoList
-        |> (::) (Todo (model.todoList |> List.length >> String.fromInt) "Fake Text" False)
+        |> (::) todo
         |> (\todoList -> { model | todoList = todoList })
 
 
@@ -216,17 +217,23 @@ update msg model =
         ToggleConfig ->
             update Cache { model | isConfigCollapsed = not model.isConfigCollapsed }
 
+        AddTodo todo ->
+            ( addTodo todo model, Cmd.none )
+
         AddClicked ->
-            ( addTodo model
+            ( model
             , Random.generate
                 (\i ->
                     let
                         _ =
                             Debug.log "Random Int" i
+
+                        id =
+                            String.fromInt i
                     in
-                    Nop
+                    Todo id ("Too Far " ++ id) False |> AddTodo
                 )
-                (Random.int 1 6)
+                (Random.int 1 999999)
             )
 
         Red val ->
