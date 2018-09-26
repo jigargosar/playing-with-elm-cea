@@ -179,7 +179,7 @@ setTodoCollectionIn model todoCollection =
 
 
 persistConfigCmd model =
-    Ports.config (model |> getConfig >> Config.encode)
+    Ports.store ( "config", model |> getConfig >> Config.encode )
 
 
 generateAndAddTodoCmd =
