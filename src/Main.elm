@@ -61,13 +61,6 @@ port cache : E.Value -> Cmd msg
 ---- MODEL ----
 
 
-type alias Model =
-    { hsla : Hsla.HSLA
-    , rgba : Rgba.RGBA
-    , isConfigCollapsed : Bool
-    }
-
-
 type alias Flags =
     { isConfigCollapsed : Bool }
 
@@ -97,6 +90,26 @@ getFlags { isConfigCollapsed } =
     Flags isConfigCollapsed
 
 
+type alias Todo =
+    { text : String, done : Bool }
+
+
+type alias TodoList =
+    List Todo
+
+
+defaultTodoList =
+    [ Todo "Get Some Milk!" False, Todo "Build Quick Prototype !!" False ]
+
+
+type alias Model =
+    { hsla : Hsla.HSLA
+    , rgba : Rgba.RGBA
+    , isConfigCollapsed : Bool
+    , todoList : TodoList
+    }
+
+
 init : E.Value -> ( Model, Cmd Msg )
 init flagsValue =
     let
@@ -113,6 +126,7 @@ init flagsValue =
             { rgba = initialRGBA
             , hsla = Rgba.toHSLA initialRGBA
             , isConfigCollapsed = flags.isConfigCollapsed
+            , todoList = defaultTodoList
             }
     in
     update Cache model
