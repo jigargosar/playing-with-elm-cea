@@ -1,6 +1,8 @@
 module Generators exposing (boolGenerator, idGenerator)
 
+import Array exposing (Array)
 import Random
+import Random.Array
 import Random.Char
 import Random.Extra
 import Random.String
@@ -21,6 +23,22 @@ idGenerator =
                 [ ( 26 * 2, Random.Char.english ) ]
     in
     Random.String.string 14 idCharGenerator
+
+
+generateAdjective : Random.Generator String
+generateAdjective =
+    allAdjectives |> Random.Array.sample >> Random.map (Maybe.withDefault "")
+
+
+
+--- References https://www.learnenglish.de/grammar/adjectivecommon.html ---
+
+
+allAdjectives =
+    adjectives.shape
+        ++ adjectives.size
+        ++ adjectives.sound
+        |> Array.fromList
 
 
 adjectives =
