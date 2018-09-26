@@ -183,19 +183,13 @@ update msg model =
             ( updateRGBA (\c -> { c | blue = val }) model, Cmd.none )
 
         Alpha val ->
-            ( model |> updateHSLA (\r -> { r | alpha = val })
-            , Cmd.none
-            )
+            ( model |> updateHSLA (\r -> { r | alpha = val }), Cmd.none )
 
         Hue val ->
-            ( model |> updateHSLA (\r -> { r | hue = val })
-            , Cmd.none
-            )
+            ( model |> updateHSLA (\r -> { r | hue = val }), Cmd.none )
 
         Saturation val ->
-            ( model |> updateHSLA (\r -> { r | saturation = val })
-            , Cmd.none
-            )
+            ( model |> updateHSLA (\r -> { r | saturation = val }), Cmd.none )
 
         Lightness val ->
             ( model |> updateHSLA (\r -> { r | lightness = val }), Cmd.none )
