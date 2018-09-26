@@ -60,6 +60,7 @@ import Svg.Attributes as SA
 import SvgView
 import Task
 import Time
+import Todo
 
 
 
@@ -87,43 +88,10 @@ flagsDecoder =
         (D.field "time" decodePosixTime)
 
 
-getConfig : Model -> Config.Model
-getConfig =
-    .config
-
-
-type alias Todo =
-    { id : String, text : String, done : Bool }
-
-
-type alias TodoFn =
-    Todo -> Todo
-
-
-type alias TodoList =
-    List Todo
-
-
-type alias TodoCollection =
-    Dict String Todo
-
-
-defaultTodoCollection : TodoCollection
-defaultTodoCollection =
-    let
-        defaultTodoList : TodoList
-        defaultTodoList =
-            [ Todo "0" "Get Some Milk!" False, Todo "1" "Build Quick Prototype !!" False ]
-    in
-    defaultTodoList
-        |> List.map (\t -> ( t.id, t ))
-        |> Dict.fromList
-
-
 type alias Model =
     { hsla : Hsla.HSLA
     , rgba : Rgba.RGBA
-    , todoCollection : TodoCollection
+    , todoCollection : Todo.TodoCollection
     , config : Config.Model
     }
 
@@ -152,9 +120,14 @@ init flagsValue =
     update (Init flags.time) model
 
 
-getCurrentTodoList : Model -> TodoList
+getCurrentTodoList : Model -> Todo.TodoList
 getCurrentTodoList =
     .todoCollection >> Dict.values
+
+
+getConfig : Model -> Config.Model
+getConfig =
+    .config
 
 
 
@@ -174,9 +147,9 @@ type Msg
     | Lightness Float
     | ToggleConfig
     | PersistConfig
-    | Done Todo Bool
+    | Done Todo.Todo Bool
     | AddClicked
-    | AddTodo Todo
+    | AddTodo Todo.Todo
 
 
 type alias ModelF =
@@ -201,31 +174,9 @@ updateHSLA fn m =
     { m | hsla = newHSLA, rgba = Hsla.toRGBA newHSLA }
 
 
-setTodoCollection : TodoCollection -> ModelF
-setTodoCollection todoCollection model =
+setTodoCollectionIn : Model -> Todo.TodoCollection -> Model
+setTodoCollectionIn model todoCollection =
     { model | todoCollection = todoCollection }
-
-
-updateTodo : TodoFn -> Todo -> ModelF
-updateTodo fn todo model =
-    model.todoCollection
-        |> Dict.update todo.id (Maybe.map fn)
-        |> (\tc -> setTodoCollection tc model)
-
-
-addTodo : Todo -> ModelF
-addTodo todo model =
-    model.todoCollection
-        |> Dict.insert todo.id todo
-        |> (\tc -> setTodoCollection tc model)
-
-
-todoGenerator : Random.Generator Todo
-todoGenerator =
-    Random.map3 (\id words done -> Todo id (words |> String.Extra.toTitleCase) done)
-        idGenerator
-        wordsGenerator
-        boolGenerator
 
 
 persistConfigCmd model =
@@ -233,7 +184,7 @@ persistConfigCmd model =
 
 
 generateAndAddTodoCmd =
-    Random.generate AddTodo todoGenerator
+    Random.generate AddTodo Todo.generator
 
 
 toggleConfigCollapsed model =
@@ -256,7 +207,13 @@ update msg model =
             ( model, Cmd.none )
 
         Done todo done ->
-            update PersistConfig (updateTodo (\t -> { t | done = done }) todo model)
+            update PersistConfig
+                (Todo.updateTodo
+                    (\t -> { t | done = done })
+                    todo
+                    model.todoCollection
+                    |> setTodoCollectionIn model
+                )
 
         PersistConfig ->
             ( model, persistConfigCmd model )
@@ -265,7 +222,9 @@ update msg model =
             update PersistConfig (toggleConfigCollapsed model)
 
         AddTodo todo ->
-            ( addTodo todo model, Cmd.none )
+            ( Todo.addTodo todo model.todoCollection |> setTodoCollectionIn model
+            , Cmd.none
+            )
 
         AddClicked ->
             ( model, generateAndAddTodoCmd )
