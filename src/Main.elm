@@ -270,7 +270,7 @@ viewController : Model -> Element Msg
 viewController model =
     column
         [ width fill
-        , height (shrink |> maxRem 20)
+--        , height (shrink |> maxRem 20)
         , fz -2
         , bc (grayscale 0.1)
         , fc (grayscale 0.9)
