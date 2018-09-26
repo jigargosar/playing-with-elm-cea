@@ -194,6 +194,13 @@ updateTodo fn todo model =
         |> (\todoList -> { model | todoList = todoList })
 
 
+addTodo : ModelFn
+addTodo model =
+    model.todoList
+        |> (::) (Todo "Fake Text" False)
+        |> (\todoList -> { model | todoList = todoList })
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -210,7 +217,7 @@ update msg model =
             update Cache { model | isConfigCollapsed = not model.isConfigCollapsed }
 
         AddClicked ->
-            ( model, Cmd.none )
+            ( addTodo model, Cmd.none )
 
         Red val ->
             ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
