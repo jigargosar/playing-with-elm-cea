@@ -268,13 +268,6 @@ viewContent model =
 
 viewController : Model -> Element Msg
 viewController model =
-    let
-        { hue, saturation, lightness } =
-            model.hsla
-
-        each =
-            { bottom = 0, top = 0, left = 0, right = 0 }
-    in
     column
         [ width fill
         , height (shrink |> maxRem 20)
