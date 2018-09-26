@@ -5,7 +5,6 @@ import './main.css'
 import '@material/elevation/dist/mdc.elevation.css'
 import registerServiceWorker from './registerServiceWorker'
 import { Elm } from './Main.elm'
-//</editor-fold>
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
@@ -18,5 +17,4 @@ app.ports.cache.subscribe(function (data) {
   localStorage.setItem('cache', JSON.stringify(data))
 })
 
-//<editor-fold desc="Description">
 registerServiceWorker()
