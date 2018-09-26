@@ -83,7 +83,7 @@ init { isConfigCollapsed } =
       , hsla = Rgba.toHSLA initialRGBA
       , isConfigCollapsed = isConfigCollapsed
       }
-    , cache (E.string "foo") {- Cmd.none -} {- Task.perform AdjustTimeZone Time.here -}
+    , cache (E.object [ ( "isConfigCollapsed", E.bool True ) ])
     )
 
 
