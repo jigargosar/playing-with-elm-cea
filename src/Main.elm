@@ -46,7 +46,6 @@ import Json.Decode as D
 import Json.Encode as E
 import List.Extra
 import Ports
-import Ramda exposing (eqBy, equals, whenEq)
 import Random
 import Random.Char
 import Random.Extra
