@@ -161,7 +161,16 @@ update msg model =
             ( model, Cmd.none )
 
         ToggleConfig ->
-            ( { model | isConfigCollapsed = not model.isConfigCollapsed }, Cmd.none )
+            let
+                newModel =
+                    { model | isConfigCollapsed = not model.isConfigCollapsed }
+
+                newFlags =
+                    { isConfigCollapsed = newModel.isConfigCollapsed }
+            in
+            ( newModel
+            , cache (encodeFlags newFlags)
+            )
 
         Red val ->
             ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
