@@ -241,13 +241,9 @@ view model =
 viewTodoListPage : Model -> Element msg
 viewTodoListPage model =
     let
-        viewTodoList =
-            let
-                todoItems =
-                    model.todoList
-                        |> List.map (\todo -> el [] (text todo.text))
-            in
-            el [  ] (column [ sp 1 ] todoItems)
+        todoItems =
+            model.todoList
+                |> List.map (\todo -> el [] (row [] [ text todo.text ]))
 
         pageTitle =
             el
@@ -267,7 +263,9 @@ viewTodoListPage model =
                 , elevation 3
                 , p 1
                 ]
-                (column fillWH [ viewTodoList ])
+                (column fillWH
+                    [ el [] (column [ sp 1 ] todoItems) ]
+                )
 
         pageContainer =
             column (scrollFillWH ++ [ p 1, sp 1 ])
