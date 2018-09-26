@@ -41,11 +41,14 @@ objectNameGenerator =
     objectNames |> Random.Array.sample >> Random.map (Maybe.withDefault "bottle")
 
 
+wordsGenerator : Random.Generator String
 wordsGenerator =
-    Random.map3 (\w1 w2 w3 -> [ w1, w2, w3 ] |> String.join " ")
-        verbGenerator
-        adjectiveGenerator
-        objectNameGenerator
+    Random.Extra.combine
+        [ verbGenerator
+        , adjectiveGenerator
+        , objectNameGenerator
+        ]
+        |> Random.map (String.join " ")
 
 
 sampleArrayWithDefault : String -> Array String -> Random.Generator String
