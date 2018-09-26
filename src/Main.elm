@@ -182,10 +182,6 @@ persistConfigCmd model =
     Ports.store ( "config", model |> getConfig >> Config.encode )
 
 
-generateAndAddTodoCmd =
-    generateAndAddTodosCmd 1
-
-
 generateAndAddTodosCmd ct =
     Random.generate AddTodos (Random.list ct Todo.generator)
 
@@ -229,7 +225,7 @@ update msg model =
             )
 
         AddClicked ->
-            ( model, generateAndAddTodoCmd )
+            ( model, generateAndAddTodosCmd 1 )
 
         Red val ->
             ( updateRGBA (\c -> { c | red = val }) model, Cmd.none )
