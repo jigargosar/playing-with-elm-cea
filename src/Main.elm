@@ -250,35 +250,6 @@ view model =
 
 viewContent : Model -> Element msg
 viewContent model =
-    let
-        roundedRect : Html msg
-        roundedRect =
-            Svg.rect
-                [ SA.x "100"
-                , SA.y "10"
-                , SA.width "100"
-                , SA.height "100"
-                , SA.rx "15"
-                , SA.ry "15"
-                , SA.color "red"
-                , SA.fill "#caf3f5"
-                ]
-                []
-
-        svgView : Html msg
-        svgView =
-            Svg.svg
-                [ SA.id "svg-demo-1"
-                , SA.width "100%"
-
-                --        , SA.height "100%"
-                , SA.viewBox "0 0 500 100"
-                , SA.style "flex:1 1 auto"
-                ]
-                [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#361110" ] []
-                , roundedRect
-                ]
-    in
     el
         (scrollFillWH ++ [ p 1 ])
         (el
