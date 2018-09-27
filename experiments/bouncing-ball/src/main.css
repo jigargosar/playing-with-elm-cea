@@ -43,3 +43,11 @@ html, body, #root, [data-elm-hot=true] {
 .vs3 > *:last-child{
   margin-bottom:0;
 }
+
+.vs4 > * {
+  margin-bottom: var(--rem4);
+}
+
+.vs4 > *:last-child{
+  margin-bottom:0;
+}

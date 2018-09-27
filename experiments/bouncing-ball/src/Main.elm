@@ -75,8 +75,8 @@ svgView { bc } =
 view : Model -> Html Msg
 view model =
     H.div []
-        [ H.div [ HA.class "pa2 vs2" ]
-            [ H.div [ HA.class " f1" ] [ H.text "Svg Animation" ]
+        [ H.div [ HA.class "pa3 vs3" ]
+            [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , H.div [ HA.class "" ] [ H.input [ HA.type_ "number", HA.value "foo" ] [] ]
             , H.div [ HA.class "" ] [ svgView model ]
             ]
