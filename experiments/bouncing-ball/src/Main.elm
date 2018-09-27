@@ -26,11 +26,17 @@ init =
 
 type Msg
     = NoOp
+    | BC String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    ( model, Cmd.none )
+update msg m =
+    case msg of
+        NoOp ->
+            ( m, Cmd.none )
+
+        BC bc ->
+            ( { m | bc = bc }, Cmd.none )
 
 
 
