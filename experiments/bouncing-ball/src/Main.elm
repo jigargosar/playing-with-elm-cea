@@ -12,12 +12,12 @@ import Svg.Attributes as SA
 
 
 type alias Model =
-    {}
+    { bc : String }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {}, Cmd.none )
+    ( { bc = green }, Cmd.none )
 
 
 
@@ -70,7 +70,7 @@ view : Model -> Html Msg
 view model =
     H.div []
         [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
-        , svgView { bc = green }
+        , svgView model
         ]
 
 
