@@ -8,6 +8,8 @@ import Html.Events as HE
 import Json.Decode as D
 import Json.Encode as E
 import Return
+import Set
+import String exposing (String)
 import Svg
 import Svg.Attributes as SA
 
@@ -35,6 +37,17 @@ type alias Particle =
     { p : Point, v : Velocity }
 
 
+type Direction
+    = Left
+    | Right
+    | Up
+    | Down
+
+
+type alias KeyDownSet =
+    Set.Set String
+
+
 type alias Flags =
     { cache : E.Value }
 
@@ -50,6 +63,7 @@ type alias Model =
     , ballColor : String
     , ballXY : ( Float, Float )
     , ball : Particle
+    , keyDownSet : KeyDownSet
     }
 
 
@@ -66,7 +80,14 @@ init flags =
                 |> Result.mapError (Debug.log "Error decoding flags.cache")
                 |> Result.withDefault (CacheModel "#adbeeb" "#cd37a9")
     in
-    update Cache (Model bgColor ballColor ( 100, 100 ) (Particle ( 100, 100 ) ( 0, 0 )))
+    update Cache
+        (Model
+            bgColor
+            ballColor
+            ( 100, 100 )
+            (Particle ( 100, 100 ) ( 0, 0 ))
+            Set.empty
+        )
 
 
 
@@ -150,14 +171,14 @@ update msg m =
                 _ =
                     newVelocity |> Maybe.map (Debug.log "newVelocity")
             in
-            ( { m | ball = newBall }, Cmd.none )
+            ( { m | ball = newBall, keyDownSet = m.keyDownSet |> Set.insert k }, Cmd.none )
 
         KeyUp k ->
             let
                 _ =
                     Debug.log "key: KeyUp" k
             in
-            ( m, Cmd.none )
+            ( { m | keyDownSet = m.keyDownSet |> Set.remove k }, Cmd.none )
 
 
 setVelocity v par =
