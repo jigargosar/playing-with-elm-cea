@@ -264,7 +264,7 @@ viewKeys { keyDownSet } =
             s ++ v ++ e
 
         keys =
-            keyDownSet |> Set.toList |> String.join "','" |> surroundString "'" "'"
+            keyDownSet |> Set.toList |> String.join "','" |> surroundString "downKeys: '" "'"
     in
     H.div [] [ H.text keys ]
 
