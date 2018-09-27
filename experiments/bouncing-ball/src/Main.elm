@@ -1,11 +1,19 @@
-module Main exposing (Model, Msg(..), init, main, update, view)
+port module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
+import Json.Encode as E
 import Svg
 import Svg.Attributes as SA
+
+
+
+---- PORT ----
+
+
+port cache : E.Value -> Cmd msg
 
 
 
