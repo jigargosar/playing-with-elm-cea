@@ -45,9 +45,11 @@ update msg m =
             ( m, Cmd.none )
 
         AFrame delta ->
-            ( m
-            , Cmd.none
-            )
+            let
+                xDelta =
+                    1
+            in
+            ( { m | x = m.x + xDelta }, Cmd.none )
 
 
 
