@@ -85,7 +85,7 @@ svgView { x } =
 
 
 viewControls _ =
-    H.div [] [ H.button [ HE.onClick Reset ] [ H.text "Reset" ] ]
+    H.div [] [ H.button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ] ]
 
 
 view : Model -> Html Msg
