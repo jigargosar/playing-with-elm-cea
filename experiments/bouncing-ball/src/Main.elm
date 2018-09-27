@@ -13,12 +13,14 @@ import Svg.Attributes as SA
 
 
 type alias Model =
-    { bc : String }
+    { bgc : String
+    , bc : String
+    }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { bc = green }, Cmd.none )
+    ( { bgc = green, bc = blue }, Cmd.none )
 
 
 
@@ -27,6 +29,7 @@ init =
 
 type Msg
     = NoOp
+    | BGC String
     | BC String
 
 
@@ -35,6 +38,9 @@ update msg m =
     case msg of
         NoOp ->
             ( m, Cmd.none )
+
+        BGC bgc ->
+            ( { m | bgc = bgc }, Cmd.none )
 
         BC bc ->
             ( { m | bc = bc }, Cmd.none )
@@ -54,7 +60,7 @@ blue =
     "#4427d9"
 
 
-svgView { bc } =
+svgView { bgc, bc } =
     let
         w =
             500
@@ -66,9 +72,9 @@ svgView { bc } =
             10
     in
     Svg.svg [ HA.width w, HA.height h ]
-        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill bc ] []
+        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill bgc ] []
         , Svg.circle
-            [ SA.cx "100", SA.cy "100", SA.r (ballRadius |> String.fromInt), SA.fill blue ]
+            [ SA.cx "100", SA.cy "100", SA.r (ballRadius |> String.fromInt), SA.fill bc ]
             []
         ]
 
@@ -78,7 +84,12 @@ view model =
     H.div []
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
-            , H.input [ HA.type_ "color", HE.onInput BC, HA.value model.bc ] []
+            , H.div [ HA.class "hs3" ]
+                [ H.input [ HA.type_ "color", HE.onInput BC, HA.value model.bgc ] []
+                , H.text model.bgc
+                , H.input [ HA.type_ "color", HE.onInput BC, HA.value model.bc ] []
+                , H.text model.bc
+                ]
             , H.div [ HA.class "" ] [ svgView model ]
             ]
         ]

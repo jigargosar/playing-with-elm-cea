@@ -51,3 +51,36 @@ html, body, #root, [data-elm-hot=true] {
 .vs4 > *:last-child{
   margin-bottom:0;
 }
+
+
+.hs1 > * {
+  margin-right: var(--rem1);
+}
+
+.hs1 > *:last-child{
+  margin-right:0;
+}
+
+.hs2 > * {
+  margin-right: var(--rem2);
+}
+
+.hs2 > *:last-child{
+  margin-right:0;
+}
+
+.hs3 > * {
+  margin-right: var(--rem3);
+}
+
+.hs3 > *:last-child{
+  margin-right:0;
+}
+
+.hs4 > * {
+  margin-right: var(--rem4);
+}
+
+.hs4 > *:last-child{
+  margin-right:0;
+}
