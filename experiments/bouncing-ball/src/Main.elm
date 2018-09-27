@@ -8,6 +8,7 @@ import Html.Events as HE
 import Json.Decode as D
 import Json.Encode as E
 import Return
+import Round
 import Set
 import String exposing (String)
 import Svg
@@ -269,12 +270,34 @@ viewKeys { keyDownSet } =
     H.div [] [ H.text keys ]
 
 
+mapEach fn t =
+    t |> Tuple.mapBoth fn fn
+
+
+viewBallStats { ball } =
+    let
+        roundTuple =
+            mapEach (Round.round 2)
+
+        ( x, y ) =
+            roundTuple ball.p
+
+        ( dx, dy ) =
+            roundTuple ball.v
+
+        p =
+            [ "p(", x, ",", y, ")", ", v(", dx, ",", dy, ")" ] |> String.join ""
+    in
+    H.div [ HA.class "code" ] [ H.text p ]
+
+
 view : Model -> Html Msg
 view model =
     H.div []
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , viewColors model
+            , viewBallStats model
             , H.div [ HA.class "" ] [ svgView model ]
             , viewKeys model
             ]
