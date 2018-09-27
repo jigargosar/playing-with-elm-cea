@@ -21,6 +21,10 @@ port cache : E.Value -> Cmd msg
 ---- MODEL ----
 
 
+type alias Flags =
+    { cache : E.Value }
+
+
 type alias Model =
     { bgColor : String
     , ballColor : String
@@ -130,7 +134,7 @@ view model =
 ---- PROGRAM ----
 
 
-main : Program () Model Msg
+main : Program Flags Model Msg
 main =
     Browser.element
         { view = view
