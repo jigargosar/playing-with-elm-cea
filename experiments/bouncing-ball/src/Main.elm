@@ -52,12 +52,7 @@ init flags =
                 |> Result.mapError (Debug.log "Error decoding flags.cache")
                 |> Result.withDefault (CacheModel "#adbeeb" "#cd37a9")
     in
-    ( { bgColor = "#adbeeb"
-      , ballColor = "#cd37a9"
-      , ballXY = ( 100, 100 )
-      }
-    , Cmd.none
-    )
+    update Cache (Model bgColor ballColor ( 100, 100 ))
 
 
 
