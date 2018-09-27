@@ -100,11 +100,7 @@ view model =
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , H.div [ HA.class "" ]
-                [ H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
-                , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
-                , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
-                , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
-                ]
+                (viewHslaInput model.bc)
             , H.div [ HA.class "" ] [ svgView model ]
             ]
         ]
