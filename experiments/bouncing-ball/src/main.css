@@ -1,13 +1,29 @@
 @import "~tachyons";
 
-:root{
-  --sans-serif :-apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;
+:root {
+  --sans-serif: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;
+
+  --rem1: .25rem;
+  --rem2: .5rem;
+  --rem3: 1rem;
+  --rem4: 2rem;
+  --rem5: 4rem;
+  --rem6: 8rem;
+  --rem7: 16rem;
 
 }
 
-html, body, #root, [data-elm-hot=true]{
+html, body, #root, [data-elm-hot=true] {
   font-family: var(--sans-serif);
   /*font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;*/
   height: 100%;
   font-size: 16px;
+}
+
+.hs1 > * {
+  margin-bottom: var(--rem1);
+}
+
+.hs1 > *:last-child{
+  margin-bottom:0;
 }
