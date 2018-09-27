@@ -47,11 +47,11 @@ update msg m =
 
 
 green =
-    "hsla(116 , 60%, 80% ,1)"
+    "#b1ebad"
 
 
 blue =
-    "hsla(250, 70%, 50% ,1)"
+    "#4427d9"
 
 
 svgView { bc } =
@@ -78,6 +78,7 @@ view model =
     H.div []
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
+            , H.input [ HA.type_ "color", HE.onInput BC, HA.value model.bc ] []
             , H.div [ HA.class "" ] [ svgView model ]
             ]
         ]
