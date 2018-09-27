@@ -115,6 +115,14 @@ update msg m =
             let
                 _ =
                     Debug.log "key: KeyDown" k
+
+                ( dx, dy ) =
+                    case k of
+                        "ArrowDown" ->
+                            ( -1, 0 )
+
+                        _ ->
+                            ( 0, 0 )
             in
             ( m, Cmd.none )
 
