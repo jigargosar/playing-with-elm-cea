@@ -20,7 +20,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { bgc = green, bc = blue }, Cmd.none )
+    ( { bgc = "#adbeeb", bc = "#cd37a9" }, Cmd.none )
 
 
 
@@ -85,7 +85,7 @@ view model =
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , H.div [ HA.class "hs3" ]
-                [ H.input [ HA.type_ "color", HE.onInput BC, HA.value model.bgc ] []
+                [ H.input [ HA.type_ "color", HE.onInput BGC, HA.value model.bgc ] []
                 , H.span [] [ H.text model.bgc ]
                 , H.input [ HA.type_ "color", HE.onInput BC, HA.value model.bc ] []
                 , H.span [] [ H.text model.bc ]
