@@ -115,14 +115,15 @@ svgView { bgColor, ballColor, ballXY } =
         ballRadius =
             10
 
-        ( bx, by ) =
+        ( bxS, byS ) =
             ballXY
+                |> Tuple.mapBoth String.fromInt String.fromInt
     in
     Svg.svg [ HA.width w, HA.height h ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill bgColor ] []
         , Svg.circle
-            [ SA.cx (bx |> String.fromInt)
-            , SA.cy (by |> String.fromInt)
+            [ SA.cx bxS
+            , SA.cy byS
             , SA.r (ballRadius |> String.fromInt)
             , SA.fill ballColor
             ]
