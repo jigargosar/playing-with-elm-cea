@@ -1,6 +1,7 @@
 port module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
+import Browser.Events
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
@@ -35,7 +36,7 @@ type alias CacheModel =
 type alias Model =
     { bgColor : String
     , ballColor : String
-    , ballXY : ( Int, Int )
+    , ballXY : ( Float, Float )
     }
 
 
@@ -64,6 +65,7 @@ type Msg
     | BgColor String
     | BallColor String
     | Cache
+    | AFrame Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -80,6 +82,9 @@ update msg m =
 
         Cache ->
             ( m, cacheModel m )
+
+        AFrame delta ->
+            ( { m | ballXY = m.ballXY |> Tuple.mapFirst (\x -> x + 10 / delta) }, Cmd.none )
 
 
 cacheModel { ballColor, bgColor } =
@@ -117,7 +122,7 @@ svgView { bgColor, ballColor, ballXY } =
 
         ( bxS, byS ) =
             ballXY
-                |> Tuple.mapBoth String.fromInt String.fromInt
+                |> Tuple.mapBoth String.fromFloat String.fromFloat
     in
     Svg.svg [ HA.width w, HA.height h ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill bgColor ] []
@@ -161,5 +166,5 @@ main =
         { view = view
         , init = init
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = \model -> Sub.batch [ Browser.Events.onAnimationFrameDelta AFrame ]
         }
