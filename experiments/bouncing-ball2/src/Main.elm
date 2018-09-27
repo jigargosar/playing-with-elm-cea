@@ -21,7 +21,7 @@ type alias Flags =
 
 
 type alias Model =
-    { x : Int }
+    { x : Float }
 
 
 initialModel =
@@ -42,7 +42,7 @@ worldHeight =
 
 
 ballRadius =
-    10
+    30
 
 
 
@@ -67,9 +67,19 @@ update msg m =
         AFrame delta ->
             let
                 xDelta =
-                    1
+                    15 / delta
+
+                addXDelta x =
+                    x + xDelta
+
+                loopX2 x =
+                    if x - ballRadius > worldWidth then
+                        -ballRadius
+
+                    else
+                        x
             in
-            ( { m | x = m.x + xDelta }, Cmd.none )
+            ( { m | x = m.x |> addXDelta >> loopX2 }, Cmd.none )
 
 
 
@@ -80,9 +90,9 @@ svgView { x } =
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
         , Svg.circle
-            [ x |> String.fromInt >> SA.cx
+            [ x |> String.fromFloat >> SA.cx
             , SA.cy "100"
-            , ballRadius |> String.fromInt >> SA.r
+            , ballRadius |> String.fromFloat >> SA.r
             , SA.fill "#cd37a9"
             ]
             []
