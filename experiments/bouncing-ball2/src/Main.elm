@@ -84,11 +84,16 @@ svgView { x } =
         ]
 
 
+viewControls _ =
+    H.div [] [ H.button [ HE.onClick Reset ] [ H.text "Reset" ] ]
+
+
 view : Model -> Html Msg
 view model =
     H.div []
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
+            , viewControls model
             , H.div [ HA.class "" ] [ svgView model ]
             ]
         ]
