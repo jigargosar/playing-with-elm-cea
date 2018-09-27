@@ -41,3 +41,13 @@ toHexAString =
 hueInt : HSLA -> Int
 hueInt =
     .hue >> (*) 359 >> Round.truncate
+
+
+saturationInt : HSLA -> Int
+saturationInt =
+    .saturation >> (*) 100 >> Round.truncate
+
+
+lightnessInt : HSLA -> Int
+lightnessInt =
+    .saturation >> (*) 100 >> Round.truncate
