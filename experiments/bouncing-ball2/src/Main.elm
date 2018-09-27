@@ -33,6 +33,14 @@ init _ =
     ( initialModel, Cmd.none )
 
 
+worldWidth =
+    500
+
+
+worldHeight =
+    round (worldWidth * 2 / 3)
+
+
 
 ---- UPDATE ----
 
@@ -65,14 +73,7 @@ update msg m =
 
 
 svgView { x } =
-    let
-        w =
-            500
-
-        h =
-            round (w * 2 / 3)
-    in
-    Svg.svg [ HA.width w, HA.height h ]
+    Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
         , Svg.circle
             [ x |> String.fromInt >> SA.cx
