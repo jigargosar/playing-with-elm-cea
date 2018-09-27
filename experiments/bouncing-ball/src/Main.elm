@@ -1,8 +1,10 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
-import Html exposing (Html, div, h1, img, text)
+import Html as H exposing (Html)
 import Html.Attributes as HA exposing (src)
+import Svg
+import Svg.Attributes as SA
 
 
 
@@ -33,12 +35,14 @@ update msg model =
 
 
 ---- VIEW ----
+---- Step 1 draw svg ----
 
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ div [ HA.class "f1" ] [ text "Your Elm App is working!" ]
+    H.div []
+        [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
+        , Svg.svg [] [ Svg.circle [ SA.cx "100", SA.cy "100", SA.r "50" ] [] ]
         ]
 
 
