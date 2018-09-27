@@ -24,9 +24,13 @@ type alias Model =
     { x : Int }
 
 
+initialModel =
+    { x = 100 }
+
+
 init : Flags -> ( Model, Cmd Msg )
 init _ =
-    ( { x = 100 }, Cmd.none )
+    ( initialModel, Cmd.none )
 
 
 
@@ -36,6 +40,7 @@ init _ =
 type Msg
     = NoOp
     | AFrame Float
+    | Reset
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -43,6 +48,9 @@ update msg m =
     case msg of
         NoOp ->
             ( m, Cmd.none )
+
+        Reset ->
+            ( initialModel, Cmd.none )
 
         AFrame delta ->
             let
@@ -63,16 +71,13 @@ svgView { x } =
 
         h =
             round (w * 2 / 3)
-
-        ballRadius =
-            10
     in
     Svg.svg [ HA.width w, HA.height h ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
         , Svg.circle
             [ x |> String.fromInt >> SA.cx
             , SA.cy "100"
-            , SA.r (ballRadius |> String.fromInt)
+            , SA.r "10"
             , SA.fill "#cd37a9"
             ]
             []
