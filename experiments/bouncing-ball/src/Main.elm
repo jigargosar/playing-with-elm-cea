@@ -14,13 +14,19 @@ import Svg.Attributes as SA
 
 type alias Model =
     { bgc : String
-    , bc : String
+    , ballColor : String
+    , ballXY : ( Int, Int )
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { bgc = "#adbeeb", bc = "#cd37a9" }, Cmd.none )
+    ( { bgc = "#adbeeb"
+      , ballColor = "#cd37a9"
+      , ballXY = ( 100, 100 )
+      }
+    , Cmd.none
+    )
 
 
 
@@ -30,7 +36,7 @@ init =
 type Msg
     = NoOp
     | BGC String
-    | BC String
+    | BallColor String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -42,8 +48,8 @@ update msg m =
         BGC bgc ->
             ( { m | bgc = bgc }, Cmd.none )
 
-        BC bc ->
-            ( { m | bc = bc }, Cmd.none )
+        BallColor ballColor ->
+            ( { m | ballColor = ballColor }, Cmd.none )
 
 
 
@@ -60,7 +66,7 @@ blue =
     "#4427d9"
 
 
-svgView { bgc, bc } =
+svgView { bgc, ballColor } =
     let
         w =
             500
@@ -74,8 +80,17 @@ svgView { bgc, bc } =
     Svg.svg [ HA.width w, HA.height h ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill bgc ] []
         , Svg.circle
-            [ SA.cx "100", SA.cy "100", SA.r (ballRadius |> String.fromInt), SA.fill bc ]
+            [ SA.cx "100", SA.cy "100", SA.r (ballRadius |> String.fromInt), SA.fill ballColor ]
             []
+        ]
+
+
+viewColors { ballColor, bgc } =
+    H.div [ HA.class "hs3" ]
+        [ H.input [ HA.type_ "color", HE.onInput BGC, HA.value bgc ] []
+        , H.span [] [ H.text bgc ]
+        , H.input [ HA.type_ "color", HE.onInput BallColor, HA.value ballColor ] []
+        , H.span [] [ H.text ballColor ]
         ]
 
 
@@ -84,12 +99,7 @@ view model =
     H.div []
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
-            , H.div [ HA.class "hs3" ]
-                [ H.input [ HA.type_ "color", HE.onInput BGC, HA.value model.bgc ] []
-                , H.span [] [ H.text model.bgc ]
-                , H.input [ HA.type_ "color", HE.onInput BC, HA.value model.bc ] []
-                , H.span [] [ H.text model.bc ]
-                ]
+            , viewColors model
             , H.div [ HA.class "" ] [ svgView model ]
             ]
         ]
