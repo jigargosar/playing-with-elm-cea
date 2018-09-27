@@ -277,7 +277,7 @@ mapEach fn t =
 viewBallStats { ball } =
     let
         roundTuple =
-            mapEach (Round.round 2)
+            mapEach (Round.round 0)
 
         ( x, y ) =
             roundTuple ball.p
