@@ -117,15 +117,24 @@ update msg m =
                     Debug.log "key: KeyDown" k
 
                 speed =
-                    10
+                    20
 
                 newVelocity =
                     case k of
                         "ArrowDown" ->
-                            Just ( -1, 0 )
+                            Just ( 0, 1 )
 
                         "ArrowUp" ->
+                            Just ( 0, -1 )
+
+                        "ArrowLeft" ->
+                            Just ( -1, 0 )
+
+                        "ArrowRight" ->
                             Just ( 1, 0 )
+
+                        " " ->
+                            Just ( 0, 0 )
 
                         _ ->
                             Nothing
@@ -192,7 +201,7 @@ blue =
     "#4427d9"
 
 
-svgView { bgColor, ballColor, ballXY } =
+svgView { bgColor, ballColor, ballXY, ball } =
     let
         w =
             500
@@ -204,7 +213,7 @@ svgView { bgColor, ballColor, ballXY } =
             10
 
         ( bxS, byS ) =
-            ballXY
+            ball.p
                 |> Tuple.mapBoth String.fromFloat String.fromFloat
     in
     Svg.svg [ HA.width w, HA.height h ]
