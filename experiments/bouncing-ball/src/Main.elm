@@ -4,7 +4,8 @@ import Browser
 import Color as ColorConverter
 import Hsla
 import Html as H exposing (Html)
-import Html.Attributes as HA exposing (src)
+import Html.Attributes as HA
+import Html.Events as HE
 import Svg
 import Svg.Attributes as SA
 
@@ -88,6 +89,7 @@ viewHslaInput hslaC =
                 [ HA.class "pa1 w3"
                 , HA.type_ "number"
                 , HA.value v
+                , HE.onInput (\_ -> NoOp)
                 ]
                 []
 
