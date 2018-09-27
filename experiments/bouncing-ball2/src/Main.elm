@@ -66,11 +66,11 @@ update msg m =
 
         AFrame delta ->
             let
-                xDelta =
-                    15 / delta
+                ppf =
+                    3
 
-                addXDelta x =
-                    x + xDelta
+                addPPF x =
+                    x + ppf
 
                 loopX2 x =
                     if x - ballRadius > worldWidth then
@@ -79,7 +79,7 @@ update msg m =
                     else
                         x
             in
-            ( { m | x = m.x |> addXDelta >> loopX2 }, Cmd.none )
+            ( { m | x = m.x |> addPPF >> loopX2 }, Cmd.none )
 
 
 
