@@ -20,12 +20,25 @@ type alias Flags =
     {}
 
 
+type alias Vec =
+    ( Float, Float )
+
+
+vec : Float -> Float -> Vec
+vec x y =
+    ( x, y )
+
+
+vecAdd ( x, y ) ( x_, y_ ) =
+    vec (x + x_) (y + y_)
+
+
 type alias Model =
-    { x : Float }
+    { x : Float, pos : Vec }
 
 
 initialModel =
-    { x = 100 }
+    { x = 100, pos = vec 100 100 }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -66,23 +79,32 @@ update msg m =
 
         AFrame delta ->
             let
-                ppf =
-                    3
+                vel =
+                    vec 1.5 0
 
-                addPPF x =
-                    x + ppf
-
-                loopX2 x =
-                    if x - ballRadius > worldWidth then
-                        -ballRadius
-
-                    else
-                        x
+                newPos =
+                    m.pos |> vecAdd vel
             in
-            ( { m | x = m.x |> addPPF >> loopX2 }, Cmd.none )
+            ( { m | x = m.x + 1.5, pos = newPos }, Cmd.none )
 
 
 
+--        AFrame delta ->
+--            let
+--                xPxPF =
+--                    1.5
+--
+--                addPPF x =
+--                    x + xPxPF
+--
+--                loopX2 x =
+--                    if x - ballRadius > worldWidth then
+--                        -ballRadius
+--
+--                    else
+--                        x
+--            in
+--            ( { m | x = m.x |> addPPF >> loopX2 }, Cmd.none )
 ---- VIEW ----
 
 
