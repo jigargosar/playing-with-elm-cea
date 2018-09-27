@@ -23,6 +23,18 @@ port cache : E.Value -> Cmd msg
 ---- MODEL ----
 
 
+type alias Point =
+    ( Float, Float )
+
+
+type alias Velocity =
+    ( Float, Float )
+
+
+type alias Particle =
+    { p : Point, v : Velocity }
+
+
 type alias Flags =
     { cache : E.Value }
 
@@ -37,6 +49,7 @@ type alias Model =
     { bgColor : String
     , ballColor : String
     , ballXY : ( Float, Float )
+    , ball : Particle
     }
 
 
@@ -53,7 +66,7 @@ init flags =
                 |> Result.mapError (Debug.log "Error decoding flags.cache")
                 |> Result.withDefault (CacheModel "#adbeeb" "#cd37a9")
     in
-    update Cache (Model bgColor ballColor ( 100, 100 ))
+    update Cache (Model bgColor ballColor ( 100, 100 ) (Particle ( 100, 100 ) ( 0, 0 )))
 
 
 
@@ -84,7 +97,20 @@ update msg m =
             ( m, cacheModel m )
 
         AFrame delta ->
-            ( { m | ballXY = m.ballXY |> Tuple.mapFirst (\x -> x + 10 / delta) }, Cmd.none )
+            ( { m | ball = updateParticle delta m.ball }
+            , Cmd.none
+            )
+
+
+updateParticle delta par =
+    let
+        ( dx, dy ) =
+            par.v
+
+        ( x, y ) =
+            par.p
+    in
+    { par | p = ( x + dx, y + dy ) }
 
 
 cacheModel { ballColor, bgColor } =
