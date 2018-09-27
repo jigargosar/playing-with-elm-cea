@@ -120,19 +120,28 @@ update msg m =
                     10
 
                 newVelocity =
-                    (case k of
+                    case k of
                         "ArrowDown" ->
-                            ( -1, 0 )
+                            Just ( -1, 0 )
 
                         "ArrowUp" ->
-                            ( 1, 0 )
+                            Just ( 1, 0 )
 
                         _ ->
-                            ( 0, 0 )
-                    )
-                        |> Tuple.mapBoth ((*) speed) ((*) speed)
+                            Nothing
+
+                newBall =
+                    newVelocity
+                        |> Maybe.map
+                            (Tuple.mapBoth ((*) speed) ((*) speed)
+                                >> (\v -> setVelocity v m.ball)
+                            )
+                        |> Maybe.withDefault m.ball
+
+                _ =
+                    newVelocity |> Maybe.map (Debug.log "newVelocity")
             in
-            ( { m | ball = setVelocity newVelocity m.ball }, Cmd.none )
+            ( { m | ball = newBall }, Cmd.none )
 
         KeyUp k ->
             let
@@ -150,9 +159,13 @@ updateParticle delta par =
     let
         ( dx, dy ) =
             par.v
+                |> Tuple.mapBoth ((*) (1.0 / 60)) ((*) (1.0 / 60))
 
         ( x, y ) =
             par.p
+
+        --        _ =
+        --            Debug.log "updateParticle" par
     in
     { par | p = ( x + dx, y + dy ) }
 
