@@ -72,6 +72,14 @@ svgView { bc } =
         ]
 
 
+viewHslaInput =
+    [ H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
+    , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
+    , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
+    , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
+    ]
+
+
 view : Model -> Html Msg
 view model =
     H.div []
@@ -79,6 +87,9 @@ view model =
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , H.div [ HA.class "" ]
                 [ H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
+                , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
+                , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
+                , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
                 ]
             , H.div [ HA.class "" ] [ svgView model ]
             ]
