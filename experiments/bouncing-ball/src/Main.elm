@@ -104,7 +104,7 @@ blue =
     "#4427d9"
 
 
-svgView { bgColor, ballColor } =
+svgView { bgColor, ballColor, ballXY } =
     let
         w =
             500
@@ -114,11 +114,18 @@ svgView { bgColor, ballColor } =
 
         ballRadius =
             10
+
+        ( bx, by ) =
+            ballXY
     in
     Svg.svg [ HA.width w, HA.height h ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill bgColor ] []
         , Svg.circle
-            [ SA.cx "100", SA.cy "100", SA.r (ballRadius |> String.fromInt), SA.fill ballColor ]
+            [ SA.cx (bx |> String.fromInt)
+            , SA.cy (by |> String.fromInt)
+            , SA.r (ballRadius |> String.fromInt)
+            , SA.fill ballColor
+            ]
             []
         ]
 
