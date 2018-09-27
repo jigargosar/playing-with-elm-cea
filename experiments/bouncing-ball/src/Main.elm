@@ -85,7 +85,7 @@ viewHslaInput hslaC =
     [ H.input
         [ HA.class "pa1 w3"
         , HA.type_ "number"
-        , HA.value (Hsla.hueAsInt hslaC |> String.fromInt)
+        , HA.value (Hsla.hueInt hslaC |> String.fromInt)
         ]
         []
     , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []

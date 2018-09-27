@@ -1,4 +1,4 @@
-module Hsla exposing (Fn, HSLA, create, fromPartial, hueAsInt, toHexAString, toRGBA)
+module Hsla exposing (Fn, HSLA, create, fromPartial, hueInt, toHexAString, toRGBA)
 
 import Color
 import InternalColor
@@ -38,6 +38,6 @@ toHexAString =
     toRGBA >> Rgba.toHexAString
 
 
-hueAsInt : HSLA -> Int
-hueAsInt =
+hueInt : HSLA -> Int
+hueInt =
     .hue >> (*) 359 >> Round.truncate
