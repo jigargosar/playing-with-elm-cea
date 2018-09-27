@@ -5,6 +5,7 @@ import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
 import Json.Encode as E
+import Return
 import Svg
 import Svg.Attributes as SA
 
@@ -45,6 +46,7 @@ type Msg
     = NoOp
     | BgColor String
     | BallColor String
+    | Cache
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -58,6 +60,17 @@ update msg m =
 
         BallColor ballColor ->
             ( { m | ballColor = ballColor }, Cmd.none )
+
+        Cache ->
+            ( m, cacheModel m )
+
+
+cacheModel { ballColor, bgColor } =
+    E.object
+        [ ( "ballColor", E.string ballColor )
+        , ( "bgColor", E.string bgColor )
+        ]
+        |> cache
 
 
 
