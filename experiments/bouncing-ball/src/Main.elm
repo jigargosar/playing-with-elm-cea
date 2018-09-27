@@ -4,6 +4,7 @@ import Browser
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
+import Json.Decode as D
 import Json.Encode as E
 import Return
 import Svg
@@ -25,6 +26,12 @@ type alias Flags =
     { cache : E.Value }
 
 
+type alias CacheModel =
+    { bgColor : String
+    , ballColor : String
+    }
+
+
 type alias Model =
     { bgColor : String
     , ballColor : String
@@ -32,8 +39,19 @@ type alias Model =
     }
 
 
-init : ( Model, Cmd Msg )
-init =
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    let
+        { bgColor, ballColor } =
+            D.decodeValue
+                (D.map2 CacheModel
+                    (D.field "bgColor" D.string)
+                    (D.field "ballColor" D.string)
+                )
+                flags.cache
+                |> Result.mapError (Debug.log "Error decoding flags.cache")
+                |> Result.withDefault (CacheModel "#adbeeb" "#cd37a9")
+    in
     ( { bgColor = "#adbeeb"
       , ballColor = "#cd37a9"
       , ballXY = ( 100, 100 )
@@ -138,7 +156,7 @@ main : Program Flags Model Msg
 main =
     Browser.element
         { view = view
-        , init = \_ -> init
+        , init = init
         , update = update
         , subscriptions = always Sub.none
         }
