@@ -116,15 +116,23 @@ update msg m =
                 _ =
                     Debug.log "key: KeyDown" k
 
-                ( dx, dy ) =
-                    case k of
+                speed =
+                    10
+
+                newVelocity =
+                    (case k of
                         "ArrowDown" ->
                             ( -1, 0 )
 
+                        "ArrowUp" ->
+                            ( 1, 0 )
+
                         _ ->
                             ( 0, 0 )
+                    )
+                        |> Tuple.mapBoth ((*) speed) ((*) speed)
             in
-            ( m, Cmd.none )
+            ( { m | ball = setVelocity newVelocity m.ball }, Cmd.none )
 
         KeyUp k ->
             let
@@ -132,6 +140,10 @@ update msg m =
                     Debug.log "key: KeyUp" k
             in
             ( m, Cmd.none )
+
+
+setVelocity v par =
+    { par | v = v }
 
 
 updateParticle delta par =
