@@ -86,9 +86,9 @@ view model =
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , H.div [ HA.class "hs3" ]
                 [ H.input [ HA.type_ "color", HE.onInput BC, HA.value model.bgc ] []
-                , H.text model.bgc
+                , H.span [] [ H.text model.bgc ]
                 , H.input [ HA.type_ "color", HE.onInput BC, HA.value model.bc ] []
-                , H.text model.bc
+                , H.span [] [ H.text model.bc ]
                 ]
             , H.div [ HA.class "" ] [ svgView model ]
             ]
