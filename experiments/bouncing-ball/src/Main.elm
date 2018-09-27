@@ -37,7 +37,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ HA.class "_sans-serif" ]
+    div []
         [ div [ HA.class "f1" ] [ text "Your Elm App is working!" ]
         ]
 
