@@ -36,13 +36,28 @@ update msg model =
 
 ---- VIEW ----
 ---- Step 1 draw svg ----
+-- * Make it pretty
+
+
+svgView =
+    let
+        w =
+            500
+
+        h =
+            round (w * 2 / 3)
+    in
+    Svg.svg [ HA.width w, HA.height h ]
+        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "green" ] []
+        , Svg.circle [ SA.cx "100", SA.cy "100", SA.r "50" ] []
+        ]
 
 
 view : Model -> Html Msg
 view model =
     H.div []
         [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
-        , Svg.svg [] [ Svg.circle [ SA.cx "100", SA.cy "100", SA.r "50" ] [] ]
+        , svgView
         ]
 
 
