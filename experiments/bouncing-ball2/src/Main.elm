@@ -21,12 +21,12 @@ type alias Flags =
 
 
 type alias Model =
-    {}
+    { x : Int }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init _ =
-    ( {}, Cmd.none )
+    ( { x = 100 }, Cmd.none )
 
 
 
@@ -54,7 +54,7 @@ update msg m =
 ---- VIEW ----
 
 
-svgView _ =
+svgView { x } =
     let
         w =
             500
@@ -68,7 +68,7 @@ svgView _ =
     Svg.svg [ HA.width w, HA.height h ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
         , Svg.circle
-            [ SA.cx "100"
+            [ x |> String.fromInt >> SA.cx
             , SA.cy "100"
             , SA.r (ballRadius |> String.fromInt)
             , SA.fill "#cd37a9"
