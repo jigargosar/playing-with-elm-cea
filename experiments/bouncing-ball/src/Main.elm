@@ -1,8 +1,6 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
-import Color as ColorConverter
-import Hsla
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
@@ -15,12 +13,12 @@ import Svg.Attributes as SA
 
 
 type alias Model =
-    { bc : Hsla.HSLA }
+    { bc : String }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { bc = Hsla.create 0.1 1 1 1 }, Cmd.none )
+    ( { bc = green }, Cmd.none )
 
 
 
@@ -29,7 +27,7 @@ init =
 
 type Msg
     = NoOp
-    | BC Hsla.HSLA
+    | BC String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -49,14 +47,7 @@ update msg m =
 
 
 green =
-    let
-        c =
-            ColorConverter.green |> ColorConverter.toHsla
-
-        s =
-            "hsla(116 , 60%, 80% ,1)"
-    in
-    c
+    "hsla(116 , 60%, 80% ,1)"
 
 
 blue =
@@ -75,32 +66,11 @@ svgView { bc } =
             10
     in
     Svg.svg [ HA.width w, HA.height h ]
-        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill (bc |> Hsla.toHexAString) ] []
+        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill bc ] []
         , Svg.circle
             [ SA.cx "100", SA.cy "100", SA.r (ballRadius |> String.fromInt), SA.fill blue ]
             []
         ]
-
-
-viewHslaInput hslaC =
-    let
-        inputNum v =
-            H.input
-                [ HA.class "pa1 w3"
-                , HA.type_ "number"
-                , HA.value v
-                , HE.onInput (\_ -> NoOp)
-                ]
-                []
-
-        inputInt i =
-            inputNum (String.fromInt i)
-    in
-    [ Hsla.hueInt hslaC |> inputInt
-    , Hsla.saturationInt hslaC |> inputInt
-    , Hsla.lightnessInt hslaC |> inputInt
-    , hslaC.alpha |> String.fromFloat |> inputNum
-    ]
 
 
 view : Model -> Html Msg
@@ -108,8 +78,6 @@ view model =
     H.div []
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
-
-            --            , H.div [ HA.class "" ] (viewHslaInput model.bc)
             , H.div [ HA.class "" ] [ svgView model ]
             ]
         ]
