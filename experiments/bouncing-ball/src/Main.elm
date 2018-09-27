@@ -1,6 +1,8 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
+import Color as ColorConverter
+import Hsla
 import Html as H exposing (Html)
 import Html.Attributes as HA exposing (src)
 import Svg
@@ -12,12 +14,12 @@ import Svg.Attributes as SA
 
 
 type alias Model =
-    { bc : String }
+    { bc : Hsla.HSLA }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { bc = green }, Cmd.none )
+    ( { bc = Hsla.create 0.1 1 1 1 }, Cmd.none )
 
 
 
@@ -26,7 +28,7 @@ init =
 
 type Msg
     = NoOp
-    | BC String
+    | BC Hsla.HSLA
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -46,7 +48,14 @@ update msg m =
 
 
 green =
-    "hsla(116 , 60%, 80% ,1)"
+    let
+        c =
+            ColorConverter.green |> ColorConverter.toHsla
+
+        s =
+            "hsla(116 , 60%, 80% ,1)"
+    in
+    c
 
 
 blue =
@@ -65,15 +74,20 @@ svgView { bc } =
             10
     in
     Svg.svg [ HA.width w, HA.height h ]
-        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill bc ] []
+        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill (bc |> Hsla.toHexAString) ] []
         , Svg.circle
             [ SA.cx "100", SA.cy "100", SA.r (ballRadius |> String.fromInt), SA.fill blue ]
             []
         ]
 
 
-viewHslaInput =
-    [ H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
+viewHslaInput hslaC =
+    [ H.input
+        [ HA.class "pa1 w3"
+        , HA.type_ "number"
+        , HA.value (Hsla.hueAsInt hslaC |> String.fromInt)
+        ]
+        []
     , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
     , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
     , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
