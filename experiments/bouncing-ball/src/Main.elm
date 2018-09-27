@@ -79,6 +79,9 @@ type Msg
     | BallColor String
     | Cache
     | AFrame Float
+    | KeyPress String
+    | KeyDown String
+    | KeyUp String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -100,6 +103,27 @@ update msg m =
             ( { m | ball = updateParticle delta m.ball }
             , Cmd.none
             )
+
+        KeyPress k ->
+            let
+                _ =
+                    Debug.log "key: KeyPress" k
+            in
+            ( m, Cmd.none )
+
+        KeyDown k ->
+            let
+                _ =
+                    Debug.log "key: KeyDown" k
+            in
+            ( m, Cmd.none )
+
+        KeyUp k ->
+            let
+                _ =
+                    Debug.log "key: KeyUp" k
+            in
+            ( m, Cmd.none )
 
 
 updateParticle delta par =
@@ -183,6 +207,24 @@ view model =
 
 
 
+---- Subscriptions ----
+
+
+keyDecoder : D.Decoder String
+keyDecoder =
+    D.field "key" D.string
+
+
+subscriptions model =
+    Sub.batch
+        [ Browser.Events.onAnimationFrameDelta AFrame
+        , Browser.Events.onKeyPress (D.map KeyPress keyDecoder)
+        , Browser.Events.onKeyDown (D.map KeyDown keyDecoder)
+        , Browser.Events.onKeyUp (D.map KeyUp keyDecoder)
+        ]
+
+
+
 ---- PROGRAM ----
 
 
@@ -192,5 +234,5 @@ main =
         { view = view
         , init = init
         , update = update
-        , subscriptions = \model -> Sub.batch [ Browser.Events.onAnimationFrameDelta AFrame ]
+        , subscriptions = subscriptions
         }
