@@ -47,15 +47,18 @@ svgView =
         h =
             round (w * 2 / 3)
 
+        ballRadius =
+            10
+
         green =
             "hsla(116 , 60%, 80% ,1)"
 
         blue =
-            "hsla(250, 60%, 80% ,1)"
+            "hsla(250, 80%, 50% ,1)"
     in
     Svg.svg [ HA.width w, HA.height h ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill green ] []
-        , Svg.circle [ SA.cx "100", SA.cy "100", SA.r "50", SA.fill blue ] []
+        , Svg.circle [ SA.cx "100", SA.cy "100", SA.r (ballRadius |> String.fromInt), SA.fill blue ] []
         ]
 
 
