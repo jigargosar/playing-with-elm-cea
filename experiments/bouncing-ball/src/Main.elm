@@ -141,36 +141,42 @@ update msg m =
                 speed =
                     20
 
-                newVelocity =
+                dx =
                     case k of
-                        "ArrowDown" ->
-                            Just ( 0, 1 )
-
-                        "ArrowUp" ->
-                            Just ( 0, -1 )
-
                         "ArrowLeft" ->
-                            Just ( -1, 0 )
+                            Just -1
 
                         "ArrowRight" ->
-                            Just ( 1, 0 )
+                            Just 1
 
                         " " ->
-                            Just ( 0, 0 )
+                            Just 0
 
                         _ ->
                             Nothing
 
-                newBall =
-                    newVelocity
-                        |> Maybe.map
-                            (Tuple.mapBoth ((*) speed) ((*) speed)
-                                >> (\v -> setVelocity v m.ball)
-                            )
-                        |> Maybe.withDefault m.ball
+                dy =
+                    case k of
+                        "ArrowDown" ->
+                            Just 1
 
-                _ =
-                    newVelocity |> Maybe.map (Debug.log "newVelocity")
+                        "ArrowUp" ->
+                            Just -1
+
+                        " " ->
+                            Just 0
+
+                        _ ->
+                            Nothing
+
+                newVelocity =
+                    ( dx, dy )
+                        |> mapEach (Maybe.map ((*) speed))
+                        |> Tuple.mapBoth (Maybe.withDefault (m.ball |> getDX))
+                            (Maybe.withDefault (m.ball |> getDY))
+
+                newBall =
+                    m.ball |> setVelocity newVelocity
             in
             ( { m | ball = newBall, keyDownSet = m.keyDownSet |> Set.insert k }, Cmd.none )
 
@@ -180,6 +186,14 @@ update msg m =
                     Debug.log "key: KeyUp" k
             in
             ( { m | keyDownSet = m.keyDownSet |> Set.remove k }, Cmd.none )
+
+
+getDX { v } =
+    Tuple.first v
+
+
+getDY { v } =
+    Tuple.second v
 
 
 setVelocity v par =
