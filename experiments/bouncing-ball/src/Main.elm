@@ -258,6 +258,17 @@ viewColors { ballColor, bgColor } =
         ]
 
 
+viewKeys { keyDownSet } =
+    let
+        surroundString s e v =
+            s ++ v ++ e
+
+        keys =
+            keyDownSet |> Set.toList |> String.join "','" |> surroundString "'" "'"
+    in
+    H.div [] [ H.text keys ]
+
+
 view : Model -> Html Msg
 view model =
     H.div []
@@ -265,6 +276,7 @@ view model =
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , viewColors model
             , H.div [ HA.class "" ] [ svgView model ]
+            , viewKeys model
             ]
         ]
 
