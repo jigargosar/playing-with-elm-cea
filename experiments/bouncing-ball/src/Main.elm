@@ -13,7 +13,7 @@ import Svg.Attributes as SA
 
 
 type alias Model =
-    { bgc : String
+    { bgColor : String
     , ballColor : String
     , ballXY : ( Int, Int )
     }
@@ -21,7 +21,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { bgc = "#adbeeb"
+    ( { bgColor = "#adbeeb"
       , ballColor = "#cd37a9"
       , ballXY = ( 100, 100 )
       }
@@ -35,7 +35,7 @@ init =
 
 type Msg
     = NoOp
-    | BGC String
+    | BgColor String
     | BallColor String
 
 
@@ -45,8 +45,8 @@ update msg m =
         NoOp ->
             ( m, Cmd.none )
 
-        BGC bgc ->
-            ( { m | bgc = bgc }, Cmd.none )
+        BgColor bgColor ->
+            ( { m | bgColor = bgColor }, Cmd.none )
 
         BallColor ballColor ->
             ( { m | ballColor = ballColor }, Cmd.none )
@@ -66,7 +66,7 @@ blue =
     "#4427d9"
 
 
-svgView { bgc, ballColor } =
+svgView { bgColor, ballColor } =
     let
         w =
             500
@@ -78,17 +78,17 @@ svgView { bgc, ballColor } =
             10
     in
     Svg.svg [ HA.width w, HA.height h ]
-        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill bgc ] []
+        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill bgColor ] []
         , Svg.circle
             [ SA.cx "100", SA.cy "100", SA.r (ballRadius |> String.fromInt), SA.fill ballColor ]
             []
         ]
 
 
-viewColors { ballColor, bgc } =
+viewColors { ballColor, bgColor } =
     H.div [ HA.class "hs3" ]
-        [ H.input [ HA.type_ "color", HE.onInput BGC, HA.value bgc ] []
-        , H.span [] [ H.text bgc ]
+        [ H.input [ HA.type_ "color", HE.onInput BgColor, HA.value bgColor ] []
+        , H.span [] [ H.text bgColor ]
         , H.input [ HA.type_ "color", HE.onInput BallColor, HA.value ballColor ] []
         , H.span [] [ H.text ballColor ]
         ]
