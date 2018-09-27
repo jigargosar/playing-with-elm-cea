@@ -41,6 +41,10 @@ worldHeight =
     round (worldWidth * 2 / 3)
 
 
+ballRadius =
+    10
+
+
 
 ---- UPDATE ----
 
@@ -78,7 +82,7 @@ svgView { x } =
         , Svg.circle
             [ x |> String.fromInt >> SA.cx
             , SA.cy "100"
-            , SA.r "10"
+            , ballRadius |> String.fromInt >> SA.r
             , SA.fill "#cd37a9"
             ]
             []
