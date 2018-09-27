@@ -1,4 +1,4 @@
-module Hsla exposing (Fn, HSLA, create, fromPartial, hueInt, toHexAString, toRGBA)
+module Hsla exposing (Fn, HSLA, create, fromPartial, hueInt, lightnessInt, saturationInt, toHexAString, toRGBA)
 
 import Color
 import InternalColor

@@ -82,15 +82,22 @@ svgView { bc } =
 
 
 viewHslaInput hslaC =
-    [ H.input
-        [ HA.class "pa1 w3"
-        , HA.type_ "number"
-        , HA.value (Hsla.hueInt hslaC |> String.fromInt)
-        ]
-        []
-    , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
-    , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
-    , H.input [ HA.class "pa1 w3", HA.type_ "number", HA.value "0" ] []
+    let
+        inputNum v =
+            H.input
+                [ HA.class "pa1 w3"
+                , HA.type_ "number"
+                , HA.value v
+                ]
+                []
+
+        inputInt i =
+            inputNum (String.fromInt i)
+    in
+    [ Hsla.hueInt hslaC |> inputInt
+    , Hsla.saturationInt hslaC |> inputInt
+    , Hsla.lightnessInt hslaC |> inputInt
+    , hslaC.alpha |> String.fromFloat |> inputNum
     ]
 
 
