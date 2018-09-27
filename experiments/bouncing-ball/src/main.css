@@ -20,10 +20,26 @@ html, body, #root, [data-elm-hot=true] {
   font-size: 16px;
 }
 
-.hs1 > * {
+.vs1 > * {
   margin-bottom: var(--rem1);
 }
 
-.hs1 > *:last-child{
+.vs1 > *:last-child{
+  margin-bottom:0;
+}
+
+.vs2 > * {
+  margin-bottom: var(--rem2);
+}
+
+.vs2 > *:last-child{
+  margin-bottom:0;
+}
+
+.vs3 > * {
+  margin-bottom: var(--rem3);
+}
+
+.vs3 > *:last-child{
   margin-bottom:0;
 }
