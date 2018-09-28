@@ -168,8 +168,6 @@ view model =
 subscriptions model =
     Sub.batch
         [ Browser.Events.onAnimationFrameDelta AFrame
-
-        {- , Time.every (5 * 1000) (\_ -> Reset) -}
         ]
 
 
