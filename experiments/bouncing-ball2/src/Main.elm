@@ -40,7 +40,11 @@ type alias Model =
 ballGenerator =
     let
         angleGenerator =
-            Random.float 0 360
+            let
+                spread =
+                    360
+            in
+            Random.float (90 - spread) (90 + spread)
 
         magnitudeGenerator =
             Random.float 2 7
@@ -49,7 +53,7 @@ ballGenerator =
             Random.float 4 4
 
         newBall mag ang r =
-            Particle.new 0 0 mag ang r -0.1
+            Particle.new 0 100 mag ang r -0.1
     in
     Random.map3 newBall magnitudeGenerator angleGenerator radiusGenerator
 
