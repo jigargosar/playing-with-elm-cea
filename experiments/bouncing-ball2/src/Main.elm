@@ -123,7 +123,10 @@ type Msg
     | Step
     | Reset
     | Restart
-    | Pause Bool
+    | SetPause Bool
+    | Pause
+    | Play
+    | TogglePause
     | KeyDown String
     | KeyUp String
 
@@ -135,10 +138,10 @@ update msg m =
             pure m
 
         Reset ->
-            update (Pause True) (initialModel m.seed)
+            update Pause (initialModel m.seed)
 
         Restart ->
-            update (Pause False) (initialModel m.seed)
+            update Play (initialModel m.seed)
 
         AFrame delta ->
             ter m.paused (pure m) (update Step m)
@@ -159,8 +162,17 @@ update msg m =
                 |> updateShipThrust
                 |> pure
 
-        Pause newPaused ->
+        SetPause newPaused ->
             pure { m | paused = newPaused }
+
+        TogglePause ->
+            update (SetPause (not m.paused)) m
+
+        Pause ->
+            update (SetPause True) m
+
+        Play ->
+            update (SetPause False) m
 
         KeyDown key ->
             let
@@ -224,7 +236,7 @@ viewControls { paused } =
     H.div [ HA.class "hs2" ]
         [ hBtn [] Reset "Reset"
         , hBtn [] Restart "Restart"
-        , hBtn [] (Pause (not paused)) (ter paused "Play" "Pause")
+        , hBtn [] TogglePause (ter paused "Play" "Pause")
         , hBtn [ HA.disabled (not paused) ] Step "Step"
         ]
 
@@ -234,7 +246,7 @@ viewSvg m =
         [ SA.class "flex center"
         , HA.width worldWidth
         , HA.height worldHeight
-        , HE.onBlur (Pause True)
+        , HE.onBlur (SetPause True)
         ]
         (ViewSvg.view worldSizeVec
             [ ViewSvg.viewBalls m.balls
