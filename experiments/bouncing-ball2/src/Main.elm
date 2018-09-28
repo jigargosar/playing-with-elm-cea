@@ -37,7 +37,7 @@ type alias Model =
     { paused : Bool, ball : Particle, seed : Random.Seed }
 
 
-initialModel =
+initialModel initialSeed =
     let
         angleGenerator =
             Random.float 0 360
@@ -59,7 +59,7 @@ initialModel =
 
 init : Flags -> ( Model, Cmd Msg )
 init _ =
-    ( initialModel, Cmd.none )
+    ( initialModel initialSeed, Cmd.none )
 
 
 worldWidth =
