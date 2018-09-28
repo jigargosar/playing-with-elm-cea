@@ -13,6 +13,7 @@ import Svg.Attributes as SA
 import Time
 import TypedSvg.Attributes as TA
 import TypedSvg.Types as TT
+import Vec
 
 
 
@@ -23,33 +24,12 @@ type alias Flags =
     {}
 
 
-type alias Vec =
-    ( Float, Float )
-
-
-vec : Float -> Float -> Vec
-vec x y =
-    ( x, y )
-
-
-vecAdd ( x, y ) ( x_, y_ ) =
-    vec (x + x_) (y + y_)
-
-
-vecXStr =
-    Tuple.first >> String.fromFloat
-
-
-vecYStr =
-    Tuple.second >> String.fromFloat
-
-
 type alias Model =
-    { pos : Vec, paused : Bool }
+    { pos : Vec.Vec, paused : Bool }
 
 
 initialModel =
-    { pos = vec 0 0, paused = False }
+    { pos = Vec.vec 0 0, paused = False }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -92,10 +72,10 @@ update msg m =
         AFrame delta ->
             let
                 vel =
-                    vec 1.5 0
+                    Vec.vec 1.5 0
 
                 ret =
-                    pure { m | pos = vecAdd m.pos vel }
+                    pure { m | pos = Vec.vecAdd m.pos vel }
             in
             ter m.paused (pure m) ret
 
@@ -122,8 +102,8 @@ svgView { pos } =
                     ]
                 ]
                 [ Svg.circle
-                    [ pos |> Tuple.first >> TT.num >> TA.cx
-                    , pos |> Tuple.second >> TT.num >> TA.cy
+                    [ pos |> Vec.getX >> TT.num >> TA.cx
+                    , pos |> Vec.getY >> TT.num >> TA.cy
                     , ballRadius |> String.fromFloat >> SA.r
                     , SA.fill "#cd37a9"
                     ]
