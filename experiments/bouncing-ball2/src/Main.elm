@@ -43,7 +43,7 @@ ballGenerator =
             Random.float 0 360
 
         magnitudeGenerator =
-            Random.float 0.5 1.5
+            Random.float 1 5
 
         velocityGenerator =
             Random.map2 Vec.newMA magnitudeGenerator angleGenerator

@@ -2,32 +2,26 @@ module Particle exposing
     ( Particle
     , fromRec
     , getR
-    , newXY
     , posPair
     , setVel
     , setVelMA
     , setVelXY
     , update
-    , zero
     )
 
 import Vec exposing (Vec)
 
 
 type Particle
-    = Particle { pos : Vec, vel : Vec, r : Float }
+    = Particle { pos : Vec, vel : Vec, r : Float, g : Vec }
 
 
 fromRec { pos, vel, r } =
-    Particle { pos = pos, vel = vel, r = r }
+    Particle { pos = pos, vel = vel, r = r, g = Vec.zero }
 
 
-newXY x y =
-    Particle { pos = Vec.newXY x y, vel = Vec.zero, r = 0 }
-
-
-zero =
-    newXY 0 0
+new x y mag ang r g =
+    Particle { pos = Vec.newXY x y, vel = Vec.newMA mag ang, r = r, g = Vec.newXY 0 0.1 }
 
 
 setVel vel (Particle rec) =
