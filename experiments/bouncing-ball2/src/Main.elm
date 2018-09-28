@@ -38,11 +38,11 @@ type alias Ship =
 
 
 initialShip =
-    Particle.new 0 0 0 0 50 -0.1
+    Particle.new 0 0 1 0 50 0
 
 
 type alias Model =
-    { paused : Bool, balls : List Ball, seed : Random.Seed, ship : Ship, thrust : Vec }
+    { paused : Bool, balls : List Ball, seed : Random.Seed, ship : Ship, thrust : Vec, shipAngle : Float }
 
 
 ballGenerator =
@@ -71,7 +71,13 @@ initialModel fromSeed =
         ( balls, seed ) =
             Random.step (Random.list 500 ballGenerator) fromSeed
     in
-    { paused = False, balls = balls, seed = seed, ship = initialShip, thrust = Vec.zero }
+    { paused = False
+    , balls = balls
+    , seed = seed
+    , ship = initialShip
+    , thrust = Vec.zero
+    , shipAngle = 0
+    }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -122,7 +128,10 @@ update msg m =
 
         Step ->
             pure
-                { m | balls = m.balls |> List.map Particle.update }
+                { m
+                    | balls = m.balls |> List.map Particle.update
+                    , ship = m.ship |> Particle.update
+                }
 
         Pause newPaused ->
             pure { m | paused = newPaused }
@@ -141,6 +150,7 @@ viewSvg m =
         (ViewSvg.view
             { balls = m.balls
             , ship = m.ship
+            , shipAngle = m.shipAngle
             , worldSize = worldSizeVec
             }
         )

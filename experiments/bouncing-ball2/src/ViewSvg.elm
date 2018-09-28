@@ -77,7 +77,7 @@ viewAxis worldSize =
         ]
 
 
-view { balls, worldSize, ship } =
+view { balls, worldSize, ship, shipAngle } =
     let
         ( ox, oy ) =
             worldSize |> Vec.div 2 |> Vec.toPair
@@ -99,33 +99,32 @@ view { balls, worldSize, ship } =
             ]
             [ viewAxis worldSize
             , g [] (balls |> List.map viewBall)
-            , viewShip ship
+            , viewShip ship shipAngle
             ]
         ]
     ]
 
 
-viewShip ship =
+viewShip ship shipAngle =
     let
-        ( bx, by ) =
+        ( x, y ) =
             Particle.posPair ship
 
         ra =
             Particle.getR ship
-
-        ang =
-            Particle.getA ship
     in
-    polygon
-        [ points [ ( 0, 0 ), ( -ra, ra / -3 ), ( -ra, ra / 3 ) ]
-        , SA.stroke "#cd37a9"
-        , strokeWidth 5
-        , fill FillNone
-        , strokeLinecap StrokeLinecapRound
-        , strokeLinejoin StrokeLinejoinMiter
-        , strokeLinejoin StrokeLinejoinRound
-        , strokeLinejoin StrokeLinejoinBevel
-        , opacity (Opacity 0.8)
-        , transform [ Rotate ang 0 0 ]
+    g [ transform [ Translate x y ] ]
+        [ polygon
+            [ points [ ( 0, 0 ), ( -ra, ra / -3 ), ( -ra, ra / 3 ) ]
+            , SA.stroke "#cd37a9"
+            , strokeWidth 5
+            , fill FillNone
+            , strokeLinecap StrokeLinecapRound
+            , strokeLinejoin StrokeLinejoinMiter
+            , strokeLinejoin StrokeLinejoinRound
+            , strokeLinejoin StrokeLinejoinBevel
+            , opacity (Opacity 0.8)
+            , transform [ Rotate shipAngle 0 0 ]
+            ]
+            []
         ]
-        []

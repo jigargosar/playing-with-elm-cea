@@ -37,5 +37,5 @@ getR (Particle { r }) =
     r
 
 
-getA (Particle { r }) =
-    r
+getA (Particle { pos }) =
+    Vec.getA pos

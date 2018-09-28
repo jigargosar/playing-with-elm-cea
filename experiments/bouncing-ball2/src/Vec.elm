@@ -3,6 +3,7 @@ module Vec exposing
     , add
     , div
     , fromInt
+    , getA
     , getX
     , getY
     , newMA
@@ -31,6 +32,10 @@ newMA m deg =
             degrees deg
     in
     Vec ( m * cos angle, m * sin angle )
+
+
+getA (Vec ( x, y )) =
+    atan (y / x)
 
 
 zero =
