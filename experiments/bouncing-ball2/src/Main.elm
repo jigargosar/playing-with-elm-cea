@@ -38,7 +38,7 @@ type alias Model =
 
 
 initialModel =
-    { pos = Vec.new 0 0, paused = False, ball = Particle.zero }
+    { pos = Vec.new 0 0, paused = False, ball = Particle.zero |> Particle.setVelXY 1.5 0 }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -95,9 +95,7 @@ update msg m =
                     pure
                         { m
                             | pos = Vec.add m.pos vel
-                            , ball =
-                                m.ball
-                                    |> Particle.setVel (Vec.new 1.5 0)
+                            , ball = Particle.update m.ball
                         }
             in
             ter m.paused (pure m) ret
