@@ -43,7 +43,13 @@ initialShip =
 
 
 type alias Model =
-    { paused : Bool, balls : List Ball, seed : Random.Seed, ship : Ship, thrust : Vec, shipAngle : Float }
+    { paused : Bool
+    , balls : List Ball
+    , seed : Random.Seed
+    , ship : Ship
+    , thrust : Vec
+    , shipAngle : Float
+    }
 
 
 ballGenerator =
@@ -142,8 +148,19 @@ update msg m =
             let
                 _ =
                     Debug.log "kD" key
+
+                newModel =
+                    case key of
+                        "ArrowLeft" ->
+                            { m | shipAngle = m.shipAngle - 0.1 }
+
+                        "ArrowRight" ->
+                            { m | shipAngle = m.shipAngle + 0.1 }
+
+                        _ ->
+                            m
             in
-            pure m
+            pure newModel
 
 
 pure m =
