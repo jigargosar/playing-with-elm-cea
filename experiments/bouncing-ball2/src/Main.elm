@@ -148,8 +148,8 @@ btn al msg labelText =
          , Bdr.solid
          , Bdr.shadow
             { offset = Tuple.pair 0 0
-            , size = 2
-            , blur = 4
+            , size = 3
+            , blur = 3
             , color = rgba 0 0 0 0.2
             }
          , Bdr.color (rgba 0 0 0 0)
