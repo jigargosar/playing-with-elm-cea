@@ -246,7 +246,7 @@ viewSvg m =
         [ SA.class "flex center"
         , HA.width worldWidth
         , HA.height worldHeight
-        , HE.onBlur (SetPause True)
+        , HE.onBlur Play
         ]
         (ViewSvg.view worldSizeVec
             [ ViewSvg.viewBalls m.balls
