@@ -7,10 +7,10 @@ import Html.Attributes as HA
 import Html.Events as HE
 import Json.Decode as D
 import Particle exposing (Particle)
-import Ramda exposing (ter)
+import Ramda exposing (subBy, ter)
 import Random
 import Round
-import Set
+import Set exposing (Set)
 import String exposing (String)
 import Svg
 import Svg.Attributes as SA
@@ -39,7 +39,7 @@ type alias Ship =
 
 
 initialShip =
-    Particle.new 0 0 1 0 50 0
+    Particle.new 0 0 0 0 50 0
 
 
 type alias Model =
@@ -49,6 +49,7 @@ type alias Model =
     , ship : Ship
     , thrust : Vec
     , shipAngle : Float
+    , keyDownSet : Set String
     }
 
 
@@ -84,6 +85,7 @@ initialModel fromSeed =
     , ship = initialShip
     , thrust = Vec.zero
     , shipAngle = 0
+    , keyDownSet = Set.empty
     }
 
 
@@ -117,6 +119,7 @@ type Msg
     | Restart
     | Pause Bool
     | KeyDown String
+    | KeyUp String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -135,37 +138,37 @@ update msg m =
             ter m.paused (pure m) (update Step m)
 
         Step ->
-            pure
-                { m
-                    | balls = m.balls |> List.map Particle.update
-                    , ship = m.ship |> Particle.update
-                }
+            let
+                angleOffset =
+                    5
+
+                isDown key =
+                    Set.member key m.keyDownSet
+            in
+            { m
+                | balls = m.balls |> List.map Particle.update
+                , ship = m.ship |> Particle.update
+            }
+                |> updateShipAngle
+                    (if isDown "ArrowLeft" then
+                        subBy angleOffset
+
+                     else if isDown "ArrowRight" then
+                        (+) angleOffset
+
+                     else
+                        identity
+                    )
+                |> pure
 
         Pause newPaused ->
             pure { m | paused = newPaused }
 
         KeyDown key ->
-            let
-                _ =
-                    Debug.log "kD" key
+            pure { m | keyDownSet = Set.insert key m.keyDownSet }
 
-                angleOffset =
-                    0.1
-
-                newModel =
-                    m
-                        |> (case key of
-                                "ArrowLeft" ->
-                                    updateShipAngle ((-) angleOffset)
-
-                                "ArrowRight" ->
-                                    updateShipAngle ((+) angleOffset)
-
-                                _ ->
-                                    identity
-                           )
-            in
-            pure newModel
+        KeyUp key ->
+            pure { m | keyDownSet = Set.remove key m.keyDownSet }
 
 
 pure m =
@@ -223,6 +226,8 @@ subscriptions model =
     Sub.batch
         [ Browser.Events.onAnimationFrameDelta AFrame
         , Browser.Events.onKeyDown (D.field "key" D.string |> D.map KeyDown)
+        , Browser.Events.onKeyUp (D.field "key" D.string |> D.map KeyUp)
+        , Browser.Events.onKeyPress (D.field "key" D.string |> D.map KeyUp)
         ]
 
 
