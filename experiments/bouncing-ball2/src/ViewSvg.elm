@@ -117,29 +117,30 @@ viewShip ship shipAngle =
 
         showThrust =
             Particle.getAccM ship > 0
-    in
-    g [ transform [ Translate x y, Rotate shipAngle 0 0 ] ]
-        ([ polygon
-            [ points [ ( ra / 3 * 2, 0 ), ( -ra / 3, -ra / 3 ), ( -ra / 3, ra / 3 ) ]
-            , SA.stroke "#cd37a9"
-            , strokeWidth 5
-            , fill FillNone
-            , strokeLinejoin StrokeLinejoinBevel
-            , opacity (Opacity 0.8)
-            ]
-            []
-         ]
-            ++ ter showThrust
-                [ line
-                    [ x2 (-ra / 3)
-                    , SA.stroke "#cd37a9"
-                    , strokeWidth 5
-                    , fill FillNone
-                    , strokeLinejoin StrokeLinejoinBevel
-                    , opacity (Opacity 0.8)
-                    , transform [ Translate (-ra / 3) 0 ]
-                    ]
-                    []
+
+        viewThrust =
+            [ line
+                [ x2 (-ra / 3)
+                , SA.stroke "#cd37a9"
+                , strokeWidth 5
+                , fill FillNone
+                , strokeLinejoin StrokeLinejoinBevel
+                , opacity (Opacity 0.8)
+                , transform [ Translate (-ra / 3) 0 ]
                 ]
                 []
-        )
+            ]
+
+        viewBody =
+            polygon
+                [ points [ ( ra / 3 * 2, 0 ), ( -ra / 3, -ra / 3 ), ( -ra / 3, ra / 3 ) ]
+                , SA.stroke "#cd37a9"
+                , strokeWidth 5
+                , fill FillNone
+                , strokeLinejoin StrokeLinejoinBevel
+                , opacity (Opacity 0.8)
+                ]
+                []
+    in
+    g [ transform [ Translate x y, Rotate shipAngle 0 0 ] ]
+        ([ viewBody ] ++ ter showThrust viewThrust [])
