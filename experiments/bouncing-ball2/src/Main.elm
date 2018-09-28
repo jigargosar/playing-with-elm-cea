@@ -78,10 +78,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg m =
     case msg of
         NoOp ->
-            ( m, Cmd.none )
+            pure m
 
         Reset ->
-            ( initialModel, Cmd.none )
+            pure initialModel
 
         AFrame delta ->
             let
@@ -89,12 +89,12 @@ update msg m =
                     vec 1.5 0
 
                 ret =
-                    { m | pos = vecAdd m.pos vel } |> pure
+                    pure { m | pos = vecAdd m.pos vel }
             in
             ter m.paused (pure m) ret
 
         TogglePause ->
-            { m | paused = not m.paused } |> pure
+            pure { m | paused = not m.paused }
 
 
 pure m =
