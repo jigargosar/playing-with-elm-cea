@@ -15,6 +15,7 @@ import TypedSvg as TS
 import TypedSvg.Attributes as TA
 import TypedSvg.Types as TT
 import Vec
+import ViewSvg
 
 
 
@@ -97,49 +98,8 @@ pure m =
 
 
 svgView { pos } =
-    let
-        { x, y } =
-            Vec.toRec pos
-
-        ( ww, wh ) =
-            Vec.toPair worldSizeVec
-
-        ( ox, oy ) =
-            worldSizeVec |> Vec.div 2 |> Vec.toPair
-    in
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
-        [ Svg.g []
-            [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
-            , Svg.g
-                [ TA.transform [ TT.Translate ox oy, TT.Scale 1 -1 ]
-                , SA.fill "#cd37a9"
-                ]
-                [ TS.g
-                    [ SA.stroke "#cd37a9"
-                    , SA.strokeWidth "2"
-                    , TA.strokeLinecap TT.StrokeLinecapRound
-                    ]
-                    [ TS.line
-                        [ TA.y1 (TT.num (wh / -2))
-                        , TA.y2 (TT.num (wh / 2))
-                        ]
-                        []
-                    , TS.line
-                        [ TA.x1 (TT.num (ww / -2))
-                        , TA.x2 (TT.num (ww / 2))
-                        ]
-                        []
-                    ]
-                , Svg.circle
-                    [ TT.num x |> TA.cx
-                    , TT.num y |> TA.cy
-                    , ballRadius |> TT.num >> TA.r
-                    , SA.fill "#cd37a9"
-                    ]
-                    []
-                ]
-            ]
-        ]
+        (ViewSvg.svgView { ballPos = pos, ballRadius = ballRadius, worldSize = worldSizeVec })
 
 
 ter bool v1 v2 =
