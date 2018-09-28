@@ -123,5 +123,6 @@ viewShip ship =
         , strokeLinejoin StrokeLinejoinRound
         , strokeLinejoin StrokeLinejoinBevel
         , opacity (Opacity 0.8)
+        , transform [ Rotate 90 0 0 ]
         ]
         []
