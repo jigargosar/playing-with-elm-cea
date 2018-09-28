@@ -156,12 +156,17 @@ update msg m =
                     [ ( isKeyDown "ArrowLeft", updateShipAngle (subBy angleOffset) )
                     , ( isKeyDown "ArrowRight", updateShipAngle ((+) angleOffset) )
                     ]
+                |> updateShipThrust
                 |> pure
 
         Pause newPaused ->
             pure { m | paused = newPaused }
 
         KeyDown key ->
+            let
+                _ =
+                    Debug.log "kD" key
+            in
             pure { m | keyDownSet = Set.insert key m.keyDownSet }
 
         KeyUp key ->
@@ -173,6 +178,15 @@ cond defaultFn conditions data =
         |> List.Extra.find (\( boolFn, _ ) -> boolFn data)
         |> Maybe.map (\( _, dataFn ) -> dataFn data)
         |> Maybe.withDefault (defaultFn data)
+
+
+updateShipThrust m =
+    case isKeyDown "ArrowUp" m of
+        True ->
+            { m | ship = m.ship |> Particle.setAccMA 0.1 m.shipAngle }
+
+        False ->
+            { m | ship = m.ship |> Particle.setAccMA 0 0 }
 
 
 pure m =
@@ -231,7 +245,8 @@ subscriptions model =
         [ Browser.Events.onAnimationFrameDelta AFrame
         , Browser.Events.onKeyDown (D.field "key" D.string |> D.map KeyDown)
         , Browser.Events.onKeyUp (D.field "key" D.string |> D.map KeyUp)
-        , Browser.Events.onKeyPress (D.field "key" D.string |> D.map KeyUp)
+
+        --        , Browser.Events.onKeyPress (D.field "key" D.string |> D.map KeyUp)
         ]
 
 
