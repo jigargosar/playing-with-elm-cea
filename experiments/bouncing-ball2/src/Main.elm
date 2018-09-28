@@ -155,9 +155,9 @@ btn al msg labelText =
          , Bdr.color (rgba 0 0 0 0)
          , Bkg.color (rgba 0 0 0 0)
 
-         {- , gradient
+         {- , Bkg.gradient
             { angle = 0
-            , steps = [ rgba 0 0 0 0.01, rgba 0 0 0 0.15 ]
+            , steps = [ rgba 0 0 0 0.05, rgba 0 0 0 0.1 ]
             }
          -}
          ]
