@@ -91,6 +91,7 @@ worldSizeVec =
 type Msg
     = NoOp
     | AFrame Float
+    | Step
     | Reset
     | Restart
     | Pause Bool
@@ -109,15 +110,11 @@ update msg m =
             update (Pause False) (initialModel m.seed)
 
         AFrame delta ->
-            let
-                vel =
-                    Vec.newXY 1.5 0
+            ter m.paused (pure m) (update Step m)
 
-                ret =
-                    pure
-                        { m | balls = m.balls |> List.map Particle.update }
-            in
-            ter m.paused (pure m) ret
+        Step ->
+            pure
+                { m | balls = m.balls |> List.map Particle.update }
 
         Pause newPaused ->
             pure { m | paused = newPaused }
