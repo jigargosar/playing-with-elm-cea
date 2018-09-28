@@ -78,7 +78,7 @@ update msg m =
             pure m
 
         Reset ->
-            pure initialModel
+            pure { pos = initialModel.pos, paused = True }
 
         AFrame delta ->
             let
