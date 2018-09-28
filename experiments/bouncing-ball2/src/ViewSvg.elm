@@ -34,7 +34,7 @@ viewAxis worldSize =
     g
         [ SA.stroke "#cd37a9"
         , SA.strokeWidth "2"
-        , opacity (Opacity 0.5)
+        , opacity (Opacity 0.1)
         , strokeLinecap StrokeLinecapRound
         ]
         [ line

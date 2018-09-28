@@ -71,11 +71,12 @@ init { now } =
 
 
 worldWidth =
-    500
+    600
 
 
 worldHeight =
-    round (worldWidth * 2 / 3)
+    {- round (worldWidth * 2 / 3) -}
+    worldWidth
 
 
 worldSizeVec =
