@@ -1,6 +1,7 @@
 module ViewSvg exposing (view, viewBalls, viewShip)
 
 import Particle
+import Ramda exposing (ter)
 import Svg.Attributes as SA
 import TypedSvg exposing (circle, g, line, polygon, rect, svg)
 import TypedSvg.Attributes
@@ -113,19 +114,32 @@ viewShip ship shipAngle =
 
         ra =
             Particle.getR ship
+
+        showThrust =
+            Particle.getAccM ship > 0
     in
-    g [ transform [ Translate x y ] ]
-        [ polygon
+    g [ transform [ Translate x y, Rotate shipAngle 0 0 ] ]
+        ([ polygon
             [ points [ ( ra / 3 * 2, 0 ), ( -ra / 3, -ra / 3 ), ( -ra / 3, ra / 3 ) ]
             , SA.stroke "#cd37a9"
             , strokeWidth 5
             , fill FillNone
-            , strokeLinecap StrokeLinecapRound
-            , strokeLinejoin StrokeLinejoinMiter
-            , strokeLinejoin StrokeLinejoinRound
             , strokeLinejoin StrokeLinejoinBevel
             , opacity (Opacity 0.8)
-            , transform [ Rotate shipAngle 0 0 ]
             ]
             []
-        ]
+         ]
+            ++ ter showThrust
+                [ line
+                    [ x2 (-ra / 3)
+                    , SA.stroke "#cd37a9"
+                    , strokeWidth 5
+                    , fill FillNone
+                    , strokeLinejoin StrokeLinejoinBevel
+                    , opacity (Opacity 0.8)
+                    , transform [ Translate (-ra / 3) 0 ]
+                    ]
+                    []
+                ]
+                []
+        )

@@ -4,6 +4,7 @@ module Vec exposing
     , div
     , fromInt
     , getA
+    , getM
     , getX
     , getY
     , newMA
@@ -36,6 +37,10 @@ newMA m deg =
 
 getA (Vec ( x, y )) =
     atan (y / x)
+
+
+getM (Vec ( x, y )) =
+    sqrt (x ^ 2 + y ^ 2)
 
 
 zero =

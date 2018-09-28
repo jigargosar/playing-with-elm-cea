@@ -1,5 +1,6 @@
 module Particle exposing
     ( Particle
+    , getAccM
     , getR
     , new
     , posPair
@@ -39,3 +40,7 @@ getR (Particle { r }) =
 
 setAccMA mag ang (Particle rec) =
     Particle { rec | acc = Vec.newMA mag ang }
+
+
+getAccM (Particle { acc }) =
+    Vec.getM acc
