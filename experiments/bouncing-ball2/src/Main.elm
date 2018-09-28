@@ -5,6 +5,7 @@ import Browser.Events
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
+import Json.Decode as D
 import Particle exposing (Particle)
 import Ramda exposing (ter)
 import Random
@@ -109,6 +110,7 @@ type Msg
     | Reset
     | Restart
     | Pause Bool
+    | KeyDown String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -135,6 +137,13 @@ update msg m =
 
         Pause newPaused ->
             pure { m | paused = newPaused }
+
+        KeyDown key ->
+            let
+                _ =
+                    Debug.log "kD" key
+            in
+            pure m
 
 
 pure m =
@@ -187,6 +196,7 @@ view model =
 subscriptions model =
     Sub.batch
         [ Browser.Events.onAnimationFrameDelta AFrame
+        , Browser.Events.onKeyDown (D.field "key" D.string |> D.map KeyDown)
         ]
 
 
