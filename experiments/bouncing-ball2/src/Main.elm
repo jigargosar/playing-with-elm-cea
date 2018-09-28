@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Browser.Events
+import Element exposing (el, html, layout, row, spacing)
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
@@ -111,10 +112,14 @@ ter bool v1 v2 =
 
 
 viewControls { paused } =
-    H.div []
-        [ H.button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ]
-        , H.button [ HE.onClick TogglePause ] [ H.text (ter paused "Play" "Pause") ]
-        ]
+    layout []
+        (row [ spacing 8 ]
+            ([ H.button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ]
+             , H.button [ HE.onClick TogglePause ] [ H.text (ter paused "Play" "Pause") ]
+             ]
+                |> List.map html
+            )
+        )
 
 
 view : Model -> Html Msg
