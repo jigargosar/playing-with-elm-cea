@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import Browser.Events
 import Element exposing (el, html, layout, padding, paddingXY, rgba, row, spacing, text)
-import Element.Background
+import Element.Background exposing (gradient)
 import Element.Border
 import Element.Font exposing (typeface)
 import Element.Input
@@ -151,10 +151,13 @@ btn al msg labelText =
             , blur = 4
             , color = rgba 0 0 0 0.2
             }
-         , Element.Border.color (rgba 0 0 0 0.1)
-         , Element.Background.color (rgba 0 0 0 0)
 
-         --         , Element.Background.gradient { angle = 0, steps = [ rgba 0 0 0 0.01, rgba 0 0 0 0.15 ] }
+         --         , Element.Border.color (rgba 0 0 0 0)
+         --         , Element.Background.color (rgba 0 0 0 0)
+         , gradient
+            { angle = 0
+            , steps = [ rgba 0 0 0 0.01, rgba 0 0 0 0.15 ]
+            }
          ]
             ++ al
         )
