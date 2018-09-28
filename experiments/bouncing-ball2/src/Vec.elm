@@ -20,3 +20,7 @@ getX (Vec ( x, y )) =
 
 getY (Vec ( x, y )) =
     y
+
+
+toRec (Vec ( x, y )) =
+    { x = x, y = y }
