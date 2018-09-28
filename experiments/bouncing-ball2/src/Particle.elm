@@ -1,7 +1,7 @@
 module Particle exposing
     ( Particle
-    , fromRec
     , getR
+    , new
     , posPair
     , setVel
     , setVelMA
@@ -16,12 +16,8 @@ type Particle
     = Particle { pos : Vec, vel : Vec, r : Float, g : Vec }
 
 
-fromRec { pos, vel, r } =
-    Particle { pos = pos, vel = vel, r = r, g = Vec.zero }
-
-
 new x y mag ang r g =
-    Particle { pos = Vec.newXY x y, vel = Vec.newMA mag ang, r = r, g = Vec.newXY 0 0.1 }
+    Particle { pos = Vec.newXY x y, vel = Vec.newMA mag ang, r = r, g = Vec.newXY 0 g }
 
 
 setVel vel (Particle rec) =
@@ -37,7 +33,14 @@ setVelMA mag ang (Particle rec) =
 
 
 update (Particle rec) =
-    Particle { rec | pos = Vec.add rec.pos rec.vel }
+    let
+        newVel =
+            Vec.add rec.vel rec.g
+
+        newPos =
+            Vec.add rec.pos newVel
+    in
+    Particle { rec | pos = newPos, vel = newVel }
 
 
 posPair (Particle { pos }) =

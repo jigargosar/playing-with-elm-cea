@@ -43,24 +43,21 @@ ballGenerator =
             Random.float 0 360
 
         magnitudeGenerator =
-            Random.float 1 5
-
-        velocityGenerator =
-            Random.map2 Vec.newMA magnitudeGenerator angleGenerator
+            Random.float 2 7
 
         radiusGenerator =
-            Random.float 5 15
+            Random.float 4 4
 
-        newBall vel r =
-            Particle.fromRec { pos = Vec.zero, vel = vel, r = r }
+        newBall mag ang r =
+            Particle.new 0 0 mag ang r -0.1
     in
-    Random.map2 newBall velocityGenerator radiusGenerator
+    Random.map3 newBall magnitudeGenerator angleGenerator radiusGenerator
 
 
 initialModel fromSeed =
     let
         ( balls, seed ) =
-            Random.step (Random.list 100 ballGenerator) fromSeed
+            Random.step (Random.list 500 ballGenerator) fromSeed
     in
     { paused = False, balls = balls, seed = seed }
 
