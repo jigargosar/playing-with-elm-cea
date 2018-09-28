@@ -1,4 +1,4 @@
-module Vec exposing (Vec, add, div, fromInt, getX, getY, toPair, toRec, vec)
+module Vec exposing (Vec, add, div, fromInt, getX, getY, new, toPair, toRec)
 
 import Tuple2
 
@@ -7,8 +7,8 @@ type Vec
     = Vec ( Float, Float )
 
 
-vec : Float -> Float -> Vec
-vec x y =
+new : Float -> Float -> Vec
+new x y =
     Vec ( x, y )
 
 
@@ -18,7 +18,7 @@ fromInt x y =
 
 
 add (Vec ( x, y )) (Vec ( x_, y_ )) =
-    vec (x + x_) (y + y_)
+    new (x + x_) (y + y_)
 
 
 div s (Vec p) =

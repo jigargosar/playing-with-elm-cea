@@ -37,7 +37,7 @@ type alias Model =
 
 
 initialModel =
-    { pos = Vec.vec 0 0, paused = False }
+    { pos = Vec.new 0 0, paused = False }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -88,7 +88,7 @@ update msg m =
         AFrame delta ->
             let
                 vel =
-                    Vec.vec 1.5 0
+                    Vec.new 1.5 0
 
                 ret =
                     pure { m | pos = Vec.add m.pos vel }
