@@ -21,16 +21,12 @@ import Vec
 import ViewSvg
 
 
-initialSeed =
-    Random.initialSeed 0
-
-
 
 ---- MODEL ----
 
 
 type alias Flags =
-    {}
+    { now : Int }
 
 
 type alias Model =
@@ -58,8 +54,8 @@ initialModel fromSeed =
 
 
 init : Flags -> ( Model, Cmd Msg )
-init _ =
-    ( initialModel initialSeed, Cmd.none )
+init { now } =
+    ( initialModel (Random.initialSeed now), Cmd.none )
 
 
 worldWidth =
