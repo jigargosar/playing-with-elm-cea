@@ -124,7 +124,7 @@ viewShip ship shipAngle =
             , strokeLinejoin StrokeLinejoinRound
             , strokeLinejoin StrokeLinejoinBevel
             , opacity (Opacity 0.8)
-            , transform [ Rotate shipAngle 0 0 ]
+            , transform [ Rotate shipAngle (-ra / 2) 0 ]
             ]
             []
         ]

@@ -39,7 +39,7 @@ type alias Ship =
 
 
 initialShip =
-    Particle.new 0 0 0 0 50 0
+    Particle.new 0 0 0.1 90 50 0
 
 
 type alias Model =
