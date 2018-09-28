@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import Browser.Events
 import Element exposing (el, html, layout, row, spacing)
-import Element.Font
+import Element.Font exposing (typeface)
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
@@ -116,8 +116,27 @@ hel ela n na ne =
     el ela (n na ne |> html)
 
 
+globalStyle =
+    [ Element.Font.size 16
+    , Element.Font.family
+        [ typeface "-apple-system"
+        , typeface "BlinkMacSystemFont"
+        , typeface "avenir next"
+        , typeface "avenir"
+        , typeface "helvetica neue"
+        , typeface "helvetica"
+        , typeface "ubuntu"
+        , typeface "roboto"
+        , typeface "noto"
+        , typeface "segoe ui"
+        , typeface "arial"
+        , typeface "sans-serif"
+        ]
+    ]
+
+
 viewControls { paused } =
-    layout [ Element.Font.size 16 ]
+    layout globalStyle
         (row [ spacing 8 ]
             [ hel [] H.button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ]
             , hel [] H.button [ HE.onClick TogglePause ] [ H.text (ter paused "Play" "Pause") ]
