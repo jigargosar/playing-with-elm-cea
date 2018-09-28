@@ -154,10 +154,12 @@ btn al msg labelText =
             }
          , Element.Border.color (rgba 0 0 0 0)
          , Element.Background.color (rgba 0 0 0 0)
-         , gradient
+
+         {- , gradient
             { angle = 0
             , steps = [ rgba 0 0 0 0.01, rgba 0 0 0 0.15 ]
             }
+         -}
          ]
             ++ al
         )
