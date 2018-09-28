@@ -100,6 +100,9 @@ svgView { pos } =
         worldSizeVec =
             Vec.fromInt worldWidth worldHeight
 
+        ( ww, wh ) =
+            Vec.toPair worldSizeVec
+
         ( ox, oy ) =
             worldSizeVec |> Vec.div 2 |> Vec.toPair
     in
@@ -113,9 +116,9 @@ svgView { pos } =
                 [ TS.line
                     [ SA.stroke "#cd37a9"
                     , TA.x1 (TT.num 0)
-                    , TA.y1 (TT.num 0)
-                    , TA.x2 (TT.num 100)
-                    , TA.y2 (TT.num 100)
+                    , TA.y1 (TT.num (wh / -2))
+                    , TA.x2 (TT.num 0)
+                    , TA.y2 (TT.num (wh / 2))
                     , SA.strokeWidth "10"
                     , TA.strokeLinecap TT.StrokeLinecapRound
                     ]
