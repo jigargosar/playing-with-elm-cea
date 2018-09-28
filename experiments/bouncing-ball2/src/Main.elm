@@ -75,7 +75,7 @@ update msg m =
                     Vec.vec 1.5 0
 
                 ret =
-                    pure { m | pos = Vec.vecAdd m.pos vel }
+                    pure { m | pos = Vec.add m.pos vel }
             in
             ter m.paused (pure m) ret
 
@@ -95,6 +95,11 @@ svgView { pos } =
     let
         { x, y } =
             Vec.toRec pos
+
+        ( ox, oy ) =
+            Vec.fromInt worldWidth worldHeight
+                |> Vec.div 2
+                |> Vec.toPair
     in
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
         [ Svg.g []
