@@ -1,11 +1,13 @@
 module Main exposing (main)
 
+import Array
 import Browser
 import Browser.Events
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
 import Json.Decode as D
+import List.Extra
 import Particle exposing (Particle)
 import Ramda exposing (subBy, ter)
 import Random
@@ -107,6 +109,10 @@ worldSizeVec =
     Vec.fromInt worldWidth worldHeight
 
 
+isKeyDown key m =
+    Set.member key m.keyDownSet
+
+
 
 ---- UPDATE ----
 
@@ -141,24 +147,15 @@ update msg m =
             let
                 angleOffset =
                     5
-
-                isDown key =
-                    Set.member key m.keyDownSet
             in
             { m
                 | balls = m.balls |> List.map Particle.update
                 , ship = m.ship |> Particle.update
             }
-                |> updateShipAngle
-                    (if isDown "ArrowLeft" then
-                        subBy angleOffset
-
-                     else if isDown "ArrowRight" then
-                        (+) angleOffset
-
-                     else
-                        identity
-                    )
+                |> cond identity
+                    [ ( isKeyDown "ArrowLeft", updateShipAngle (subBy angleOffset) )
+                    , ( isKeyDown "ArrowRight", updateShipAngle ((+) angleOffset) )
+                    ]
                 |> pure
 
         Pause newPaused ->
@@ -169,6 +166,13 @@ update msg m =
 
         KeyUp key ->
             pure { m | keyDownSet = Set.remove key m.keyDownSet }
+
+
+cond defaultFn conditions data =
+    conditions
+        |> List.Extra.find (\( boolFn, _ ) -> boolFn data)
+        |> Maybe.map (\( _, dataFn ) -> dataFn data)
+        |> Maybe.withDefault (defaultFn data)
 
 
 pure m =
