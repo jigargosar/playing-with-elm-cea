@@ -149,22 +149,31 @@ update msg m =
                 _ =
                     Debug.log "kD" key
 
+                angleOffset =
+                    0.1
+
                 newModel =
-                    case key of
-                        "ArrowLeft" ->
-                            { m | shipAngle = m.shipAngle - 0.1 }
+                    m
+                        |> (case key of
+                                "ArrowLeft" ->
+                                    updateShipAngle ((-) angleOffset)
 
-                        "ArrowRight" ->
-                            { m | shipAngle = m.shipAngle + 0.1 }
+                                "ArrowRight" ->
+                                    updateShipAngle ((+) angleOffset)
 
-                        _ ->
-                            m
+                                _ ->
+                                    identity
+                           )
             in
             pure newModel
 
 
 pure m =
     ( m, Cmd.none )
+
+
+updateShipAngle fn m =
+    { m | shipAngle = fn m.shipAngle }
 
 
 
