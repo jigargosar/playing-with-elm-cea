@@ -41,7 +41,11 @@ type alias Ship =
 
 
 initialShip =
-    Particle.new 0 0 0 90 50 0 0
+    Particle.fromRec { pRec | va = 90, r = 50 }
+
+
+pRec =
+    { x = 0, y = 0, vm = 0, va = 0, r = 10, am = 0, aa = 0 }
 
 
 type alias Model =

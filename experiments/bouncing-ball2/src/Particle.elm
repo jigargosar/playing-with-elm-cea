@@ -1,5 +1,6 @@
 module Particle exposing
     ( Particle
+    , fromRec
     , getAccM
     , getR
     , new
@@ -17,6 +18,10 @@ type Particle
 
 new x y mag ang r accM accA =
     Particle { pos = Vec.newXY x y, vel = Vec.newMA mag ang, r = r, acc = Vec.newMA accM accA }
+
+
+fromRec { x, y, vm, va, r, am, aa } =
+    Particle { pos = Vec.newXY x y, vel = Vec.newMA vm va, r = r, acc = Vec.newMA am aa }
 
 
 update (Particle rec) =
