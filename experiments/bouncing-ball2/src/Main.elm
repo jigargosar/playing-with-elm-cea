@@ -3,8 +3,8 @@ module Main exposing (Flags, Model, Msg(..), ballRadius, btn, globalStyle, hel, 
 import Browser
 import Browser.Events
 import Element exposing (el, html, layout, padding, paddingXY, rgba, row, spacing, text)
-import Element.Background exposing (gradient)
-import Element.Border
+import Element.Background as Bkg
+import Element.Border as Bdr
 import Element.Font exposing (typeface)
 import Element.Input
 import Html as H exposing (Html)
@@ -143,17 +143,17 @@ btn : List (Element.Attribute msg) -> msg -> String -> Element.Element msg
 btn al msg labelText =
     Element.Input.button
         ([ paddingXY 6 2
-         , Element.Border.rounded 0
-         , Element.Border.width 0
-         , Element.Border.solid
-         , Element.Border.shadow
+         , Bdr.rounded 0
+         , Bdr.width 0
+         , Bdr.solid
+         , Bdr.shadow
             { offset = Tuple.pair 0 0
             , size = 2
             , blur = 4
             , color = rgba 0 0 0 0.2
             }
-         , Element.Border.color (rgba 0 0 0 0)
-         , Element.Background.color (rgba 0 0 0 0)
+         , Bdr.color (rgba 0 0 0 0)
+         , Bkg.color (rgba 0 0 0 0)
 
          {- , gradient
             { angle = 0
