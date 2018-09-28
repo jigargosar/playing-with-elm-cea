@@ -38,12 +38,16 @@ vecXStr =
     Tuple.first >> String.fromFloat
 
 
+vecYStr =
+    Tuple.second >> String.fromFloat
+
+
 type alias Model =
     { pos : Vec, paused : Bool }
 
 
 initialModel =
-    { pos = vec 100 100, paused = False }
+    { pos = vec 0 0, paused = False }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -122,7 +126,7 @@ svgView { pos } =
                 ]
                 [ Svg.circle
                     [ pos |> vecXStr >> SA.cx
-                    , SA.cy "100"
+                    , pos |> vecYStr >> SA.cy
                     , ballRadius |> String.fromFloat >> SA.r
                     , SA.fill "#cd37a9"
                     ]
