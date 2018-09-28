@@ -97,7 +97,7 @@ pure m =
 ---- VIEW ----
 
 
-svgView { pos } =
+viewSvg { pos } =
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
         (ViewSvg.svgView { ballPos = pos, ballRadius = ballRadius, worldSize = worldSizeVec })
 
@@ -123,7 +123,7 @@ view model =
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , viewControls model
-            , H.div [ HA.class "" ] [ svgView model ]
+            , H.div [ HA.class "" ] [ viewSvg model ]
             ]
         ]
 
