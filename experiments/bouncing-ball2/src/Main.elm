@@ -83,11 +83,8 @@ update msg m =
                 vel =
                     vec 1.5 0
 
-                newPos =
-                    m.pos |> vecAdd vel
-
                 ret =
-                    { m | x = m.x + 1.5, pos = newPos } |> pure
+                    { m | x = m.x + 1.5, pos = vecAdd m.pos vel } |> pure
             in
             ter m.paused (pure m) ret
 
