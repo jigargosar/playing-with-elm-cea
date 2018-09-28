@@ -96,10 +96,11 @@ svgView { pos } =
         { x, y } =
             Vec.toRec pos
 
-        ( ox, oy ) =
+        worldSizeVec =
             Vec.fromInt worldWidth worldHeight
-                |> Vec.div 2
-                |> Vec.toPair
+
+        ( ox, oy ) =
+            worldSizeVec |> Vec.div 2 |> Vec.toPair
     in
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
         [ Svg.g []
