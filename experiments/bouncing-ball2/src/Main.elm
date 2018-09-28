@@ -8,6 +8,7 @@ import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
 import Particle exposing (Particle)
+import Ramda exposing (ter)
 import Round
 import Set
 import String exposing (String)
@@ -111,14 +112,6 @@ pure m =
 viewSvg { pos } =
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
         (ViewSvg.svgView { ballPos = pos, ballRadius = ballRadius, worldSize = worldSizeVec })
-
-
-ter bool v1 v2 =
-    if bool then
-        v1
-
-    else
-        v2
 
 
 viewControls { paused } =
