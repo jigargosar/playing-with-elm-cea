@@ -34,11 +34,11 @@ vecAdd ( x, y ) ( x_, y_ ) =
 
 
 type alias Model =
-    { x : Float, pos : Vec }
+    { x : Float, pos : Vec, paused : Bool }
 
 
 initialModel =
-    { x = 100, pos = vec 100 100 }
+    { x = 100, pos = vec 100 100, paused = False }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -66,6 +66,7 @@ type Msg
     = NoOp
     | AFrame Float
     | Reset
+    | TogglePause
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -87,24 +88,15 @@ update msg m =
             in
             ( { m | x = m.x + 1.5, pos = newPos }, Cmd.none )
 
+        TogglePause ->
+            { m | paused = not m.paused } |> pure
 
 
---        AFrame delta ->
---            let
---                xPxPF =
---                    1.5
---
---                addPPF x =
---                    x + xPxPF
---
---                loopX2 x =
---                    if x - ballRadius > worldWidth then
---                        -ballRadius
---
---                    else
---                        x
---            in
---            ( { m | x = m.x |> addPPF >> loopX2 }, Cmd.none )
+pure m =
+    ( m, Cmd.none )
+
+
+
 ---- VIEW ----
 
 
@@ -121,8 +113,19 @@ svgView { x } =
         ]
 
 
-viewControls _ =
-    H.div [] [ H.button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ] ]
+ter bool v1 v2 =
+    if bool then
+        v1
+
+    else
+        v2
+
+
+viewControls { paused } =
+    H.div []
+        [ H.button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ]
+        , H.button [ HE.onClick TogglePause ] [ H.text (ter paused "Play" "Pause") ]
+        ]
 
 
 view : Model -> Html Msg
