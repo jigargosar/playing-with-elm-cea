@@ -51,30 +51,14 @@ viewAxis worldSize =
     in
     g
         [ SA.stroke "#cd37a9"
-        , SA.strokeWidth "2"
-        , opacity (Opacity 0)
+        , strokeWidth 1
+        , opacity (Opacity 0.1)
         , strokeLinecap StrokeLinecapRound
         ]
-        [ line
-            [ y1 (wh / -2)
-            , y2 (wh / 2)
-            ]
-            []
-        , line
-            [ x1 (ww / -2)
-            , x2 (ww / 2)
-            ]
-            []
-        , line
-            [ x1 100
-            , y1 100
-            ]
-            []
-        , line
-            [ x1 -100
-            , y1 100
-            ]
-            []
+        [ line [ y1 (wh / -2), y2 (wh / 2) ] []
+        , line [ x1 (ww / -2), x2 (ww / 2) ] []
+        , line [ x1 100, y1 100 ] []
+        , line [ x1 -100, y1 100 ] []
         ]
 
 
