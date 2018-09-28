@@ -33,8 +33,16 @@ type alias Ball =
     Particle
 
 
+type alias Ship =
+    Particle
+
+
+initialShip =
+    Particle.new 0 0 0 0 5 -0.1
+
+
 type alias Model =
-    { paused : Bool, balls : List Ball, seed : Random.Seed }
+    { paused : Bool, balls : List Ball, seed : Random.Seed, ship : Ship }
 
 
 ballGenerator =
@@ -63,7 +71,7 @@ initialModel fromSeed =
         ( balls, seed ) =
             Random.step (Random.list 500 ballGenerator) fromSeed
     in
-    { paused = False, balls = balls, seed = seed }
+    { paused = False, balls = balls, seed = seed, ship = initialShip }
 
 
 init : Flags -> ( Model, Cmd Msg )
