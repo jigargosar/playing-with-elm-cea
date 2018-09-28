@@ -38,7 +38,23 @@ type alias Model =
 
 
 initialModel =
-    { paused = False, ball = Particle.zero |> Particle.setVelMA 1.5 0, seed = initialSeed }
+    let
+        angleGenerator =
+            Random.float 0 360
+
+        magnitudeGenerator =
+            Random.float 0.5 2.5
+
+        velocityGenerator =
+            Random.map2 Vec.newMA magnitudeGenerator angleGenerator
+
+        ballGenerator =
+            Random.map (\vel -> Particle.zero |> Particle.setVel vel) velocityGenerator
+
+        ( ball, seed ) =
+            Random.step ballGenerator initialSeed
+    in
+    { paused = False, ball = ball, seed = seed }
 
 
 init : Flags -> ( Model, Cmd Msg )
