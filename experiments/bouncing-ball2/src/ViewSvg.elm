@@ -123,8 +123,7 @@ viewShip ship shipAngle =
                 [ x2 (-ra / 3)
                 , SA.stroke "#cd37a9"
                 , strokeWidth 5
-                , fill FillNone
-                , strokeLinejoin StrokeLinejoinBevel
+                , strokeLinecap StrokeLinecapButt
                 , opacity (Opacity 0.8)
                 , transform [ Translate (-ra / 3) 0 ]
                 ]
