@@ -107,14 +107,13 @@ svgView { pos } =
         [ Svg.g []
             [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
             , Svg.g
-                [ TA.transform [ TT.Translate ox oy ]
+                [ TA.transform [ TT.Translate ox oy, TT.Scale 1 -1 ]
                 , SA.fill "#cd37a9"
                 ]
                 [ TS.line
                     [ SA.stroke "#cd37a9"
-
-                    --, TA.x1 (TT.num 0)
-                    --, TA.y1 (TT.num 0)
+                    , TA.x1 (TT.num 0)
+                    , TA.y1 (TT.num 0)
                     , TA.x2 (TT.num 100)
                     , TA.y2 (TT.num 100)
                     , SA.strokeWidth "10"
