@@ -146,6 +146,7 @@ viewControls { paused } =
         [ hBtn [] Reset "Reset"
         , hBtn [] Restart "Restart"
         , hBtn [] (Pause (not paused)) (ter paused "Play" "Pause")
+        , hBtn [ HA.disabled (not paused) ] Step "Step"
         ]
 
 
