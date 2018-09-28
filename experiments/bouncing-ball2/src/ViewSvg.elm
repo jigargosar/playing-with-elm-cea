@@ -9,10 +9,13 @@ import TypedSvg.Types exposing (Opacity(..), StrokeLinecap(..), Transform(..), n
 import Vec
 
 
-svgView { ball, worldSize, ballRadius } =
+svgView { ball, worldSize } =
     let
         ( bx, by ) =
             Particle.posPair ball
+
+        ballRadius =
+            Particle.getR ball
 
         ( ww, wh ) =
             Vec.toPair worldSize

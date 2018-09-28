@@ -44,8 +44,15 @@ initialModel fromSeed =
         velocityGenerator =
             Random.map2 Vec.newMA magnitudeGenerator angleGenerator
 
+        radiusGenerator =
+            Random.float 5 20
+
         ballGenerator =
-            Random.map (\vel -> Particle.zero |> Particle.setVel vel) velocityGenerator
+            let
+                newBall vel r =
+                    Particle.fromRec { pos = Vec.zero, vel = vel, r = r }
+            in
+            Random.map2 newBall velocityGenerator radiusGenerator
 
         ( ball, seed ) =
             Random.step ballGenerator fromSeed
@@ -68,10 +75,6 @@ worldHeight =
 
 worldSizeVec =
     Vec.fromInt worldWidth worldHeight
-
-
-ballRadius =
-    30
 
 
 
@@ -125,7 +128,6 @@ viewSvg { ball } =
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
         (ViewSvg.svgView
             { ball = ball
-            , ballRadius = ballRadius
             , worldSize = worldSizeVec
             }
         )
