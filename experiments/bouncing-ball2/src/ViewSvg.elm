@@ -20,8 +20,10 @@ svgView { worldSize, ballRadius, ballPos } =
             worldSize |> Vec.div 2 |> Vec.toPair
     in
     [ g []
-        [ rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
-        , g
+        [ {- rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
+             ,
+          -}
+          g
             [ transform [ Translate ox oy, Scale 1 -1 ]
             , SA.fill "#cd37a9"
             ]
