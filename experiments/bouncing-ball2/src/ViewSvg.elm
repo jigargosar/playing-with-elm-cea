@@ -26,11 +26,42 @@ viewBall ball =
         []
 
 
-view { balls, worldSize } =
+viewAxis worldSize =
     let
         ( ww, wh ) =
             Vec.toPair worldSize
+    in
+    g
+        [ SA.stroke "#cd37a9"
+        , SA.strokeWidth "2"
+        , opacity (Opacity 0.5)
+        , strokeLinecap StrokeLinecapRound
+        ]
+        [ line
+            [ y1 (wh / -2)
+            , y2 (wh / 2)
+            ]
+            []
+        , line
+            [ x1 (ww / -2)
+            , x2 (ww / 2)
+            ]
+            []
+        , line
+            [ x1 100
+            , y1 100
+            ]
+            []
+        , line
+            [ x1 -100
+            , y1 100
+            ]
+            []
+        ]
 
+
+view { balls, worldSize } =
+    let
         ( ox, oy ) =
             worldSize |> Vec.div 2 |> Vec.toPair
     in
@@ -40,33 +71,7 @@ view { balls, worldSize } =
             [ transform [ Translate ox oy, Scale 1 -1 ]
             , SA.fill "#cd37a9"
             ]
-            [ g
-                [ SA.stroke "#cd37a9"
-                , SA.strokeWidth "2"
-                , opacity (Opacity 0.5)
-                , strokeLinecap StrokeLinecapRound
-                ]
-                [ line
-                    [ y1 (wh / -2)
-                    , y2 (wh / 2)
-                    ]
-                    []
-                , line
-                    [ x1 (ww / -2)
-                    , x2 (ww / 2)
-                    ]
-                    []
-                , line
-                    [ x1 100
-                    , y1 100
-                    ]
-                    []
-                , line
-                    [ x1 -100
-                    , y1 100
-                    ]
-                    []
-                ]
+            [ viewAxis worldSize
             , g [] (balls |> List.map viewBall)
             ]
         ]

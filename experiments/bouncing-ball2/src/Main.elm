@@ -29,8 +29,12 @@ type alias Flags =
     { now : Int }
 
 
+type alias Ball =
+    Particle
+
+
 type alias Model =
-    { paused : Bool, ball : Particle, seed : Random.Seed }
+    { paused : Bool, balls : List Ball, seed : Random.Seed }
 
 
 ballGenerator =
@@ -39,13 +43,13 @@ ballGenerator =
             Random.float 0 360
 
         magnitudeGenerator =
-            Random.float 0.5 2.5
+            Random.float 0.5 1.5
 
         velocityGenerator =
             Random.map2 Vec.newMA magnitudeGenerator angleGenerator
 
         radiusGenerator =
-            Random.float 5 20
+            Random.float 5 15
 
         newBall vel r =
             Particle.fromRec { pos = Vec.zero, vel = vel, r = r }
@@ -55,10 +59,10 @@ ballGenerator =
 
 initialModel fromSeed =
     let
-        ( ball, seed ) =
-            Random.step ballGenerator fromSeed
+        ( balls, seed ) =
+            Random.step (Random.list 100 ballGenerator) fromSeed
     in
-    { paused = False, ball = ball, seed = seed }
+    { paused = False, balls = balls, seed = seed }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -109,7 +113,7 @@ update msg m =
 
                 ret =
                     pure
-                        { m | ball = Particle.update m.ball }
+                        { m | balls = m.balls |> List.map Particle.update }
             in
             ter m.paused (pure m) ret
 
@@ -125,10 +129,10 @@ pure m =
 ---- VIEW ----
 
 
-viewSvg { ball } =
+viewSvg { balls } =
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
         (ViewSvg.view
-            { balls = [ ball ]
+            { balls = balls
             , worldSize = worldSizeVec
             }
         )
