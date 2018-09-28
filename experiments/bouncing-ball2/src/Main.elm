@@ -49,7 +49,6 @@ type alias Model =
     , balls : List Ball
     , seed : Random.Seed
     , ship : Ship
-    , thrust : Vec
     , shipAngle : Float
     , keyDownSet : Set String
     }
@@ -85,7 +84,6 @@ initialModel fromSeed =
     , balls = balls
     , seed = seed
     , ship = initialShip
-    , thrust = Vec.zero
     , shipAngle = 0
     , keyDownSet = Set.empty
     }
