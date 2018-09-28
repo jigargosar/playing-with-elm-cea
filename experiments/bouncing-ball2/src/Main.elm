@@ -37,7 +37,7 @@ type alias Model =
     { paused : Bool, ball : Particle, seed : Random.Seed }
 
 
-initialModel initialSeed =
+initialModel fromSeed =
     let
         angleGenerator =
             Random.float 0 360
@@ -52,7 +52,7 @@ initialModel initialSeed =
             Random.map (\vel -> Particle.zero |> Particle.setVel vel) velocityGenerator
 
         ( ball, seed ) =
-            Random.step ballGenerator initialSeed
+            Random.step ballGenerator fromSeed
     in
     { paused = False, ball = ball, seed = seed }
 
@@ -97,10 +97,10 @@ update msg m =
             pure m
 
         Reset ->
-            update (Pause True) initialModel
+            update (Pause True) (initialModel m.seed)
 
         Restart ->
-            update (Pause False) initialModel
+            update (Pause False) (initialModel m.seed)
 
         AFrame delta ->
             let
