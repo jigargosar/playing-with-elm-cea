@@ -3,9 +3,25 @@ module ViewSvg exposing (view)
 import Particle
 import Svg.Attributes as SA
 import TypedSvg exposing (circle, g, line, polygon, rect, svg)
-import TypedSvg.Attributes exposing (opacity, points, strokeLinecap, transform)
-import TypedSvg.Attributes.InPx exposing (cx, cy, r, x1, x2, y1, y2)
-import TypedSvg.Types exposing (Opacity(..), StrokeLinecap(..), Transform(..), num)
+import TypedSvg.Attributes
+    exposing
+        ( fill
+        , opacity
+        , points
+        , strokeLinecap
+        , strokeLinejoin
+        , transform
+        )
+import TypedSvg.Attributes.InPx exposing (cx, cy, r, strokeWidth, x1, x2, y1, y2)
+import TypedSvg.Types
+    exposing
+        ( Fill(..)
+        , Opacity(..)
+        , StrokeLinecap(..)
+        , StrokeLinejoin(..)
+        , Transform(..)
+        , num
+        )
 import Vec
 
 
@@ -80,7 +96,6 @@ view { balls, worldSize, ship } =
             []
         , g
             [ transform [ Translate ox oy, Scale 1 -1 ]
-            , SA.fill "#cd37a9"
             ]
             [ viewAxis worldSize
             , g [] (balls |> List.map viewBall)
@@ -100,7 +115,13 @@ viewShip ship =
     in
     polygon
         [ points [ ( 0, 0 ), ( -ra, ra / -3 ), ( -ra, ra / 3 ) ]
-        , SA.fill "#cd37a9"
+        , SA.stroke "#cd37a9"
+        , strokeWidth 5
+        , fill FillNone
+        , strokeLinecap StrokeLinecapRound
+        , strokeLinejoin StrokeLinejoinMiter
+        , strokeLinejoin StrokeLinejoinRound
+        , strokeLinejoin StrokeLinejoinBevel
         , opacity (Opacity 0.8)
         ]
         []
