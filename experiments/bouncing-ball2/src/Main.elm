@@ -1,4 +1,4 @@
-module Main exposing (main)
+module Main exposing (Flags, Model, Msg(..), ballRadius, btn, globalStyle, hel, init, initialModel, main, pure, subscriptions, ter, update, view, viewControls, viewSvg, worldHeight, worldSizeVec, worldWidth)
 
 import Browser
 import Browser.Events
@@ -139,6 +139,7 @@ globalStyle =
     ]
 
 
+btn : List (Element.Attribute msg) -> msg -> String -> Element.Element msg
 btn al msg labelText =
     Element.Input.button
         ([ paddingXY 6 2
@@ -151,9 +152,8 @@ btn al msg labelText =
             , blur = 4
             , color = rgba 0 0 0 0.2
             }
-
-         --         , Element.Border.color (rgba 0 0 0 0)
-         --         , Element.Background.color (rgba 0 0 0 0)
+         , Element.Border.color (rgba 0 0 0 0)
+         , Element.Background.color (rgba 0 0 0 0)
          , gradient
             { angle = 0
             , steps = [ rgba 0 0 0 0.01, rgba 0 0 0 0.15 ]
