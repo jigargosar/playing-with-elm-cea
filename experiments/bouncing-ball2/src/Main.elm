@@ -157,7 +157,7 @@ view model =
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , viewControls model
-            , H.div [ HA.class "" ] [ viewSvg model ]
+            , H.div [ HA.class "", HE.onClick Restart ] [ viewSvg model ]
             ]
         ]
 
