@@ -29,11 +29,11 @@ type alias Flags =
 
 
 type alias Model =
-    { pos : Vec.Vec, paused : Bool, ball : Particle }
+    { paused : Bool, ball : Particle }
 
 
 initialModel =
-    { pos = Vec.new 0 0, paused = False, ball = Particle.zero |> Particle.setVelXY 1.5 0 }
+    { paused = False, ball = Particle.zero |> Particle.setVelXY 1.5 0 }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -88,10 +88,7 @@ update msg m =
 
                 ret =
                     pure
-                        { m
-                            | pos = Vec.add m.pos vel
-                            , ball = Particle.update m.ball
-                        }
+                        { m | ball = Particle.update m.ball }
             in
             ter m.paused (pure m) ret
 
@@ -107,9 +104,14 @@ pure m =
 ---- VIEW ----
 
 
-viewSvg { pos } =
+viewSvg { ball } =
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
-        (ViewSvg.svgView { ballPos = pos, ballRadius = ballRadius, worldSize = worldSizeVec })
+        (ViewSvg.svgView
+            { ball = ball
+            , ballRadius = ballRadius
+            , worldSize = worldSizeVec
+            }
+        )
 
 
 hBtn al msg lt =

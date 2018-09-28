@@ -1,5 +1,6 @@
 module ViewSvg exposing (svgView)
 
+import Particle
 import Svg.Attributes as SA
 import TypedSvg exposing (circle, g, line, rect, svg)
 import TypedSvg.Attributes exposing (opacity, strokeLinecap, transform)
@@ -8,10 +9,10 @@ import TypedSvg.Types exposing (Opacity(..), StrokeLinecap(..), Transform(..), n
 import Vec
 
 
-svgView { worldSize, ballRadius, ballPos } =
+svgView { ball, worldSize, ballRadius } =
     let
         ( bx, by ) =
-            Vec.toPair ballPos
+            Particle.posPair ball
 
         ( ww, wh ) =
             Vec.toPair worldSize
