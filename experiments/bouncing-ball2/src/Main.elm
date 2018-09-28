@@ -111,14 +111,16 @@ ter bool v1 v2 =
         v2
 
 
+button a b =
+    H.button a b |> html >> el []
+
+
 viewControls { paused } =
     layout []
         (row [ spacing 8 ]
-            ([ H.button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ]
-             , H.button [ HE.onClick TogglePause ] [ H.text (ter paused "Play" "Pause") ]
-             ]
-                |> List.map html
-            )
+            [ button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ]
+            , button [ HE.onClick TogglePause ] [ H.text (ter paused "Play" "Pause") ]
+            ]
         )
 
 
