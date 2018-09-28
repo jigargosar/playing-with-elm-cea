@@ -87,7 +87,6 @@ view worldSize views =
         [ rect
             [ SA.width "100%"
             , SA.height "100%"
-            , SA.fill "#adbeeb"
             , SA.fill "#fff"
             , SA.stroke "#cd37a9"
             , SA.strokeWidth "2"
@@ -123,7 +122,7 @@ viewShip ship shipAngle =
                 [ x2 (-ra / 3)
                 , SA.stroke "#cd37a9"
                 , strokeWidth 5
-                , strokeLinecap StrokeLinecapButt
+                , strokeLinecapButt
                 , opacity (Opacity 0.8)
                 , transform [ Translate (-ra / 3) 0 ]
                 ]
@@ -136,10 +135,18 @@ viewShip ship shipAngle =
                 , SA.stroke "#cd37a9"
                 , strokeWidth 5
                 , fill FillNone
-                , strokeLinejoin StrokeLinejoinBevel
+                , strokeLinejoinBevel
                 , opacity (Opacity 0.8)
                 ]
                 []
     in
     g [ transform [ Translate x y, Rotate shipAngle 0 0 ] ]
         ([ viewBody ] ++ ter showThrust viewThrust [])
+
+
+strokeLinecapButt =
+    strokeLinecap StrokeLinecapButt
+
+
+strokeLinejoinBevel =
+    strokeLinejoin StrokeLinejoinBevel
