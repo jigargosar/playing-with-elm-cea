@@ -2,8 +2,10 @@ module Main exposing (main)
 
 import Browser
 import Browser.Events
-import Element exposing (el, html, layout, row, spacing)
+import Element exposing (el, html, layout, padding, paddingXY, row, spacing, text)
+import Element.Border
 import Element.Font exposing (typeface)
+import Element.Input
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
@@ -132,13 +134,25 @@ globalStyle =
         , typeface "arial"
         , typeface "sans-serif"
         ]
+    , Element.Font.family []
     ]
+
+
+btn al msg labelText =
+    Element.Input.button
+        ([ paddingXY 6 2
+         , Element.Border.rounded 0
+         , Element.Border.width 1
+         ]
+            ++ al
+        )
+        { onPress = Just msg, label = el [] (text labelText) }
 
 
 viewControls { paused } =
     layout globalStyle
         (row [ spacing 8 ]
-            [ hel [] H.button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ]
+            [ btn [] Reset "Reset"
             , hel [] H.button [ HE.onClick TogglePause ] [ H.text (ter paused "Play" "Pause") ]
             ]
         )
