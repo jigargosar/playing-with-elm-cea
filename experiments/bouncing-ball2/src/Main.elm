@@ -33,7 +33,7 @@ type alias Model =
 
 
 initialModel =
-    { paused = False, ball = Particle.zero |> Particle.setVel 1.5 0 }
+    { paused = False, ball = Particle.zero |> Particle.setVelXY 1.5 0 }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -84,7 +84,7 @@ update msg m =
         AFrame delta ->
             let
                 vel =
-                    Vec.new 1.5 0
+                    Vec.newXY 1.5 0
 
                 ret =
                     pure
