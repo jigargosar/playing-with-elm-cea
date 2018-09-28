@@ -127,8 +127,8 @@ pure m =
 
 viewSvg { ball } =
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
-        (ViewSvg.svgView
-            { ball = ball
+        (ViewSvg.view
+            { balls = [ ball ]
             , worldSize = worldSizeVec
             }
         )

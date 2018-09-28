@@ -1,4 +1,4 @@
-module ViewSvg exposing (svgView)
+module ViewSvg exposing (view)
 
 import Particle
 import Svg.Attributes as SA
@@ -26,14 +26,8 @@ viewBall ball =
         []
 
 
-svgView { ball, worldSize } =
+view { balls, worldSize } =
     let
-        ( bx, by ) =
-            Particle.posPair ball
-
-        ballRadius =
-            Particle.getR ball
-
         ( ww, wh ) =
             Vec.toPair worldSize
 
@@ -73,7 +67,7 @@ svgView { ball, worldSize } =
                     ]
                     []
                 ]
-            , viewBall ball
+            , g [] (balls |> List.map viewBall)
             ]
         ]
     ]
