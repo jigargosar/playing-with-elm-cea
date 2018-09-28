@@ -17,7 +17,7 @@ import Time
 import TypedSvg as TS
 import TypedSvg.Attributes as TA
 import TypedSvg.Types as TT
-import Vec
+import Vec exposing (Vec)
 import ViewSvg
 
 
@@ -42,7 +42,7 @@ initialShip =
 
 
 type alias Model =
-    { paused : Bool, balls : List Ball, seed : Random.Seed, ship : Ship }
+    { paused : Bool, balls : List Ball, seed : Random.Seed, ship : Ship, thrust : Vec }
 
 
 ballGenerator =
@@ -71,7 +71,7 @@ initialModel fromSeed =
         ( balls, seed ) =
             Random.step (Random.list 500 ballGenerator) fromSeed
     in
-    { paused = False, balls = balls, seed = seed, ship = initialShip }
+    { paused = False, balls = balls, seed = seed, ship = initialShip, thrust = Vec.zero }
 
 
 init : Flags -> ( Model, Cmd Msg )
