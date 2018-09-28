@@ -85,8 +85,11 @@ update msg m =
 
                 newPos =
                     m.pos |> vecAdd vel
+
+                ret =
+                    { m | x = m.x + 1.5, pos = newPos } |> pure
             in
-            ( { m | x = m.x + 1.5, pos = newPos }, Cmd.none )
+            ter m.paused (pure m) ret
 
         TogglePause ->
             { m | paused = not m.paused } |> pure
