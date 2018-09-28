@@ -107,14 +107,26 @@ pure m =
 
 svgView { pos } =
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
-        [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
-        , Svg.circle
-            [ pos |> vecXStr >> SA.cx
-            , SA.cy "100"
-            , ballRadius |> String.fromFloat >> SA.r
-            , SA.fill "#cd37a9"
+        [ Svg.g []
+            [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
+            , Svg.g
+                [ SA.transform
+                    ([ "translate("
+                     , worldWidth / 2 |> String.fromFloat
+                     , ",0)"
+                     ]
+                        |> String.join ""
+                    )
+                ]
+                [ Svg.circle
+                    [ pos |> vecXStr >> SA.cx
+                    , SA.cy "100"
+                    , ballRadius |> String.fromFloat >> SA.r
+                    , SA.fill "#cd37a9"
+                    ]
+                    []
+                ]
             ]
-            []
         ]
 
 
