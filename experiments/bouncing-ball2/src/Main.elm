@@ -45,7 +45,7 @@ initialShip =
 
 
 pRec =
-    { x = 0, y = 0, vm = 0, va = 0, r = 10, am = 0, aa = 0 }
+    { x = 0, y = 0, vm = 0, va = 0, r = 10, am = 0, aa = 0 , mass=1}
 
 
 type alias Model =

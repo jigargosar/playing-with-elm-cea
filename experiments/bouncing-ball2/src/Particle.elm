@@ -12,11 +12,11 @@ import Vec exposing (Vec)
 
 
 type Particle
-    = Particle { pos : Vec, vel : Vec, r : Float, acc : Vec }
+    = Particle { pos : Vec, vel : Vec, r : Float, acc : Vec, mass : Float }
 
 
-new { x, y, vm, va, r, am, aa } =
-    Particle { pos = Vec.newXY x y, vel = Vec.newMA vm va, r = r, acc = Vec.newMA am aa }
+new { x, y, vm, va, r, am, aa, mass } =
+    Particle { pos = Vec.newXY x y, vel = Vec.newMA vm va, r = r, acc = Vec.newMA am aa, mass = mass }
 
 
 update (Particle rec) =
