@@ -68,7 +68,8 @@ type Msg
     = NoOp
     | AFrame Float
     | Reset
-    | TogglePause
+    | Restart
+    | Pause Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -78,7 +79,10 @@ update msg m =
             pure m
 
         Reset ->
-            pure { pos = initialModel.pos, paused = True }
+            update (Pause True) initialModel
+
+        Restart ->
+            update (Pause False) initialModel
 
         AFrame delta ->
             let
@@ -90,8 +94,8 @@ update msg m =
             in
             ter m.paused (pure m) ret
 
-        TogglePause ->
-            pure { m | paused = not m.paused }
+        Pause newPaused ->
+            pure { m | paused = newPaused }
 
 
 pure m =
@@ -170,7 +174,8 @@ viewControls { paused } =
     layout globalStyle
         (row [ spacing 8 ]
             [ btn [] Reset "Reset"
-            , btn [] TogglePause (ter paused "Play" "Pause")
+            , btn [] Restart "Restart"
+            , btn [] (Pause (not paused)) (ter paused "Play" "Pause")
             ]
         )
 
@@ -193,7 +198,8 @@ view model =
 subscriptions model =
     Sub.batch
         [ Browser.Events.onAnimationFrameDelta AFrame
-        , Time.every (5 * 1000) (\_ -> Reset)
+
+        {- , Time.every (5 * 1000) (\_ -> Reset) -}
         ]
 
 
