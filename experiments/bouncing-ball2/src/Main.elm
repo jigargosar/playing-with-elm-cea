@@ -34,12 +34,16 @@ vecAdd ( x, y ) ( x_, y_ ) =
     vec (x + x_) (y + y_)
 
 
+vecXStr =
+    Tuple.first >> String.fromFloat
+
+
 type alias Model =
-    { x : Float, pos : Vec, paused : Bool }
+    { pos : Vec, paused : Bool }
 
 
 initialModel =
-    { x = 100, pos = vec 100 100, paused = False }
+    { pos = vec 100 100, paused = False }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -85,7 +89,7 @@ update msg m =
                     vec 1.5 0
 
                 ret =
-                    { m | x = m.x + 1.5, pos = vecAdd m.pos vel } |> pure
+                    { m | pos = vecAdd m.pos vel } |> pure
             in
             ter m.paused (pure m) ret
 
@@ -101,11 +105,11 @@ pure m =
 ---- VIEW ----
 
 
-svgView { x } =
+svgView { pos } =
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
         [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
         , Svg.circle
-            [ x |> String.fromFloat >> SA.cx
+            [ pos |> vecXStr >> SA.cx
             , SA.cy "100"
             , ballRadius |> String.fromFloat >> SA.r
             , SA.fill "#cd37a9"
