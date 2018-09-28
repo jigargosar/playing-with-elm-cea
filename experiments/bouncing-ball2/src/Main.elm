@@ -2,8 +2,6 @@ module Main exposing (main)
 
 import Browser
 import Browser.Events
-import El exposing (btn, globalStyle)
-import Element exposing (layout, row, spacing)
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
@@ -114,14 +112,16 @@ viewSvg { pos } =
         (ViewSvg.svgView { ballPos = pos, ballRadius = ballRadius, worldSize = worldSizeVec })
 
 
+hBtn al msg lt =
+    H.button ([ HE.onClick msg ] ++ al) [ H.text lt ]
+
+
 viewControls { paused } =
-    layout globalStyle
-        (row [ spacing 8 ]
-            [ btn [] Reset "Reset"
-            , btn [] Restart "Restart"
-            , btn [] (Pause (not paused)) (ter paused "Play" "Pause")
-            ]
-        )
+    H.div [ HA.class "hs2" ]
+        [ hBtn [] Reset "Reset"
+        , hBtn [] Restart "Restart"
+        , hBtn [] (Pause (not paused)) (ter paused "Play" "Pause")
+        ]
 
 
 view : Model -> Html Msg
