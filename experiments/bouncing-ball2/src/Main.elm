@@ -34,11 +34,11 @@ type alias Flags =
 
 
 type alias Model =
-    { paused : Bool, ball : Particle }
+    { paused : Bool, ball : Particle, seed : Random.Seed }
 
 
 initialModel =
-    { paused = False, ball = Particle.zero |> Particle.setVelMA 1.5 0 }
+    { paused = False, ball = Particle.zero |> Particle.setVelMA 1.5 0, seed = initialSeed }
 
 
 init : Flags -> ( Model, Cmd Msg )
