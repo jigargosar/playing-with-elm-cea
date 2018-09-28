@@ -2,7 +2,8 @@ module Main exposing (main)
 
 import Browser
 import Browser.Events
-import Element exposing (el, html, layout, padding, paddingXY, row, spacing, text)
+import Element exposing (el, html, layout, padding, paddingXY, rgba, row, spacing, text)
+import Element.Background
 import Element.Border
 import Element.Font exposing (typeface)
 import Element.Input
@@ -142,7 +143,18 @@ btn al msg labelText =
     Element.Input.button
         ([ paddingXY 6 2
          , Element.Border.rounded 0
-         , Element.Border.width 1
+         , Element.Border.width 0
+         , Element.Border.solid
+         , Element.Border.shadow
+            { offset = Tuple.pair 0 0
+            , size = 2
+            , blur = 4
+            , color = rgba 0 0 0 0.2
+            }
+         , Element.Border.color (rgba 0 0 0 0.1)
+         , Element.Background.color (rgba 0 0 0 0)
+
+         --         , Element.Background.gradient { angle = 0, steps = [ rgba 0 0 0 0.01, rgba 0 0 0 0.15 ] }
          ]
             ++ al
         )
