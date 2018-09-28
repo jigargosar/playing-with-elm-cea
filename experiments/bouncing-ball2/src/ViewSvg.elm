@@ -9,6 +9,23 @@ import TypedSvg.Types exposing (Opacity(..), StrokeLinecap(..), Transform(..), n
 import Vec
 
 
+viewBall ball =
+    let
+        ( bx, by ) =
+            Particle.posPair ball
+
+        ballRadius =
+            Particle.getR ball
+    in
+    circle
+        [ cx bx
+        , cy by
+        , r ballRadius
+        , SA.fill "#cd37a9"
+        ]
+        []
+
+
 svgView { ball, worldSize } =
     let
         ( bx, by ) =
@@ -56,13 +73,7 @@ svgView { ball, worldSize } =
                     ]
                     []
                 ]
-            , circle
-                [ cx bx
-                , cy by
-                , r ballRadius
-                , SA.fill "#cd37a9"
-                ]
-                []
+            , viewBall ball
             ]
         ]
     ]
