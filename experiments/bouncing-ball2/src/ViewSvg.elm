@@ -10,8 +10,8 @@ import Vec
 
 svgView { worldSize, ballRadius, ballPos } =
     let
-        { x, y } =
-            Vec.toRec ballPos
+        ( bx, by ) =
+            Vec.toPair ballPos
 
         ( ww, wh ) =
             Vec.toPair worldSize
@@ -45,8 +45,8 @@ svgView { worldSize, ballRadius, ballPos } =
                     []
                 ]
             , circle
-                [ cx x
-                , cy y
+                [ cx bx
+                , cy by
                 , r ballRadius
                 , SA.fill "#cd37a9"
                 ]
