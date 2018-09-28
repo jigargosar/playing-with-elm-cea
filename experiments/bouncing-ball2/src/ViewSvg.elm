@@ -2,8 +2,8 @@ module ViewSvg exposing (view)
 
 import Particle
 import Svg.Attributes as SA
-import TypedSvg exposing (circle, g, line, rect, svg)
-import TypedSvg.Attributes exposing (opacity, strokeLinecap, transform)
+import TypedSvg exposing (circle, g, line, polygon, rect, svg)
+import TypedSvg.Attributes exposing (opacity, points, strokeLinecap, transform)
 import TypedSvg.Attributes.InPx exposing (cx, cy, r, x1, x2, y1, y2)
 import TypedSvg.Types exposing (Opacity(..), StrokeLinecap(..), Transform(..), num)
 import Vec
@@ -61,7 +61,7 @@ viewAxis worldSize =
         ]
 
 
-view { balls, worldSize } =
+view { balls, worldSize, ship } =
     let
         ( ox, oy ) =
             worldSize |> Vec.div 2 |> Vec.toPair
@@ -84,6 +84,23 @@ view { balls, worldSize } =
             ]
             [ viewAxis worldSize
             , g [] (balls |> List.map viewBall)
+            , viewShip ship
             ]
         ]
     ]
+
+
+viewShip ship =
+    let
+        ( bx, by ) =
+            Particle.posPair ship
+
+        ra =
+            Particle.getR ship
+    in
+    polygon
+        [ points [ ( 0, 0 ), ( -ra, ra / -3 ), ( -ra, ra / 3 ) ]
+        , SA.fill "#cd37a9"
+        , opacity (Opacity 0.8)
+        ]
+        []

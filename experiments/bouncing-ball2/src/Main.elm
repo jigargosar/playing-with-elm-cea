@@ -38,7 +38,7 @@ type alias Ship =
 
 
 initialShip =
-    Particle.new 0 0 0 0 5 -0.1
+    Particle.new 0 0 0 0 50 -0.1
 
 
 type alias Model =
@@ -136,10 +136,11 @@ pure m =
 ---- VIEW ----
 
 
-viewSvg { balls } =
+viewSvg m =
     Svg.svg [ SA.class "flex center", HA.width worldWidth, HA.height worldHeight ]
         (ViewSvg.view
-            { balls = balls
+            { balls = m.balls
+            , ship = m.ship
             , worldSize = worldSizeVec
             }
         )
