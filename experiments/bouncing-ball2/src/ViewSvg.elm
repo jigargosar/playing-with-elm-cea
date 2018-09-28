@@ -42,6 +42,16 @@ svgView { ball, worldSize, ballRadius } =
                     , x2 (ww / 2)
                     ]
                     []
+                , line
+                    [ x1 100
+                    , y1 100
+                    ]
+                    []
+                , line
+                    [ x1 -100
+                    , y1 100
+                    ]
+                    []
                 ]
             , circle
                 [ cx bx

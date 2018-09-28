@@ -1,4 +1,4 @@
-module Particle exposing (Particle, newXY, posPair, setVelXY, update, zero)
+module Particle exposing (Particle, newXY, posPair, setVelMA, setVelXY, update, zero)
 
 import Vec exposing (Vec)
 

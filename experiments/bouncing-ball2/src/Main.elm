@@ -33,7 +33,7 @@ type alias Model =
 
 
 initialModel =
-    { paused = False, ball = Particle.zero |> Particle.setVelXY 1.5 0 }
+    { paused = False, ball = Particle.zero |> Particle.setVelMA 1 0 }
 
 
 init : Flags -> ( Model, Cmd Msg )

@@ -27,10 +27,10 @@ newXY x y =
 newMA : Float -> Float -> Vec
 newMA m deg =
     let
-        rad =
-            radians deg
+        angle =
+            degrees deg
     in
-    Vec ( m * sin rad, m * cos rad )
+    Vec ( m * cos angle, m * sin angle )
 
 
 zero =
