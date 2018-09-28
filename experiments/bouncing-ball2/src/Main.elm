@@ -104,7 +104,7 @@ svgView { pos } =
                 [ Svg.circle
                     [ pos |> Vec.getX >> TT.num >> TA.cx
                     , pos |> Vec.getY >> TT.num >> TA.cy
-                    , ballRadius |> String.fromFloat >> SA.r
+                    , ballRadius |> TT.num >> TA.r
                     , SA.fill "#cd37a9"
                     ]
                     []
