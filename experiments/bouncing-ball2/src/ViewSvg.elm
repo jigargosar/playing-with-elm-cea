@@ -2,9 +2,9 @@ module ViewSvg exposing (svgView)
 
 import Svg.Attributes as SA
 import TypedSvg exposing (circle, g, line, rect, svg)
-import TypedSvg.Attributes exposing (strokeLinecap, transform)
+import TypedSvg.Attributes exposing (opacity, strokeLinecap, transform)
 import TypedSvg.Attributes.InPx exposing (cx, cy, r, x1, x2, y1, y2)
-import TypedSvg.Types exposing (StrokeLinecap(..), Transform(..), num)
+import TypedSvg.Types exposing (Opacity(..), StrokeLinecap(..), Transform(..), num)
 import Vec
 
 
@@ -30,6 +30,7 @@ svgView { worldSize, ballRadius, ballPos } =
             [ g
                 [ SA.stroke "#cd37a9"
                 , SA.strokeWidth "2"
+                , opacity (Opacity 0.5)
                 , strokeLinecap StrokeLinecapRound
                 ]
                 [ line
