@@ -112,15 +112,15 @@ ter bool v1 v2 =
         v2
 
 
-button a b =
-    H.button a b |> html >> el []
+hel ela n na ne =
+    el ela (n na ne |> html)
 
 
 viewControls { paused } =
     layout [ Element.Font.size 16 ]
         (row [ spacing 8 ]
-            [ button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ]
-            , button [ HE.onClick TogglePause ] [ H.text (ter paused "Play" "Pause") ]
+            [ hel [] H.button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ]
+            , hel [] H.button [ HE.onClick TogglePause ] [ H.text (ter paused "Play" "Pause") ]
             ]
         )
 
