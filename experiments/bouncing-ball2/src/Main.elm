@@ -11,6 +11,8 @@ import String exposing (String)
 import Svg
 import Svg.Attributes as SA
 import Time
+import TypedSvg.Attributes as TA
+import TypedSvg.Types as TT
 
 
 
@@ -114,15 +116,10 @@ svgView { pos } =
         [ Svg.g []
             [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
             , Svg.g
-                [ SA.transform
-                    ([ "translate("
-                     , toFloat worldWidth / 2 |> String.fromFloat
-                     , ","
-                     , toFloat worldHeight / 2 |> String.fromFloat
-                     , "0)"
-                     ]
-                        |> String.join ""
-                    )
+                [ TA.transform
+                    [ TT.Translate (toFloat worldWidth / 2)
+                        (toFloat worldHeight / 2)
+                    ]
                 ]
                 [ Svg.circle
                     [ pos |> vecXStr >> SA.cx
