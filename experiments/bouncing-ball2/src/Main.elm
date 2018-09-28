@@ -33,7 +33,7 @@ type alias Model =
     { paused : Bool, ball : Particle, seed : Random.Seed }
 
 
-initialModel fromSeed =
+ballGenerator =
     let
         angleGenerator =
             Random.float 0 360
@@ -47,13 +47,14 @@ initialModel fromSeed =
         radiusGenerator =
             Random.float 5 20
 
-        ballGenerator =
-            let
-                newBall vel r =
-                    Particle.fromRec { pos = Vec.zero, vel = vel, r = r }
-            in
-            Random.map2 newBall velocityGenerator radiusGenerator
+        newBall vel r =
+            Particle.fromRec { pos = Vec.zero, vel = vel, r = r }
+    in
+    Random.map2 newBall velocityGenerator radiusGenerator
 
+
+initialModel fromSeed =
+    let
         ( ball, seed ) =
             Random.step ballGenerator fromSeed
     in
