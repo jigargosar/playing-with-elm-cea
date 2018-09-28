@@ -39,7 +39,7 @@ type alias Ship =
 
 
 initialShip =
-    Particle.new 0 0 0.1 90 50 0
+    Particle.new 0 0 0.1 90 50 0 0
 
 
 type alias Model =
@@ -69,7 +69,7 @@ ballGenerator =
             Random.float 4 4
 
         newBall mag ang r =
-            Particle.new 0 100 mag ang r -0.1
+            Particle.new 0 100 mag ang r 0.1 -90
     in
     Random.map3 newBall magnitudeGenerator angleGenerator radiusGenerator
 
