@@ -122,8 +122,8 @@ svgView { pos } =
                     ]
                 ]
                 [ Svg.circle
-                    [ pos |> vecXStr >> SA.cx
-                    , pos |> vecYStr >> SA.cy
+                    [ pos |> Tuple.first >> TT.num >> TA.cx
+                    , pos |> Tuple.second >> TT.num >> TA.cy
                     , ballRadius |> String.fromFloat >> SA.r
                     , SA.fill "#cd37a9"
                     ]
