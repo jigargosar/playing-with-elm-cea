@@ -92,6 +92,10 @@ pure m =
 
 
 svgView { pos } =
+    let
+        { x, y } =
+            Vec.toRec pos
+    in
     Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
         [ Svg.g []
             [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
@@ -102,8 +106,8 @@ svgView { pos } =
                     ]
                 ]
                 [ Svg.circle
-                    [ pos |> Vec.getX >> TT.num >> TA.cx
-                    , pos |> Vec.getY >> TT.num >> TA.cy
+                    [ TT.num x |> TA.cx
+                    , TT.num y |> TA.cy
                     , ballRadius |> TT.num >> TA.r
                     , SA.fill "#cd37a9"
                     ]

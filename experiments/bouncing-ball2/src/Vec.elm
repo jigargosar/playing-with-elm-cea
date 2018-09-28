@@ -1,4 +1,4 @@
-module Vec exposing (Vec, getX, getY, vec, vecAdd)
+module Vec exposing (Vec, getX, getY, toPair, toRec, vec, vecAdd)
 
 
 type Vec
@@ -24,3 +24,7 @@ getY (Vec ( x, y )) =
 
 toRec (Vec ( x, y )) =
     { x = x, y = y }
+
+
+toPair (Vec p) =
+    p
