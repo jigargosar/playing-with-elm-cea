@@ -3,9 +3,6 @@ module Particle exposing
     , getR
     , new
     , posPair
-    , setVel
-    , setVelMA
-    , setVelXY
     , update
     )
 
@@ -18,18 +15,6 @@ type Particle
 
 new x y mag ang r g =
     Particle { pos = Vec.newXY x y, vel = Vec.newMA mag ang, r = r, g = Vec.newXY 0 g }
-
-
-setVel vel (Particle rec) =
-    Particle { rec | vel = vel }
-
-
-setVelXY x y (Particle rec) =
-    Particle { rec | vel = Vec.newXY x y }
-
-
-setVelMA mag ang (Particle rec) =
-    Particle { rec | vel = Vec.newMA mag ang }
 
 
 update (Particle rec) =
