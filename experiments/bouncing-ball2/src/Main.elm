@@ -202,7 +202,12 @@ updateShipAngle fn m =
 
 
 viewSvg m =
-    Svg.svg [ SA.class "flex center", HA.width worldWidth, HA.height worldHeight ]
+    Svg.svg
+        [ SA.class "flex center"
+        , HA.width worldWidth
+        , HA.height worldHeight
+        , HE.onBlur (Pause True)
+        ]
         (ViewSvg.view
             { balls = m.balls
             , ship = m.ship
@@ -231,7 +236,11 @@ view model =
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , viewControls model
-            , H.div [ HA.class "", HE.onClick Restart ] [ viewSvg model ]
+            , H.div
+                [ HA.class ""
+                , HE.onClick Restart
+                ]
+                [ viewSvg model ]
             ]
         ]
 
