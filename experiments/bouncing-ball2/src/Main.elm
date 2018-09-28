@@ -170,7 +170,7 @@ viewControls { paused } =
     layout globalStyle
         (row [ spacing 8 ]
             [ btn [] Reset "Reset"
-            , hel [] H.button [ HE.onClick TogglePause ] [ H.text (ter paused "Play" "Pause") ]
+            , btn [] TogglePause (ter paused "Play" "Pause")
             ]
         )
 
