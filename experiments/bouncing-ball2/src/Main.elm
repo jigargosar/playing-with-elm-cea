@@ -106,9 +106,7 @@ svgView { pos } =
             [ Svg.rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb" ] []
             , Svg.g
                 [ TA.transform
-                    [ TT.Translate (toFloat worldWidth / 2)
-                        (toFloat worldHeight / 2)
-                    ]
+                    [ TT.Translate ox oy ]
                 ]
                 [ Svg.circle
                     [ TT.num x |> TA.cx
