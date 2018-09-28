@@ -201,31 +201,8 @@ updateShipAngle fn m =
 ---- VIEW ----
 
 
-viewSvg m =
-    Svg.svg
-        [ SA.class "flex center"
-        , HA.width worldWidth
-        , HA.height worldHeight
-        , HE.onBlur (Pause True)
-        ]
-        (ViewSvg.view worldSizeVec
-            [ ViewSvg.viewBalls m.balls
-            , ViewSvg.viewShip m.ship m.shipAngle
-            ]
-        )
-
-
 hBtn al msg lt =
     H.button ([ HE.onClick msg ] ++ al) [ H.text lt ]
-
-
-viewControls { paused } =
-    H.div [ HA.class "hs2" ]
-        [ hBtn [] Reset "Reset"
-        , hBtn [] Restart "Restart"
-        , hBtn [] (Pause (not paused)) (ter paused "Play" "Pause")
-        , hBtn [ HA.disabled (not paused) ] Step "Step"
-        ]
 
 
 view : Model -> Html Msg
@@ -241,6 +218,29 @@ view model =
                 [ viewSvg model ]
             ]
         ]
+
+
+viewControls { paused } =
+    H.div [ HA.class "hs2" ]
+        [ hBtn [] Reset "Reset"
+        , hBtn [] Restart "Restart"
+        , hBtn [] (Pause (not paused)) (ter paused "Play" "Pause")
+        , hBtn [ HA.disabled (not paused) ] Step "Step"
+        ]
+
+
+viewSvg m =
+    Svg.svg
+        [ SA.class "flex center"
+        , HA.width worldWidth
+        , HA.height worldHeight
+        , HE.onBlur (Pause True)
+        ]
+        (ViewSvg.view worldSizeVec
+            [ ViewSvg.viewBalls m.balls
+            , ViewSvg.viewShip m.ship m.shipAngle
+            ]
+        )
 
 
 
