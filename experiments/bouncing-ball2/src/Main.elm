@@ -208,12 +208,10 @@ viewSvg m =
         , HA.height worldHeight
         , HE.onBlur (Pause True)
         ]
-        (ViewSvg.view
-            { balls = m.balls
-            , ship = m.ship
-            , shipAngle = m.shipAngle
-            , worldSize = worldSizeVec
-            }
+        (ViewSvg.view worldSizeVec
+            [ ViewSvg.viewBalls m.balls
+            , ViewSvg.viewShip m.ship m.shipAngle
+            ]
         )
 
 
@@ -238,7 +236,7 @@ view model =
             , viewControls model
             , H.div
                 [ HA.class ""
-                , HE.onClick Restart
+                , HE.onDoubleClick Restart
                 ]
                 [ viewSvg model ]
             ]

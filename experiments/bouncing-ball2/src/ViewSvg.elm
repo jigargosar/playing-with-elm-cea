@@ -1,4 +1,4 @@
-module ViewSvg exposing (view)
+module ViewSvg exposing (view, viewBalls, viewShip)
 
 import Particle
 import Svg.Attributes as SA
@@ -77,7 +77,7 @@ viewAxis worldSize =
         ]
 
 
-view { balls, worldSize, ship, shipAngle } =
+view worldSize views =
     let
         ( ox, oy ) =
             worldSize |> Vec.div 2 |> Vec.toPair
@@ -97,12 +97,13 @@ view { balls, worldSize, ship, shipAngle } =
         , g
             [ transform [ Translate ox oy, Scale 1 -1 ]
             ]
-            [ viewAxis worldSize
-            , g [] (balls |> List.map viewBall)
-            , viewShip ship shipAngle
-            ]
+            ([ viewAxis worldSize ] ++ views)
         ]
     ]
+
+
+viewBalls balls =
+    g [] (balls |> List.map viewBall)
 
 
 viewShip ship shipAngle =
