@@ -116,7 +116,7 @@ viewShip ship shipAngle =
     in
     g [ transform [ Translate x y ] ]
         [ polygon
-            [ points [ ( 0, 0 ), ( -ra, ra / -3 ), ( -ra, ra / 3 ) ]
+            [ points [ ( ra / 3 * 2, 0 ), ( -ra / 3, -ra / 3 ), ( -ra / 3, ra / 3 ) ]
             , SA.stroke "#cd37a9"
             , strokeWidth 5
             , fill FillNone
@@ -125,7 +125,7 @@ viewShip ship shipAngle =
             , strokeLinejoin StrokeLinejoinRound
             , strokeLinejoin StrokeLinejoinBevel
             , opacity (Opacity 0.8)
-            , transform [ Rotate shipAngle (-ra / 2) 0 ]
+            , transform [ Rotate shipAngle 0 0 ]
             ]
             []
         ]
