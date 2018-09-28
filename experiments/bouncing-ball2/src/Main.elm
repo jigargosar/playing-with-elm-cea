@@ -11,6 +11,7 @@ import Element.Input
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
+import Particle exposing (Particle)
 import Round
 import Set
 import String exposing (String)
@@ -20,7 +21,7 @@ import Time
 import TypedSvg as TS
 import TypedSvg.Attributes as TA
 import TypedSvg.Types as TT
-import Vec
+import Vec exposing (Vec)
 import ViewSvg
 
 
@@ -33,11 +34,11 @@ type alias Flags =
 
 
 type alias Model =
-    { pos : Vec.Vec, paused : Bool }
+    { pos : Vec.Vec, paused : Bool, ball : Particle }
 
 
 initialModel =
-    { pos = Vec.new 0 0, paused = False }
+    { pos = Vec.new 0 0, paused = False, ball = Particle.zero }
 
 
 init : Flags -> ( Model, Cmd Msg )

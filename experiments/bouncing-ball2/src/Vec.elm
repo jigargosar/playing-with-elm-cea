@@ -1,4 +1,4 @@
-module Vec exposing (Vec, add, div, fromInt, getX, getY, new, toPair, toRec)
+module Vec exposing (Vec, add, div, fromInt, getX, getY, new, toPair, toRec, zero)
 
 import Tuple2
 
@@ -10,6 +10,10 @@ type Vec
 new : Float -> Float -> Vec
 new x y =
     Vec ( x, y )
+
+
+zero =
+    new 0 0
 
 
 fromInt : Int -> Int -> Vec
