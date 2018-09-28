@@ -22,6 +22,7 @@ viewBall ball =
         , cy by
         , r ballRadius
         , SA.fill "#cd37a9"
+        , opacity (Opacity 0.8)
         ]
         []
 
@@ -34,7 +35,7 @@ viewAxis worldSize =
     g
         [ SA.stroke "#cd37a9"
         , SA.strokeWidth "2"
-        , opacity (Opacity 0.1)
+        , opacity (Opacity 0)
         , strokeLinecap StrokeLinecapRound
         ]
         [ line
@@ -66,7 +67,17 @@ view { balls, worldSize } =
             worldSize |> Vec.div 2 |> Vec.toPair
     in
     [ g []
-        [ rect [ SA.width "100%", SA.height "100%", SA.fill "#adbeeb", SA.fill "#fff" ] []
+        [ rect
+            [ SA.width "100%"
+            , SA.height "100%"
+            , SA.fill "#adbeeb"
+            , SA.fill "#fff"
+            , SA.stroke "#cd37a9"
+            , SA.strokeWidth "2"
+            , opacity (Opacity 0.1)
+            , strokeLinecap StrokeLinecapRound
+            ]
+            []
         , g
             [ transform [ Translate ox oy, Scale 1 -1 ]
             , SA.fill "#cd37a9"

@@ -131,7 +131,7 @@ pure m =
 
 
 viewSvg { balls } =
-    Svg.svg [ HA.width worldWidth, HA.height worldHeight ]
+    Svg.svg [ SA.class "flex center", HA.width worldWidth, HA.height worldHeight ]
         (ViewSvg.view
             { balls = balls
             , worldSize = worldSizeVec
