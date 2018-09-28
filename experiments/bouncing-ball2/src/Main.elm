@@ -113,7 +113,9 @@ svgView { pos } =
                 [ SA.transform
                     ([ "translate("
                      , worldWidth / 2 |> String.fromFloat
-                     , ",0)"
+                     , ","
+                     , toFloat worldHeight / 2 |> String.fromFloat
+                     , "0)"
                      ]
                         |> String.join ""
                     )
