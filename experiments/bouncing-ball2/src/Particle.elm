@@ -15,8 +15,11 @@ zero =
     newXY 0 0
 
 
-setVel vel (Particle rec) =
-    Particle { rec | vel = vel }
+
+--setVel vel (Particle rec) =
+--    Particle { rec | vel = vel }
+
+
 setVel x y (Particle rec) =
     Particle { rec | vel = Vec.new x y }
 
