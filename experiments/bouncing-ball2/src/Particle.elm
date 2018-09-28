@@ -2,8 +2,8 @@ module Particle exposing
     ( Particle
     , getAccM
     , getR
+    , getXYPair
     , new
-    , posPair
     , setAccMA
     , update
     )
@@ -30,7 +30,7 @@ update (Particle rec) =
     Particle { rec | pos = newPos, vel = newVel }
 
 
-posPair (Particle { pos }) =
+getXYPair (Particle { pos }) =
     Vec.toPair pos
 
 
