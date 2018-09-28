@@ -92,7 +92,13 @@ update msg m =
                     Vec.new 1.5 0
 
                 ret =
-                    pure { m | pos = Vec.add m.pos vel }
+                    pure
+                        { m
+                            | pos = Vec.add m.pos vel
+                            , ball =
+                                m.ball
+                                    |> Particle.setVel (Vec.new 1.5 0)
+                        }
             in
             ter m.paused (pure m) ret
 

@@ -1,4 +1,4 @@
-module Particle exposing (Particle, newXY, zero)
+module Particle exposing (Particle, newXY, setVel, zero)
 
 import Vec exposing (Vec)
 
@@ -13,3 +13,7 @@ newXY x y =
 
 zero =
     newXY 0 0
+
+
+setVel vel (Particle rec) =
+    Particle { rec | vel = vel }
