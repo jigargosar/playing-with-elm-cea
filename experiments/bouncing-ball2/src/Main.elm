@@ -46,6 +46,10 @@ worldHeight =
     round (worldWidth * 2 / 3)
 
 
+worldSizeVec =
+    Vec.fromInt worldWidth worldHeight
+
+
 ballRadius =
     30
 
@@ -97,9 +101,6 @@ svgView { pos } =
         { x, y } =
             Vec.toRec pos
 
-        worldSizeVec =
-            Vec.fromInt worldWidth worldHeight
-
         ( ww, wh ) =
             Vec.toPair worldSizeVec
 
@@ -113,16 +114,22 @@ svgView { pos } =
                 [ TA.transform [ TT.Translate ox oy, TT.Scale 1 -1 ]
                 , SA.fill "#cd37a9"
                 ]
-                [ TS.line
+                [ TS.g
                     [ SA.stroke "#cd37a9"
-                    , TA.x1 (TT.num 0)
-                    , TA.y1 (TT.num (wh / -2))
-                    , TA.x2 (TT.num 0)
-                    , TA.y2 (TT.num (wh / 2))
-                    , SA.strokeWidth "10"
+                    , SA.strokeWidth "2"
                     , TA.strokeLinecap TT.StrokeLinecapRound
                     ]
-                    []
+                    [ TS.line
+                        [ TA.y1 (TT.num (wh / -2))
+                        , TA.y2 (TT.num (wh / 2))
+                        ]
+                        []
+                    , TS.line
+                        [ TA.x1 (TT.num (ww / -2))
+                        , TA.x2 (TT.num (ww / 2))
+                        ]
+                        []
+                    ]
                 , Svg.circle
                     [ TT.num x |> TA.cx
                     , TT.num y |> TA.cy
