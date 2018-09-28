@@ -81,7 +81,7 @@ viewAxis worldSize =
 view worldSize views =
     let
         ( ox, oy ) =
-            worldSize |> Vec.div 2 |> Vec.toPair
+            worldSize |> Vec.div 2 >> Vec.toPair
     in
     [ g []
         [ rect
@@ -91,7 +91,6 @@ view worldSize views =
             , SA.stroke "#cd37a9"
             , SA.strokeWidth "2"
             , opacity (Opacity 0.1)
-            , strokeLinecap StrokeLinecapRound
             ]
             []
         , g
