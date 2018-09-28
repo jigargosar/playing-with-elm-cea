@@ -16,7 +16,7 @@ import Time
 import TypedSvg as TS
 import TypedSvg.Attributes as TA
 import TypedSvg.Types as TT
-import Vec exposing (Vec)
+import Vec
 import ViewSvg
 
 
