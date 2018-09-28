@@ -3,6 +3,7 @@ module Main exposing (main)
 import Browser
 import Browser.Events
 import Element exposing (el, html, layout, row, spacing)
+import Element.Font
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
@@ -116,7 +117,7 @@ button a b =
 
 
 viewControls { paused } =
-    layout []
+    layout [ Element.Font.size 16 ]
         (row [ spacing 8 ]
             [ button [ HE.onClick Reset, HA.autofocus True ] [ H.text "Reset" ]
             , button [ HE.onClick TogglePause ] [ H.text (ter paused "Play" "Pause") ]
