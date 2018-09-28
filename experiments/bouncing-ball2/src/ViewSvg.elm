@@ -112,6 +112,9 @@ viewShip ship =
 
         ra =
             Particle.getR ship
+
+        ang =
+            Particle.getA ship
     in
     polygon
         [ points [ ( 0, 0 ), ( -ra, ra / -3 ), ( -ra, ra / 3 ) ]
@@ -123,6 +126,6 @@ viewShip ship =
         , strokeLinejoin StrokeLinejoinRound
         , strokeLinejoin StrokeLinejoinBevel
         , opacity (Opacity 0.8)
-        , transform [ Rotate 90 0 0 ]
+        , transform [ Rotate ang 0 0 ]
         ]
         []

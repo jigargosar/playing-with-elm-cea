@@ -1,5 +1,6 @@
 module Particle exposing
     ( Particle
+    , getA
     , getR
     , new
     , posPair
@@ -33,4 +34,8 @@ posPair (Particle { pos }) =
 
 
 getR (Particle { r }) =
+    r
+
+
+getA (Particle { r }) =
     r
