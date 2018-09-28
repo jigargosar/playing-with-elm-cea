@@ -7,6 +7,7 @@ import Html.Attributes as HA
 import Html.Events as HE
 import Particle exposing (Particle)
 import Ramda exposing (ter)
+import Random
 import Round
 import Set
 import String exposing (String)
@@ -18,6 +19,10 @@ import TypedSvg.Attributes as TA
 import TypedSvg.Types as TT
 import Vec
 import ViewSvg
+
+
+initialSeed =
+    Random.initialSeed 0
 
 
 
