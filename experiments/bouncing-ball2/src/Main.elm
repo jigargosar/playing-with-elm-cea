@@ -9,6 +9,7 @@ import Html.Events as HE
 import Html.Lazy
 import Json.Decode as D
 import List.Extra
+import Math.Vector2
 import Particle exposing (Particle)
 import Ramda exposing (subBy, ter)
 import Random
@@ -21,7 +22,6 @@ import Time
 import TypedSvg as TS
 import TypedSvg.Attributes as TA
 import TypedSvg.Types as TT
-import Vec exposing (Vec)
 import ViewSvg
 
 
@@ -124,8 +124,8 @@ worldHeight =
     worldWidth
 
 
-worldSizeVec =
-    Vec.fromInt worldWidth worldHeight
+worldSize =
+    Math.Vector2.vec2 (toFloat worldWidth) (toFloat worldHeight)
 
 
 isKeyDown key m =
@@ -270,7 +270,7 @@ viewContent m =
             , HA.height worldHeight
             , HE.onBlur Play
             ]
-            (ViewSvg.view worldSizeVec
+            (ViewSvg.view worldSize
                 [ ViewSvg.viewBalls m.balls
                 , ViewSvg.viewShip m.ship m.shipAngle
 

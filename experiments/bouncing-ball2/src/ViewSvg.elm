@@ -1,5 +1,6 @@
 module ViewSvg exposing (view, viewBalls, viewParticle, viewShip)
 
+import Math.Vector2
 import Particle
 import Ramda exposing (ter)
 import Svg.Attributes as SA
@@ -23,7 +24,6 @@ import TypedSvg.Types
         , Transform(..)
         , num
         )
-import Vec
 
 
 viewBall ball =
@@ -65,7 +65,7 @@ viewParticle particle fillColor =
 viewAxis worldSize =
     let
         ( ww, wh ) =
-            Vec.toPair worldSize
+            Math.Vector2.toRecord worldSize |> (\{ x, y } -> ( x, y ))
     in
     g
         [ SA.stroke "#cd37a9"
@@ -82,8 +82,8 @@ viewAxis worldSize =
 
 view worldSize views =
     let
-        ( ox, oy ) =
-            worldSize |> Vec.div 2 >> Vec.toPair
+        origin =
+            worldSize |> Math.Vector2.scale (1 / 2) >> Math.Vector2.toRecord
     in
     [ g []
         [ rect
@@ -96,7 +96,7 @@ view worldSize views =
             ]
             []
         , g
-            [ transform [ Translate ox oy, Scale 1 -1 ]
+            [ transform [ Translate origin.x origin.y, Scale 1 -1 ]
             ]
             ([ viewAxis worldSize ] ++ views)
         ]
