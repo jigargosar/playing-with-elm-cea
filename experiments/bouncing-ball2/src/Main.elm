@@ -247,11 +247,7 @@ view model =
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , viewControls model
-            , H.div
-                [ HA.class ""
-                , HE.onDoubleClick Restart
-                ]
-                [ viewSvg model ]
+            , viewContent model
             ]
         ]
 
@@ -265,22 +261,24 @@ viewControls { paused } =
         ]
 
 
-viewSvg m =
-    Svg.svg
-        [ SA.class "flex center"
-        , HA.width worldWidth
-        , HA.height worldHeight
-        , HE.onBlur Play
-        ]
-        (ViewSvg.view worldSizeVec
-            [ {- ViewSvg.viewBalls m.balls
-                 , ViewSvg.viewShip m.ship m.shipAngle
-                 ,
-              -}
-              ViewSvg.viewParticle m.sun "orange"
-            , ViewSvg.viewParticle m.planet "red"
+viewContent m =
+    H.div [ HA.class "", HE.onDoubleClick Restart ]
+        [ Svg.svg
+            [ SA.class "flex center"
+            , HA.width worldWidth
+            , HA.height worldHeight
+            , HE.onBlur Play
             ]
-        )
+            (ViewSvg.view worldSizeVec
+                [ {- ViewSvg.viewBalls m.balls
+                     , ViewSvg.viewShip m.ship m.shipAngle
+                     ,
+                  -}
+                  ViewSvg.viewParticle m.sun "orange"
+                , ViewSvg.viewParticle m.planet "red"
+                ]
+            )
+        ]
 
 
 
