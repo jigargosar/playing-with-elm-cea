@@ -1,11 +1,13 @@
 module Particle exposing
     ( Particle
+    , acc
     , getPosPair
     , getR
     , new
     , update
     )
 
+import BasicsX exposing (vec2FromPair)
 import Math.Vector2 as V exposing (Vec2)
 import Tuple2
 
@@ -47,5 +49,5 @@ toRec (Particle rec) =
     rec
 
 
-vec2FromPair ( x, y ) =
-    V.vec2 x y
+acc vec (Particle rec) =
+    Particle { rec | vel = V.add rec.vel vec }

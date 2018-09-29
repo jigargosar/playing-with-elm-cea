@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Array
+import BasicsX exposing (vec2FromPair)
 import Browser
 import Browser.Events
 import Html as H exposing (Html)
@@ -9,7 +10,7 @@ import Html.Events as HE
 import Html.Lazy
 import Json.Decode as D
 import List.Extra
-import Math.Vector2
+import Math.Vector2 as V exposing (Vec2)
 import Particle exposing (Particle)
 import Ramda exposing (subBy, ter)
 import Random
@@ -127,7 +128,7 @@ worldHeight =
 
 
 worldSize =
-    Math.Vector2.vec2 (toFloat worldWidth) (toFloat worldHeight)
+    V.vec2 (toFloat worldWidth) (toFloat worldHeight)
 
 
 isKeyDown key m =
@@ -168,18 +169,10 @@ update msg m =
             ter m.paused (pure m) (update Step m)
 
         Step ->
-            let
-                angleOffset =
-                    5
-            in
             {- { m | planet = Particle.gravitateTo m.sun m.planet } -}
             m
+                |> updateShip
                 |> updateParticles
-                |> cond identity
-                    [ ( isKeyDown "ArrowLeft", updateShipAngle ((+) -angleOffset) )
-                    , ( isKeyDown "ArrowRight", updateShipAngle ((+) angleOffset) )
-                    ]
-                |> updateShipThrust
                 |> pure
 
         SetPause newPaused ->
@@ -206,9 +199,18 @@ update msg m =
 
 
 updateParticles m =
+    let
+        thrust =
+            case isKeyDown "ArrowUp" m of
+                True ->
+                    vec2FromPair (fromPolar ( 0.1, degrees m.shipAngle ))
+
+                False ->
+                    V.vec2 0 0
+    in
     { m
-        | balls = m.balls |> List.map Particle.update
-        , ship = m.ship |> Particle.update
+        | balls = m.balls |> List.map (Particle.acc (V.vec2 0 0.1) >> Particle.update)
+        , ship = m.ship |> Particle.acc thrust >> Particle.update
         , planet = m.planet |> Particle.update
     }
 
@@ -220,17 +222,38 @@ cond defaultFn conditions data =
         |> Maybe.withDefault (defaultFn data)
 
 
-updateShipThrust m =
-    case isKeyDown "ArrowUp" m of
-        True ->
-            { m | shipThrust = 0.1 }
-
-        False ->
-            { m | shipThrust = 0 }
-
-
 pure m =
     ( m, Cmd.none )
+
+
+isThrusting m =
+    isKeyDown "ArrowUp" m
+
+
+updateShip m =
+    let
+        newAngle =
+            (if isKeyDown "ArrowLeft" m then
+                -1
+
+             else if isKeyDown "ArrowRight" m then
+                1
+
+             else
+                0
+            )
+                |> (*) 5
+                |> (+) m.shipAngle
+
+        newThrust =
+            case isThrusting m of
+                True ->
+                    vec2FromPair (fromPolar ( 0.1, degrees newAngle ))
+
+                False ->
+                    V.vec2 0 0
+    in
+    { m | ship = m.ship |> Particle.acc newThrust, shipAngle = newAngle }
 
 
 updateShipAngle fn m =
