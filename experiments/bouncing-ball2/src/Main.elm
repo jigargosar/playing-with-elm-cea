@@ -97,7 +97,7 @@ initialModel fromSeed =
             Random.step (Random.list 500 ballGenerator) fromSeed
 
         sun =
-            Particle.new { dp | r = 30, mass = 20000 }
+            Particle.new { dp | x = 10, y = 10, r = 30, mass = 1000 }
     in
     { paused = False
     , balls = balls
