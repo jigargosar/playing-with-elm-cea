@@ -11,7 +11,6 @@ module Particle exposing
 
 import Math.Vector2 as V exposing (Vec2)
 import Tuple2
-import Vec exposing (Vec)
 
 
 type Particle
