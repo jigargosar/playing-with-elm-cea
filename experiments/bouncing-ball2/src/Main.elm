@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Array
-import BasicsX exposing (vec2FromPair)
+import BasicsX exposing (vec2FromPair, vec2ToPair)
 import Browser
 import Browser.Events
 import Html as H exposing (Html)
@@ -20,6 +20,7 @@ import String exposing (String)
 import Svg
 import Svg.Attributes as SA
 import Time
+import Tuple2
 import TypedSvg as TS
 import TypedSvg.Attributes as TA
 import TypedSvg.Types as TT
@@ -221,15 +222,8 @@ updateParticles m =
         | balls = m.balls |> List.map (Particle.acc (V.vec2 0 0.1) >> Particle.update)
         , ship = m.ship |> Particle.acc (computeNewShipThrust m) >> Particle.update
         , shipAngle = computeNewShipAngle m
-        , planet = m.planet |> Particle.update
+        , planet = m.planet |> Particle.acc (computePlanetAcc m) >> Particle.update
     }
-
-
-cond defaultFn conditions data =
-    conditions
-        |> List.Extra.find (\( boolFn, _ ) -> boolFn data)
-        |> Maybe.map (\( _, dataFn ) -> dataFn data)
-        |> Maybe.withDefault (defaultFn data)
 
 
 pure m =
@@ -238,6 +232,20 @@ pure m =
 
 isThrusting m =
     isKeyDown "ArrowUp" m
+
+
+computePlanetAcc m =
+    let
+        ( sunPos, planetPos ) =
+            ( m.sun, m.planet ) |> Tuple2.mapBoth Particle.getPos
+
+        length =
+            Particle.getMass m.sun / V.distanceSquared sunPos planetPos
+
+        angle =
+            V.sub sunPos planetPos |> vec2ToPair >> toPolar >> Tuple.second
+    in
+    ( length, angle ) |> fromPolar >> vec2FromPair
 
 
 

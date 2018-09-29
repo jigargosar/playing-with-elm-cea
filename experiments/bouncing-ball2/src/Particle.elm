@@ -1,6 +1,8 @@
 module Particle exposing
     ( Particle
     , acc
+    , getMass
+    , getPos
     , getPosPair
     , getR
     , new
@@ -35,6 +37,10 @@ update (Particle rec) =
 
 getPosPair (Particle { pos }) =
     V.toRecord pos |> (\{ x, y } -> ( x, y ))
+
+
+getPos (Particle { pos }) =
+    pos
 
 
 getR (Particle { r }) =
