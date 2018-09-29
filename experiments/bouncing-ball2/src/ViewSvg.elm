@@ -96,7 +96,7 @@ view worldSize views =
             ]
             []
         , g
-            [ transform [ Translate origin.x origin.y, Scale 1 -1 ]
+            [ transform [ Translate origin.x origin.y ]
             ]
             ([ viewAxis worldSize ] ++ views)
         ]
@@ -141,7 +141,7 @@ viewShip ship shipAngle =
                 ]
                 []
     in
-    g [ transform [ Translate x y, Rotate -shipAngle 0 0 ] ]
+    g [ transform [ Translate x y, Rotate shipAngle 0 0 ] ]
         ([ viewBody ] ++ ter showThrust viewThrust [])
 
 

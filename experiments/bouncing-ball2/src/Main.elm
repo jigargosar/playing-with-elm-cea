@@ -68,7 +68,7 @@ ballGenerator =
                 spread =
                     360
             in
-            Random.float (90 - spread) (90 + spread)
+            Random.float (-90 - spread) (-90 + spread)
 
         magnitudeGenerator =
             Random.float 2 7
@@ -80,12 +80,12 @@ ballGenerator =
             Particle.new
                 { dp
                     | x = 0
-                    , y = 100
+                    , y = -100
                     , vm = vm
                     , va = va
                     , r = r
                     , am = 0.1
-                    , aa = -90
+                    , aa = 90
                 }
     in
     Random.map3 newBall magnitudeGenerator angleGenerator radiusGenerator
