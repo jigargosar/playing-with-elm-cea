@@ -55,6 +55,7 @@ type alias Model =
     , seed : Random.Seed
     , ship : Ship
     , shipAngle : Float
+    , shipThrust : Float
     , keyDownSet : Set String
     , sun : Particle
     , planet : Particle
@@ -97,16 +98,17 @@ initialModel fromSeed =
             Random.step (Random.list 500 ballGenerator) fromSeed
 
         sun =
-            Particle.new { dp | x = 10, y = 10, r = 30, mass = 1000 }
+            Particle.new { dp | r = 30, mass = 100000 }
     in
     { paused = False
     , balls = balls
     , seed = seed
     , ship = initialShip
     , shipAngle = 0
+    , shipThrust = 0
     , keyDownSet = Set.empty
     , sun = sun
-    , planet = Particle.new { dp | x = 200, r = 5 }
+    , planet = Particle.new { dp | x = 200, vm = 10, r = 5 }
     }
 
 
@@ -170,7 +172,8 @@ update msg m =
                 angleOffset =
                     5
             in
-            { m | planet = Particle.gravitateTo m.sun m.planet }
+            {- { m | planet = Particle.gravitateTo m.sun m.planet } -}
+            m
                 |> updateParticles
                 |> cond identity
                     [ ( isKeyDown "ArrowLeft", updateShipAngle ((+) -angleOffset) )
@@ -220,10 +223,10 @@ cond defaultFn conditions data =
 updateShipThrust m =
     case isKeyDown "ArrowUp" m of
         True ->
-            { m | ship = m.ship |> Particle.setAccMA 0.1 m.shipAngle }
+            { m | shipThrust = 0.1 }
 
         False ->
-            { m | ship = m.ship |> Particle.setAccMA 0 0 }
+            { m | shipThrust = 0 }
 
 
 pure m =

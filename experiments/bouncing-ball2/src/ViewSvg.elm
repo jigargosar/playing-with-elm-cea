@@ -116,7 +116,7 @@ viewShip ship shipAngle =
             Particle.getR ship
 
         showThrust =
-            Particle.getAccM ship > 0
+            False
 
         viewThrust =
             [ line
