@@ -109,7 +109,7 @@ initialModel fromSeed =
     , shipThrust = 0
     , keyDownSet = Set.empty
     , sun = sun
-    , planet = Particle.new { dp | x = 200, vm = 2, va = -90, r = 5 }
+    , planet = Particle.new { dp | y = 200, vm = 2, va = 0, r = 5 }
     }
 
 
