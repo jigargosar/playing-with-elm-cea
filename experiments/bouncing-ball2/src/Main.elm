@@ -6,6 +6,7 @@ import Browser.Events
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
+import Html.Lazy
 import Json.Decode as D
 import List.Extra
 import Particle exposing (Particle)
@@ -247,13 +248,13 @@ view model =
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
             , viewControls model
-            , viewContent model
+            , Html.Lazy.lazy viewContent model
             ]
         ]
 
 
 viewControls { paused } =
-    H.div [ HA.class "hs2" ]
+    H.div [ HA.class "hs2 no-sel" ]
         [ hBtn [] Reset "Reset"
         , hBtn [] Restart "Restart"
         , hBtn [] TogglePause (ter paused "Play" "Pause")
@@ -262,7 +263,7 @@ viewControls { paused } =
 
 
 viewContent m =
-    H.div [ HA.class "", HE.onDoubleClick Restart ]
+    H.div [ HA.class "no-sel", HE.onDoubleClick Restart ]
         [ Svg.svg
             [ SA.class "flex center"
             , HA.width worldWidth
