@@ -96,10 +96,10 @@ initialModel fromSeed =
             Random.step (Random.list 500 ballGenerator) fromSeed
 
         sun =
-            Particle.new { dp | r = 30, mass = 20000 }
+            Particle.new { dp | r = 30, mass = 1000 }
 
         initialShip =
-            Particle.new { dp | x = 200, vm = 10, va = 90, r = 50 }
+            Particle.new { dp | x = 200, vm = 2, va = 90, r = 50 }
     in
     { paused = False
     , balls = balls
@@ -109,7 +109,7 @@ initialModel fromSeed =
     , shipThrust = 0
     , keyDownSet = Set.empty
     , sun = sun
-    , planet = Particle.new { dp | x = 200, vm = 10, va = -90, r = 5 }
+    , planet = Particle.new { dp | x = 200, vm = 2, va = -90, r = 5 }
     }
 
 
