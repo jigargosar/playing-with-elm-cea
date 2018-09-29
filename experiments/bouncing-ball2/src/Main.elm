@@ -197,20 +197,23 @@ update msg m =
             pure { m | keyDownSet = Set.remove key m.keyDownSet }
 
 
+computeShipAngleOffset m =
+    (if isKeyDown "ArrowLeft" m then
+        -1
+
+     else if isKeyDown "ArrowRight" m then
+        1
+
+     else
+        0
+    )
+        |> (*) 5
+
+
 updateParticles m =
     let
         newAngle =
-            (if isKeyDown "ArrowLeft" m then
-                -1
-
-             else if isKeyDown "ArrowRight" m then
-                1
-
-             else
-                0
-            )
-                |> (*) 5
-                |> (+) m.shipAngle
+            m.shipAngle + computeShipAngleOffset m
 
         newThrust =
             case isThrusting m of
