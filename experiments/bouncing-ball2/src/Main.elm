@@ -197,7 +197,7 @@ update msg m =
             pure { m | keyDownSet = Set.remove key m.keyDownSet }
 
 
-computeShipAngleOffset m =
+computeNewShipAngle m =
     (if isKeyDown "ArrowLeft" m then
         -1
 
@@ -208,25 +208,23 @@ computeShipAngleOffset m =
         0
     )
         |> (*) 5
+        |> (+) m.shipAngle
+
+
+computeNewShipThrust m =
+    case isThrusting m of
+        True ->
+            vec2FromPair (fromPolar ( 0.1, degrees (computeNewShipAngle m) ))
+
+        False ->
+            V.vec2 0 0
 
 
 updateParticles m =
-    let
-        newAngle =
-            m.shipAngle + computeShipAngleOffset m
-
-        newThrust =
-            case isThrusting m of
-                True ->
-                    vec2FromPair (fromPolar ( 0.1, degrees newAngle ))
-
-                False ->
-                    V.vec2 0 0
-    in
     { m
         | balls = m.balls |> List.map (Particle.acc (V.vec2 0 0.1) >> Particle.update)
-        , ship = m.ship |> Particle.acc newThrust >> Particle.update
-        , shipAngle = newAngle
+        , ship = m.ship |> Particle.acc (computeNewShipThrust m) >> Particle.update
+        , shipAngle = computeNewShipAngle m
         , planet = m.planet |> Particle.update
     }
 
