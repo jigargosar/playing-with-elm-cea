@@ -171,7 +171,6 @@ update msg m =
         Step ->
             {- { m | planet = Particle.gravitateTo m.sun m.planet } -}
             m
-                |> updateShip
                 |> updateParticles
                 |> pure
 
@@ -200,38 +199,6 @@ update msg m =
 
 updateParticles m =
     let
-        thrust =
-            case isKeyDown "ArrowUp" m of
-                True ->
-                    vec2FromPair (fromPolar ( 0.1, degrees m.shipAngle ))
-
-                False ->
-                    V.vec2 0 0
-    in
-    { m
-        | balls = m.balls |> List.map (Particle.acc (V.vec2 0 0.1) >> Particle.update)
-        , ship = m.ship |> Particle.acc thrust >> Particle.update
-        , planet = m.planet |> Particle.update
-    }
-
-
-cond defaultFn conditions data =
-    conditions
-        |> List.Extra.find (\( boolFn, _ ) -> boolFn data)
-        |> Maybe.map (\( _, dataFn ) -> dataFn data)
-        |> Maybe.withDefault (defaultFn data)
-
-
-pure m =
-    ( m, Cmd.none )
-
-
-isThrusting m =
-    isKeyDown "ArrowUp" m
-
-
-updateShip m =
-    let
         newAngle =
             (if isKeyDown "ArrowLeft" m then
                 -1
@@ -253,11 +220,27 @@ updateShip m =
                 False ->
                     V.vec2 0 0
     in
-    { m | ship = m.ship |> Particle.acc newThrust, shipAngle = newAngle }
+    { m
+        | balls = m.balls |> List.map (Particle.acc (V.vec2 0 0.1) >> Particle.update)
+        , ship = m.ship |> Particle.acc newThrust >> Particle.update
+        , shipAngle = newAngle
+        , planet = m.planet |> Particle.update
+    }
 
 
-updateShipAngle fn m =
-    { m | shipAngle = fn m.shipAngle }
+cond defaultFn conditions data =
+    conditions
+        |> List.Extra.find (\( boolFn, _ ) -> boolFn data)
+        |> Maybe.map (\( _, dataFn ) -> dataFn data)
+        |> Maybe.withDefault (defaultFn data)
+
+
+pure m =
+    ( m, Cmd.none )
+
+
+isThrusting m =
+    isKeyDown "ArrowUp" m
 
 
 
