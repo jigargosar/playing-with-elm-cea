@@ -97,7 +97,7 @@ initialModel fromSeed =
             Random.step (Random.list 500 ballGenerator) fromSeed
 
         sun =
-            Particle.new { dp | r = 30, mass = 1000 }
+            Particle.new { dp | r = 20, mass = 1000 }
 
         initialShip =
             Particle.new { dp | x = 200, vm = 2, va = 90, r = 50 }
