@@ -43,10 +43,6 @@ type alias Ship =
     Particle
 
 
-initialShip =
-    Particle.new { dp | va = 90, r = 50 }
-
-
 dp =
     { x = 0, y = 0, vm = 0, va = 0, r = 10, am = 0, aa = 0, mass = 1 }
 
@@ -101,6 +97,9 @@ initialModel fromSeed =
 
         sun =
             Particle.new { dp | r = 30, mass = 20000 }
+
+        initialShip =
+            Particle.new { dp | x = 200, vm = 10, va = 90, r = 50 }
     in
     { paused = False
     , balls = balls
