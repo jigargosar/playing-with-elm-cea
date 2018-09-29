@@ -64,7 +64,10 @@ gravitateTo p2 p1 =
             ( p1, p2 ) |> Tuple2.mapBoth (toRec >> .pos)
 
         ( _, ang ) =
-            V.sub pos1 pos2 |> V.toRecord |> (\{ x, y } -> toPolar ( x, y ))
+            V.sub pos1 pos2
+                |> V.toRecord
+                |> (\{ x, y } -> toPolar ( x, y ))
+                |> Tuple.mapSecond ((*) (pi / 180))
 
         diffV =
             V.sub pos1 pos2

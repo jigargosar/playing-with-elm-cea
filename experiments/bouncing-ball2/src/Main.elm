@@ -273,10 +273,8 @@ viewContent m =
             (ViewSvg.view worldSize
                 [ ViewSvg.viewBalls m.balls
                 , ViewSvg.viewShip m.ship m.shipAngle
-
-                {- , ViewSvg.viewParticle m.sun "orange"
-                   , ViewSvg.viewParticle m.planet "red"
-                -}
+                , ViewSvg.viewParticle m.sun "orange"
+                , ViewSvg.viewParticle m.planet "red"
                 ]
             )
         ]
