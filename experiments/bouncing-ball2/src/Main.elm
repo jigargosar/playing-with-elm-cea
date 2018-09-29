@@ -220,9 +220,13 @@ computeNewShipThrust m =
 updateParticles m =
     { m
         | balls = m.balls |> List.map (Particle.acc (V.vec2 0 0.1) >> Particle.update)
-        , ship = m.ship |> Particle.acc (computeNewShipThrust m) >> Particle.update
+        , ship =
+            m.ship
+                |> Particle.acc
+                    (V.add (computeNewShipThrust m) (computeShipGravity m))
+                >> Particle.update
         , shipAngle = computeNewShipAngle m
-        , planet = m.planet |> Particle.acc (computePlanetAcc m) >> Particle.update
+        , planet = m.planet |> Particle.acc (computePlanetGravity m) >> Particle.update
     }
 
 
@@ -234,10 +238,24 @@ isThrusting m =
     isKeyDown "ArrowUp" m
 
 
-computePlanetAcc m =
+computePlanetGravity m =
     let
         ( sunPos, planetPos ) =
             ( m.sun, m.planet ) |> Tuple2.mapBoth Particle.getPos
+
+        length =
+            Particle.getMass m.sun / V.distanceSquared sunPos planetPos
+
+        angle =
+            V.sub sunPos planetPos |> vec2ToPair >> toPolar >> Tuple.second
+    in
+    ( length, angle ) |> fromPolar >> vec2FromPair
+
+
+computeShipGravity m =
+    let
+        ( sunPos, planetPos ) =
+            ( m.sun, m.ship ) |> Tuple2.mapBoth Particle.getPos
 
         length =
             Particle.getMass m.sun / V.distanceSquared sunPos planetPos
