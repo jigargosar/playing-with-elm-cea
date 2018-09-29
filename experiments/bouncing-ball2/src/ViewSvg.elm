@@ -107,16 +107,13 @@ viewBalls balls =
     g [] (balls |> List.map viewBall)
 
 
-viewShip ship shipAngle =
+viewShip ship shipAngle showThrust =
     let
         ( x, y ) =
             Particle.getPosPair ship
 
         ra =
             Particle.getR ship
-
-        showThrust =
-            False
 
         viewThrust =
             [ line
