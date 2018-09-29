@@ -141,7 +141,7 @@ viewShip ship shipAngle =
                 ]
                 []
     in
-    g [ transform [ Translate x y, Rotate shipAngle 0 0 ] ]
+    g [ transform [ Translate x y, Rotate -shipAngle 0 0 ] ]
         ([ viewBody ] ++ ter showThrust viewThrust [])
 
 

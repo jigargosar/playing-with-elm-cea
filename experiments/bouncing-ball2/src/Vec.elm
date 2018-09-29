@@ -3,6 +3,8 @@ module Vec exposing
     , add
     , div
     , fromInt
+    , fromPair
+    , fromRec
     , getX
     , getY
     , newMA
@@ -78,3 +80,11 @@ toPair (Vec p) =
 
 divBy b a =
     a / b
+
+
+fromRec { x, y } =
+    Vec (x y)
+
+
+fromPair =
+    Vec

@@ -20,7 +20,7 @@ type Particle
 new { x, y, vm, va, r, am, aa, mass } =
     Particle
         { pos = Vec.newXY x y
-        , vel = Vec.newMA vm va
+        , vel = Vec.fromPair (fromPolar ( vm, degrees va ))
         , r = r
         , acc = Vec.newMA am aa
         , mass = mass
