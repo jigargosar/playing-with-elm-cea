@@ -1,4 +1,4 @@
-module ViewSvg exposing (view, viewBalls, viewShip)
+module ViewSvg exposing (view, viewBalls, viewParticle, viewShip)
 
 import Particle
 import Ramda exposing (ter)
@@ -39,6 +39,24 @@ viewBall ball =
         , cy by
         , r ballRadius
         , SA.fill "#cd37a9"
+        , opacity (Opacity 0.8)
+        ]
+        []
+
+
+viewParticle particle fillColor =
+    let
+        ( bx, by ) =
+            Particle.getXYPair particle
+
+        ballRadius =
+            Particle.getR particle
+    in
+    circle
+        [ cx bx
+        , cy by
+        , r ballRadius
+        , SA.fill fillColor
         , opacity (Opacity 0.8)
         ]
         []

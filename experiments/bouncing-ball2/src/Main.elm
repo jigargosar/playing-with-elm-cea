@@ -41,11 +41,11 @@ type alias Ship =
 
 
 initialShip =
-    Particle.new { pRec | va = 90, r = 50 }
+    Particle.new { dp | va = 90, r = 50 }
 
 
-pRec =
-    { x = 0, y = 0, vm = 0, va = 0, r = 10, am = 0, aa = 0 , mass=1}
+dp =
+    { x = 0, y = 0, vm = 0, va = 0, r = 10, am = 0, aa = 0, mass = 1 }
 
 
 type alias Model =
@@ -55,6 +55,8 @@ type alias Model =
     , ship : Ship
     , shipAngle : Float
     , keyDownSet : Set String
+    , sun : Particle
+    , planet : Particle
     }
 
 
@@ -74,7 +76,16 @@ ballGenerator =
             Random.float 4 4
 
         newBall vm va r =
-            Particle.new {pRec | x=0,y=100, vm=vm , va = va , r=r, am=0.1, aa=-90}
+            Particle.new
+                { dp
+                    | x = 0
+                    , y = 100
+                    , vm = vm
+                    , va = va
+                    , r = r
+                    , am = 0.1
+                    , aa = -90
+                }
     in
     Random.map3 newBall magnitudeGenerator angleGenerator radiusGenerator
 
@@ -90,6 +101,8 @@ initialModel fromSeed =
     , ship = initialShip
     , shipAngle = 0
     , keyDownSet = Set.empty
+    , sun = Particle.new { dp | r = 30 }
+    , planet = Particle.new { dp | x = 200, r = 5 }
     }
 
 
@@ -156,6 +169,7 @@ update msg m =
             { m
                 | balls = m.balls |> List.map Particle.update
                 , ship = m.ship |> Particle.update
+                , planet = m.planet |> Particle.update
             }
                 |> cond identity
                     [ ( isKeyDown "ArrowLeft", updateShipAngle (subBy angleOffset) )
@@ -253,6 +267,7 @@ viewSvg m =
         (ViewSvg.view worldSizeVec
             [ ViewSvg.viewBalls m.balls
             , ViewSvg.viewShip m.ship m.shipAngle
+            , ViewSvg.viewParticle m.sun "yellow"
             ]
         )
 
