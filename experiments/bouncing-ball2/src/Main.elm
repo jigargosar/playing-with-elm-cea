@@ -57,6 +57,7 @@ type alias Model =
     , keyDownSet : Set String
     , sun : Particle
     , planet : Particle
+    , warpBall : Particle
     }
 
 
@@ -110,6 +111,7 @@ initialModel fromSeed =
     , keyDownSet = Set.empty
     , sun = sun
     , planet = Particle.new { dp | y = 200, vm = 2, va = 0, r = 5 }
+    , warpBall = Particle.new { dp | y = 200, vm = 2, va = 0, r = 10 }
     }
 
 
@@ -169,7 +171,6 @@ update msg m =
             ter m.paused (pure m) (update Step m)
 
         Step ->
-            {- { m | planet = Particle.gravitateTo m.sun m.planet } -}
             m
                 |> updateParticles
                 |> pure
@@ -226,6 +227,7 @@ updateParticles m =
                 >> Particle.update
         , shipAngle = computeNewShipAngle m
         , planet = m.planet |> Particle.acc (computePlanetGravity m) >> Particle.update
+        , warpBall = m.warpBall |> Particle.update |> Particle.warp worldSize
     }
 
 
@@ -305,6 +307,7 @@ viewContent m =
                 [ ViewSvg.viewBalls m.balls
                 , ViewSvg.viewParticle m.sun "orange"
                 , ViewSvg.viewParticle m.planet "red"
+                , ViewSvg.viewParticle m.warpBall "pink"
                 , ViewSvg.viewShip m.ship m.shipAngle (isThrusting m)
                 ]
             )

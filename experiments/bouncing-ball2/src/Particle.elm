@@ -7,6 +7,7 @@ module Particle exposing
     , getR
     , new
     , update
+    , warp
     )
 
 import BasicsX exposing (vec2FromPair)
@@ -33,6 +34,14 @@ update (Particle rec) =
             V.add rec.pos rec.vel
     in
     Particle { rec | pos = newPos }
+
+
+warp ws (Particle rec) =
+    let
+        { x, y } =
+            rec.pos |> V.toRecord
+    in
+    Particle { rec | pos = V.vec2 x y }
 
 
 getPosPair (Particle { pos }) =
