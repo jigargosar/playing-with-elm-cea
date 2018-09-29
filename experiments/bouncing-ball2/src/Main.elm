@@ -111,7 +111,7 @@ initialModel fromSeed =
     , keyDownSet = Set.empty
     , sun = sun
     , planet = Particle.new { dp | y = 200, vm = 2, va = 0, r = 5 }
-    , warpBall = Particle.new { dp | vm = 10, va = -180, r = 50 }
+    , warpBall = Particle.new { dp | x = 0, y = 0, vm = 5, va = 25, r = 50 }
     }
 
 

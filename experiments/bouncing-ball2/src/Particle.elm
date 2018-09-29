@@ -54,10 +54,10 @@ warp ws (Particle rec) =
             ww / 2
 
         y1 =
-            wh / 2
+            -wh / 2
 
         y2 =
-            -wh / 2
+            wh / 2
 
         newX =
             if x > x2 + r then
@@ -68,8 +68,18 @@ warp ws (Particle rec) =
 
             else
                 x
+
+        newY =
+            if y > y2 + r then
+                y1 - r
+
+            else if y < y1 - r then
+                y2 + r
+
+            else
+                y
     in
-    Particle { rec | pos = V.vec2 newX y }
+    Particle { rec | pos = V.vec2 newX newY }
 
 
 getPosPair (Particle { pos }) =
