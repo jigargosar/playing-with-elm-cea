@@ -29,7 +29,7 @@ import Vec
 viewBall ball =
     let
         ( bx, by ) =
-            Particle.getXYPair ball
+            Particle.getPosPair ball
 
         ballRadius =
             Particle.getR ball
@@ -47,7 +47,7 @@ viewBall ball =
 viewParticle particle fillColor =
     let
         ( bx, by ) =
-            Particle.getXYPair particle
+            Particle.getPosPair particle
 
         ballRadius =
             Particle.getR particle
@@ -110,7 +110,7 @@ viewBalls balls =
 viewShip ship shipAngle =
     let
         ( x, y ) =
-            Particle.getXYPair ship
+            Particle.getPosPair ship
 
         ra =
             Particle.getR ship

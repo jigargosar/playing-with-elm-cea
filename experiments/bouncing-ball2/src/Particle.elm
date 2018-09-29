@@ -1,28 +1,29 @@
 module Particle exposing
     ( Particle
     , getAccM
+    , getPosPair
     , getR
-    , getXYPair
     , gravitateTo
     , new
     , setAccMA
     , update
     )
 
+import Math.Vector2 as V exposing (Vec2)
 import Tuple2
 import Vec exposing (Vec)
 
 
 type Particle
-    = Particle { pos : Vec, vel : Vec, r : Float, acc : Vec, mass : Float }
+    = Particle { pos : Vec2, vel : Vec2, r : Float, acc : Vec2, mass : Float }
 
 
 new { x, y, vm, va, r, am, aa, mass } =
     Particle
-        { pos = Vec.newXY x y
-        , vel = Vec.fromPair (fromPolar ( vm, degrees va ))
+        { pos = V.vec2 x y
+        , vel = vec2FromPair (fromPolar ( vm, degrees va ))
         , r = r
-        , acc = Vec.newMA am aa
+        , acc = vec2FromPair (fromPolar ( am, degrees aa ))
         , mass = mass
         }
 
@@ -30,16 +31,16 @@ new { x, y, vm, va, r, am, aa, mass } =
 update (Particle rec) =
     let
         newVel =
-            Vec.add rec.vel rec.acc
+            V.add rec.vel rec.acc
 
         newPos =
-            Vec.add rec.pos newVel
+            V.add rec.pos newVel
     in
     Particle { rec | pos = newPos, vel = newVel }
 
 
-getXYPair (Particle { pos }) =
-    Vec.toPair pos
+getPosPair (Particle { pos }) =
+    V.toRecord pos |> (\{ x, y } -> ( x, y ))
 
 
 getR (Particle { r }) =
@@ -47,11 +48,11 @@ getR (Particle { r }) =
 
 
 setAccMA mag ang (Particle rec) =
-    Particle { rec | acc = Vec.newMA mag ang }
+    Particle { rec | acc = vec2FromPair (fromPolar ( mag, degrees ang )) }
 
 
 getAccM (Particle { acc }) =
-    Vec.toMA acc |> Tuple.first
+    V.length acc
 
 
 getMass (Particle { mass }) =
@@ -63,14 +64,21 @@ gravitateTo p2 p1 =
         ( pos1, pos2 ) =
             ( p1, p2 ) |> Tuple2.mapBoth (toRec >> .pos)
 
-        ( dist, ang ) =
-            Vec.sub pos1 pos2 |> Vec.toMA
+        ( _, ang ) =
+            V.sub pos1 pos2 |> V.toRecord |> (\{ x, y } -> toPolar ( x, y ))
+
+        diffV =
+            V.sub pos1 pos2
 
         m =
-            getMass p2 * (dist ^ 2)
+            getMass p2 * V.distanceSquared pos1 pos2
     in
     setAccMA m ang p1
 
 
 toRec (Particle rec) =
     rec
+
+
+vec2FromPair ( x, y ) =
+    V.vec2 x y
