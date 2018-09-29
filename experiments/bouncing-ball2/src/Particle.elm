@@ -38,10 +38,38 @@ update (Particle rec) =
 
 warp ws (Particle rec) =
     let
+        r =
+            rec.r
+
         { x, y } =
             rec.pos |> V.toRecord
+
+        ( ww, wh ) =
+            BasicsX.vec2ToPair ws
+
+        x1 =
+            -ww / 2
+
+        x2 =
+            ww / 2
+
+        y1 =
+            wh / 2
+
+        y2 =
+            -wh / 2
+
+        newX =
+            if x > x2 + r then
+                x1 - r
+
+            else if x < x1 - r then
+                x2 + r
+
+            else
+                x
     in
-    Particle { rec | pos = V.vec2 x y }
+    Particle { rec | pos = V.vec2 newX y }
 
 
 getPosPair (Particle { pos }) =
