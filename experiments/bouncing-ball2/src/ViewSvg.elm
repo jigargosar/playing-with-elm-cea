@@ -57,7 +57,7 @@ viewParticle particle fillColor =
         , cy by
         , r ballRadius
         , SA.fill fillColor
-        , opacity (Opacity 0.8)
+        , opacity (Opacity 1)
         ]
         []
 

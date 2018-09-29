@@ -94,6 +94,9 @@ initialModel fromSeed =
     let
         ( balls, seed ) =
             Random.step (Random.list 500 ballGenerator) fromSeed
+
+        sun =
+            Particle.new { dp | r = 30, mass = 20000 }
     in
     { paused = False
     , balls = balls
@@ -101,7 +104,7 @@ initialModel fromSeed =
     , ship = initialShip
     , shipAngle = 0
     , keyDownSet = Set.empty
-    , sun = Particle.new { dp | r = 30 }
+    , sun = sun
     , planet = Particle.new { dp | x = 200, r = 5 }
     }
 
@@ -166,11 +169,8 @@ update msg m =
                 angleOffset =
                     5
             in
-            { m
-                | balls = m.balls |> List.map Particle.update
-                , ship = m.ship |> Particle.update
-                , planet = m.planet |> Particle.update
-            }
+            { m | planet = Particle.gravitateTo m.sun m.planet }
+                |> updateParticles
                 |> cond identity
                     [ ( isKeyDown "ArrowLeft", updateShipAngle (subBy angleOffset) )
                     , ( isKeyDown "ArrowRight", updateShipAngle ((+) angleOffset) )
@@ -199,6 +199,14 @@ update msg m =
 
         KeyUp key ->
             pure { m | keyDownSet = Set.remove key m.keyDownSet }
+
+
+updateParticles m =
+    { m
+        | balls = m.balls |> List.map Particle.update
+        , ship = m.ship |> Particle.update
+        , planet = m.planet |> Particle.update
+    }
 
 
 cond defaultFn conditions data =
@@ -265,10 +273,12 @@ viewSvg m =
         , HE.onBlur Play
         ]
         (ViewSvg.view worldSizeVec
-            [ ViewSvg.viewBalls m.balls
-            , ViewSvg.viewShip m.ship m.shipAngle
-            , ViewSvg.viewParticle m.sun "yellow"
-            , ViewSvg.viewParticle m.planet "pink"
+            [ {- ViewSvg.viewBalls m.balls
+                 , ViewSvg.viewShip m.ship m.shipAngle
+                 ,
+              -}
+              ViewSvg.viewParticle m.sun "orange"
+            , ViewSvg.viewParticle m.planet "red"
             ]
         )
 
