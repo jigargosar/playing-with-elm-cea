@@ -9,6 +9,7 @@ module Particle exposing
     , update
     )
 
+import Tuple2
 import Vec exposing (Vec)
 
 
@@ -50,7 +51,7 @@ setAccMA mag ang (Particle rec) =
 
 
 getAccM (Particle { acc }) =
-    Vec.getM acc
+    Vec.toMA acc |> Tuple.first
 
 
 getMass (Particle { mass }) =
@@ -59,20 +60,17 @@ getMass (Particle { mass }) =
 
 gravitateTo p2 p1 =
     let
-        angleTo (Particle p2R) (Particle p1R) =
-            let
-                ( dx, dy ) =
-                    Vec.sub p1R.pos p2R.pos |> Vec.toPair
-            in
-            atan2 dy dx
+        ( pos1, pos2 ) =
+            ( p1, p2 ) |> Tuple2.mapBoth (toRec >> .pos)
 
-        distanceTo (Particle p2R) (Particle p1R) =
-            Vec.sub p1R.pos p2R.pos |> Vec.getM
-
-        dist =
-            distanceTo p2 p1
+        ( dist, ang ) =
+            Vec.sub pos1 pos2 |> Vec.toMA
 
         m =
             getMass p2 * (dist ^ 2)
     in
-    setAccMA m (angleTo p2 p1) p1
+    setAccMA m ang p1
+
+
+toRec (Particle rec) =
+    rec

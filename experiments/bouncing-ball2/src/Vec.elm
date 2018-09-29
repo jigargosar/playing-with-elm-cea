@@ -3,14 +3,12 @@ module Vec exposing
     , add
     , div
     , fromInt
-    , getA
-    , getM
     , getX
     , getY
     , newMA
     , newXY
-    , setM
     , sub
+    , toMA
     , toPair
     , toRec
     , zero
@@ -37,16 +35,8 @@ newMA m deg =
     Vec ( m * cos angle, m * sin angle )
 
 
-getA (Vec ( x, y )) =
-    atan (y / x)
-
-
-getM (Vec ( x, y )) =
-    sqrt (x ^ 2 + y ^ 2)
-
-
-setM m v =
-    newMA m (getA v)
+toMA (Vec ( x, y )) =
+    ( sqrt (x ^ 2 + y ^ 2), atan (y / x) )
 
 
 zero =
