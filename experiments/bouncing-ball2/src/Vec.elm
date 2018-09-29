@@ -9,6 +9,8 @@ module Vec exposing
     , getY
     , newMA
     , newXY
+    , setM
+    , sub
     , toPair
     , toRec
     , zero
@@ -43,6 +45,10 @@ getM (Vec ( x, y )) =
     sqrt (x ^ 2 + y ^ 2)
 
 
+setM m v =
+    newMA m (getA v)
+
+
 zero =
     newXY 0 0
 
@@ -54,6 +60,10 @@ fromInt x y =
 
 add (Vec ( x, y )) (Vec ( x_, y_ )) =
     newXY (x + x_) (y + y_)
+
+
+sub (Vec ( x, y )) (Vec ( x_, y_ )) =
+    newXY (x - x_) (y - y_)
 
 
 div s (Vec p) =

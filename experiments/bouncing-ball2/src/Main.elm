@@ -74,7 +74,7 @@ ballGenerator =
             Random.float 4 4
 
         newBall vm va r =
-            Particle.new {pRec | x=0,y=100, vm=vm , va = va , r=r, am=0.1,aa=-90}
+            Particle.new {pRec | x=0,y=100, vm=vm , va = va , r=r, am=0.1, aa=-90}
     in
     Random.map3 newBall magnitudeGenerator angleGenerator radiusGenerator
 
