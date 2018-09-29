@@ -111,7 +111,7 @@ initialModel fromSeed =
     , keyDownSet = Set.empty
     , sun = sun
     , planet = Particle.new { dp | y = 200, vm = 2, va = 0, r = 5 }
-    , warpBall = Particle.new { dp | y = 200, vm = 2, va = 0, r = 10 }
+    , warpBall = Particle.new { dp | x = -200, y = -200, vm = 2, va = 35, r = 50 }
     }
 
 
@@ -304,10 +304,10 @@ viewContent m =
             , HE.onBlur Play
             ]
             (ViewSvg.view worldSize
-                [ ViewSvg.viewBalls m.balls
+                [ ViewSvg.viewParticle m.warpBall "pink"
+                , ViewSvg.viewBalls m.balls
                 , ViewSvg.viewParticle m.sun "orange"
                 , ViewSvg.viewParticle m.planet "red"
-                , ViewSvg.viewParticle m.warpBall "pink"
                 , ViewSvg.viewShip m.ship m.shipAngle (isThrusting m)
                 ]
             )
