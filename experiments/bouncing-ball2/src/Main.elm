@@ -187,10 +187,6 @@ update msg m =
             update (SetPause False) m
 
         KeyDown key ->
-            let
-                _ =
-                    Debug.log "kD" key
-            in
             pure { m | keyDownSet = Set.insert key m.keyDownSet }
 
         KeyUp key ->
