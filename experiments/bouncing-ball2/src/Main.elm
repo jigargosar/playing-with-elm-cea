@@ -268,6 +268,7 @@ viewSvg m =
             [ ViewSvg.viewBalls m.balls
             , ViewSvg.viewShip m.ship m.shipAngle
             , ViewSvg.viewParticle m.sun "yellow"
+            , ViewSvg.viewParticle m.planet "pink"
             ]
         )
 
