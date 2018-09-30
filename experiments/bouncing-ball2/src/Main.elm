@@ -49,9 +49,22 @@ part =
     { x = 0, y = 0, vm = 0, va = 0, r = 10, mass = 1 }
 
 
+type alias SimulationHistory =
+    List SimulationState
+
+
+type SimulationState
+    = Running
+    | Paused
+    | History Int
+
+
+type alias Simulation =
+    { history : SimulationHistory, state : SimulationState }
+
+
 type alias Model =
-    { paused : Bool
-    , balls : List Ball
+    { balls : List Ball
     , seed : Random.Seed
     , ship : Ship
     , shipAngle : Float
@@ -62,6 +75,7 @@ type alias Model =
     , warpBall : Particle
     , stats : { ballCount : Int, ship : Ship }
     , connected : Bool
+    , simulation : Simulation
     }
 
 
@@ -111,8 +125,7 @@ initialModel fromSeed =
         initialShip =
             P.new { part | x = 200, vm = 2, va = 90, r = 50 }
     in
-    { paused = False
-    , balls = balls
+    { balls = balls
     , seed = seed
     , ship = initialShip
     , shipAngle = 0
@@ -123,6 +136,7 @@ initialModel fromSeed =
     , warpBall = P.new { part | x = 0, y = 0, vm = 5, va = 25, r = 50 }
     , stats = { ballCount = 0, ship = initialShip }
     , connected = True
+    , simulation = { state = Running, history = [] }
     }
         |> updateStats
 
@@ -147,6 +161,14 @@ worldSize =
 
 isKeyDown key m =
     Set.member key m.keyDownSet
+
+
+isPaused m =
+    m.simulation.state == Paused
+
+
+isRunning m =
+    m.simulation.state == Running
 
 
 
@@ -194,13 +216,7 @@ update msg m =
             update Stats m
 
         Stats ->
-            (if m.paused then
-                m
-
-             else
-                updateStats m
-            )
-                |> pure
+            ter (isRunning m) (updateStats m) m |> pure
 
         Reset ->
             update Pause (initialModel m.seed)
@@ -209,7 +225,7 @@ update msg m =
             update Play (initialModel m.seed)
 
         AFrame delta ->
-            ter m.paused (pure m) (update Step m)
+            ter (isRunning m) (update Step m) (pure m)
 
         Step ->
             m
@@ -217,12 +233,15 @@ update msg m =
                 |> pure
 
         SetPause newPaused ->
-            { m | paused = newPaused }
-                |> updateStats
-                |> pure
+            {- { m | paused = newPaused }
+               |> updateStats
+               |>
+            -}
+            pure m
 
         TogglePause ->
-            update (SetPause (not m.paused)) m
+            {- update (SetPause (not m.paused)) m -}
+            pure m
 
         Pause ->
             update (SetPause True) m
@@ -369,14 +388,15 @@ viewAlert m =
         ]
 
 
+viewSvgAnimation : Model -> Html Msg
 viewSvgAnimation m =
     let
         viewControls =
             H.div [ HA.class "hs2 no-sel" ]
                 [ hBtn [] Reset "Reset"
                 , hBtn [] Restart "Restart"
-                , hBtn [] TogglePause (ter m.paused "Play" "Pause")
-                , hBtn [ HA.disabled (not m.paused) ] Step "Step"
+
+                {- , hBtn [] TogglePause (ter m.paused "Play" "Pause") -} {- , hBtn [ HA.disabled (not m.paused) ] Step "Step" -}
                 ]
 
         viewContent =
