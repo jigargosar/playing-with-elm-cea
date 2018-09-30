@@ -33,7 +33,7 @@ ifElse pred true false value =
         false value
 
 
-mapCoordinates2D ( width, height ) fn =
+mapCoordinates2D width height fn =
     let
         xCords =
             List.range 0 (width - 1)

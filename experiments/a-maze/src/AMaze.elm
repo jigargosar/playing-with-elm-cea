@@ -1,5 +1,6 @@
 module AMaze exposing (view, viewAxis)
 
+import Array2D
 import Frame2d
 import Point2d
 import Ramda exposing (mapCoordinates2D, ter)
@@ -110,14 +111,14 @@ viewGrid1 =
 
 viewGrid =
     let
+        _ =
+            Array2D.repeat
+
         mazeWidth =
             20
 
         mazeHeight =
             25
-
-        iterateMazeCoordinates =
-            mapCoordinates2D ( mazeWidth, mazeHeight )
 
         drawMazeCellAt cellX cellY =
             let
@@ -135,12 +136,6 @@ viewGrid =
 
                 mazeCellSizeInPx =
                     mazeInnerCellSizeInPx * mazeCellSize
-
-                iterateInnerGrid =
-                    mapCoordinates2D
-                        ( mazeCellSize
-                        , mazeCellSize
-                        )
 
                 drawInnerGridCell x y =
                     let
@@ -169,7 +164,7 @@ viewGrid =
                         (cellY * mazeCellSizeInPx)
                     ]
                 ]
-                (iterateInnerGrid drawInnerGridCell)
+                (mapCoordinates2D mazeCellSize mazeCellSize drawInnerGridCell)
     in
-    iterateMazeCoordinates drawMazeCellAt
+    mapCoordinates2D mazeWidth mazeHeight drawMazeCellAt
         |> g []

@@ -13,7 +13,8 @@
             "elm/svg": "1.0.1",
             "elm/time": "1.0.0",
             "elm-community/typed-svg": "4.0.0",
-            "ianmackenzie/elm-geometry": "1.2.1"
+            "ianmackenzie/elm-geometry": "1.2.1",
+            "tortus/elm-array-2d": "2.1.2"
         },
         "indirect": {
             "avh4/elm-color": "1.0.0",
