@@ -1,4 +1,4 @@
-module Ramda exposing (add, flip, subBy, ter)
+module Ramda exposing (add, appendTo, flip, subBy, ter)
 
 
 ter bool v1 v2 =
@@ -19,3 +19,7 @@ subBy =
 
 add =
     (+)
+
+
+appendTo =
+    flip (::)

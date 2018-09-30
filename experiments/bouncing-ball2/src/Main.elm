@@ -8,11 +8,12 @@ import Html as H exposing (Html)
 import Html.Attributes as HA
 import Html.Events as HE
 import Html.Lazy
+import Http
 import Json.Decode as D
 import List.Extra
 import Math.Vector2 as V exposing (Vec2)
 import Particle as P exposing (Particle)
-import Ramda exposing (subBy, ter)
+import Ramda exposing (appendTo, flip, subBy, ter)
 import Random
 import Round
 import Set exposing (Set)
@@ -166,6 +167,7 @@ type Msg
     | KeyUp String
     | Stats
     | EverySecond
+    | Connection (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -174,8 +176,26 @@ update msg m =
         NoOp ->
             pure m
 
+        Connection (Result.Err err) ->
+            let
+                _ =
+                    Debug.log "err" err
+            in
+            pure { m | connected = False }
+
+        Connection (Result.Ok _) ->
+            pure { m | connected = True }
+
         EverySecond ->
+            let
+                req =
+                    Http.getString "/"
+
+                hc =
+                    Http.send Connection req
+            in
             update Stats m
+                |> addCmd hc
 
         Stats ->
             (if m.paused then
@@ -219,6 +239,10 @@ update msg m =
 
         KeyUp key ->
             pure { m | keyDownSet = Set.remove key m.keyDownSet }
+
+
+addCmd cmd =
+    Tuple.mapSecond (appendTo [ cmd ] >> Cmd.batch)
 
 
 updateStats m =
