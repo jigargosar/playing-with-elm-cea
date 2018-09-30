@@ -147,17 +147,33 @@ viewGrid =
 
         drawMazeCellAt x y =
             g [ transform [ Translate (x * cellSizeInPx) (y * cellSizeInPx) ] ]
-                [ drawPassage ]
+                drawMazeCell
 
-        drawPassage =
-            rect
-                [ width cellSizeInPx
-                , height cellSizeInPx
-                , SA.fill "#cd37a9"
-                , strokeWidth 0
-                , SA.stroke "#000"
-                ]
-                []
+        drawMazeCell =
+            iterateMatrixCoordinates 3
+                3
+                (\x_ y_ ->
+                    let
+                        _ =
+                            Debug.log "xy" ( x_, y_ )
+
+                        fillS =
+                            if x_ == 2 || y_ == 2 then
+                                "#000"
+
+                            else
+                                "#cd37a9"
+                    in
+                    rect
+                        [ transform [ Translate (x_ * 5) (y_ * 5) ]
+                        , width 5
+                        , height 5
+                        , SA.fill fillS
+                        , strokeWidth 0
+                        , SA.stroke "#000"
+                        ]
+                        []
+                )
     in
     iterateMazeCoordinates drawMazeCellAt
         |> g []
