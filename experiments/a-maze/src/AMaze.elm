@@ -142,45 +142,45 @@ viewGrid =
         wallSize =
             2
 
-        mazeInnerCellSizeInPx =
-            2
-
-        mazeInnerGridSize =
-            passageSize + wallSize
-
-        drawMazeCellAt x y =
+        drawMazeCellAt cellX cellY =
             let
+                mazeInnerCellSizeInPx =
+                    2
+
+                mazeCellSize =
+                    passageSize + wallSize
+
                 mazeCellSizeInPx =
-                    mazeInnerCellSizeInPx * mazeInnerGridSize
+                    mazeInnerCellSizeInPx * mazeCellSize
+
+                drawMazeInnerCell x y =
+                    let
+                        fillS =
+                            if x >= passageSize || y >= passageSize then
+                                "#000"
+
+                            else
+                                "#cd37a9"
+                    in
+                    rect
+                        [ transform
+                            [ Translate (x * mazeInnerCellSizeInPx)
+                                (y * mazeInnerCellSizeInPx)
+                            ]
+                        , width mazeInnerCellSizeInPx
+                        , height mazeInnerCellSizeInPx
+                        , SA.fill fillS
+                        , strokeWidth 0
+                        , SA.stroke "#000"
+                        ]
+                        []
             in
-            g [ transform [ Translate (x * mazeCellSizeInPx) (y * mazeCellSizeInPx) ] ]
+            g [ transform [ Translate (cellX * mazeCellSizeInPx) (cellY * mazeCellSizeInPx) ] ]
                 (iterateMatrixCoordinates
-                    mazeInnerGridSize
-                    mazeInnerGridSize
+                    mazeCellSize
+                    mazeCellSize
                     drawMazeInnerCell
                 )
-
-        drawMazeInnerCell x y =
-            let
-                fillS =
-                    if x >= passageSize || y >= passageSize then
-                        "#000"
-
-                    else
-                        "#cd37a9"
-            in
-            rect
-                [ transform
-                    [ Translate (x * mazeInnerCellSizeInPx)
-                        (y * mazeInnerCellSizeInPx)
-                    ]
-                , width mazeInnerCellSizeInPx
-                , height mazeInnerCellSizeInPx
-                , SA.fill fillS
-                , strokeWidth 0
-                , SA.stroke "#000"
-                ]
-                []
     in
     iterateMazeCoordinates drawMazeCellAt
         |> g []
