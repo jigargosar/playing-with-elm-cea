@@ -485,7 +485,7 @@ viewSvgAnimation m =
         viewContent =
             H.div [ HA.class "no-sel", HE.onDoubleClick Restart ]
                 [ Svg.svg
-                    [ SA.class "flex center"
+                    [ HA.class "flex center"
                     , HA.width worldWidth
                     , HA.height worldHeight
                     , HE.onBlur Resume
