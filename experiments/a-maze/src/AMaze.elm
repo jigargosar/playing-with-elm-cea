@@ -61,10 +61,10 @@ viewGrid =
             1
 
         hNodes =
-            5
+            9
 
         vNodes =
-            5
+            8
 
         hGridCells =
             (hNodes * nodeCellSize) + (hNodes * wallCellSize - 1)
