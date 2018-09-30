@@ -49,17 +49,21 @@ part =
     { x = 0, y = 0, vm = 0, va = 0, r = 10, mass = 1 }
 
 
+type alias Snapshot =
+    { planet : Particle }
+
+
 type alias SimulationHistory =
-    List SimulationState
+    List Snapshot
 
 
-type SimulationState
+type SimulationStatus
     = Running
     | Paused Int
 
 
 type alias Simulation =
-    { history : SimulationHistory, state : SimulationState }
+    { history : SimulationHistory, status : SimulationStatus }
 
 
 type alias Model =
@@ -121,21 +125,24 @@ initialModel fromSeed =
         sun =
             P.new { part | r = 20, mass = 1000 }
 
-        initialShip =
+        ship =
             P.new { part | x = 200, vm = 2, va = 90, r = 50 }
+
+        planet =
+            P.new { part | y = 200, vm = 2, va = 0, r = 5 }
     in
     { balls = balls
     , seed = seed
-    , ship = initialShip
+    , ship = ship
     , shipAngle = 0
     , shipThrust = 0
     , keyDownSet = Set.empty
     , sun = sun
-    , planet = P.new { part | y = 200, vm = 2, va = 0, r = 5 }
+    , planet = planet
     , warpBall = P.new { part | x = 0, y = 0, vm = 5, va = 25, r = 50 }
-    , stats = { ballCount = 0, ship = initialShip }
+    , stats = { ballCount = 0, ship = ship }
     , connected = True
-    , simulation = { state = Running, history = [] }
+    , simulation = { status = Running, history = [ Snapshot planet ] }
     }
         |> updateStats
 
@@ -167,7 +174,7 @@ isPaused =
 
 
 isRunning m =
-    m.simulation.state == Running
+    m.simulation.status == Running
 
 
 
