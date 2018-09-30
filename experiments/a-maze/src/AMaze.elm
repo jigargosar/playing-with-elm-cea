@@ -2,6 +2,7 @@ module AMaze exposing (view, viewAxis)
 
 import Frame2d
 import Point2d
+import Ramda exposing (ter)
 import Rectangle2d
 import Svg.Attributes as SA
 import TypedSvg exposing (g, line, rect, svg)
@@ -79,15 +80,26 @@ viewGrid =
             List.range 0 (vGridCells - 1)
 
         withXY x y =
-            g [ transform [ Translate (x * cellSize) (y * cellSize) ] ] [ drawCell ]
+            g [ transform [ Translate (x * cellSize) (y * cellSize) ] ]
+                [ ter (modBy 2 (round x) == 0 && modBy 2 (round y) == 0) drawCell drawWall ]
 
         drawCell =
             rect
                 [ width cellSize
                 , height cellSize
                 , SA.fill "#cd37a9"
-                , strokeWidth 2
+                , strokeWidth 0
                 , SA.stroke "#000"
+                ]
+                []
+
+        drawWall =
+            rect
+                [ width cellSize
+                , height cellSize
+                , SA.fill "#000"
+                , strokeWidth 0
+                , SA.stroke "#fff"
                 ]
                 []
     in
