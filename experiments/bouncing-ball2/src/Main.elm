@@ -55,8 +55,7 @@ type alias SimulationHistory =
 
 type SimulationState
     = Running
-    | Paused
-    | History Int
+    | Paused Int
 
 
 type alias Simulation =
@@ -163,8 +162,8 @@ isKeyDown key m =
     Set.member key m.keyDownSet
 
 
-isPaused m =
-    m.simulation.state == Paused
+isPaused =
+    isRunning >> not
 
 
 isRunning m =
