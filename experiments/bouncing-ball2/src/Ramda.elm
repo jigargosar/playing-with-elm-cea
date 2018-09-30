@@ -1,4 +1,4 @@
-module Ramda exposing (add, appendTo, flip, subBy, ter)
+module Ramda exposing (add, appendTo, flip, ifElse, subBy, ter)
 
 
 ter bool v1 v2 =
@@ -23,3 +23,11 @@ add =
 
 appendTo =
     flip (::)
+
+
+ifElse pred true false value =
+    if pred value then
+        true value
+
+    else
+        false value

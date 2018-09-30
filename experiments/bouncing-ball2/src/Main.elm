@@ -13,7 +13,7 @@ import Json.Decode as D
 import List.Extra
 import Math.Vector2 as V exposing (Vec2)
 import Particle as P exposing (Particle)
-import Ramda exposing (appendTo, flip, subBy, ter)
+import Ramda exposing (appendTo, flip, ifElse, subBy, ter)
 import Random
 import Round
 import Set exposing (Set)
@@ -237,7 +237,7 @@ update msg m =
             update Resume (initialModel m.seed)
 
         AFrame delta ->
-            ter (isRunning m) (update StepForward m) (pure m)
+            ifElse isRunning (update StepForward) pure m
 
         StepForward ->
             update (Step 1) m
