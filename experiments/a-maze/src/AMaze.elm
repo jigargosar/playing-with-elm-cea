@@ -55,7 +55,7 @@ viewGrid =
             15
 
         nodeCellSize =
-            2
+            1
 
         wallCellSize =
             1
