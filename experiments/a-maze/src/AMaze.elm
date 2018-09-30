@@ -66,18 +66,39 @@ viewGrid =
 
                 ( xx, yy ) =
                     cords
+
+                wallSize =
+                    10
+
+                hideLeftWall =
+                    line
+                        [ wallSize |> y1
+                        , cellSize - wallSize |> y2
+                        , SA.stroke "#cd37a9"
+                        , strokeLinecap StrokeLinecapSquare
+                        , strokeWidth wallSize
+                        , SA.opacity "1"
+                        ]
+                        []
             in
-            rect
-                [ width cellSize
-                , height cellSize
-                , x (xx * cellSize)
-                , y (yy * cellSize)
-                , SA.fill "#cd37a9"
-                , SA.stroke "#000"
-                , strokeWidth 10
-                , SA.opacity "1"
+            g
+                [ transform
+                    [ Translate (xx * cellSize) (yy * cellSize)
+                    ]
                 ]
-                []
+                [ rect
+                    [ width cellSize
+                    , height cellSize
+                    , SA.fill "#cd37a9"
+                    , SA.stroke "#000"
+                    , strokeWidth wallSize
+                    , SA.opacity "1"
+                    ]
+                    []
+                , g [] [ hideLeftWall ]
+
+                --                , g [ transform [ Translate (cellSize / -2) 0 ] ] [ hideLeftWall ]
+                ]
     in
     g []
         [ viewCell ( 0, 0 )
