@@ -148,14 +148,19 @@ viewGrid =
         mazeInnerGridSize =
             passageSize + wallSize
 
-        mazeCellSizeInPx =
-            mazeInnerCellSizeInPx * mazeInnerGridSize
-
         drawMazeCellAt x y =
+            let
+                mazeCellSizeInPx =
+                    mazeInnerCellSizeInPx * mazeInnerGridSize
+            in
             g [ transform [ Translate (x * mazeCellSizeInPx) (y * mazeCellSizeInPx) ] ]
                 drawMazeCell
 
         drawMazeCell =
+            let
+                mazeCellSizeInPx =
+                    mazeInnerCellSizeInPx * mazeInnerGridSize
+            in
             iterateMatrixCoordinates mazeInnerGridSize
                 mazeInnerGridSize
                 (\x_ y_ ->
