@@ -254,9 +254,16 @@ update msg m =
                     normalStep
 
                 ( Paused n, _ ) ->
+                    let
+                        { history } =
+                            m.simulation
+
+                        newIndex =
+                            n + i |> clamp 0 (List.length history - 1)
+                    in
                     { m
                         | simulation =
-                            { status = Paused (n + i), history = m.simulation.history }
+                            { status = Paused newIndex, history = history }
                     }
                         |> pure
 
