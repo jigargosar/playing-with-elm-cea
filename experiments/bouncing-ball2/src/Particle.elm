@@ -1,5 +1,5 @@
 module Particle exposing
-    ( Particle
+    ( Par
     , acc
     , getMass
     , getPos
@@ -15,7 +15,7 @@ import Math.Vector2 as V exposing (Vec2)
 import Tuple2
 
 
-type Particle
+type Par
     = Particle { pos : Vec2, vel : Vec2, r : Float, mass : Float }
 
 

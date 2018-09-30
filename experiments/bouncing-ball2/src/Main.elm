@@ -11,7 +11,7 @@ import Html.Lazy
 import Json.Decode as D
 import List.Extra
 import Math.Vector2 as V exposing (Vec2)
-import Particle as P exposing (Particle)
+import Particle as P exposing (Par)
 import Ramda exposing (subBy, ter)
 import Random
 import Round
@@ -36,11 +36,11 @@ type alias Flags =
 
 
 type alias Ball =
-    Particle
+    Par
 
 
 type alias Ship =
-    Particle
+    Par
 
 
 part =
@@ -55,25 +55,25 @@ type alias Model =
     , shipAngle : Float
     , shipThrust : Float
     , keyDownSet : Set String
-    , sun : Particle
-    , planet : Particle
-    , warpBall : Particle
+    , sun : Par
+    , planet : Par
+    , warpBall : Par
     }
 
 
 ballGenerator =
     let
-        angleGenerator =
+        angleG =
             let
                 spread =
                     360
             in
             Random.float (-90 - spread) (-90 + spread)
 
-        magnitudeGenerator =
+        magnitudeG =
             Random.float 2 7
 
-        radiusGenerator =
+        radiusG =
             Random.float 4 4
 
         newBall vm va r =
@@ -86,7 +86,7 @@ ballGenerator =
                     , r = r
                 }
     in
-    Random.map3 newBall magnitudeGenerator angleGenerator radiusGenerator
+    Random.map3 newBall magnitudeG angleG radiusG
 
 
 initialModel fromSeed =
