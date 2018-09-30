@@ -158,7 +158,7 @@ viewGrid =
                             Debug.log "xy" ( x_, y_ )
 
                         fillS =
-                            if x_ == 2 || y_ == 2 then
+                            if x_ >= passageSize || y_ >= passageSize then
                                 "#000"
 
                             else
