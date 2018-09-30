@@ -138,13 +138,15 @@ viewGrid =
                 , SA.stroke "#000"
                 ]
                 []
+
+        iterateMaze fn =
+            xCords
+                |> List.map
+                    (\x ->
+                        yCords
+                            |> List.map (\y -> fn (toFloat x) (toFloat y))
+                    )
     in
-    (xCords
-        |> List.map
-            (\x ->
-                yCords
-                    |> List.map (\y -> drawMazeCellAt (toFloat x) (toFloat y))
-            )
-    )
+    iterateMaze drawMazeCellAt
         |> List.concat
         |> g []
