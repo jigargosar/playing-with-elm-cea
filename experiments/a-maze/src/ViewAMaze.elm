@@ -5,6 +5,7 @@ import Frame2d
 import Point2d
 import Ramda exposing (mapCoordinates2D, ter)
 import Rectangle2d
+import Round
 import Svg.Attributes as SA
 import TypedSvg exposing (g, line, rect, svg)
 import TypedSvg.Attributes exposing (fill, strokeLinecap, transform)
@@ -75,11 +76,11 @@ viewMaze maze =
                         drawWithFill fillS =
                             rect
                                 [ transform
-                                    [ Translate (x * mazeInnerCellSizeInPx)
-                                        (y * mazeInnerCellSizeInPx)
+                                    [ Translate (x * mazeInnerCellSizeInPx |> round |> toFloat)
+                                        (y * mazeInnerCellSizeInPx |> round |> toFloat)
                                     ]
-                                , width mazeInnerCellSizeInPx
-                                , height mazeInnerCellSizeInPx
+                                , SA.width (Round.round 0 mazeInnerCellSizeInPx)
+                                , SA.height (Round.round 0 mazeInnerCellSizeInPx)
                                 , SA.fill fillS
                                 , strokeWidth 0
                                 , SA.stroke "#000"
@@ -98,6 +99,9 @@ viewMaze maze =
 
                         Just { down, right } ->
                             let
+                                _ =
+                                    Debug.log "dr" { down = down, right = right, x = x, y = y }
+
                                 isSouthWallCord =
                                     y >= pathSize
 
@@ -108,15 +112,16 @@ viewMaze maze =
                                     (isSouthWallCord && down)
                                         || (isRightWallCord && right)
                             in
-                            ter shouldDrawWall
-                                drawWall
-                                drawPath
+                            {- ter shouldDrawWall
+                               drawPath
+                            -}
+                            ter (isSouthWallCord || isRightWallCord) drawWall drawPath
             in
             g
                 [ transform
                     [ Translate
-                        (cellX * mazeCellSizeInPx)
-                        (cellY * mazeCellSizeInPx)
+                        (cellX * mazeCellSizeInPx |> round |> toFloat)
+                        (cellY * mazeCellSizeInPx |> round |> toFloat)
                     ]
                 ]
                 (mapCoordinates2D mazeCellSize mazeCellSize drawInnerGridCell)
