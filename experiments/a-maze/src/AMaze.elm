@@ -175,7 +175,13 @@ viewGrid =
                         ]
                         []
             in
-            g [ transform [ Translate (cellX * mazeCellSizeInPx) (cellY * mazeCellSizeInPx) ] ]
+            g
+                [ transform
+                    [ Translate
+                        (cellX * mazeCellSizeInPx)
+                        (cellY * mazeCellSizeInPx)
+                    ]
+                ]
                 (iterateMatrixCoordinates
                     mazeCellSize
                     mazeCellSize
