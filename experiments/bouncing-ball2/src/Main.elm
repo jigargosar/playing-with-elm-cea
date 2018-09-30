@@ -244,15 +244,17 @@ update msg m =
                 |> pure
 
         SetPause newPaused ->
-            {- { m | paused = newPaused }
-               |> updateStats
-               |>
-            -}
-            pure m
+            (if newPaused then
+                { m | simulation = { status = Paused 0, history = m.simulation.history } }
+
+             else
+                { m | simulation = { status = Running, history = m.simulation.history } }
+            )
+                |> updateStats
+                |> pure
 
         TogglePause ->
-            {- update (SetPause (not m.paused)) m -}
-            pure m
+            update (SetPause (isRunning m)) m
 
         Pause ->
             update (SetPause True) m
