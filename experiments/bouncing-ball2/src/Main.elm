@@ -165,6 +165,7 @@ type Msg
     | KeyDown String
     | KeyUp String
     | Stats
+    | EverySecond
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -172,6 +173,9 @@ update msg m =
     case msg of
         NoOp ->
             pure m
+
+        EverySecond ->
+            update Stats m
 
         Stats ->
             (if m.paused then
@@ -411,7 +415,7 @@ subscriptions model =
         [ Browser.Events.onAnimationFrameDelta AFrame
         , Browser.Events.onKeyDown (D.field "key" D.string |> D.map KeyDown)
         , Browser.Events.onKeyUp (D.field "key" D.string |> D.map KeyUp)
-        , Time.every 1000 (\_ -> Stats)
+        , Time.every 1000 (\_ -> EverySecond)
 
         --        , Browser.Events.onKeyPress (D.field "key" D.string |> D.map KeyUp)
         ]
