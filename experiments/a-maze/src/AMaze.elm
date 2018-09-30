@@ -142,11 +142,14 @@ viewGrid =
         wallSize =
             1
 
-        cellSizeInPx =
-            5 * (passageSize + wallSize)
+        mazeInnerCellSizeInPx =
+            5
+
+        mazeCellSizeInPx =
+            mazeInnerCellSizeInPx * (passageSize + wallSize)
 
         drawMazeCellAt x y =
-            g [ transform [ Translate (x * cellSizeInPx) (y * cellSizeInPx) ] ]
+            g [ transform [ Translate (x * mazeCellSizeInPx) (y * mazeCellSizeInPx) ] ]
                 drawMazeCell
 
         drawMazeCell =
@@ -165,9 +168,12 @@ viewGrid =
                                 "#cd37a9"
                     in
                     rect
-                        [ transform [ Translate (x_ * 5) (y_ * 5) ]
-                        , width 5
-                        , height 5
+                        [ transform
+                            [ Translate (x_ * mazeInnerCellSizeInPx)
+                                (y_ * mazeInnerCellSizeInPx)
+                            ]
+                        , width mazeInnerCellSizeInPx
+                        , height mazeInnerCellSizeInPx
                         , SA.fill fillS
                         , strokeWidth 0
                         , SA.stroke "#000"
