@@ -131,19 +131,19 @@ viewGrid =
             20
 
         mazeHeight =
-            20
+            25
 
         iterateMazeCoordinates fn =
             iterateMatrixCoordinates mazeWidth mazeHeight fn
 
         passageSize =
-            3
+            8
 
         wallSize =
-            1
+            2
 
         mazeInnerCellSizeInPx =
-            5
+            2
 
         mazeInnerGridSize =
             passageSize + wallSize
