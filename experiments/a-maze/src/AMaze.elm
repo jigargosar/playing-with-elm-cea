@@ -109,10 +109,14 @@ viewGrid1 =
         |> g []
 
 
+type alias MazePath =
+    { down : Bool, right : Bool }
+
+
 viewGrid =
     let
-        _ =
-            Array2D.repeat
+        mazeData =
+            Array2D.repeat mazeHeight mazeWidth (MazePath False True)
 
         mazeWidth =
             20
@@ -139,23 +143,36 @@ viewGrid =
 
                 drawInnerGridCell x y =
                     let
-                        fillS =
-                            ter (x >= pathSize || y >= pathSize)
-                                "#000"
-                                "#cd37a9"
+                        drawWithFill fillS =
+                            rect
+                                [ transform
+                                    [ Translate (x * mazeInnerCellSizeInPx)
+                                        (y * mazeInnerCellSizeInPx)
+                                    ]
+                                , width mazeInnerCellSizeInPx
+                                , height mazeInnerCellSizeInPx
+                                , SA.fill fillS
+                                , strokeWidth 0
+                                , SA.stroke "#000"
+                                ]
+                                []
+
+                        drawPath =
+                            drawWithFill "#cd37a9"
+
+                        drawWall =
+                            drawWithFill "#000"
                     in
-                    rect
-                        [ transform
-                            [ Translate (x * mazeInnerCellSizeInPx)
-                                (y * mazeInnerCellSizeInPx)
-                            ]
-                        , width mazeInnerCellSizeInPx
-                        , height mazeInnerCellSizeInPx
-                        , SA.fill fillS
-                        , strokeWidth 0
-                        , SA.stroke "#000"
-                        ]
-                        []
+                    case mazeData |> Array2D.get (round y) (round x) of
+                        Nothing ->
+                            drawWall
+
+                        Just _ ->
+                            drawWithFill
+                                (ter (x >= pathSize || y >= pathSize)
+                                    "#000"
+                                    "#cd37a9"
+                                )
             in
             g
                 [ transform
