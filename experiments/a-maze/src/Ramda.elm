@@ -1,4 +1,4 @@
-module Ramda exposing (add, appendTo, flip, ifElse, iterateCoordinates2D, subBy, ter)
+module Ramda exposing (add, appendTo, flip, ifElse, mapCoordinates2D, subBy, ter)
 
 
 ter bool v1 v2 =
@@ -33,7 +33,7 @@ ifElse pred true false value =
         false value
 
 
-iterateCoordinates2D ( width, height ) fn =
+mapCoordinates2D ( width, height ) fn =
     let
         xCords =
             List.range 0 (width - 1)

@@ -2,7 +2,7 @@ module AMaze exposing (view, viewAxis)
 
 import Frame2d
 import Point2d
-import Ramda exposing (iterateCoordinates2D, ter)
+import Ramda exposing (mapCoordinates2D, ter)
 import Rectangle2d
 import Svg.Attributes as SA
 import TypedSvg exposing (g, line, rect, svg)
@@ -117,7 +117,7 @@ viewGrid =
             25
 
         iterateMazeCoordinates =
-            iterateCoordinates2D ( mazeWidth, mazeHeight )
+            mapCoordinates2D ( mazeWidth, mazeHeight )
 
         drawMazeCellAt cellX cellY =
             let
@@ -137,7 +137,7 @@ viewGrid =
                     mazeInnerCellSizeInPx * mazeCellSize
 
                 iterateInnerGrid =
-                    iterateCoordinates2D
+                    mapCoordinates2D
                         ( mazeCellSize
                         , mazeCellSize
                         )
