@@ -2,7 +2,7 @@ module AMaze exposing (view, viewAxis)
 
 import Frame2d
 import Point2d
-import Ramda exposing (ter)
+import Ramda exposing (iterateMatrixCoordinates, ter)
 import Rectangle2d
 import Svg.Attributes as SA
 import TypedSvg exposing (g, line, rect, svg)
@@ -106,23 +106,6 @@ viewGrid1 =
     (xCords |> List.map (\x -> yCords |> List.map (\y -> withXY (toFloat x) (toFloat y))))
         |> List.concat
         |> g []
-
-
-iterateMatrixCoordinates width height fn =
-    let
-        xCords =
-            List.range 0 (width - 1)
-
-        yCords =
-            List.range 0 (height - 1)
-    in
-    xCords
-        |> List.map
-            (\x ->
-                yCords
-                    |> List.map (\y -> fn (toFloat x) (toFloat y))
-            )
-        |> List.concat
 
 
 viewGrid =

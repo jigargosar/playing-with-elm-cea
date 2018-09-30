@@ -1,4 +1,4 @@
-module Ramda exposing (add, appendTo, flip, ifElse, subBy, ter)
+module Ramda exposing (add, appendTo, flip, ifElse, iterateMatrixCoordinates, subBy, ter)
 
 
 ter bool v1 v2 =
@@ -31,3 +31,20 @@ ifElse pred true false value =
 
     else
         false value
+
+
+iterateMatrixCoordinates width height fn =
+    let
+        xCords =
+            List.range 0 (width - 1)
+
+        yCords =
+            List.range 0 (height - 1)
+    in
+    xCords
+        |> List.map
+            (\x ->
+                yCords
+                    |> List.map (\y -> fn (toFloat x) (toFloat y))
+            )
+        |> List.concat
