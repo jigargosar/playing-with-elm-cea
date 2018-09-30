@@ -18,7 +18,7 @@ viewAxis worldRect =
     g
         [ SA.stroke "#cd37a9"
         , strokeWidth 1
-        , SA.opacity "0.4"
+        , SA.opacity "0.1"
         , strokeLinecap StrokeLinecapRound
         ]
         [ line [ y1 (wh / -2), y2 (wh / 2) ] []
@@ -67,8 +67,16 @@ viewGrid =
                     [ width cellSize
                     , height cellSize
                     , SA.fill "#cd37a9"
-                    , SA.strokeWidth "1"
+                    , SA.strokeWidth "0"
                     , SA.stroke "#fff"
+                    ]
+                    []
+                , rect
+                    [ width cellSize
+                    , height 10
+                    , SA.fill "#000"
+                    , SA.strokeWidth "0"
+                    , SA.stroke "#cd37a9"
                     ]
                     []
                 ]
