@@ -136,19 +136,19 @@ viewGrid =
         iterateMazeCoordinates fn =
             iterateMatrixCoordinates mazeWidth mazeHeight fn
 
-        passageSize =
-            8
-
-        wallSize =
-            2
-
         drawMazeCellAt cellX cellY =
             let
-                mazeInnerCellSizeInPx =
+                passageSize =
+                    8
+
+                wallSize =
                     2
 
                 mazeCellSize =
                     passageSize + wallSize
+
+                mazeInnerCellSizeInPx =
+                    2
 
                 mazeCellSizeInPx =
                     mazeInnerCellSizeInPx * mazeCellSize
