@@ -154,40 +154,36 @@ viewGrid =
                     mazeInnerCellSizeInPx * mazeInnerGridSize
             in
             g [ transform [ Translate (x * mazeCellSizeInPx) (y * mazeCellSizeInPx) ] ]
-                drawMazeCell
-
-        drawMazeCell =
-            let
-                mazeCellSizeInPx =
-                    mazeInnerCellSizeInPx * mazeInnerGridSize
-            in
-            iterateMatrixCoordinates mazeInnerGridSize
-                mazeInnerGridSize
-                (\x_ y_ ->
-                    let
-                        _ =
-                            Debug.log "xy" ( x_, y_ )
-
-                        fillS =
-                            if x_ >= passageSize || y_ >= passageSize then
-                                "#000"
-
-                            else
-                                "#cd37a9"
-                    in
-                    rect
-                        [ transform
-                            [ Translate (x_ * mazeInnerCellSizeInPx)
-                                (y_ * mazeInnerCellSizeInPx)
-                            ]
-                        , width mazeInnerCellSizeInPx
-                        , height mazeInnerCellSizeInPx
-                        , SA.fill fillS
-                        , strokeWidth 0
-                        , SA.stroke "#000"
-                        ]
-                        []
+                (iterateMatrixCoordinates
+                    mazeInnerGridSize
+                    mazeInnerGridSize
+                    drawMazeInnerCell
                 )
+
+        drawMazeInnerCell x_ y_ =
+            let
+                _ =
+                    Debug.log "xy" ( x_, y_ )
+
+                fillS =
+                    if x_ >= passageSize || y_ >= passageSize then
+                        "#000"
+
+                    else
+                        "#cd37a9"
+            in
+            rect
+                [ transform
+                    [ Translate (x_ * mazeInnerCellSizeInPx)
+                        (y_ * mazeInnerCellSizeInPx)
+                    ]
+                , width mazeInnerCellSizeInPx
+                , height mazeInnerCellSizeInPx
+                , SA.fill fillS
+                , strokeWidth 0
+                , SA.stroke "#000"
+                ]
+                []
     in
     iterateMazeCoordinates drawMazeCellAt
         |> g []
