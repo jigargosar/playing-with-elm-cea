@@ -5,9 +5,9 @@ import Point2d
 import Rectangle2d
 import Svg.Attributes as SA
 import TypedSvg exposing (g, line, rect, svg)
-import TypedSvg.Attributes exposing (strokeLinecap, transform)
+import TypedSvg.Attributes exposing (fill, strokeLinecap, transform)
 import TypedSvg.Attributes.InPx exposing (..)
-import TypedSvg.Types exposing (StrokeLinecap(..), Transform(..))
+import TypedSvg.Types exposing (Fill(..), StrokeLinecap(..), Transform(..))
 
 
 viewAxis worldRect =
@@ -51,82 +51,46 @@ view worldRect =
 
 viewGrid =
     let
-        hCellCount =
-            3
-
-        vCellCount =
-            4
-
         cellSize =
-            30
+            15
 
-        wallSize =
+        nodeCellSize =
             2
 
-        topWall =
+        wallCellSize =
+            1
+
+        hNodes =
+            5
+
+        vNodes =
+            5
+
+        hGridCells =
+            (hNodes * nodeCellSize) + (hNodes * wallCellSize - 1)
+
+        vGridCells =
+            (vNodes * nodeCellSize) + (vNodes * wallCellSize - 1)
+
+        xCords =
+            List.range 0 (hGridCells - 1)
+
+        yCords =
+            List.range 0 (vGridCells - 1)
+
+        withXY x y =
+            g [ transform [ Translate (x * cellSize) (y * cellSize) ] ] [ drawCell ]
+
+        drawCell =
             rect
-                [ x 0
-                , y 0
-                , width cellSize
-                , height wallSize
-                , SA.fill "#000"
-                , SA.strokeWidth "0"
-                , SA.stroke "#cd37a9"
+                [ width cellSize
+                , height cellSize
+                , SA.fill "#cd37a9"
+                , strokeWidth 2
+                , SA.stroke "#000"
                 ]
                 []
-
-        bottomWall =
-            g [ transform [ Rotate 180 (cellSize / 2) (cellSize / 2) ] ] [ topWall ]
-
-        rightWall =
-            g [ transform [ Rotate 90 (cellSize / 2) (cellSize / 2) ] ] [ topWall ]
-
-        leftWall =
-            g [ transform [ Rotate -90 (cellSize / 2) (cellSize / 2) ] ] [ topWall ]
-
-        viewCell ( x_, y_ ) walls =
-            g
-                [ transform
-                    [ Translate (x_ * cellSize) (y_ * cellSize)
-                    ]
-                ]
-                ([ rect
-                    [ width cellSize
-                    , height cellSize
-                    , SA.fill "#cd37a9"
-                    , SA.strokeWidth "0"
-                    , SA.stroke "#fff"
-                    ]
-                    []
-                 ]
-                    ++ walls
-                )
     in
-    g []
-        [ rect
-            [ width (cellSize * hCellCount)
-            , height (cellSize * vCellCount)
-            , SA.fill "#cd37a9"
-            , strokeWidth (wallSize * 4)
-            , SA.stroke "#000"
-            ]
-            []
-
-        {- , viewCell ( 0, 0 ) [ bottomWall ]
-           , viewCell ( 0, 1 ) [ topWall ]
-           , viewCell ( 1, 0 ) []
-           , viewCell ( 1, 1 ) [ rightWall ]
-           , viewCell ( 2, 0 ) []
-           , viewCell ( 2, 1 ) [ leftWall ]
-        -}
-        , g
-            []
-            (List.range 0 (vCellCount - 1)
-                |> List.map
-                    (\y ->
-                        List.range 0 (hCellCount - 1)
-                            |> List.map (\x -> viewCell ( toFloat x, toFloat y ) [])
-                    )
-                |> List.concat
-            )
-        ]
+    (xCords |> List.map (\x -> yCords |> List.map (\y -> withXY (toFloat x) (toFloat y))))
+        |> List.concat
+        |> g []
