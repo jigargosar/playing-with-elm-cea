@@ -43,7 +43,7 @@ view worldRect =
         ]
         []
     , g
-        [ transform [ Translate tx ty ]
+        [ {- transform [ Translate tx ty ], -} transform [ Translate 20 20 ]
         ]
         [ viewAxis worldRect, viewGrid ]
     ]
