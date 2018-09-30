@@ -55,28 +55,33 @@ viewGrid =
             10
 
         cellSize =
-            30
+            50
 
         viewCell cords =
             let
                 ss =
-                    Rectangle2d.centeredOn (Frame2d.atCoordinates cords) ( cellSize, cellSize )
+                    Rectangle2d.centeredOn
+                        (Frame2d.atCoordinates cords)
+                        ( cellSize, cellSize )
+
+                ( xx, yy ) =
+                    cords
             in
             rect
                 [ width cellSize
                 , height cellSize
-                , x 10
-                , y 10
-
-                --                , x1 x
-                --                , y1 y
-                --                , x2 (x + cellSize)
-                --                , y2 (y + cellSize)
+                , x (xx * cellSize)
+                , y (yy * cellSize)
                 , SA.fill "#cd37a9"
-                , SA.stroke "#cd37a9"
-                , SA.strokeWidth "2"
+                , SA.stroke "#000"
+                , strokeWidth 10
                 , SA.opacity "1"
                 ]
                 []
     in
-    viewCell ( 0, 0 )
+    g []
+        [ viewCell ( 0, 0 )
+        , viewCell ( 0, 1 )
+        , viewCell ( 1, 0 )
+        , viewCell ( 1, 1 )
+        ]
