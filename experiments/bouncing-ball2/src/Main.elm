@@ -50,7 +50,14 @@ part =
 
 
 type alias Snapshot =
-    { planet : Particle }
+    { balls : List Ball
+    , ship : Ship
+    , shipAngle : Float
+    , shipThrust : Float
+    , sun : Particle
+    , planet : Particle
+    , warpBall : Particle
+    }
 
 
 type alias SimulationHistory =
@@ -117,6 +124,7 @@ generateBalls ct seed =
     Random.step (Random.list ct ballGenerator) seed
 
 
+initialModel : Random.Seed -> Model
 initialModel fromSeed =
     let
         ( balls, seed ) =
@@ -142,9 +150,10 @@ initialModel fromSeed =
     , warpBall = P.new { part | x = 0, y = 0, vm = 5, va = 25, r = 50 }
     , stats = { ballCount = 0, ship = ship }
     , connected = True
-    , simulation = { status = Running, history = [ Snapshot planet ] }
+    , simulation = { status = Running, history = [] }
     }
         |> updateStats
+        |> updateHistory
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -175,10 +184,6 @@ isPaused =
 
 isRunning m =
     m.simulation.status == Running
-
-
-getCurrentSnapshot m =
-    Snapshot m.planet
 
 
 
@@ -349,6 +354,18 @@ updateHistory m =
     { m | simulation = { sim | history = getCurrentSnapshot m :: sim.history } }
 
 
+getCurrentSnapshot : Model -> Snapshot
+getCurrentSnapshot { balls, ship, shipAngle, shipThrust, sun, planet, warpBall } =
+    { balls = balls
+    , ship = ship
+    , shipAngle = shipAngle
+    , shipThrust = shipThrust
+    , sun = sun
+    , planet = planet
+    , warpBall = warpBall
+    }
+
+
 updateParticles m =
     let
         oldBalls =
@@ -373,6 +390,7 @@ updateParticles m =
         , planet = m.planet |> P.acc (computePlanetGravity m) >> P.update
         , warpBall = m.warpBall |> P.update |> P.warp worldSize
     }
+        |> updateHistory
 
 
 pure m =
