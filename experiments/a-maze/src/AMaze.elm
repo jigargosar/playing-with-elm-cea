@@ -139,6 +139,12 @@ viewGrid =
                 ]
                 []
     in
-    (xCords |> List.map (\x -> yCords |> List.map (\y -> drawMazeCellAt (toFloat x) (toFloat y))))
+    (xCords
+        |> List.map
+            (\x ->
+                yCords
+                    |> List.map (\y -> drawMazeCellAt (toFloat x) (toFloat y))
+            )
+    )
         |> List.concat
         |> g []
