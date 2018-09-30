@@ -160,13 +160,10 @@ viewGrid =
                     drawMazeInnerCell
                 )
 
-        drawMazeInnerCell x_ y_ =
+        drawMazeInnerCell x y =
             let
-                _ =
-                    Debug.log "xy" ( x_, y_ )
-
                 fillS =
-                    if x_ >= passageSize || y_ >= passageSize then
+                    if x >= passageSize || y >= passageSize then
                         "#000"
 
                     else
@@ -174,8 +171,8 @@ viewGrid =
             in
             rect
                 [ transform
-                    [ Translate (x_ * mazeInnerCellSizeInPx)
-                        (y_ * mazeInnerCellSizeInPx)
+                    [ Translate (x * mazeInnerCellSizeInPx)
+                        (y * mazeInnerCellSizeInPx)
                     ]
                 , width mazeInnerCellSizeInPx
                 , height mazeInnerCellSizeInPx
