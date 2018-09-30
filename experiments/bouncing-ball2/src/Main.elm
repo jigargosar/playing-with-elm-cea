@@ -66,15 +66,18 @@ ballGenerator =
         angleG =
             let
                 spread =
-                    360
+                    90
+
+                angle =
+                    -90
             in
-            Random.float (-90 - spread) (-90 + spread)
+            Random.float (angle - spread) (angle + spread)
 
         magnitudeG =
-            Random.float 2 7
+            Random.float 5 7
 
         radiusG =
-            Random.float 4 4
+            Random.float 1 10
 
         newBall vm va r =
             P.new
