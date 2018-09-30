@@ -279,7 +279,8 @@ view : Model -> Html Msg
 view m =
     H.div []
         [ H.div [ HA.class "pa3 vs3" ]
-            [ viewSvgAnimation m
+            [ H.div [ HA.class "" ] []
+            , viewSvgAnimation m
             ]
         ]
 
@@ -312,7 +313,7 @@ viewSvgAnimation m =
                     )
                 ]
     in
-    H.div []
+    H.div [ HA.class "vs3" ]
         [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
         , viewControls
         , viewContent
