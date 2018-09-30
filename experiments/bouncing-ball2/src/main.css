@@ -94,3 +94,8 @@ html, body, #root, [data-elm-hot=true] {
 .no-sel{
   user-select: none;
 }
+
+
+.pe-none{
+  pointer-events: none;
+}

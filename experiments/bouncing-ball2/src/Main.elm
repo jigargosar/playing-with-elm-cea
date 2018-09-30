@@ -349,9 +349,17 @@ hBtn al msg lt =
 view : Model -> Html Msg
 view m =
     H.div []
-        [ H.div [ HA.class "pa3 vs3" ]
-            [ H.div [ HA.class "" ] []
-            , viewSvgAnimation m
+        [ viewAlert m
+        , H.div [ HA.class "pa3 vs3" ]
+            [ viewSvgAnimation m
+            ]
+        ]
+
+
+viewAlert m =
+    H.div [ HA.class "absolute w-100 pe-none" ]
+        [ H.div [ HA.class "relative flex flex-row justify-center w-100 " ]
+            [ H.div [ HA.class "relative bg-red white pa2 w-80 ma4" ] [ H.text "Alert" ]
             ]
         ]
 
