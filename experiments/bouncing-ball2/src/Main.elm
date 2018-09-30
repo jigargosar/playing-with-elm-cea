@@ -238,10 +238,18 @@ update msg m =
             ter (isRunning m) (update Step m) (pure m)
 
         Step ->
-            m
-                |> updateParticles
-                |> updateHistory
-                |> pure
+            case m.simulation.status of
+                Paused n ->
+                    m
+                        |> updateParticles
+                        |> updateHistory
+                        |> pure
+
+                Running ->
+                    m
+                        |> updateParticles
+                        |> updateHistory
+                        |> pure
 
         SetPause newPaused ->
             (if newPaused then
