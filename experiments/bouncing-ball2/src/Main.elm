@@ -248,14 +248,13 @@ update msg m =
         Step i ->
             let
                 normalStep =
-                    m
-                        |> updateParticles
-                        |> updateHistory
-                        |> pure
+                    updateParticles
+                        >> updateHistory
+                        >> pure
             in
             case ( m.simulation.status, abs i == i ) of
                 ( Paused 0, True ) ->
-                    normalStep
+                    normalStep m
 
                 ( Paused n, _ ) ->
                     let
@@ -275,7 +274,7 @@ update msg m =
                         |> pure
 
                 ( Running, _ ) ->
-                    normalStep
+                    normalStep m
 
         SetPause newPaused ->
             (if newPaused then
