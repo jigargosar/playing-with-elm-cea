@@ -161,10 +161,8 @@ viewGrid =
                 drawInnerGridCell x y =
                     let
                         fillS =
-                            if x >= passageSize || y >= passageSize then
+                            ter (x >= passageSize || y >= passageSize)
                                 "#000"
-
-                            else
                                 "#cd37a9"
                     in
                     rect
