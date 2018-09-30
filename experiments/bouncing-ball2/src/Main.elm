@@ -383,9 +383,15 @@ viewSvgAnimation m =
                             [ ( "pos", .pos >> strFromVec2 )
                             , ( "vel", .vel >> strFromVec2 )
                             ]
+
+                connectedStats =
+                    m
+                        |> String.Conversions.fromRecord
+                            [ ( "connected", .connected >> String.Conversions.fromBool ) ]
             in
             H.div [ HA.class "code" ]
                 [ H.div [ HA.class "" ] [ H.text statsStr ]
+                , H.div [ HA.class "" ] [ H.text connectedStats ]
                 ]
     in
     H.div [ HA.class "vs3" ]
