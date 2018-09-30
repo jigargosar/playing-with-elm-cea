@@ -1,4 +1,4 @@
-module ViewAMaze exposing (view, viewAxis)
+module ViewAMaze exposing (view)
 
 import Array2D
 import Frame2d
@@ -6,29 +6,10 @@ import Point2d
 import Ramda exposing (mapCoordinates2D, ter)
 import Rectangle2d
 import Round
+import Svg exposing (g, line, rect)
 import Svg.Attributes as SA
-import TypedSvg exposing (g, line, rect, svg)
-import TypedSvg.Attributes exposing (fill, strokeLinecap, transform)
-import TypedSvg.Attributes.InPx exposing (..)
-import TypedSvg.Types exposing (Fill(..), StrokeLinecap(..), Transform(..))
-
-
-viewAxis worldRect =
-    let
-        ( ww, wh ) =
-            Rectangle2d.dimensions worldRect
-    in
-    g
-        [ SA.stroke "#cd37a9"
-        , strokeWidth 1
-        , SA.opacity "0.1"
-        , strokeLinecap StrokeLinecapRound
-        ]
-        [ line [ y1 (wh / -2), y2 (wh / 2) ] []
-        , line [ x1 (ww / -2), x2 (ww / 2) ] []
-        , line [ x1 100, y1 100 ] []
-        , line [ x1 -100, y1 100 ] []
-        ]
+import TypedSvg.Attributes exposing (..)
+import TypedSvg.Types exposing (Transform(..))
 
 
 view worldRect maze =
@@ -48,7 +29,7 @@ view worldRect maze =
     , g
         [ {- transform [ Translate tx ty ], -} transform [ Translate 20 20 ]
         ]
-        [ viewAxis worldRect, viewMaze maze ]
+        [ viewMaze maze ]
     ]
 
 
@@ -82,7 +63,7 @@ viewMaze maze =
                                 , SA.width (Round.round 0 mazeInnerCellSizeInPx)
                                 , SA.height (Round.round 0 mazeInnerCellSizeInPx)
                                 , SA.fill fillS
-                                , strokeWidth 0
+                                , SA.strokeWidth "0"
                                 , SA.stroke "#000"
                                 ]
                                 []
@@ -97,20 +78,24 @@ viewMaze maze =
                         Nothing ->
                             drawWall
 
-                        Just { down, right } ->
+                        {- Just { down, right } -> -}
+                        Just _ ->
                             let
-                                _ =
-                                    Debug.log "dr" { down = down, right = right, x = x, y = y }
-
+                                {- _ =
+                                   Debug.log "dr" { down = down, right = right, x = x, y = y }
+                                -}
+                                --                                _ =
+                                --                                    Debug.log "dr" "JJ"
                                 isSouthWallCord =
                                     y >= pathSize
 
                                 isRightWallCord =
                                     x >= pathSize
 
-                                shouldDrawWall =
-                                    (isSouthWallCord && down)
-                                        || (isRightWallCord && right)
+                                {- shouldDrawWall =
+                                   (isSouthWallCord && down)
+                                       || (isRightWallCord && right)
+                                -}
                             in
                             {- ter shouldDrawWall
                                drawPath
