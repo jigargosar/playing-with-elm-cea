@@ -153,7 +153,12 @@ viewGrid =
                 mazeCellSizeInPx =
                     mazeInnerCellSizeInPx * mazeCellSize
 
-                drawMazeInnerCell x y =
+                iterateInnerGrid =
+                    iterateMatrixCoordinates
+                        mazeCellSize
+                        mazeCellSize
+
+                drawInnerGridCell x y =
                     let
                         fillS =
                             if x >= passageSize || y >= passageSize then
@@ -182,11 +187,7 @@ viewGrid =
                         (cellY * mazeCellSizeInPx)
                     ]
                 ]
-                (iterateMatrixCoordinates
-                    mazeCellSize
-                    mazeCellSize
-                    drawMazeInnerCell
-                )
+                (iterateInnerGrid drawInnerGridCell)
     in
     iterateMazeCoordinates drawMazeCellAt
         |> g []
