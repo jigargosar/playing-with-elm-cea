@@ -139,7 +139,7 @@ viewGrid =
                 ]
                 []
 
-        iterateMazeCoordinates fn =
+        mapMazeCoordinates fn =
             xCords
                 |> List.map
                     (\x ->
@@ -148,5 +148,5 @@ viewGrid =
                     )
                 |> List.concat
     in
-    iterateMazeCoordinates drawMazeCellAt
+    mapMazeCoordinates drawMazeCellAt
         |> g []
