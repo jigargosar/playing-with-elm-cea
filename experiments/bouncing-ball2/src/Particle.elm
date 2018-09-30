@@ -1,11 +1,13 @@
 module Particle exposing
-    ( Par
+    ( Particle
+    , ParticleRecord
     , acc
     , getMass
     , getPos
     , getPosPair
     , getR
     , new
+    , toRec
     , update
     , warp
     )
@@ -15,8 +17,12 @@ import Math.Vector2 as V exposing (Vec2)
 import Tuple2
 
 
-type Par
-    = Particle { pos : Vec2, vel : Vec2, r : Float, mass : Float }
+type alias ParticleRecord =
+    { pos : Vec2, vel : Vec2, r : Float, mass : Float }
+
+
+type Particle
+    = Particle ParticleRecord
 
 
 new { x, y, vm, va, r, mass } =

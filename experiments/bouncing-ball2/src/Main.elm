@@ -11,7 +11,7 @@ import Html.Lazy
 import Json.Decode as D
 import List.Extra
 import Math.Vector2 as V exposing (Vec2)
-import Particle as P exposing (Par)
+import Particle as P exposing (Particle)
 import Ramda exposing (subBy, ter)
 import Random
 import Round
@@ -37,11 +37,11 @@ type alias Flags =
 
 
 type alias Ball =
-    Par
+    Particle
 
 
 type alias Ship =
-    Par
+    Particle
 
 
 part =
@@ -56,10 +56,10 @@ type alias Model =
     , shipAngle : Float
     , shipThrust : Float
     , keyDownSet : Set String
-    , sun : Par
-    , planet : Par
-    , warpBall : Par
-    , stats : { ballCount : Int }
+    , sun : Particle
+    , planet : Particle
+    , warpBall : Particle
+    , stats : { ballCount : Int, ship : Ship }
     }
 
 
@@ -119,7 +119,7 @@ initialModel fromSeed =
     , sun = sun
     , planet = P.new { part | y = 200, vm = 2, va = 0, r = 5 }
     , warpBall = P.new { part | x = 0, y = 0, vm = 5, va = 25, r = 50 }
-    , stats = { ballCount = 0 }
+    , stats = { ballCount = 0, ship = initialShip }
     }
         |> updateStats
 
@@ -172,7 +172,13 @@ update msg m =
             pure m
 
         Stats ->
-            updateStats m |> pure
+            (if m.paused then
+                m
+
+             else
+                updateStats m
+            )
+                |> pure
 
         Reset ->
             update Pause (initialModel m.seed)
@@ -189,7 +195,9 @@ update msg m =
                 |> pure
 
         SetPause newPaused ->
-            pure { m | paused = newPaused }
+            { m | paused = newPaused }
+                |> updateStats
+                |> pure
 
         TogglePause ->
             update (SetPause (not m.paused)) m
@@ -208,7 +216,7 @@ update msg m =
 
 
 updateStats m =
-    { m | stats = { ballCount = m.balls |> List.length } }
+    { m | stats = { ballCount = m.balls |> List.length, ship = m.ship } }
 
 
 computeNewShipAngle m =
@@ -351,14 +359,30 @@ viewSvgAnimation m =
 
         viewStats stats =
             let
-                ds =
+                statsStr =
                     String.Conversions.fromRecord
                         [ ( "ballCount", .ballCount >> String.fromInt )
+                        , ( "ship", .ship >> partStr )
                         ]
                         stats
+
+                strFromVec2 =
+                    V.toRecord
+                        >> String.Conversions.fromRecord
+                            [ ( "x", .x >> Round.round 0 )
+                            , ( "y", .y >> Round.round 0 )
+                            ]
+
+                partStr : P.Particle -> String
+                partStr =
+                    P.toRec
+                        >> String.Conversions.fromRecord
+                            [ ( "pos", .pos >> strFromVec2 )
+                            , ( "vel", .vel >> strFromVec2 )
+                            ]
             in
-            H.div [ HA.class "" ]
-                [ H.div [ HA.class "" ] [ H.text ds ]
+            H.div [ HA.class "code" ]
+                [ H.div [ HA.class "" ] [ H.text statsStr ]
                 ]
     in
     H.div [ HA.class "vs3" ]
