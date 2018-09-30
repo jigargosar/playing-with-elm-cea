@@ -104,8 +104,7 @@ viewGrid =
             [ width (cellSize * 3)
             , height (cellSize * 2)
             , SA.fill "#cd37a9"
-
-            --            , strokeWidth (wallSize * 4)
+            , strokeWidth (wallSize * 4)
             , SA.stroke "#000"
             ]
             []
