@@ -189,6 +189,7 @@ type Msg
     = NoOp
     | AFrame Float
     | StepForward
+    | StepBack
     | Step Int
     | Reset
     | Restart
@@ -241,6 +242,9 @@ update msg m =
         StepForward ->
             update (Step 1) m
 
+        StepBack ->
+            update (Step -1) m
+
         Step i ->
             let
                 normalStep =
@@ -259,7 +263,10 @@ update msg m =
                             m.simulation
 
                         newIndex =
-                            n + i |> clamp 0 (List.length history - 1)
+                            n
+                                - i
+                                |> clamp 0 (List.length history - 1)
+                                |> Debug.log "newIndex"
                     in
                     { m
                         | simulation =
@@ -444,8 +451,19 @@ viewSvgAnimation m =
                 [ hBtn [] Reset "Reset"
                 , hBtn [] Restart "Restart"
                 , hBtn [] TogglePause (ter (isPaused m) "Resume" "Pause")
-                , hBtn [ HA.disabled (isRunning m) ] StepForward "Step"
+                , hBtn [ HA.disabled (isRunning m) ] StepBack "<"
+                , hBtn [ HA.disabled (isRunning m) ] StepForward ">"
                 ]
+
+        { planet } =
+            case m.simulation.status of
+                Paused n ->
+                    m.simulation.history
+                        |> List.Extra.getAt n
+                        |> Maybe.withDefault (getCurrentSnapshot m)
+
+                Running ->
+                    getCurrentSnapshot m
 
         viewContent =
             H.div [ HA.class "no-sel", HE.onDoubleClick Restart ]
@@ -459,7 +477,7 @@ viewSvgAnimation m =
                         [ ViewSvg.viewParticle m.warpBall "pink"
                         , ViewSvg.viewBalls m.balls
                         , ViewSvg.viewParticle m.sun "orange"
-                        , ViewSvg.viewParticle m.planet "red"
+                        , ViewSvg.viewParticle planet "red"
                         , ViewSvg.viewShip m.ship m.shipAngle (isThrusting m)
                         ]
                     )
