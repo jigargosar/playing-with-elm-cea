@@ -125,7 +125,7 @@ viewGrid =
         cellSizeInPx =
             15
 
-        withXY x y =
+        drawMazeCellAt x y =
             g [ transform [ Translate (x * cellSizeInPx) (y * cellSizeInPx) ] ]
                 [ drawCell ]
 
@@ -139,6 +139,6 @@ viewGrid =
                 ]
                 []
     in
-    (xCords |> List.map (\x -> yCords |> List.map (\y -> withXY (toFloat x) (toFloat y))))
+    (xCords |> List.map (\x -> yCords |> List.map (\y -> drawMazeCellAt (toFloat x) (toFloat y))))
         |> List.concat
         |> g []
