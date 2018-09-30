@@ -167,6 +167,7 @@ type Msg
     | KeyUp String
     | Stats
     | EverySecond
+    | Every5Second
     | Connection (Result Http.Error String)
 
 
@@ -186,16 +187,11 @@ update msg m =
         Connection (Result.Ok _) ->
             pure { m | connected = True }
 
-        EverySecond ->
-            let
-                req =
-                    Http.getString "/"
+        Every5Second ->
+            ( m, Http.send Connection <| Http.getString "/" )
 
-                hc =
-                    Http.send Connection req
-            in
+        EverySecond ->
             update Stats m
-                |> addCmd hc
 
         Stats ->
             (if m.paused then
@@ -440,6 +436,7 @@ subscriptions model =
         , Browser.Events.onKeyDown (D.field "key" D.string |> D.map KeyDown)
         , Browser.Events.onKeyUp (D.field "key" D.string |> D.map KeyUp)
         , Time.every 1000 (\_ -> EverySecond)
+        , Time.every 5000 (\_ -> Every5Second)
 
         --        , Browser.Events.onKeyPress (D.field "key" D.string |> D.map KeyUp)
         ]
