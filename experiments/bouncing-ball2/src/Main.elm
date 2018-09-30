@@ -92,10 +92,14 @@ ballGenerator =
     Random.map3 newBall magnitudeG angleG radiusG
 
 
+generateBalls ct seed =
+    Random.step (Random.list ct ballGenerator) seed
+
+
 initialModel fromSeed =
     let
         ( balls, seed ) =
-            Random.step (Random.list 500 ballGenerator) fromSeed
+            generateBalls 500 fromSeed
 
         sun =
             P.new { part | r = 20, mass = 1000 }
@@ -218,9 +222,28 @@ computeNewShipThrust m =
             V.vec2 0 0
 
 
+isBeyondBottomEdge p =
+    let
+        ( x, y ) =
+            P.getPosPair p
+    in
+    y > worldHeight / 2
+
+
 updateParticles m =
+    let
+        oldBalls =
+            m.balls |> List.filter (isBeyondBottomEdge >> not)
+
+        ( newBalls, seed ) =
+            generateBalls 10 m.seed
+    in
     { m
-        | balls = m.balls |> List.map (P.acc (V.vec2 0 0.1) >> P.update)
+        | balls =
+            oldBalls
+                |> List.append newBalls
+                |> List.map (P.acc (V.vec2 0 0.1) >> P.update)
+        , seed = seed
         , ship =
             m.ship
                 |> P.acc
