@@ -44,7 +44,7 @@ type alias Ship =
 
 
 part =
-    { x = 0, y = 0, vm = 0, va = 0, r = 10, am = 0, aa = 0, mass = 1 }
+    { x = 0, y = 0, vm = 0, va = 0, r = 10, mass = 1 }
 
 
 type alias Model =
@@ -84,8 +84,6 @@ ballGenerator =
                     , vm = vm
                     , va = va
                     , r = r
-                    , am = 0.1
-                    , aa = 90
                 }
     in
     Random.map3 newBall magnitudeGenerator angleGenerator radiusGenerator
