@@ -60,6 +60,7 @@ type alias Model =
     , planet : Particle
     , warpBall : Particle
     , stats : { ballCount : Int, ship : Ship }
+    , connected : Bool
     }
 
 
@@ -120,6 +121,7 @@ initialModel fromSeed =
     , planet = P.new { part | y = 200, vm = 2, va = 0, r = 5 }
     , warpBall = P.new { part | x = 0, y = 0, vm = 5, va = 25, r = 50 }
     , stats = { ballCount = 0, ship = initialShip }
+    , connected = True
     }
         |> updateStats
 
@@ -256,7 +258,8 @@ updateParticles m =
             m.balls |> List.filter (isBeyondBottomEdge >> not)
 
         ( newBalls, seed ) =
-            generateBalls 1 m.seed
+            {- generateBalls 1 m.seed -}
+            ( [], m.seed )
     in
     { m
         | balls =
