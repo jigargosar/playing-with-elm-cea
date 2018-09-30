@@ -62,7 +62,7 @@ viewGrid =
 
         topWall =
             rect
-                [ width cellSize
+                [ width (cellSize + (wallSize * 2))
                 , height wallSize
                 , SA.fill "#000"
                 , SA.strokeWidth "0"
@@ -72,6 +72,12 @@ viewGrid =
 
         bottomWall =
             g [ transform [ Rotate 180 (cellSize / 2) (cellSize / 2) ] ] [ topWall ]
+
+        rightWall =
+            g [ transform [ Rotate 90 (cellSize / 2) (cellSize / 2) ] ] [ topWall ]
+
+        leftWall =
+            g [ transform [ Rotate -90 (cellSize / 2) (cellSize / 2) ] ] [ topWall ]
 
         viewCell ( x_, y_ ) walls =
             g
@@ -100,8 +106,8 @@ viewGrid =
             , SA.stroke "#000"
             ]
             []
-        , viewCell ( 0, 0 ) [ bottomWall ]
+        , viewCell ( 0, 0 ) [ bottomWall, rightWall ]
         , viewCell ( 0, 1 ) [ topWall ]
-        , viewCell ( 1, 0 ) []
+        , viewCell ( 1, 0 ) [ leftWall ]
         , viewCell ( 1, 1 ) []
         ]
