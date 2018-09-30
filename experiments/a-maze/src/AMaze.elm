@@ -50,7 +50,7 @@ view worldRect =
     ]
 
 
-viewGrid =
+viewGrid1 =
     let
         cellSize =
             15
@@ -100,6 +100,42 @@ viewGrid =
                 , SA.fill "#000"
                 , strokeWidth 0
                 , SA.stroke "#fff"
+                ]
+                []
+    in
+    (xCords |> List.map (\x -> yCords |> List.map (\y -> withXY (toFloat x) (toFloat y))))
+        |> List.concat
+        |> g []
+
+
+viewGrid =
+    let
+        mazeWidth =
+            15
+
+        mazeHeight =
+            10
+
+        xCords =
+            List.range 0 (mazeWidth - 1)
+
+        yCords =
+            List.range 0 (mazeHeight - 1)
+
+        cellSizeInPx =
+            15
+
+        withXY x y =
+            g [ transform [ Translate (x * cellSizeInPx) (y * cellSizeInPx) ] ]
+                [ drawCell ]
+
+        drawCell =
+            rect
+                [ width cellSizeInPx
+                , height cellSizeInPx
+                , SA.fill "#cd37a9"
+                , strokeWidth 0
+                , SA.stroke "#000"
                 ]
                 []
     in
