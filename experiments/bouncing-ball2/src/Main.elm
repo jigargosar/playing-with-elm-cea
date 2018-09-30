@@ -472,7 +472,7 @@ viewSvgAnimation m =
                 , hBtn [ HA.disabled (isRunning m) ] StepForward ">"
                 ]
 
-        { planet } =
+        { warpBall, balls, sun, planet, ship, shipAngle } =
             case m.simulation.status of
                 Paused n ->
                     m.simulation.history
@@ -491,11 +491,11 @@ viewSvgAnimation m =
                     , HE.onBlur Resume
                     ]
                     (ViewSvg.view worldSize
-                        [ ViewSvg.viewParticle m.warpBall "pink"
-                        , ViewSvg.viewBalls m.balls
-                        , ViewSvg.viewParticle m.sun "orange"
+                        [ ViewSvg.viewParticle warpBall "pink"
+                        , ViewSvg.viewBalls balls
+                        , ViewSvg.viewParticle sun "orange"
                         , ViewSvg.viewParticle planet "red"
-                        , ViewSvg.viewShip m.ship m.shipAngle (isThrusting m)
+                        , ViewSvg.viewShip ship shipAngle (isThrusting m)
                         ]
                     )
                 ]
