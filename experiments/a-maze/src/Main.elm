@@ -86,7 +86,7 @@ view model =
                     , width (worldWidth |> round)
                     , height (worldHeight |> round)
                     ]
-                    (AMaze.view worldRect)
+                    (AMaze.view worldRect model.maze)
                 ]
             ]
         ]

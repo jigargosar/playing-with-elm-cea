@@ -30,7 +30,7 @@ viewAxis worldRect =
         ]
 
 
-view worldRect =
+view worldRect maze =
     let
         ( tx, ty ) =
             Rectangle2d.centerPoint worldRect |> Point2d.coordinates
@@ -47,85 +47,11 @@ view worldRect =
     , g
         [ {- transform [ Translate tx ty ], -} transform [ Translate 20 20 ]
         ]
-        [ viewAxis worldRect, viewGrid worldRect ]
+        [ viewAxis worldRect, viewMaze maze ]
     ]
 
 
-viewGrid1 =
-    let
-        cellSize =
-            15
-
-        nodeCellSize =
-            1
-
-        wallCellSize =
-            1
-
-        hNodes =
-            9
-
-        vNodes =
-            8
-
-        hGridCells =
-            (hNodes * nodeCellSize) + (hNodes * wallCellSize - 1)
-
-        vGridCells =
-            (vNodes * nodeCellSize) + (vNodes * wallCellSize - 1)
-
-        xCords =
-            List.range 0 (hGridCells - 1)
-
-        yCords =
-            List.range 0 (vGridCells - 1)
-
-        withXY x y =
-            g [ transform [ Translate (x * cellSize) (y * cellSize) ] ]
-                [ ter (modBy 2 (round x) == 0 && modBy 2 (round y) == 0) drawCell drawWall ]
-
-        drawCell =
-            rect
-                [ width cellSize
-                , height cellSize
-                , SA.fill "#cd37a9"
-                , strokeWidth 0
-                , SA.stroke "#000"
-                ]
-                []
-
-        drawWall =
-            rect
-                [ width cellSize
-                , height cellSize
-                , SA.fill "#000"
-                , strokeWidth 0
-                , SA.stroke "#fff"
-                ]
-                []
-    in
-    (xCords |> List.map (\x -> yCords |> List.map (\y -> withXY (toFloat x) (toFloat y))))
-        |> List.concat
-        |> g []
-
-
-type alias MazePath =
-    { down : Bool, right : Bool }
-
-
-mazeWidth =
-    20
-
-
-mazeHeight =
-    25
-
-
-mazeData =
-    Array2D.repeat mazeHeight mazeWidth (MazePath True False)
-
-
-viewGrid _ =
+viewMaze maze =
     let
         drawMazeCellAt cellX cellY =
             let
@@ -166,7 +92,7 @@ viewGrid _ =
                         drawWall =
                             drawWithFill "#000"
                     in
-                    case mazeData |> Array2D.get (round y) (round x) of
+                    case maze.data |> Array2D.get (round y) (round x) of
                         Nothing ->
                             drawWall
 
@@ -195,5 +121,5 @@ viewGrid _ =
                 ]
                 (mapCoordinates2D mazeCellSize mazeCellSize drawInnerGridCell)
     in
-    mapCoordinates2D mazeWidth mazeHeight drawMazeCellAt
+    mapCoordinates2D maze.width maze.height drawMazeCellAt
         |> g []
