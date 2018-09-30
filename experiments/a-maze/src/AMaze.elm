@@ -55,14 +55,16 @@ viewGrid =
             10
 
         cellSize =
-            50
+            30
 
         wallSize =
-            5
+            2
 
         topWall =
             rect
-                [ width (cellSize + (wallSize * 2))
+                [ x 0
+                , y 0
+                , width cellSize
                 , height wallSize
                 , SA.fill "#000"
                 , SA.strokeWidth "0"
@@ -99,15 +101,18 @@ viewGrid =
     in
     g []
         [ rect
-            [ width (cellSize * 2)
+            [ width (cellSize * 3)
             , height (cellSize * 2)
             , SA.fill "#cd37a9"
-            , strokeWidth (wallSize * 4)
+
+            --            , strokeWidth (wallSize * 4)
             , SA.stroke "#000"
             ]
             []
-        , viewCell ( 0, 0 ) [ bottomWall, rightWall ]
+        , viewCell ( 0, 0 ) [ bottomWall ]
         , viewCell ( 0, 1 ) [ topWall ]
-        , viewCell ( 1, 0 ) [ leftWall ]
-        , viewCell ( 1, 1 ) []
+        , viewCell ( 1, 0 ) []
+        , viewCell ( 1, 1 ) [ rightWall ]
+        , viewCell ( 2, 0 ) []
+        , viewCell ( 2, 1 ) [ leftWall ]
         ]
