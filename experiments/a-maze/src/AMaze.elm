@@ -116,8 +116,8 @@ viewGrid =
         mazeHeight =
             25
 
-        iterateMazeCoordinates fn =
-            iterateMatrixCoordinates mazeWidth mazeHeight fn
+        iterateMazeCoordinates =
+            iterateMatrixCoordinates mazeWidth mazeHeight
 
         drawMazeCellAt cellX cellY =
             let
