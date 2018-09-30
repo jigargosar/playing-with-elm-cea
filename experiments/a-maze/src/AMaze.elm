@@ -74,7 +74,9 @@ viewGrid =
                     line
                         [ wallSize |> y1
                         , cellSize - wallSize |> y2
-                        , SA.stroke "#cd37a9"
+                        , cellSize / 2 |> x1
+                        , cellSize / 2 |> x2
+                        , SA.stroke "#cdf7a9"
                         , strokeLinecap StrokeLinecapSquare
                         , strokeWidth wallSize
                         , SA.opacity "1"
