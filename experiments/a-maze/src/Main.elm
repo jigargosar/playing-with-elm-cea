@@ -3,6 +3,7 @@ module Main exposing (Flags, Model, Msg(..), init, main, update, view, worldRect
 import AMaze exposing (Maze, mazeHeight, mazeWidth)
 import Array2D
 import Browser
+import Browser.Events
 import Html exposing (Html, div, h1, img, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onDoubleClick)
@@ -94,11 +95,15 @@ view model =
 ---- PROGRAM ----
 
 
+subscriptions _ =
+    Sub.batch [ Browser.Events.onAnimationFrameDelta (\_ -> NoOp) ]
+
+
 main : Program Flags Model Msg
 main =
     Browser.element
         { view = view
         , init = init
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         }
