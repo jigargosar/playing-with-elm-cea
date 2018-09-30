@@ -188,7 +188,8 @@ getCurrentSnapshot m =
 type Msg
     = NoOp
     | AFrame Float
-    | Step
+    | StepForward
+    | Step Int
     | Reset
     | Restart
     | SetPause Bool
@@ -235,21 +236,32 @@ update msg m =
             update Resume (initialModel m.seed)
 
         AFrame delta ->
-            ter (isRunning m) (update Step m) (pure m)
+            ter (isRunning m) (update StepForward m) (pure m)
 
-        Step ->
-            case m.simulation.status of
-                Paused n ->
+        StepForward ->
+            update (Step 1) m
+
+        Step i ->
+            let
+                normalStep =
                     m
                         |> updateParticles
                         |> updateHistory
                         |> pure
+            in
+            case ( m.simulation.status, abs i == i ) of
+                ( Paused 0, True ) ->
+                    normalStep
 
-                Running ->
-                    m
-                        |> updateParticles
-                        |> updateHistory
+                ( Paused n, _ ) ->
+                    { m
+                        | simulation =
+                            { status = Paused (n + i), history = m.simulation.history }
+                    }
                         |> pure
+
+                ( Running, _ ) ->
+                    normalStep
 
         SetPause newPaused ->
             (if newPaused then
@@ -425,7 +437,7 @@ viewSvgAnimation m =
                 [ hBtn [] Reset "Reset"
                 , hBtn [] Restart "Restart"
                 , hBtn [] TogglePause (ter (isPaused m) "Resume" "Pause")
-                , hBtn [ HA.disabled (isRunning m) ] Step "Step"
+                , hBtn [ HA.disabled (isRunning m) ] StepForward "Step"
                 ]
 
         viewContent =
