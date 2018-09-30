@@ -26,6 +26,10 @@ import TypedSvg.Types
         )
 
 
+roundToFloat =
+    round >> toFloat
+
+
 viewBall ball =
     let
         ( bx, by ) =
@@ -35,8 +39,8 @@ viewBall ball =
             Particle.getR ball
     in
     circle
-        [ cx bx
-        , cy by
+        [ cx (roundToFloat bx)
+        , cy (roundToFloat by)
         , r ballRadius
         , SA.fill "#cd37a9"
         , opacity (Opacity 0.8)

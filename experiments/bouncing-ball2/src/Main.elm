@@ -58,6 +58,7 @@ type alias Model =
     , sun : Par
     , planet : Par
     , warpBall : Par
+    , stats : { ballCount : Int }
     }
 
 
@@ -117,7 +118,9 @@ initialModel fromSeed =
     , sun = sun
     , planet = P.new { part | y = 200, vm = 2, va = 0, r = 5 }
     , warpBall = P.new { part | x = 0, y = 0, vm = 5, va = 25, r = 50 }
+    , stats = { ballCount = 0 }
     }
+        |> updateStats
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -158,6 +161,7 @@ type Msg
     | TogglePause
     | KeyDown String
     | KeyUp String
+    | Stats
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -165,6 +169,9 @@ update msg m =
     case msg of
         NoOp ->
             pure m
+
+        Stats ->
+            updateStats m |> pure
 
         Reset ->
             update Pause (initialModel m.seed)
@@ -197,6 +204,10 @@ update msg m =
 
         KeyUp key ->
             pure { m | keyDownSet = Set.remove key m.keyDownSet }
+
+
+updateStats m =
+    { m | stats = { ballCount = m.balls |> List.length } }
 
 
 computeNewShipAngle m =
@@ -236,7 +247,7 @@ updateParticles m =
             m.balls |> List.filter (isBeyondBottomEdge >> not)
 
         ( newBalls, seed ) =
-            generateBalls 10 m.seed
+            generateBalls 1 m.seed
     in
     { m
         | balls =
@@ -304,8 +315,15 @@ view m =
     H.div []
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "" ] []
+            , viewStats m.stats
             , viewSvgAnimation m
             ]
+        ]
+
+
+viewStats { ballCount } =
+    H.div [ HA.class "" ]
+        [ H.div [ HA.class "" ] [ ballCount |> String.fromInt |> H.text ]
         ]
 
 
@@ -353,6 +371,7 @@ subscriptions model =
         [ Browser.Events.onAnimationFrameDelta AFrame
         , Browser.Events.onKeyDown (D.field "key" D.string |> D.map KeyDown)
         , Browser.Events.onKeyUp (D.field "key" D.string |> D.map KeyUp)
+        , Time.every 1000 (\_ -> Stats)
 
         --        , Browser.Events.onKeyPress (D.field "key" D.string |> D.map KeyUp)
         ]
