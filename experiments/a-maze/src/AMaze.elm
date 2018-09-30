@@ -51,8 +51,11 @@ view worldRect =
 
 viewGrid =
     let
-        cellCount =
-            10
+        hCellCount =
+            3
+
+        vCellCount =
+            4
 
         cellSize =
             30
