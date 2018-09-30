@@ -357,11 +357,11 @@ view m =
 
 
 viewAlert m =
-    H.div [ HA.class "absolute w-100 pe-none" ]
+    H.div [ HA.classList [ ( "absolute w-100 pe-none", True ), ( "dn", m.connected ) ] ]
         [ H.div [ HA.class "relative flex flex-row justify-center w-100 " ]
             [ H.div
                 [ HA.class
-                    "relative top--1 shadow-1 f7 code bg-gold mid-gray pb1 pt3 br2 ph3 tc pe-bb"
+                    "relative top--1 shadow-1 f7 code bg-gold black pb1 pt3 br2 ph3 tc pe-bb"
                 ]
                 [ H.text "Disconnected from dev server"
                 ]
