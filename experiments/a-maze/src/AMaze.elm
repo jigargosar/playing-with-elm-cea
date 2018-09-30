@@ -47,7 +47,7 @@ view worldRect =
     , g
         [ {- transform [ Translate tx ty ], -} transform [ Translate 20 20 ]
         ]
-        [ viewAxis worldRect, viewGrid ]
+        [ viewAxis worldRect, viewGrid worldRect ]
     ]
 
 
@@ -113,17 +113,20 @@ type alias MazePath =
     { down : Bool, right : Bool }
 
 
-viewGrid =
+mazeWidth =
+    20
+
+
+mazeHeight =
+    25
+
+
+mazeData =
+    Array2D.repeat mazeHeight mazeWidth (MazePath True False)
+
+
+viewGrid _ =
     let
-        mazeData =
-            Array2D.repeat mazeHeight mazeWidth (MazePath False True)
-
-        mazeWidth =
-            20
-
-        mazeHeight =
-            25
-
         drawMazeCellAt cellX cellY =
             let
                 pathSize =
