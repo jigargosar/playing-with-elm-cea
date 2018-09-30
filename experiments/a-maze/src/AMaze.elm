@@ -128,10 +128,10 @@ iterateMatrixCoordinates width height fn =
 viewGrid =
     let
         mazeWidth =
-            15
+            20
 
         mazeHeight =
-            10
+            20
 
         iterateMazeCoordinates fn =
             iterateMatrixCoordinates mazeWidth mazeHeight fn

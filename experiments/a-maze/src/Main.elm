@@ -47,7 +47,7 @@ update msg model =
 
 
 worldRect =
-    Rectangle2d.from Point2d.origin (Point2d.fromCoordinates ( 300, 300 ))
+    Rectangle2d.from Point2d.origin (Point2d.fromCoordinates ( 500, 500 ))
 
 
 view : Model -> Html Msg
