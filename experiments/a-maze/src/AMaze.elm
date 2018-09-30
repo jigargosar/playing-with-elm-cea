@@ -45,5 +45,38 @@ view worldRect =
     , g
         [ transform [ Translate tx ty ]
         ]
-        [ viewAxis worldRect ]
+        [ viewAxis worldRect, viewGrid ]
     ]
+
+
+viewGrid =
+    let
+        cellCount =
+            10
+
+        cellSize =
+            30
+
+        viewCell cords =
+            let
+                ss =
+                    Rectangle2d.centeredOn (Frame2d.atCoordinates cords) ( cellSize, cellSize )
+            in
+            rect
+                [ width cellSize
+                , height cellSize
+                , x 10
+                , y 10
+
+                --                , x1 x
+                --                , y1 y
+                --                , x2 (x + cellSize)
+                --                , y2 (y + cellSize)
+                , SA.fill "#cd37a9"
+                , SA.stroke "#cd37a9"
+                , SA.strokeWidth "2"
+                , SA.opacity "1"
+                ]
+                []
+    in
+    viewCell ( 0, 0 )
