@@ -177,6 +177,10 @@ isRunning m =
     m.simulation.status == Running
 
 
+getCurrentSnapshot m =
+    Snapshot m.planet
+
+
 
 ---- UPDATE ----
 
@@ -189,7 +193,7 @@ type Msg
     | Restart
     | SetPause Bool
     | Pause
-    | Play
+    | Resume
     | TogglePause
     | KeyDown String
     | KeyUp String
@@ -228,7 +232,7 @@ update msg m =
             update Pause (initialModel m.seed)
 
         Restart ->
-            update Play (initialModel m.seed)
+            update Resume (initialModel m.seed)
 
         AFrame delta ->
             ter (isRunning m) (update Step m) (pure m)
@@ -236,6 +240,7 @@ update msg m =
         Step ->
             m
                 |> updateParticles
+                |> updateHistory
                 |> pure
 
         SetPause newPaused ->
@@ -252,7 +257,7 @@ update msg m =
         Pause ->
             update (SetPause True) m
 
-        Play ->
+        Resume ->
             update (SetPause False) m
 
         KeyDown key ->
@@ -299,6 +304,14 @@ isBeyondBottomEdge p =
             P.getPosPair p
     in
     y > worldHeight / 2
+
+
+updateHistory m =
+    let
+        sim =
+            m.simulation
+    in
+    { m | simulation = { sim | history = getCurrentSnapshot m :: sim.history } }
 
 
 updateParticles m =
@@ -401,8 +414,8 @@ viewSvgAnimation m =
             H.div [ HA.class "hs2 no-sel" ]
                 [ hBtn [] Reset "Reset"
                 , hBtn [] Restart "Restart"
-
-                {- , hBtn [] TogglePause (ter m.paused "Play" "Pause") -} {- , hBtn [ HA.disabled (not m.paused) ] Step "Step" -}
+                , hBtn [] TogglePause (ter (isPaused m) "Resume" "Pause")
+                , hBtn [ HA.disabled (isRunning m) ] Step "Step"
                 ]
 
         viewContent =
@@ -411,7 +424,7 @@ viewSvgAnimation m =
                     [ SA.class "flex center"
                     , HA.width worldWidth
                     , HA.height worldHeight
-                    , HE.onBlur Play
+                    , HE.onBlur Resume
                     ]
                     (ViewSvg.view worldSize
                         [ ViewSvg.viewParticle m.warpBall "pink"
