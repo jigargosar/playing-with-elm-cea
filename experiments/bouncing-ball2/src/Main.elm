@@ -11,7 +11,7 @@ import Html.Lazy
 import Json.Decode as D
 import List.Extra
 import Math.Vector2 as V exposing (Vec2)
-import Particle exposing (Particle)
+import Particle as P exposing (Particle)
 import Ramda exposing (subBy, ter)
 import Random
 import Round
@@ -43,7 +43,7 @@ type alias Ship =
     Particle
 
 
-dp =
+part =
     { x = 0, y = 0, vm = 0, va = 0, r = 10, am = 0, aa = 0, mass = 1 }
 
 
@@ -77,8 +77,8 @@ ballGenerator =
             Random.float 4 4
 
         newBall vm va r =
-            Particle.new
-                { dp
+            P.new
+                { part
                     | x = 0
                     , y = -100
                     , vm = vm
@@ -97,10 +97,10 @@ initialModel fromSeed =
             Random.step (Random.list 500 ballGenerator) fromSeed
 
         sun =
-            Particle.new { dp | r = 20, mass = 1000 }
+            P.new { part | r = 20, mass = 1000 }
 
         initialShip =
-            Particle.new { dp | x = 200, vm = 2, va = 90, r = 50 }
+            P.new { part | x = 200, vm = 2, va = 90, r = 50 }
     in
     { paused = False
     , balls = balls
@@ -110,8 +110,8 @@ initialModel fromSeed =
     , shipThrust = 0
     , keyDownSet = Set.empty
     , sun = sun
-    , planet = Particle.new { dp | y = 200, vm = 2, va = 0, r = 5 }
-    , warpBall = Particle.new { dp | x = 0, y = 0, vm = 5, va = 25, r = 50 }
+    , planet = P.new { part | y = 200, vm = 2, va = 0, r = 5 }
+    , warpBall = P.new { part | x = 0, y = 0, vm = 5, va = 25, r = 50 }
     }
 
 
@@ -219,15 +219,15 @@ computeNewShipThrust m =
 
 updateParticles m =
     { m
-        | balls = m.balls |> List.map (Particle.acc (V.vec2 0 0.1) >> Particle.update)
+        | balls = m.balls |> List.map (P.acc (V.vec2 0 0.1) >> P.update)
         , ship =
             m.ship
-                |> Particle.acc
+                |> P.acc
                     (V.add (computeNewShipThrust m) (computeShipGravity m))
-                >> Particle.update
+                >> P.update
         , shipAngle = computeNewShipAngle m
-        , planet = m.planet |> Particle.acc (computePlanetGravity m) >> Particle.update
-        , warpBall = m.warpBall |> Particle.update |> Particle.warp worldSize
+        , planet = m.planet |> P.acc (computePlanetGravity m) >> P.update
+        , warpBall = m.warpBall |> P.update |> P.warp worldSize
     }
 
 
@@ -242,10 +242,10 @@ isThrusting m =
 computePlanetGravity m =
     let
         ( sunPos, planetPos ) =
-            ( m.sun, m.planet ) |> Tuple2.mapBoth Particle.getPos
+            ( m.sun, m.planet ) |> Tuple2.mapBoth P.getPos
 
         length =
-            Particle.getMass m.sun / V.distanceSquared sunPos planetPos
+            P.getMass m.sun / V.distanceSquared sunPos planetPos
 
         angle =
             V.sub sunPos planetPos |> vec2ToPair >> toPolar >> Tuple.second
@@ -256,10 +256,10 @@ computePlanetGravity m =
 computeShipGravity m =
     let
         ( sunPos, planetPos ) =
-            ( m.sun, m.ship ) |> Tuple2.mapBoth Particle.getPos
+            ( m.sun, m.ship ) |> Tuple2.mapBoth P.getPos
 
         length =
-            Particle.getMass m.sun / V.distanceSquared sunPos planetPos
+            P.getMass m.sun / V.distanceSquared sunPos planetPos
 
         angle =
             V.sub sunPos planetPos |> vec2ToPair >> toPolar >> Tuple.second
