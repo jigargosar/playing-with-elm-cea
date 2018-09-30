@@ -18,7 +18,7 @@ viewAxis worldRect =
     g
         [ SA.stroke "#cd37a9"
         , strokeWidth 1
-        , SA.opacity "0.1"
+        , SA.opacity "0.4"
         , strokeLinecap StrokeLinecapRound
         ]
         [ line [ y1 (wh / -2), y2 (wh / 2) ] []
@@ -39,7 +39,7 @@ view worldRect =
         , SA.fill "#fff"
         , SA.stroke "#cd37a9"
         , SA.strokeWidth "2"
-        , SA.opacity "0.1"
+        , SA.opacity "0.4"
         ]
         []
     , g
@@ -57,49 +57,20 @@ viewGrid =
         cellSize =
             50
 
-        viewCell cords =
-            let
-                ss =
-                    Rectangle2d.centeredOn
-                        (Frame2d.atCoordinates cords)
-                        ( cellSize, cellSize )
-
-                ( xx, yy ) =
-                    cords
-
-                wallSize =
-                    10
-
-                hideLeftWall =
-                    line
-                        [ wallSize |> y1
-                        , cellSize - wallSize |> y2
-                        , cellSize / 2 |> x1
-                        , cellSize / 2 |> x2
-                        , SA.stroke "#cdf7a9"
-                        , strokeLinecap StrokeLinecapSquare
-                        , strokeWidth wallSize
-                        , SA.opacity "1"
-                        ]
-                        []
-            in
+        viewCell ( x_, y_ ) =
             g
                 [ transform
-                    [ Translate (xx * cellSize) (yy * cellSize)
+                    [ Translate (x_ * cellSize) (y_ * cellSize)
                     ]
                 ]
                 [ rect
                     [ width cellSize
                     , height cellSize
                     , SA.fill "#cd37a9"
-                    , SA.stroke "#000"
-                    , strokeWidth wallSize
-                    , SA.opacity "1"
+                    , SA.strokeWidth "1"
+                    , SA.stroke "#fff"
                     ]
                     []
-                , g [] [ hideLeftWall ]
-
-                --                , g [ transform [ Translate (cellSize / -2) 0 ] ] [ hideLeftWall ]
                 ]
     in
     g []
