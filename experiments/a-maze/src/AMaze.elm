@@ -104,17 +104,29 @@ viewGrid =
     in
     g []
         [ rect
-            [ width (cellSize * 3)
-            , height (cellSize * 2)
+            [ width (cellSize * hCellCount)
+            , height (cellSize * vCellCount)
             , SA.fill "#cd37a9"
             , strokeWidth (wallSize * 4)
             , SA.stroke "#000"
             ]
             []
-        , viewCell ( 0, 0 ) [ bottomWall ]
-        , viewCell ( 0, 1 ) [ topWall ]
-        , viewCell ( 1, 0 ) []
-        , viewCell ( 1, 1 ) [ rightWall ]
-        , viewCell ( 2, 0 ) []
-        , viewCell ( 2, 1 ) [ leftWall ]
+
+        {- , viewCell ( 0, 0 ) [ bottomWall ]
+           , viewCell ( 0, 1 ) [ topWall ]
+           , viewCell ( 1, 0 ) []
+           , viewCell ( 1, 1 ) [ rightWall ]
+           , viewCell ( 2, 0 ) []
+           , viewCell ( 2, 1 ) [ leftWall ]
+        -}
+        , g
+            []
+            (List.range 0 (vCellCount - 1)
+                |> List.map
+                    (\y ->
+                        List.range 0 (hCellCount - 1)
+                            |> List.map (\x -> viewCell ( toFloat x, toFloat y ) [])
+                    )
+                |> List.concat
+            )
         ]
