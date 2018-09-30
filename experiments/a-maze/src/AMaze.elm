@@ -108,6 +108,23 @@ viewGrid1 =
         |> g []
 
 
+iterateMatrixCoordinates width height fn =
+    let
+        xCords =
+            List.range 0 (width - 1)
+
+        yCords =
+            List.range 0 (height - 1)
+    in
+    xCords
+        |> List.map
+            (\x ->
+                yCords
+                    |> List.map (\y -> fn (toFloat x) (toFloat y))
+            )
+        |> List.concat
+
+
 viewGrid =
     let
         mazeWidth =
@@ -116,20 +133,23 @@ viewGrid =
         mazeHeight =
             10
 
-        xCords =
-            List.range 0 (mazeWidth - 1)
+        iterateMazeCoordinates fn =
+            iterateMatrixCoordinates mazeWidth mazeHeight fn
 
-        yCords =
-            List.range 0 (mazeHeight - 1)
+        passageSize =
+            2
+
+        wallSize =
+            1
 
         cellSizeInPx =
-            15
+            5 * (passageSize + wallSize)
 
         drawMazeCellAt x y =
             g [ transform [ Translate (x * cellSizeInPx) (y * cellSizeInPx) ] ]
-                [ drawCell ]
+                [ drawPassage ]
 
-        drawCell =
+        drawPassage =
             rect
                 [ width cellSizeInPx
                 , height cellSizeInPx
@@ -138,15 +158,6 @@ viewGrid =
                 , SA.stroke "#000"
                 ]
                 []
-
-        iterateMazeCoordinates fn =
-            xCords
-                |> List.map
-                    (\x ->
-                        yCords
-                            |> List.map (\y -> fn (toFloat x) (toFloat y))
-                    )
-                |> List.concat
     in
     iterateMazeCoordinates drawMazeCellAt
         |> g []
