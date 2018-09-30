@@ -167,12 +167,21 @@ viewGrid =
                         Nothing ->
                             drawWall
 
-                        Just _ ->
-                            drawWithFill
-                                (ter (x >= pathSize || y >= pathSize)
-                                    "#000"
-                                    "#cd37a9"
-                                )
+                        Just { down, right } ->
+                            let
+                                isSouthWallCord =
+                                    y >= pathSize
+
+                                isRightWallCord =
+                                    x >= pathSize
+
+                                shouldDrawWall =
+                                    (isSouthWallCord && down)
+                                        || (isRightWallCord && right)
+                            in
+                            ter shouldDrawWall
+                                drawWall
+                                drawPath
             in
             g
                 [ transform
