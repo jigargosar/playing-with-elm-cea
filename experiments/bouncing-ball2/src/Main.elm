@@ -276,41 +276,46 @@ hBtn al msg lt =
 
 
 view : Model -> Html Msg
-view model =
+view m =
     H.div []
         [ H.div [ HA.class "pa3 vs3" ]
-            [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
-            , viewControls model
-            , Html.Lazy.lazy viewContent model
+            [ viewSvgAnimation m
             ]
         ]
 
 
-viewControls { paused } =
-    H.div [ HA.class "hs2 no-sel" ]
-        [ hBtn [] Reset "Reset"
-        , hBtn [] Restart "Restart"
-        , hBtn [] TogglePause (ter paused "Play" "Pause")
-        , hBtn [ HA.disabled (not paused) ] Step "Step"
-        ]
-
-
-viewContent m =
-    H.div [ HA.class "no-sel", HE.onDoubleClick Restart ]
-        [ Svg.svg
-            [ SA.class "flex center"
-            , HA.width worldWidth
-            , HA.height worldHeight
-            , HE.onBlur Play
-            ]
-            (ViewSvg.view worldSize
-                [ ViewSvg.viewParticle m.warpBall "pink"
-                , ViewSvg.viewBalls m.balls
-                , ViewSvg.viewParticle m.sun "orange"
-                , ViewSvg.viewParticle m.planet "red"
-                , ViewSvg.viewShip m.ship m.shipAngle (isThrusting m)
+viewSvgAnimation m =
+    let
+        viewControls =
+            H.div [ HA.class "hs2 no-sel" ]
+                [ hBtn [] Reset "Reset"
+                , hBtn [] Restart "Restart"
+                , hBtn [] TogglePause (ter m.paused "Play" "Pause")
+                , hBtn [ HA.disabled (not m.paused) ] Step "Step"
                 ]
-            )
+
+        viewContent =
+            H.div [ HA.class "no-sel", HE.onDoubleClick Restart ]
+                [ Svg.svg
+                    [ SA.class "flex center"
+                    , HA.width worldWidth
+                    , HA.height worldHeight
+                    , HE.onBlur Play
+                    ]
+                    (ViewSvg.view worldSize
+                        [ ViewSvg.viewParticle m.warpBall "pink"
+                        , ViewSvg.viewBalls m.balls
+                        , ViewSvg.viewParticle m.sun "orange"
+                        , ViewSvg.viewParticle m.planet "red"
+                        , ViewSvg.viewShip m.ship m.shipAngle (isThrusting m)
+                        ]
+                    )
+                ]
+    in
+    H.div []
+        [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
+        , viewControls
+        , viewContent
         ]
 
 
