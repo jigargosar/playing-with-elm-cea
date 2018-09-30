@@ -17,6 +17,7 @@ import Random
 import Round
 import Set exposing (Set)
 import String exposing (String)
+import String.Conversions
 import Svg
 import Svg.Attributes as SA
 import Time
@@ -315,15 +316,8 @@ view m =
     H.div []
         [ H.div [ HA.class "pa3 vs3" ]
             [ H.div [ HA.class "" ] []
-            , viewStats m.stats
             , viewSvgAnimation m
             ]
-        ]
-
-
-viewStats { ballCount } =
-    H.div [ HA.class "" ]
-        [ H.div [ HA.class "" ] [ ballCount |> String.fromInt |> H.text ]
         ]
 
 
@@ -354,10 +348,23 @@ viewSvgAnimation m =
                         ]
                     )
                 ]
+
+        viewStats stats =
+            let
+                ds =
+                    String.Conversions.fromRecord
+                        [ ( "ballCount", .ballCount >> String.fromInt )
+                        ]
+                        stats
+            in
+            H.div [ HA.class "" ]
+                [ H.div [ HA.class "" ] [ H.text ds ]
+                ]
     in
     H.div [ HA.class "vs3" ]
         [ H.div [ HA.class "f1" ] [ H.text "Svg Animation" ]
         , viewControls
+        , viewStats m.stats
         , viewContent
         ]
 
