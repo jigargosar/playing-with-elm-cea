@@ -1,6 +1,6 @@
 module Main exposing (Flags, Model, Msg(..), init, main, update, view, worldRect)
 
-import AMaze
+import AMaze exposing (Maze, mazeHeight, mazeWidth)
 import Array2D
 import Browser
 import Html exposing (Html, div, h1, img, text)
@@ -8,29 +8,16 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onDoubleClick)
 import Point2d
 import Random
+import Random.Array
+import Random.Extra
 import Rectangle2d
 import Svg.Attributes
 import TypedSvg exposing (svg)
+import ViewAMaze
 
 
 
 ---- MODEL ----
-
-
-mazeWidth =
-    20
-
-
-mazeHeight =
-    25
-
-
-type alias MazePath =
-    { down : Bool, right : Bool }
-
-
-type alias Maze =
-    { width : Int, height : Int, data : Array2D.Array2D MazePath }
 
 
 type alias Model =
@@ -44,10 +31,21 @@ type alias Flags =
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
     let
-        mazeData =
-            Array2D.repeat mazeHeight mazeWidth (MazePath True False)
+        initialSeed =
+            Random.initialSeed now
+
+        ( mazeDataList2D, seed ) =
+            Random.step AMaze.dataGenerator initialSeed
     in
-    ( { seed = Random.initialSeed now, maze = Maze mazeWidth mazeHeight mazeData }, Cmd.none )
+    ( { seed = seed
+      , maze =
+            { width = mazeWidth
+            , height = mazeHeight
+            , data = Array2D.fromList mazeDataList2D
+            }
+      }
+    , Cmd.none
+    )
 
 
 
@@ -86,7 +84,7 @@ view model =
                     , width (worldWidth |> round)
                     , height (worldHeight |> round)
                     ]
-                    (AMaze.view worldRect model.maze)
+                    (ViewAMaze.view worldRect model.maze)
                 ]
             ]
         ]
