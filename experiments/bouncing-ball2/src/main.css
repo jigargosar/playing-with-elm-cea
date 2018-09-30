@@ -99,3 +99,6 @@ html, body, #root, [data-elm-hot=true] {
 .pe-none{
   pointer-events: none;
 }
+.pe-bb{
+  pointer-events: bounding-box;
+}

@@ -359,7 +359,7 @@ view m =
 viewAlert m =
     H.div [ HA.class "absolute w-100 pe-none" ]
         [ H.div [ HA.class "relative flex flex-row justify-center w-100 " ]
-            [ H.div [ HA.class "relative bg-red white pa2 w-80 ma4" ] [ H.text "Alert" ]
+            [ H.div [ HA.class "relative bg-red white pa2 w-80 ma4 pe-bb" ] [ H.text "Alert" ]
             ]
         ]
 
