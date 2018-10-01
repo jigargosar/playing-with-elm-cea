@@ -56,7 +56,7 @@ walledMaze =
 
 type Msg
     = NoOp
-    | New
+    | GenerateRandom
     | Walled
 
 
@@ -66,7 +66,7 @@ update msg m =
         NoOp ->
             pure m
 
-        New ->
+        GenerateRandom ->
             updateGenerateNewMaze m |> pure
 
         Walled ->
@@ -103,7 +103,7 @@ view model =
         [ div [ class "pa3 vs3" ]
             [ div [ class "flex items-end hs3" ]
                 [ div [ class "f2" ] [ text "A-Maze" ]
-                , button [ onClick New ] [ text "New" ]
+                , button [ onClick GenerateRandom ] [ text "Random" ]
                 , button [ onClick Walled ] [ text "Walled" ]
                 ]
             , div [ class "no-sel" ]
