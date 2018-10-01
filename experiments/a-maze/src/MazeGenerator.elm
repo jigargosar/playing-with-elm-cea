@@ -2,6 +2,7 @@ module MazeGenerator exposing (MazeGenerator, init)
 
 import Coordinate2D exposing (Coordinate2D)
 import Random
+import Random.List
 import Set exposing (Set)
 
 
@@ -49,56 +50,84 @@ init width height =
     MazeGenerator { defaultRecord | width = width, height = height }
 
 
+getTotalCellCount : Record -> Int
 getTotalCellCount { width, height } =
     width * height
 
 
+getVisitedCellCount : Record -> Int
+getVisitedCellCount { visited } =
+    Set.size visited
+
+
+isSolved : Record -> Bool
 isSolved rec =
-    rec.visited.size == rec.width * rec.height
+    getVisitedCellCount rec == getTotalCellCount rec
 
 
-step : MazeGenerator -> MazeGenerator
-step (MazeGenerator rec) =
+step : Random.Seed -> MazeGenerator -> ( MazeGenerator, Random.Seed )
+step seed (MazeGenerator rec) =
     (if isSolved rec then
-        rec
+        ( rec, seed )
 
      else
         case rec.stack of
             c :: rest ->
-                stepHelp c rec
+                stepHelp seed c rec
 
             _ ->
-                rec
+                ( rec, seed )
     )
-        |> MazeGenerator
+        |> Tuple.mapFirst MazeGenerator
 
 
-stepHelp : Coordinate2D -> Record -> Record
-stepHelp stackTop rec =
+stepHelp : Random.Seed -> Coordinate2D -> Record -> ( Record, Random.Seed )
+stepHelp seed stackTop rec =
     let
-        totalCellCount =
-            rec.width * rec.height
+        isWithinBounds : Coordinate2D -> Bool
+        isWithinBounds ( x, y ) =
+            x >= 0 && y >= 0 && x < rec.width && y < rec.height
+
+        isVisited cord =
+            Set.member cord rec.visited
 
         _ =
-            ( Set.size rec.visited, totalCellCount ) |> Debug.log "(visited,total)"
+            ( getVisitedCellCount rec, getTotalCellCount rec ) |> Debug.log "(visited,total)"
 
-        neighbourCordGenerator =
-            getUnVisitedNeighboursOfTopOfStack m
-                |> Debug.log "getValidNeighbourCords"
+        unVisitedNeighbours =
+            stackTop
+                |> Coordinate2D.perpendicularNeighboursOf
+                |> List.filter isWithinBounds
+                |> List.filter (isVisited >> not)
+
+        unVisitedNeighbourGenerator =
+            unVisitedNeighbours
+                |> Debug.log "unVisitedNeighbours"
                 |> Random.List.choose
 
         ( ( maybeCord, _ ), newSeed ) =
-            Random.step neighbourCordGenerator m.seed
+            Random.step unVisitedNeighbourGenerator seed
 
         _ =
             maybeCord |> Debug.log "randomCord"
-
-        newModel =
-            { m | seed = newSeed }
     in
     case maybeCord of
         Just cord ->
-            updateVisitCell cord newModel
+            let
+                newVisitedCords =
+                    rec.visited |> Set.insert cord
+
+                newConnections =
+                    rec.connections
+                        |> Set.insert ( stackTop, cord )
+            in
+            ( { rec
+                | visited = newVisitedCords
+                , stack = cord :: rec.stack
+                , connections = newConnections
+              }
+            , newSeed
+            )
 
         Nothing ->
-            updatePopStack newModel
+            ( { rec | stack = rec.stack |> List.drop 1 }, newSeed )
