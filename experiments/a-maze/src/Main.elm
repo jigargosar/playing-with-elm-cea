@@ -380,8 +380,9 @@ viewAlgoData m =
                     , iX2 x2
                     , iY1 y1
                     , iY2 y2
-                    , SA.strokeWidth "2"
-                    , SA.stroke "#000"
+                    , SA.strokeWidth "3"
+                    , SA.stroke "blue"
+                    , SA.opacity "0.5"
                     ]
                     []
                 ]
