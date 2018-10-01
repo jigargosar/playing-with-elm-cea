@@ -5,7 +5,6 @@ import Array2D
 import Browser
 import Browser.Events
 import Coordinate2D exposing (Coordinate2D)
-import Data2D
 import Dict exposing (Dict)
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class, disabled)
