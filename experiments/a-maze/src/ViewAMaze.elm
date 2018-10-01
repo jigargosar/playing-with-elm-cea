@@ -53,12 +53,17 @@ viewMaze maze =
                     let
                         drawWithFill fillS =
                             rect
-                                [ transform
-                                    [ Translate (x * mazeInnerCellSizeInPx |> round |> toFloat)
-                                        (y * mazeInnerCellSizeInPx |> round |> toFloat)
-                                    ]
-                                , SA.width (Round.round 0 mazeInnerCellSizeInPx)
-                                , SA.height (Round.round 0 mazeInnerCellSizeInPx)
+                                [ SA.transform
+                                    ([ "translate("
+                                     , String.fromInt (x * mazeInnerCellSizeInPx)
+                                     , ","
+                                     , String.fromInt (y * mazeInnerCellSizeInPx)
+                                     , ")"
+                                     ]
+                                        |> String.join ""
+                                    )
+                                , SA.width (mazeInnerCellSizeInPx |> String.fromInt)
+                                , SA.height (mazeInnerCellSizeInPx |> String.fromInt)
                                 , SA.fill fillS
                                 , SA.strokeWidth "0"
                                 , SA.stroke "#000"
@@ -71,7 +76,7 @@ viewMaze maze =
                         drawWall =
                             drawWithFill "#000"
                     in
-                    case maze |> AMaze.dataAt (round y) (round x) of
+                    case maze |> AMaze.dataAt x y of
                         Nothing ->
                             drawWall
 
@@ -100,7 +105,7 @@ viewMaze maze =
                         |> String.join ""
                     )
                 ]
-                (mapCoordinates2DFloat mazeCellSize mazeCellSize drawInnerGridCell)
+                (mapCoordinates2D mazeCellSize mazeCellSize drawInnerGridCell)
     in
     mapCoordinates2D maze.width maze.height drawMazeCellAt
         |> g []
