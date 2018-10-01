@@ -5,7 +5,7 @@ import Browser
 import Browser.Events
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class)
-import Html.Events exposing (onDoubleClick)
+import Html.Events exposing (onClick, onDoubleClick)
 import ISvg exposing (iHeight, iWidth)
 import Random
 import Random.Array
@@ -54,10 +54,20 @@ generateMaze =
 
 type Msg
     = NoOp
+    | New
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    case msg of
+        NoOp ->
+            pure model
+
+        New ->
+            pure model
+
+
+pure model =
     ( model, Cmd.none )
 
 
@@ -87,7 +97,7 @@ view model =
         [ div [ class "pa3 vs3" ]
             [ div [ class "flex items-end hs3" ]
                 [ div [ class "f2" ] [ text "A-Maze" ]
-                , button [] [ text "New" ]
+                , button [ onClick New ] [ text "New" ]
                 ]
             , div [ class "no-sel" ]
                 [ svg
