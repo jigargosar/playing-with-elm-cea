@@ -3,7 +3,7 @@ module Main exposing (main)
 import AMaze exposing (AMaze)
 import Browser
 import Browser.Events
-import Html exposing (Html, div, h1, img, text)
+import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onDoubleClick)
 import ISvg exposing (iHeight, iWidth)
@@ -85,7 +85,10 @@ view : Model -> Html Msg
 view model =
     div []
         [ div [ class "pa3 vs3" ]
-            [ div [ class "f2" ] [ text "A-Maze" ]
+            [ div [ class "flex items-end hs3" ]
+                [ div [ class "f2" ] [ text "A-Maze" ]
+                , button [] [ text "New" ]
+                ]
             , div [ class "no-sel" ]
                 [ svg
                     [ SA.class "flex center"
