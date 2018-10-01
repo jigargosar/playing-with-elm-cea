@@ -34,7 +34,7 @@ init { now } =
             Random.initialSeed now
 
         ( newMaze, newSeed ) =
-            generateMaze initialSeed
+            generateRandomMaze initialSeed
     in
     ( { seed = newSeed
       , maze = newMaze
@@ -43,8 +43,8 @@ init { now } =
     )
 
 
-generateMaze : Random.Seed -> ( AMaze, Random.Seed )
-generateMaze =
+generateRandomMaze : Random.Seed -> ( AMaze, Random.Seed )
+generateRandomMaze =
     Random.step (AMaze.randomGenerator 18 13)
 
 
@@ -74,7 +74,7 @@ pure model =
 updateGenerateNewMaze m =
     let
         ( newMaze, newSeed ) =
-            generateMaze m.seed
+            generateRandomMaze m.seed
     in
     { m | seed = newSeed, maze = newMaze }
 
