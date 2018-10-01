@@ -2,6 +2,7 @@ module ViewAMaze exposing (view)
 
 import AMaze
 import Frame2d
+import Html.Lazy
 import Point2d
 import Ramda exposing (mapCoordinates2D, ter)
 import Rectangle2d
@@ -26,7 +27,7 @@ view worldRect maze =
         , SA.opacity "0.4"
         ]
         []
-    , g [ transform [ Translate 20 20 ] ] [ viewMaze maze ]
+    , g [ transform [ Translate 20 20 ] ] [ Html.Lazy.lazy viewMaze maze ]
     ]
 
 
