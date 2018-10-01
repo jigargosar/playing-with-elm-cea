@@ -1,6 +1,6 @@
 module AMaze exposing (Maze, MazePath, dataGenerator, mazeHeight, mazeWidth)
 
-import Array2D
+import Array exposing (Array)
 import Random
 import Random.Array
 import Random.Extra
@@ -23,10 +23,10 @@ type alias Maze =
 
 
 type alias MazeData =
-    Array2D.Array2D MazePath
+    Array (Array MazePath)
 
 
-dataGenerator : Random.Generator (List (List MazePath))
+dataGenerator : Random.Generator (Array (Array MazePath))
 dataGenerator =
     let
         pathGenerator : Random.Generator MazePath
@@ -34,6 +34,6 @@ dataGenerator =
             Random.map2 MazePath Random.Extra.bool Random.Extra.bool
 
         rowGenerator =
-            Random.list mazeWidth pathGenerator
+            Random.Array.array mazeWidth pathGenerator
     in
-    Random.list mazeHeight rowGenerator
+    Random.Array.array mazeHeight rowGenerator

@@ -1,7 +1,6 @@
-module Main exposing (Flags, Model, Msg(..), init, main, update, view, worldRect)
+module Main exposing (main)
 
 import AMaze exposing (Maze, mazeHeight, mazeWidth)
-import Array2D
 import Browser
 import Browser.Events
 import Html exposing (Html, div, h1, img, text)
@@ -42,7 +41,7 @@ init { now } =
       , maze =
             { width = mazeWidth
             , height = mazeHeight
-            , data = Array2D.fromList mazeDataList2D
+            , data = mazeDataList2D
             }
       }
     , Cmd.none
@@ -85,7 +84,7 @@ view model =
                     , width (worldWidth |> round)
                     , height (worldHeight |> round)
                     ]
-                    (ViewAMaze.view worldRect model.maze)
+                    {- (ViewAMaze.view worldRect model.maze) -} []
                 ]
             ]
         ]
