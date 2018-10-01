@@ -54,6 +54,7 @@ randomGenerator w h =
     Random.map (AMaze w h) (dataGenerator w h)
 
 
+
 --walled : Int -> Int -> AMaze
 --walled w h =
 --    AMaze w h (Ramda.flatMapCoordinates2D w h (always walledCellData))

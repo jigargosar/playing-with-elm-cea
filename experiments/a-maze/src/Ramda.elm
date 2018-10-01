@@ -42,6 +42,10 @@ ifElse pred true false value =
 
 
 flatMapCoordinates2D width height fn =
+    mapCoordinates2D width height fn |> List.concat
+
+
+mapCoordinates2D width height fn =
     let
         xCords =
             List.range 0 (width - 1)
@@ -55,4 +59,3 @@ flatMapCoordinates2D width height fn =
                 xCords
                     |> List.map (\x -> fn x y)
             )
-        |> List.concat
