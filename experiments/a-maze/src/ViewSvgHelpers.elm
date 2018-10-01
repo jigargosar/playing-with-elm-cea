@@ -1,18 +1,61 @@
-module ViewSvgHelpers exposing (square, square2, view)
+module ViewSvgHelpers exposing (gridSquare, square, view)
 
 import ISvg exposing (iHeight, iTranslate, iWidth, iX, iY)
-import Svg exposing (Svg, g, line, rect)
-import Svg.Attributes as SA
+import Svg exposing (Svg, defs, g, line, path, pattern, rect)
+import Svg.Attributes as SA exposing (d, id)
+import TypedSvg.Attributes exposing (patternUnits)
+import TypedSvg.Types exposing (CoordinateSystem(..))
 
 
 view content =
-    [ rect
+    [ defs []
+        [ pattern
+            [ id "tenthGrid"
+            , iWidth 10
+            , iHeight 10
+            , patternUnits CoordinateSystemUserSpaceOnUse
+            ]
+            {- <path d="M 10 0 L 0 0 0 10" fill="none" stroke="silver" stroke-width="0.5"/> -}
+            [ path
+                [ d "M 10 0 L 0 0 0 10"
+                , SA.fill "none"
+                , SA.stroke "silver"
+                , SA.strokeWidth "0.5"
+                ]
+                []
+            ]
+        , pattern
+            [ id "grid"
+            , iWidth 100
+            , iHeight 100
+            , patternUnits CoordinateSystemUserSpaceOnUse
+            ]
+            {- <path d="M 10 0 L 0 0 0 10" fill="none" stroke="silver" stroke-width="0.5"/> -}
+            [ rect
+                [ SA.width "100"
+                , SA.height "100"
+                , SA.fill "url(#tenthGrid)"
+                ]
+                []
+            , path
+                [ d "M 100 0 L 0 0 0 100"
+                , SA.fill "none"
+                , SA.stroke "gray"
+                , SA.strokeWidth "1"
+                ]
+                []
+            ]
+        ]
+    , rect
         [ SA.width "100%"
         , SA.height "100%"
-        , SA.fill "#fff"
-        , SA.stroke "#cd37a9"
-        , SA.strokeWidth "2"
-        , SA.opacity "0.4"
+
+        --        , SA.fill "#fff"
+        , SA.fill "url(#grid)"
+
+        --        , SA.stroke "#cd37a9"
+        --        , SA.strokeWidth "2"
+        --        , SA.opacity "0.4"
         ]
         []
     , g [ SA.transform (iTranslate 0 0) ] [ content ]
@@ -30,7 +73,7 @@ square x y size fillS =
         []
 
 
-square2 x y size spacing =
+gridSquare x y size spacing =
     let
         sizeWithOffset =
             size + spacing
@@ -41,6 +84,7 @@ square2 x y size spacing =
         , iWidth size
         , iHeight size
         , SA.fill "#cd37a9"
+        , SA.fill "none"
         , SA.strokeWidth "2"
         , SA.stroke "#000"
         ]
