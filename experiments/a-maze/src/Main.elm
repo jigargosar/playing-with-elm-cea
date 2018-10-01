@@ -48,7 +48,9 @@ emptyLookup =
 
 initialLookup : Lookup
 initialLookup =
-    emptyLookup |> Dict.insert ( 0, 0 ) { isVisited = True }
+    emptyLookup
+        {-|> Dict.insert ( 0, 1 ) { isVisited = True }-}
+        |> Dict.insert ( 0, 0 ) { isVisited = True }
 
 
 type alias CStack =
@@ -72,7 +74,7 @@ init { now } =
     update WalledAMaze
         { seed = Random.initialSeed now
         , maze = walledMaze
-        , lookup = emptyLookup
+        , lookup = initialLookup
         , cStack = initialCStack
         }
 
