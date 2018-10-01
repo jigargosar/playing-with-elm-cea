@@ -1,9 +1,11 @@
 module Main exposing (main)
 
 import AMaze exposing (AMaze)
+import Array2D
 import Browser
 import Browser.Events
 import Coordinate2D exposing (Coordinate2D)
+import Data2D
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick, onDoubleClick)
@@ -81,6 +83,9 @@ update msg m =
 
         Step ->
             let
+                algoState =
+                    Data2D.repeat mazeWidth mazeHeight { visited = False }
+
                 withTop cord =
                     AMaze.perpendicularNeighboursOf cord |> Debug.log "wT"
 
