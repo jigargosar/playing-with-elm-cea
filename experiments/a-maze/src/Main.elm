@@ -40,14 +40,22 @@ init { now } =
         }
 
 
+mazeWidth =
+    18
+
+
+mazeHeight =
+    15
+
+
 generateRandomMaze : Random.Seed -> ( AMaze, Random.Seed )
 generateRandomMaze =
-    Random.step (AMaze.randomGenerator 18 13)
+    Random.step (AMaze.randomGenerator mazeWidth mazeHeight)
 
 
 walledMaze : AMaze
 walledMaze =
-    AMaze.walled 18 13
+    AMaze.walled mazeWidth mazeHeight
 
 
 
