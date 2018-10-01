@@ -134,16 +134,24 @@ isVisited cord m =
     cord == ( 0, 0 )
 
 
-gridSquare x y cellSize innerOffset =
+cellSizePx =
+    100
+
+
+innerOffsetPx =
+    20
+
+
+gridSquare ( x, y ) =
     let
         sizeWithOffset =
-            cellSize + (innerOffset * 2)
+            cellSizePx + (innerOffsetPx * 2)
 
         xyMultiplier =
-            cellSize
+            cellSizePx
 
         size =
-            cellSize - (innerOffset * 2)
+            cellSizePx - (innerOffsetPx * 2)
     in
     Svg.g
         [ SA.transform
@@ -154,8 +162,8 @@ gridSquare x y cellSize innerOffset =
             )
         ]
         [ Svg.rect
-            [ iX innerOffset
-            , iY innerOffset
+            [ iX innerOffsetPx
+            , iY innerOffsetPx
             , iWidth size
             , iHeight size
             , SA.fill "#cd37a9"
@@ -180,20 +188,11 @@ gridSquare x y cellSize innerOffset =
 viewAlgoData m =
     {- viewAMaze m -}
     let
-        cellSizePx =
-            100
-
-        spacingPx =
-            20
-
-        drawMazeCell ( x, y ) =
-            gridSquare x y cellSizePx spacingPx
-
-        gridOffset =
-            cellSizePx * 0
+        drawMazeCell cord =
+            gridSquare cord
     in
     Coordinate2D.flatMap 6 4 drawMazeCell
-        |> Svg.g [ SA.transform (iTranslate gridOffset gridOffset) ]
+        |> Svg.g []
 
 
 viewAMaze m =
