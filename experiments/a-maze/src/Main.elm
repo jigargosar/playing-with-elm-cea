@@ -58,13 +58,13 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg m =
     case msg of
         NoOp ->
-            pure model
+            pure m
 
         New ->
-            pure model
+            pure m
 
 
 pure model =
