@@ -9,7 +9,7 @@ import Data2D
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick, onDoubleClick)
-import ISvg exposing (iHeight, iTranslate, iWidth, iX, iY)
+import ISvg exposing (iCX, iCY, iHeight, iTranslate, iWidth, iX, iY)
 import Ramda exposing (equals, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
@@ -130,10 +130,6 @@ view m =
         ]
 
 
-isVisited cord m =
-    cord == ( 0, 0 )
-
-
 cellSizePx =
     100
 
@@ -142,8 +138,14 @@ innerOffsetPx =
     20
 
 
-gridSquare ( x, y ) =
+gridSquare m cord =
     let
+        ( x, y ) =
+            cord
+
+        isVisited =
+            cord == ( 0, 0 )
+
         sizeWithOffset =
             cellSizePx + (innerOffsetPx * 2)
 
@@ -182,6 +184,13 @@ gridSquare ( x, y ) =
                 |> String.join ""
                 |> Svg.text
             ]
+        , Svg.circle
+            [ cellSizePx // 2 |> iCX
+            , cellSizePx // 2 |> iCY
+            , SA.r "5"
+            , ter isVisited "blue" "none" |> SA.fill
+            ]
+            []
         ]
 
 
@@ -189,7 +198,7 @@ viewAlgoData m =
     {- viewAMaze m -}
     let
         drawMazeCell cord =
-            gridSquare cord
+            gridSquare m cord
     in
     Coordinate2D.flatMap 6 4 drawMazeCell
         |> Svg.g []
