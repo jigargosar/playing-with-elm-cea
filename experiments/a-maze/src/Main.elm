@@ -362,30 +362,31 @@ viewAlgoData m =
             Coordinate2D.flatMap hCellCount vCellCount drawMazeCell
                 |> Svg.g []
 
-        viewCellConnections =
-            let
-                transform =
-                    Coordinate2D.scale cellSizePx
-                        >> Coordinate2D.translate (cellSizePx // 2)
+        transform =
+            Coordinate2D.scale cellSizePx
+                >> Coordinate2D.translate (cellSizePx // 2)
 
+        viewCellConnections =
+            Svg.g [] [ viewCellConnection ( 1, 1 ) ( 2, 1 ) ]
+
+        viewCellConnection from to =
+            let
                 ( x1, y1 ) =
-                    ( 1, 1 ) |> transform
+                    from |> transform
 
                 ( x2, y2 ) =
-                    ( 2, 1 ) |> transform
+                    to |> transform
             in
-            Svg.g []
-                [ Svg.line
-                    [ iX1 x1
-                    , iX2 x2
-                    , iY1 y1
-                    , iY2 y2
-                    , SA.strokeWidth "3"
-                    , SA.stroke "blue"
-                    , SA.opacity "0.5"
-                    ]
-                    []
+            Svg.line
+                [ iX1 x1
+                , iX2 x2
+                , iY1 y1
+                , iY2 y2
+                , SA.strokeWidth "3"
+                , SA.stroke "blue"
+                , SA.opacity "0.5"
                 ]
+                []
     in
     Svg.g [] [ viewCells, viewCellConnections ]
 
