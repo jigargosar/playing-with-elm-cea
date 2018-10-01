@@ -60,7 +60,7 @@ drawMazeCellAt ( cellX, cellY ) cellData =
             (cellY * cellSizeInPx)
             |> SA.transform
         ]
-        (Coordinate2D.flatMapCoordinates2D
+        (Coordinate2D.flatMap
             cellSize
             cellSize
             (drawInnerCellWithDataAt cellData)

@@ -87,7 +87,7 @@ maybeDataAtCord ( x, y ) { data } =
 
 mapData : (Coordinate2D -> MazeCellData -> a) -> AMaze -> List a
 mapData fn m =
-    Coordinate2D.flatMapCoordinates2D m.width m.height (dataMapper fn m)
+    Coordinate2D.flatMap m.width m.height (dataMapper fn m)
 
 
 dataMapper : (Coordinate2D -> MazeCellData -> a) -> AMaze -> Coordinate2D -> a

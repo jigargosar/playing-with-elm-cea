@@ -1,11 +1,11 @@
-module Coordinate2D exposing (Coordinate2D, flatMapCoordinates2D, mapCoordinates2D)
+module Coordinate2D exposing (Coordinate2D, flatMap, map)
 
 
-flatMapCoordinates2D width height fn =
-    mapCoordinates2D width height fn |> List.concat
+flatMap width height fn =
+    map width height fn |> List.concat
 
 
-mapCoordinates2D width height fn =
+map width height fn =
     let
         xCords =
             List.range 0 (width - 1)
