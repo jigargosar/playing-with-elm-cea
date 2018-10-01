@@ -46,6 +46,11 @@ emptyLookup =
     Dict.empty
 
 
+initialLookup : Lookup
+initialLookup =
+    emptyLookup |> Dict.insert ( 0, 0 ) { isVisited = True }
+
+
 type alias Model =
     { seed : Random.Seed, maze : AMaze, lookup : Lookup }
 
@@ -59,7 +64,7 @@ init { now } =
     update WalledAMaze
         { seed = Random.initialSeed now
         , maze = walledMaze
-        , lookup = emptyLookup
+        , lookup = initialLookup
         }
 
 
