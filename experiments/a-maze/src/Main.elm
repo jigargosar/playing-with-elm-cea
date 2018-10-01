@@ -193,32 +193,34 @@ update msg m =
             { m | maze = AMaze.fillWalls m.maze } |> pure
 
         Step ->
-            let
-                _ =
-                    ( getVisitedCellCount m, totalCellCount ) |> Debug.log "(visited,total)"
+            updateStep m |> pure
 
-                neighbourCordGenerator =
-                    getUnVisitedNeighboursOfTopOfStack m
-                        |> Debug.log "getValidNeighbourCords"
-                        |> Random.List.choose
 
-                ( ( maybeCord, _ ), newSeed ) =
-                    Random.step neighbourCordGenerator m.seed
+updateStep m =
+    let
+        _ =
+            ( getVisitedCellCount m, totalCellCount ) |> Debug.log "(visited,total)"
 
-                _ =
-                    maybeCord |> Debug.log "randomCord"
+        neighbourCordGenerator =
+            getUnVisitedNeighboursOfTopOfStack m
+                |> Debug.log "getValidNeighbourCords"
+                |> Random.List.choose
 
-                newModel =
-                    { m | seed = newSeed }
-            in
-            (case maybeCord of
-                Just cord ->
-                    updateVisitCell cord newModel
+        ( ( maybeCord, _ ), newSeed ) =
+            Random.step neighbourCordGenerator m.seed
 
-                Nothing ->
-                    updatePopStack newModel
-            )
-                |> pure
+        _ =
+            maybeCord |> Debug.log "randomCord"
+
+        newModel =
+            { m | seed = newSeed }
+    in
+    case maybeCord of
+        Just cord ->
+            updateVisitCell cord newModel
+
+        Nothing ->
+            updatePopStack newModel
 
 
 updatePopStack model =
