@@ -1,4 +1,4 @@
-module ISvg exposing (iHeight, iTranslate, iWidth, iX, iY)
+module ISvg exposing (iHeight, iScale, iTranslate, iWidth, iX, iY)
 
 import Svg.Attributes as SA
 
@@ -9,6 +9,16 @@ import Svg.Attributes as SA
 
 iTranslate x y =
     [ "translate("
+    , String.fromInt x
+    , ","
+    , String.fromInt y
+    , ")"
+    ]
+        |> String.join ""
+
+
+iScale x y =
+    [ "scale("
     , String.fromInt x
     , ","
     , String.fromInt y

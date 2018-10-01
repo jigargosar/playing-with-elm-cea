@@ -45,8 +45,9 @@ view content =
             ]
         ]
     , rect
-        [ SA.width "100%"
-        , SA.height "100%"
+        [ SA.transform "scale(0.5,0.5)"
+        , SA.width "200%"
+        , SA.height "200%"
         , SA.fill "url(#grid)"
         ]
         []
