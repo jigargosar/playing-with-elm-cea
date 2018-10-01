@@ -53,8 +53,12 @@ viewMaze maze =
                     let
                         drawWithFill fillS =
                             rect
-                                [ String.fromInt (x * mazeInnerCellSizeInPx) |> SA.x
-                                , String.fromInt (y * mazeInnerCellSizeInPx) |> SA.y
+                                [ (x * mazeInnerCellSizeInPx)
+                                    |> String.fromInt
+                                    |> SA.x
+                                , (y * mazeInnerCellSizeInPx)
+                                    |> String.fromInt
+                                    |> SA.y
                                 , SA.width (mazeInnerCellSizeInPx |> String.fromInt)
                                 , SA.height (mazeInnerCellSizeInPx |> String.fromInt)
                                 , SA.fill fillS
@@ -98,7 +102,11 @@ viewMaze maze =
                         |> String.join ""
                     )
                 ]
-                (mapCoordinates2D mazeCellSize mazeCellSize drawInnerGridCell)
+                (mapCoordinates2D
+                    mazeCellSize
+                    mazeCellSize
+                    drawInnerGridCell
+                )
     in
     mapCoordinates2D maze.width maze.height drawMazeCellAt
         |> g []
