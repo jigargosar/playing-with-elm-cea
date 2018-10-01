@@ -341,7 +341,14 @@ gridSquare m cord =
             [ cellSizePx // 2 |> iCX
             , cellSizePx // 2 |> iCY
             , SA.r "5"
-            , ter isOnTopOfStack "blue" "none" |> SA.fill
+            , ter isVisited "blue" "none" |> SA.fill
+            ]
+            []
+        , Svg.circle
+            [ cellSizePx // 2 |> iCX
+            , cellSizePx // 2 |> iCY
+            , SA.r "5"
+            , ter isOnTopOfStack "red" "none" |> SA.fill
             ]
             []
         ]
