@@ -13,20 +13,6 @@ import Svg exposing (Svg, g, line, rect)
 import Svg.Attributes as SA
 
 
-view maze =
-    [ rect
-        [ SA.width "100%"
-        , SA.height "100%"
-        , SA.fill "#fff"
-        , SA.stroke "#cd37a9"
-        , SA.strokeWidth "2"
-        , SA.opacity "0.4"
-        ]
-        []
-    , g [ SA.transform (iTranslate 20 20) ] [ viewMaze maze ]
-    ]
-
-
 pathSize =
     2
 
@@ -47,8 +33,8 @@ cellSizeInPx =
     innerCellSizeInPx * cellSize
 
 
-viewMaze : AMaze -> Svg msg
-viewMaze maze =
+view : AMaze -> Svg msg
+view maze =
     g [] (AMaze.mapData drawMazeCellAt maze)
 
 

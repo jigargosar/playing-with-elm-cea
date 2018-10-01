@@ -14,9 +14,11 @@ import Ramda exposing (equals, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
 import Random.Extra
+import Svg
 import Svg.Attributes as SA
 import TypedSvg exposing (svg)
 import ViewAMaze
+import ViewSvgHelpers
 
 
 
@@ -24,7 +26,7 @@ import ViewAMaze
 
 
 type alias Model =
-    { seed : Random.Seed, maze : AMaze, stack : List Coordinate2D }
+    { seed : Random.Seed, maze : AMaze, algoData : {} }
 
 
 type alias Flags =
@@ -33,10 +35,10 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
-    update Walled
+    update WalledAMaze
         { seed = Random.initialSeed now
         , maze = walledMaze
-        , stack = []
+        , algoData = {}
         }
 
 
@@ -64,9 +66,8 @@ walledMaze =
 
 type Msg
     = NoOp
-    | GenerateRandom
-    | Walled
-    | Step
+    | RandomAMaze
+    | WalledAMaze
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -75,24 +76,11 @@ update msg m =
         NoOp ->
             pure m
 
-        GenerateRandom ->
+        RandomAMaze ->
             updateGenerateNewMaze m |> pure
 
-        Walled ->
-            { m | maze = AMaze.fillWalls m.maze, stack = [ ( 0, 0 ) ] } |> pure
-
-        Step ->
-            let
-                algoState =
-                    Data2D.repeat mazeWidth mazeHeight { visited = False }
-
-                withTop cord =
-                    Data2D.perpendicularNeighboursOf cord algoState |> Debug.log "wT"
-
-                top =
-                    List.head m.stack |> Maybe.map withTop
-            in
-            m |> ifElse (.stack >> isEmptyList) pure pure
+        WalledAMaze ->
+            { m | maze = AMaze.fillWalls m.maze } |> pure
 
 
 pure model =
@@ -125,9 +113,8 @@ view m =
         [ div [ class "pa3 vs3" ]
             [ div [ class "flex items-end hs3" ]
                 [ div [ class "f2" ] [ text "A-Maze" ]
-                , button [ onClick GenerateRandom ] [ text "Random" ]
-                , button [ onClick Walled ] [ text "Walled" ]
-                , button [ onClick Step ] [ text "Step" ]
+                , button [ onClick RandomAMaze ] [ text "Random" ]
+                , button [ onClick WalledAMaze ] [ text "Walled" ]
                 ]
             , div [ class "no-sel" ]
                 [ svg
@@ -135,14 +122,20 @@ view m =
                     , iWidth worldWidth
                     , iHeight worldHeight
                     ]
-                    (viewAMaze m)
+                    (viewAlgoData m)
                 ]
             ]
         ]
 
 
+viewAlgoData m =
+    {- viewAMaze m -}
+    Svg.g [] []
+        |> ViewSvgHelpers.view
+
+
 viewAMaze m =
-    ViewAMaze.view m.maze
+    ViewSvgHelpers.view (ViewAMaze.view m.maze)
 
 
 
