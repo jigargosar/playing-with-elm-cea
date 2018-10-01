@@ -34,44 +34,33 @@ wallSize =
     1
 
 
-mazeCellSize =
+cellSize =
     pathSize + wallSize
 
 
-mazeInnerCellSizeInPx =
+innerCellSizeInPx =
     10
 
 
-mazeCellSizeInPx =
-    mazeInnerCellSizeInPx * mazeCellSize
+cellSizeInPx =
+    innerCellSizeInPx * cellSize
 
 
 viewMaze maze =
     g [] (AMaze.mapData drawMazeCellAt maze)
 
 
-drawInnerCell x y fillS =
-    rect
-        [ x * mazeInnerCellSizeInPx |> iX
-        , y * mazeInnerCellSizeInPx |> iY
-        , iWidth mazeInnerCellSizeInPx
-        , iHeight mazeInnerCellSizeInPx
-        , SA.fill fillS
-        ]
-        []
-
-
 drawMazeCellAt cellX cellY cellData =
     g
         [ iTranslate
-            (cellX * mazeCellSizeInPx)
-            (cellY * mazeCellSizeInPx)
+            (cellX * cellSizeInPx)
+            (cellY * cellSizeInPx)
             |> SA.transform
         ]
         (mapCoordinates2D
-            mazeCellSize
-            mazeCellSize
-            (drawInnerGridCell cellData)
+            cellSize
+            cellSize
+            (drawInnerCellWithDataAt cellData)
         )
 
 
@@ -83,7 +72,7 @@ isRightWallCord x y =
     x >= pathSize
 
 
-drawInnerGridCell cellData x y =
+drawInnerCellWithDataAt cellData x y =
     let
         drawPath =
             drawInnerCell x y "#cd37a9"
@@ -102,3 +91,14 @@ drawInnerGridCell cellData x y =
                         || (isRightWallCord x y && right)
             in
             ter shouldDrawWall drawWall drawPath
+
+
+drawInnerCell x y fillS =
+    rect
+        [ x * innerCellSizeInPx |> iX
+        , y * innerCellSizeInPx |> iY
+        , iWidth innerCellSizeInPx
+        , iHeight innerCellSizeInPx
+        , SA.fill fillS
+        ]
+        []
