@@ -117,6 +117,16 @@ getCellDataIn =
     flip getCellData
 
 
+getIsCellVisited : Coordinate2D -> Model -> Bool
+getIsCellVisited cord =
+    getCellData cord >> .isVisited
+
+
+getIsCellVisitedIn : Model -> Coordinate2D -> Bool
+getIsCellVisitedIn =
+    flip getIsCellVisited
+
+
 getVisitedCellCount : Model -> Int
 getVisitedCellCount m =
     Coordinate2D.flatMap hCellCount vCellCount (getCellDataIn m)
@@ -137,6 +147,13 @@ isValidCord ( x, y ) =
 getValidNeighbourCords : Coordinate2D -> List Coordinate2D
 getValidNeighbourCords =
     Coordinate2D.perpendicularNeighboursOf >> List.filter isValidCord
+
+
+getUnVisitedNeighboursOfTopOfStack m =
+    m.cStack
+        |> List.head
+        |> Maybe.map (getValidNeighbourCords >> List.filter (getIsCellVisitedIn m >> not))
+        |> Maybe.withDefault []
 
 
 
@@ -168,8 +185,7 @@ update msg m =
                     getVisitedCellCount m |> Debug.log "VCC"
 
                 _ =
-                    List.head m.cStack
-                        |> Maybe.map getValidNeighbourCords
+                    getUnVisitedNeighboursOfTopOfStack m
                         |> Debug.log "getValidNeighbourCords"
             in
             pure m
