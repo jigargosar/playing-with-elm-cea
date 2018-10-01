@@ -51,8 +51,16 @@ initialLookup =
     emptyLookup |> Dict.insert ( 0, 0 ) { isVisited = True }
 
 
+type alias CStack =
+    List Coordinate2D
+
+
+initialCStack =
+    [ ( 0, 0 ) ]
+
+
 type alias Model =
-    { seed : Random.Seed, maze : AMaze, lookup : Lookup }
+    { seed : Random.Seed, maze : AMaze, lookup : Lookup, cStack : CStack }
 
 
 type alias Flags =
@@ -64,7 +72,8 @@ init { now } =
     update WalledAMaze
         { seed = Random.initialSeed now
         , maze = walledMaze
-        , lookup = initialLookup
+        , lookup = emptyLookup
+        , cStack = initialCStack
         }
 
 
