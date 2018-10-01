@@ -70,15 +70,18 @@ drawInnerCell x y fillS =
 
 
 isSouthWallCord x y =
-    y >= pathSize
+    y == 2
 
 
 isRightWallCord x y =
-    x >= pathSize
+    x == 2
 
 
 drawMazeCellAt dataAt cellX cellY =
     let
+        cellData =
+            dataAt cellX cellY
+
         drawInnerGridCell x y =
             let
                 drawPath =
@@ -87,7 +90,7 @@ drawMazeCellAt dataAt cellX cellY =
                 drawWall =
                     drawInnerCell x y "#000"
             in
-            case dataAt x y of
+            case cellData of
                 Nothing ->
                     drawWall
 
