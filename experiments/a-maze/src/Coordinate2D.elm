@@ -27,4 +27,8 @@ map width height fn =
 
 perpendicularNeighboursOf : Coordinate2D -> List Coordinate2D
 perpendicularNeighboursOf ( x, y ) =
-    []
+    [ ( x + 1, y )
+    , ( x - 1, y )
+    , ( x, y + 1 )
+    , ( x, y - 1 )
+    ]
