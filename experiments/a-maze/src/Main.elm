@@ -41,7 +41,7 @@ init { now } =
             generateRandomMaze initialSeed
     in
     ( { seed = newSeed
-      , maze = newMaze
+      , maze = newMaze |> AMaze.fillWalls
       , stack = [ ( 0, 0 ) ]
       }
     , Cmd.none
