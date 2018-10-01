@@ -367,7 +367,6 @@ gridSquare m cord =
 
 
 viewAlgoData m =
-    {- viewAMaze m -}
     let
         drawMazeCell cord =
             gridSquare m cord
