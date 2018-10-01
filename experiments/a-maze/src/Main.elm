@@ -100,11 +100,11 @@ updateGenerateNewMaze m =
 
 
 worldWidth =
-    600
+    650
 
 
 worldHeight =
-    550
+    500
 
 
 view : Model -> Html Msg
@@ -119,8 +119,8 @@ view m =
             , div [ class "no-sel" ]
                 [ svg
                     [ SA.class "flex center"
-                    , iWidth worldWidth
-                    , iHeight worldHeight
+                    , iWidth (worldWidth + 10)
+                    , iHeight (worldHeight + 10)
                     ]
                     (viewAlgoData m |> ViewSvgHelpers.view)
                 ]
