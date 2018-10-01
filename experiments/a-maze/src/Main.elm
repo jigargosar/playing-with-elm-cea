@@ -33,11 +33,11 @@ init { now } =
         initialSeed =
             Random.initialSeed now
 
-        ( initialMaze, newSeed ) =
+        ( newMaze, newSeed ) =
             generateMaze initialSeed
     in
     ( { seed = newSeed
-      , maze = initialMaze
+      , maze = newMaze
       }
     , Cmd.none
     )
@@ -59,6 +59,14 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     ( model, Cmd.none )
+
+
+updateGenerateNewMaze m =
+    let
+        ( newMaze, newSeed ) =
+            generateMaze m.seed
+    in
+    { m | seed = newSeed, maze = newMaze }
 
 
 
