@@ -10,6 +10,7 @@ import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class, disabled)
 import Html.Events exposing (onClick, onDoubleClick)
 import ISvg exposing (iCX, iCY, iHeight, iTranslate, iWidth, iX, iX1, iX2, iY, iY1, iY2)
+import MazeGenerator exposing (MazeGenerator)
 import Ramda exposing (equals, flip, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
@@ -70,6 +71,7 @@ type alias Model =
     , visitedCords : VisitedCords
     , cStack : CStack
     , connections : Connections
+    , mazeGenerator : MazeGenerator
     }
 
 
@@ -85,6 +87,7 @@ init { now } =
         , visitedCords = initialVisitedCords
         , cStack = initialCStack
         , connections = initialConnections
+        , mazeGenerator = MazeGenerator.init 6 4
         }
 
 
