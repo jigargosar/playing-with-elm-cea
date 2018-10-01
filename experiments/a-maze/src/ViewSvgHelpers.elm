@@ -69,7 +69,7 @@ square x y size fillS =
 gridSquare x y size spacing =
     let
         sizeWithOffset =
-            size + spacing
+            size + (spacing * 2)
     in
     rect
         [ iX (x * sizeWithOffset)

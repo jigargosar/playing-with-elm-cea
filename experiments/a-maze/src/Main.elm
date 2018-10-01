@@ -132,10 +132,10 @@ viewAlgoData m =
     {- viewAMaze m -}
     let
         cellSizePx =
-            15
+            30
 
         spacing =
-            5
+            10
 
         drawMazeCell ( x, y ) =
             ViewSvgHelpers.gridSquare x y cellSizePx spacing
@@ -144,7 +144,7 @@ viewAlgoData m =
         mazeWidth
         mazeHeight
         drawMazeCell
-        |> Svg.g [ SA.transform (iTranslate 15 15) ]
+        |> Svg.g [ SA.transform (iTranslate 10 10) ]
 
 
 viewAMaze m =
