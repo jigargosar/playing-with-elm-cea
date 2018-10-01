@@ -34,13 +34,18 @@ init { now } =
             Random.initialSeed now
 
         ( initialMaze, newSeed ) =
-            Random.step (AMaze.mazeGenerator 18 13) initialSeed
+            generateMaze initialSeed
     in
     ( { seed = newSeed
       , maze = initialMaze
       }
     , Cmd.none
     )
+
+
+generateMaze : Random.Seed -> ( AMaze, Random.Seed )
+generateMaze =
+    Random.step (AMaze.mazeGenerator 18 13)
 
 
 
