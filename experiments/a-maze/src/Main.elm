@@ -16,7 +16,8 @@ import Random
 import Random.Array
 import Random.Extra
 import Random.List
-import Svg
+import Set exposing (Set)
+import Svg exposing (Svg)
 import Svg.Attributes as SA
 import TypedSvg exposing (svg)
 import TypedSvg.Attributes exposing (alignmentBaseline)
@@ -27,6 +28,19 @@ import ViewSvgHelpers
 
 
 ---- MODEL ----
+
+
+type alias Connection =
+    ( Coordinate2D, Coordinate2D )
+
+
+type alias Connections =
+    Set Connection
+
+
+initialConnections : Connections
+initialConnections =
+    Set.empty
 
 
 type alias CellData =
@@ -61,7 +75,12 @@ initialCStack =
 
 
 type alias Model =
-    { seed : Random.Seed, maze : AMaze, lookup : Lookup, cStack : CStack }
+    { seed : Random.Seed
+    , maze : AMaze
+    , lookup : Lookup
+    , cStack : CStack
+    , connections : Connections
+    }
 
 
 type alias Flags =
@@ -75,6 +94,7 @@ init { now } =
         , maze = walledMaze
         , lookup = initialLookup
         , cStack = initialCStack
+        , connections = initialConnections
         }
 
 
@@ -235,8 +255,22 @@ updateVisitCell cord model =
         newLookup =
             model.lookup
                 |> Dict.insert cord { cordCD | isVisited = True }
+
+        newConnections =
+            model.cStack
+                |> List.head
+                |> Maybe.map
+                    (\stackTop ->
+                        model.connections
+                            |> Set.insert ( stackTop, cord )
+                    )
+                |> Maybe.withDefault model.connections
     in
-    { model | lookup = newLookup, cStack = cord :: model.cStack }
+    { model
+        | lookup = newLookup
+        , cStack = cord :: model.cStack
+        , connections = newConnections
+    }
 
 
 pure model =
@@ -367,7 +401,14 @@ viewAlgoData m =
                 >> Coordinate2D.translate (cellSizePx // 2)
 
         viewCellConnections =
-            Svg.g [] [ viewCellConnection ( ( 1, 1 ), ( 2, 1 ) ) ]
+            let
+                lines : List (Svg msg)
+                lines =
+                    m.connections
+                        |> Set.toList
+                        |> List.map viewCellConnection
+            in
+            Svg.g [] lines
 
         viewCellConnection ( from, to ) =
             let
