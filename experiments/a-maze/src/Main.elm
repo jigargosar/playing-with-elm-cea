@@ -129,6 +129,16 @@ getIsOnTopOfStack cord m =
     m.cStack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
 
 
+isValidCord : Coordinate2D -> Bool
+isValidCord ( x, y ) =
+    x >= 0 && y > 0 && x < hCellCount && y < vCellCount
+
+
+getValidNeighbourCords : Coordinate2D -> List Coordinate2D
+getValidNeighbourCords =
+    Coordinate2D.perpendicularNeighboursOf >> List.filter isValidCord
+
+
 
 ---- UPDATE ----
 
