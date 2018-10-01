@@ -48,9 +48,7 @@ emptyLookup =
 
 initialLookup : Lookup
 initialLookup =
-    emptyLookup
-        {-|> Dict.insert ( 0, 1 ) { isVisited = True }-}
-        |> Dict.insert ( 0, 0 ) { isVisited = True }
+    emptyLookup |> Dict.insert ( 0, 0 ) { isVisited = True }
 
 
 type alias CStack =
