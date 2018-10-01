@@ -1,11 +1,8 @@
 module AMaze exposing
     ( AMaze
     , MazeCellData
-    , defaultDataGenerator
     , mapData
-    , mazeGenerator
-    , mazeHeight
-    , mazeWidth
+    , randomGenerator
     )
 
 import Array exposing (Array)
@@ -13,14 +10,6 @@ import Ramda
 import Random
 import Random.Array
 import Random.Extra
-
-
-mazeWidth =
-    18
-
-
-mazeHeight =
-    13
 
 
 type alias MazeCellData =
@@ -43,11 +32,6 @@ type alias MazeData =
     Array (Array MazeCellData)
 
 
-defaultDataGenerator : Random.Generator MazeData
-defaultDataGenerator =
-    dataGenerator mazeWidth mazeHeight
-
-
 dataGenerator : Int -> Int -> Random.Generator MazeData
 dataGenerator w h =
     let
@@ -61,8 +45,8 @@ dataGenerator w h =
     Random.Array.array h rowGenerator
 
 
-mazeGenerator : Int -> Int -> Random.Generator AMaze
-mazeGenerator w h =
+randomGenerator : Int -> Int -> Random.Generator AMaze
+randomGenerator w h =
     Random.map (AMaze w h) (dataGenerator w h)
 
 

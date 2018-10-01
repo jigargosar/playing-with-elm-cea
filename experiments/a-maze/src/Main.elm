@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import AMaze exposing (AMaze, mazeHeight, mazeWidth)
+import AMaze exposing (AMaze)
 import Browser
 import Browser.Events
 import Html exposing (Html, div, h1, img, text)
@@ -45,7 +45,7 @@ init { now } =
 
 generateMaze : Random.Seed -> ( AMaze, Random.Seed )
 generateMaze =
-    Random.step (AMaze.mazeGenerator 18 13)
+    Random.step (AMaze.randomGenerator 18 13)
 
 
 
