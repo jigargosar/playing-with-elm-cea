@@ -42,27 +42,18 @@ initialConnections =
     Set.empty
 
 
-type alias CellData =
-    { isVisited : Bool }
-
-
-defaultCellData : CellData
-defaultCellData =
-    { isVisited = False }
-
-
 type alias Lookup =
-    Dict Coordinate2D CellData
+    Set Coordinate2D
 
 
 emptyLookup : Lookup
 emptyLookup =
-    Dict.empty
+    Set.empty
 
 
 initialLookup : Lookup
 initialLookup =
-    emptyLookup |> Dict.insert ( 0, 0 ) { isVisited = True }
+    emptyLookup |> Set.insert ( 0, 0 )
 
 
 type alias CStack =
@@ -132,19 +123,9 @@ getIsSolved =
     getVisitedCellCount >> equals totalCellCount
 
 
-getCellData : Coordinate2D -> Model -> CellData
-getCellData cord m =
-    m.lookup |> Dict.get cord |> Maybe.withDefault defaultCellData
-
-
-getCellDataIn : Model -> Coordinate2D -> CellData
-getCellDataIn =
-    flip getCellData
-
-
 getIsCellVisited : Coordinate2D -> Model -> Bool
 getIsCellVisited cord =
-    getCellData cord >> .isVisited
+    .lookup >> Set.member cord
 
 
 getIsCellVisitedIn : Model -> Coordinate2D -> Bool
@@ -154,8 +135,8 @@ getIsCellVisitedIn =
 
 getVisitedCellCount : Model -> Int
 getVisitedCellCount m =
-    Coordinate2D.flatMap hCellCount vCellCount (getCellDataIn m)
-        |> List.filter .isVisited
+    Coordinate2D.flatMap hCellCount vCellCount (\c -> Set.member c m.lookup)
+        |> List.filter identity
         |> List.length
 
 
@@ -179,13 +160,6 @@ getUnVisitedNeighboursOfTopOfStack m =
         |> List.head
         |> Maybe.map (getValidNeighbourCords >> List.filter (getIsCellVisitedIn m >> not))
         |> Maybe.withDefault []
-
-
-getStackTopCellData m =
-    m.cStack
-        |> List.head
-        |> Maybe.map (getCellDataIn m)
-        |> Maybe.withDefault defaultCellData
 
 
 
@@ -248,12 +222,9 @@ updatePopStack model =
 
 updateVisitCell cord model =
     let
-        cordCD =
-            getCellData cord model
-
         newLookup =
             model.lookup
-                |> Dict.insert cord { cordCD | isVisited = True }
+                |> Set.insert cord
 
         newConnections =
             model.cStack
@@ -334,7 +305,7 @@ gridSquare m cord =
             cord
 
         isVisited =
-            getCellData cord m |> .isVisited
+            m.lookup |> Set.member cord
 
         isOnTopOfStack =
             getIsOnTopOfStack cord m
