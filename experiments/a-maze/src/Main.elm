@@ -4,14 +4,13 @@ import AMaze exposing (Maze, mazeHeight, mazeWidth)
 import Browser
 import Browser.Events
 import Html exposing (Html, div, h1, img, text)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (class)
 import Html.Events exposing (onDoubleClick)
-import Point2d
+import ISvg exposing (iHeight, iWidth)
 import Random
 import Random.Array
 import Random.Extra
-import Rectangle2d
-import Svg.Attributes
+import Svg.Attributes as SA
 import TypedSvg exposing (svg)
 import ViewAMaze
 
@@ -65,24 +64,24 @@ update msg model =
 ---- VIEW ----
 
 
-worldRect =
-    Rectangle2d.from Point2d.origin (Point2d.fromCoordinates ( 600, 550 ))
+worldWidth =
+    600
+
+
+worldHeight =
+    550
 
 
 view : Model -> Html Msg
 view model =
-    let
-        ( worldWidth, worldHeight ) =
-            Rectangle2d.dimensions worldRect
-    in
     div []
         [ div [ class "pa3 vs3" ]
             [ div [ class "f2" ] [ text "A-Maze" ]
             , div [ class "no-sel" ]
                 [ svg
-                    [ Svg.Attributes.class "flex center"
-                    , width (worldWidth |> round)
-                    , height (worldHeight |> round)
+                    [ SA.class "flex center"
+                    , iWidth worldWidth
+                    , iHeight worldHeight
                     ]
                     (ViewAMaze.view model.maze)
                 ]
