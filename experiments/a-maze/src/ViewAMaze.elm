@@ -27,7 +27,7 @@ view worldRect maze =
         , SA.opacity "0.4"
         ]
         []
-    , g [ transform [ Translate 20 20 ] ] [ viewMaze maze ]
+    , g [ SA.transform (iTranslate 20 20) ] [ viewMaze maze ]
     ]
 
 
@@ -61,32 +61,6 @@ viewMaze maze =
         maze.height
         (drawMazeCellAt dataAt)
         |> g []
-
-
-iTranslate x y =
-    [ "translate("
-    , String.fromInt x
-    , ","
-    , String.fromInt y
-    , ")"
-    ]
-        |> String.join ""
-
-
-iX =
-    String.fromInt >> SA.x
-
-
-iY =
-    String.fromInt >> SA.y
-
-
-iWidth =
-    String.fromInt >> SA.width
-
-
-iHeight =
-    String.fromInt >> SA.height
 
 
 drawInnerCell x y fillS =
@@ -139,3 +113,33 @@ drawMazeCellAt dataAt cellX cellY =
             mazeCellSize
             drawInnerGridCell
         )
+
+
+
+---- SVG INT HELPERS ----
+
+
+iTranslate x y =
+    [ "translate("
+    , String.fromInt x
+    , ","
+    , String.fromInt y
+    , ")"
+    ]
+        |> String.join ""
+
+
+iX =
+    String.fromInt >> SA.x
+
+
+iY =
+    String.fromInt >> SA.y
+
+
+iWidth =
+    String.fromInt >> SA.width
+
+
+iHeight =
+    String.fromInt >> SA.height
