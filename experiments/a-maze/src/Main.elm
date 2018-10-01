@@ -30,47 +30,9 @@ import ViewSvgHelpers
 ---- MODEL ----
 
 
-type alias Connection =
-    ( Coordinate2D, Coordinate2D )
-
-
-type alias Connections =
-    Set Connection
-
-
-initialConnections : Connections
-initialConnections =
-    Set.empty
-
-
-type alias VisitedCords =
-    Set Coordinate2D
-
-
-emptyVisitedCords : VisitedCords
-emptyVisitedCords =
-    Set.empty
-
-
-initialVisitedCords : VisitedCords
-initialVisitedCords =
-    Set.fromList [ ( 0, 0 ) ]
-
-
-type alias CStack =
-    List Coordinate2D
-
-
-initialCStack =
-    [ ( 0, 0 ) ]
-
-
 type alias Model =
     { seed : Random.Seed
     , maze : AMaze
-    , visitedCords : VisitedCords
-    , cStack : CStack
-    , connections : Connections
     , mazeGenerator : MazeGenerator
     }
 
@@ -84,9 +46,6 @@ init { now } =
     update WalledAMaze
         { seed = Random.initialSeed now
         , maze = walledMaze
-        , visitedCords = initialVisitedCords
-        , cStack = initialCStack
-        , connections = initialConnections
         , mazeGenerator = MazeGenerator.init 6 4
         }
 
@@ -107,60 +66,6 @@ generateRandomMaze =
 walledMaze : AMaze
 walledMaze =
     AMaze.walled mazeWidth mazeHeight
-
-
-hCellCount =
-    6
-
-
-vCellCount =
-    4
-
-
-totalCellCount =
-    hCellCount * vCellCount
-
-
-getIsSolved : Model -> Bool
-getIsSolved =
-    getVisitedCellCount >> equals totalCellCount
-
-
-getIsCellVisited : Coordinate2D -> Model -> Bool
-getIsCellVisited cord =
-    .visitedCords >> Set.member cord
-
-
-getIsCellVisitedIn : Model -> Coordinate2D -> Bool
-getIsCellVisitedIn =
-    flip getIsCellVisited
-
-
-getVisitedCellCount : Model -> Int
-getVisitedCellCount m =
-    m.visitedCords |> Set.size
-
-
-getIsOnTopOfStack : Coordinate2D -> Model -> Bool
-getIsOnTopOfStack cord m =
-    m.cStack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
-
-
-isValidCord : Coordinate2D -> Bool
-isValidCord ( x, y ) =
-    x >= 0 && y >= 0 && x < hCellCount && y < vCellCount
-
-
-getValidNeighbourCords : Coordinate2D -> List Coordinate2D
-getValidNeighbourCords =
-    Coordinate2D.perpendicularNeighboursOf >> List.filter isValidCord
-
-
-getUnVisitedNeighboursOfTopOfStack m =
-    m.cStack
-        |> List.head
-        |> Maybe.map (getValidNeighbourCords >> List.filter (getIsCellVisitedIn m >> not))
-        |> Maybe.withDefault []
 
 
 
@@ -187,7 +92,7 @@ update msg m =
             { m | maze = AMaze.fillWalls m.maze } |> pure
 
         Step ->
-            m |> ifElse getIsSolved identity updateStep |> updateMazeGeneratorStep |> pure
+            m |> updateMazeGeneratorStep |> pure
 
 
 updateMazeGeneratorStep : Model -> Model
@@ -197,60 +102,6 @@ updateMazeGeneratorStep m =
             MazeGenerator.step m.seed m.mazeGenerator
     in
     { m | mazeGenerator = newMazeGen, seed = newSeed }
-
-
-updateStep m =
-    let
-        _ =
-            ( getVisitedCellCount m, totalCellCount ) |> Debug.log "(visited,total)"
-
-        neighbourCordGenerator =
-            getUnVisitedNeighboursOfTopOfStack m
-                |> Debug.log "getValidNeighbourCords"
-                |> Random.List.choose
-
-        ( ( maybeCord, _ ), newSeed ) =
-            Random.step neighbourCordGenerator m.seed
-
-        _ =
-            maybeCord |> Debug.log "randomCord"
-
-        newModel =
-            { m | seed = newSeed }
-    in
-    case maybeCord of
-        Just cord ->
-            updateVisitCell cord newModel
-
-        Nothing ->
-            updatePopStack newModel
-
-
-updatePopStack model =
-    { model | cStack = model.cStack |> List.drop 1 }
-
-
-updateVisitCell cord model =
-    let
-        newVisitedCords =
-            model.visitedCords
-                |> Set.insert cord
-
-        newConnections =
-            model.cStack
-                |> List.head
-                |> Maybe.map
-                    (\stackTop ->
-                        model.connections
-                            |> Set.insert ( stackTop, cord )
-                    )
-                |> Maybe.withDefault model.connections
-    in
-    { model
-        | visitedCords = newVisitedCords
-        , cStack = cord :: model.cStack
-        , connections = newConnections
-    }
 
 
 pure model =
@@ -287,7 +138,11 @@ view m =
                 {- , button [ onClick RandomAMaze ] [ text "Random" ]
                    , button [ onClick WalledAMaze ] [ text "Walled" ]
                 -}
-                , button [ onClick Step, disabled (getIsSolved m) ] [ text "Step" ]
+                , button
+                    [ onClick Step
+                    , disabled (MazeGenerator.isSolved m.mazeGenerator)
+                    ]
+                    [ text "Step" ]
                 ]
             , div [ class "no-sel" ]
                 [ svg
@@ -318,7 +173,7 @@ gridSquare m cord =
             m.visitedCords |> Set.member cord
 
         isOnTopOfStack =
-            getIsOnTopOfStack cord m
+            MazeGenerator.getIsOnTopOfStack cord m.mazeGenerator
 
         sizeWithOffset =
             cellSizePx + (innerOffsetPx * 2)
@@ -366,13 +221,17 @@ gridSquare m cord =
         ]
 
 
+viewAlgoData : Model -> Svg msg
 viewAlgoData m =
     let
         drawMazeCell cord =
             gridSquare m cord
 
+        { width, height } =
+            MazeGenerator.getDimensions m.mazeGenerator
+
         viewCells =
-            Coordinate2D.flatMap hCellCount vCellCount drawMazeCell
+            Coordinate2D.flatMap width height drawMazeCell
                 |> Svg.g []
 
         transform =

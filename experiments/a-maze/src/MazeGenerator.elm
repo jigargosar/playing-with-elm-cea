@@ -1,6 +1,14 @@
-module MazeGenerator exposing (MazeGenerator, init, step)
+module MazeGenerator exposing
+    ( MazeGenerator
+    , getDimensions
+    , getIsOnTopOfStack
+    , init
+    , isSolved
+    , step
+    )
 
 import Coordinate2D exposing (Coordinate2D)
+import Ramda exposing (equals)
 import Random
 import Random.List
 import Set exposing (Set)
@@ -60,14 +68,19 @@ getVisitedCellCount { visited } =
     Set.size visited
 
 
-isSolved : Record -> Bool
-isSolved rec =
+isSolvedRec : Record -> Bool
+isSolvedRec rec =
     getVisitedCellCount rec == getTotalCellCount rec
+
+
+isSolved : MazeGenerator -> Bool
+isSolved (MazeGenerator rec) =
+    isSolvedRec rec
 
 
 step : Random.Seed -> MazeGenerator -> ( MazeGenerator, Random.Seed )
 step seed (MazeGenerator rec) =
-    (if isSolved rec then
+    (if isSolvedRec rec then
         ( rec, seed )
 
      else
@@ -125,3 +138,12 @@ stepHelp seed stackTop rec =
 
         Nothing ->
             ( { rec | stack = rec.stack |> List.drop 1 }, newSeed )
+
+
+getDimensions (MazeGenerator { width, height }) =
+    { width = width, height = height }
+
+
+getIsOnTopOfStack : Coordinate2D -> MazeGenerator -> Bool
+getIsOnTopOfStack cord (MazeGenerator { stack }) =
+    stack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
