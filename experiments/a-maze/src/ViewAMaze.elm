@@ -89,7 +89,7 @@ iHeight =
     String.fromInt >> SA.height
 
 
-drawWithFill x y fillS =
+drawInnerCell x y fillS =
     rect
         [ x * mazeInnerCellSizeInPx |> iX
         , y * mazeInnerCellSizeInPx |> iY
@@ -107,10 +107,10 @@ drawMazeCellAt dataAt cellX cellY =
         drawInnerGridCell x y =
             let
                 drawPath =
-                    drawWithFill x y "#cd37a9"
+                    drawInnerCell x y "#cd37a9"
 
                 drawWall =
-                    drawWithFill x y "#000"
+                    drawInnerCell x y "#000"
             in
             case dataAt x y of
                 Nothing ->
