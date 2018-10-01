@@ -1,9 +1,7 @@
 module Ramda exposing
-    ( Coordinate2D
-    , add
+    ( add
     , appendTo
     , equals
-    , flatMapCoordinates2D
     , flip
     , ifElse
     , isEmptyList
@@ -50,27 +48,3 @@ ifElse pred true false value =
 
     else
         false value
-
-
-flatMapCoordinates2D width height fn =
-    mapCoordinates2D width height fn |> List.concat
-
-
-mapCoordinates2D width height fn =
-    let
-        xCords =
-            List.range 0 (width - 1)
-
-        yCords =
-            List.range 0 (height - 1)
-    in
-    yCords
-        |> List.map
-            (\y ->
-                xCords
-                    |> List.map (\x -> fn ( x, y ))
-            )
-
-
-type alias Coordinate2D =
-    ( Int, Int )

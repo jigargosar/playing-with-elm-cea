@@ -3,11 +3,12 @@ module Main exposing (main)
 import AMaze exposing (AMaze)
 import Browser
 import Browser.Events
+import Coordinate2D exposing (Coordinate2D)
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick, onDoubleClick)
 import ISvg exposing (iHeight, iWidth)
-import Ramda exposing (Coordinate2D, equals, ifElse, isEmptyList, ter)
+import Ramda exposing (equals, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
 import Random.Extra
@@ -121,6 +122,7 @@ view model =
                 [ div [ class "f2" ] [ text "A-Maze" ]
                 , button [ onClick GenerateRandom ] [ text "Random" ]
                 , button [ onClick Walled ] [ text "Walled" ]
+                , button [ onClick Step ] [ text "Step" ]
                 ]
             , div [ class "no-sel" ]
                 [ svg

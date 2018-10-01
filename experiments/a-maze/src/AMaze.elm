@@ -9,7 +9,7 @@ module AMaze exposing
     )
 
 import Array exposing (Array)
-import Ramda exposing (Coordinate2D)
+import Coordinate2D exposing (Coordinate2D)
 import Random
 import Random.Array
 import Random.Extra
@@ -87,7 +87,7 @@ maybeDataAtCord ( x, y ) { data } =
 
 mapData : (Coordinate2D -> MazeCellData -> a) -> AMaze -> List a
 mapData fn m =
-    Ramda.flatMapCoordinates2D m.width m.height (dataMapper fn m)
+    Coordinate2D.flatMapCoordinates2D m.width m.height (dataMapper fn m)
 
 
 dataMapper : (Coordinate2D -> MazeCellData -> a) -> AMaze -> Coordinate2D -> a

@@ -1,11 +1,12 @@
 module ViewAMaze exposing (view)
 
 import AMaze exposing (AMaze, MazeCellData)
+import Coordinate2D exposing (Coordinate2D)
 import Frame2d
 import Html.Lazy
 import ISvg exposing (iHeight, iTranslate, iWidth, iX, iY)
 import Point2d
-import Ramda exposing (Coordinate2D, flatMapCoordinates2D, ter)
+import Ramda exposing (ter)
 import Rectangle2d
 import Round
 import Svg exposing (Svg, g, line, rect)
@@ -59,7 +60,7 @@ drawMazeCellAt ( cellX, cellY ) cellData =
             (cellY * cellSizeInPx)
             |> SA.transform
         ]
-        (flatMapCoordinates2D
+        (Coordinate2D.flatMapCoordinates2D
             cellSize
             cellSize
             (drawInnerCellWithDataAt cellData)
