@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import AMaze exposing (Maze, mazeHeight, mazeWidth)
+import AMaze exposing (AMaze, mazeHeight, mazeWidth)
 import Browser
 import Browser.Events
 import Html exposing (Html, div, h1, img, text)
@@ -20,7 +20,7 @@ import ViewAMaze
 
 
 type alias Model =
-    { seed : Random.Seed, maze : Maze }
+    { seed : Random.Seed, maze : AMaze }
 
 
 type alias Flags =
