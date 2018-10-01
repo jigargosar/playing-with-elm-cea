@@ -99,6 +99,7 @@ type Msg
     = NoOp
     | RandomAMaze
     | WalledAMaze
+    | Step
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -112,6 +113,13 @@ update msg m =
 
         WalledAMaze ->
             { m | maze = AMaze.fillWalls m.maze } |> pure
+
+        Step ->
+            let
+                _ =
+                    1
+            in
+            pure m
 
 
 pure model =
@@ -144,8 +152,11 @@ view m =
         [ div [ class "pa3 vs3" ]
             [ div [ class "flex items-end hs3" ]
                 [ div [ class "f2" ] [ text "A-Maze" ]
-                , button [ onClick RandomAMaze ] [ text "Random" ]
-                , button [ onClick WalledAMaze ] [ text "Walled" ]
+
+                {- , button [ onClick RandomAMaze ] [ text "Random" ]
+                   , button [ onClick WalledAMaze ] [ text "Walled" ]
+                -}
+                , button [ onClick Step ] [ text "Step" ]
                 ]
             , div [ class "no-sel" ]
                 [ svg
