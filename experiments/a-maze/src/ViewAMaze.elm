@@ -1,6 +1,6 @@
 module ViewAMaze exposing (view)
 
-import Array2D
+import AMaze
 import Frame2d
 import Point2d
 import Ramda exposing (mapCoordinates2D, ter)
@@ -26,10 +26,7 @@ view worldRect maze =
         , SA.opacity "0.4"
         ]
         []
-    , g
-        [ {- transform [ Translate tx ty ], -} transform [ Translate 20 20 ]
-        ]
-        [ viewMaze maze ]
+    , g [ transform [ Translate 20 20 ] ] [ viewMaze maze ]
     ]
 
 
@@ -74,32 +71,22 @@ viewMaze maze =
                         drawWall =
                             drawWithFill "#000"
                     in
-                    case maze.data |> Array2D.get (round y) (round x) of
+                    case maze |> AMaze.dataAt (round y) (round x) of
                         Nothing ->
                             drawWall
 
-                        {- Just { down, right } -> -}
-                        Just _ ->
+                        Just { down, right } ->
                             let
-                                {- _ =
-                                   Debug.log "dr" { down = down, right = right, x = x, y = y }
-                                -}
-                                --                                _ =
-                                --                                    Debug.log "dr" "JJ"
                                 isSouthWallCord =
                                     y >= pathSize
 
                                 isRightWallCord =
                                     x >= pathSize
 
-                                {- shouldDrawWall =
-                                   (isSouthWallCord && down)
-                                       || (isRightWallCord && right)
-                                -}
+                                shouldDrawWall =
+                                    (isSouthWallCord && down)
+                                        || (isRightWallCord && right)
                             in
-                            {- ter shouldDrawWall
-                               drawPath
-                            -}
                             ter (isSouthWallCord || isRightWallCord) drawWall drawPath
             in
             g

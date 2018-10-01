@@ -1,4 +1,4 @@
-module AMaze exposing (Maze, MazePath, dataGenerator, mazeHeight, mazeWidth)
+module AMaze exposing (Maze, MazePath, dataAt, dataGenerator, mazeHeight, mazeWidth)
 
 import Array exposing (Array)
 import Random
@@ -37,3 +37,7 @@ dataGenerator =
             Random.Array.array mazeWidth pathGenerator
     in
     Random.Array.array mazeHeight rowGenerator
+
+
+dataAt x y { data } =
+    data |> Array.get y |> Maybe.andThen (Array.get x)
