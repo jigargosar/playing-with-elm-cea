@@ -184,11 +184,16 @@ update msg m =
                 _ =
                     getVisitedCellCount m |> Debug.log "VCC"
 
-                _ =
+                unVisitedCells =
                     getUnVisitedNeighboursOfTopOfStack m
                         |> Debug.log "getValidNeighbourCords"
             in
-            pure m
+            case unVisitedCells of
+                head :: rest ->
+                    pure m
+
+                [] ->
+                    pure m
 
 
 pure model =
