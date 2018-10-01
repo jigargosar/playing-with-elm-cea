@@ -1,12 +1,18 @@
 module Ramda exposing
     ( add
     , appendTo
+    , equals
     , flatMapCoordinates2D
     , flip
     , ifElse
+    , isEmptyList
     , subBy
     , ter
     )
+
+
+isEmptyList =
+    List.length >> equals 0
 
 
 ter bool v1 v2 =
@@ -15,6 +21,10 @@ ter bool v1 v2 =
 
     else
         v2
+
+
+equals =
+    (==)
 
 
 flip fn a b =

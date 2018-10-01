@@ -7,6 +7,7 @@ import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick, onDoubleClick)
 import ISvg exposing (iHeight, iWidth)
+import Ramda exposing (equals, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
 import Random.Extra
@@ -66,6 +67,7 @@ type Msg
     = NoOp
     | GenerateRandom
     | Walled
+    | Step
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -79,6 +81,13 @@ update msg m =
 
         Walled ->
             { m | maze = AMaze.fillWalls m.maze, stack = [ ( 0, 0 ) ] } |> pure
+
+        Step ->
+            let
+                top =
+                    List.head m.stack
+            in
+            m |> ifElse (.stack >> isEmptyList) pure pure
 
 
 pure model =
