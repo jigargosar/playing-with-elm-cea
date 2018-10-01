@@ -42,18 +42,18 @@ initialConnections =
     Set.empty
 
 
-type alias Lookup =
+type alias VisitedCords =
     Set Coordinate2D
 
 
-emptyLookup : Lookup
-emptyLookup =
+emptyVisitedCords : VisitedCords
+emptyVisitedCords =
     Set.empty
 
 
-initialLookup : Lookup
-initialLookup =
-    emptyLookup |> Set.insert ( 0, 0 )
+initialVisitedCords : VisitedCords
+initialVisitedCords =
+    emptyVisitedCords |> Set.insert ( 0, 0 )
 
 
 type alias CStack =
@@ -67,7 +67,7 @@ initialCStack =
 type alias Model =
     { seed : Random.Seed
     , maze : AMaze
-    , lookup : Lookup
+    , visitedCords : VisitedCords
     , cStack : CStack
     , connections : Connections
     }
@@ -82,7 +82,7 @@ init { now } =
     update WalledAMaze
         { seed = Random.initialSeed now
         , maze = walledMaze
-        , lookup = initialLookup
+        , visitedCords = initialVisitedCords
         , cStack = initialCStack
         , connections = initialConnections
         }
@@ -125,7 +125,7 @@ getIsSolved =
 
 getIsCellVisited : Coordinate2D -> Model -> Bool
 getIsCellVisited cord =
-    .lookup >> Set.member cord
+    .visitedCords >> Set.member cord
 
 
 getIsCellVisitedIn : Model -> Coordinate2D -> Bool
@@ -135,7 +135,7 @@ getIsCellVisitedIn =
 
 getVisitedCellCount : Model -> Int
 getVisitedCellCount m =
-    Coordinate2D.flatMap hCellCount vCellCount (\c -> Set.member c m.lookup)
+    Coordinate2D.flatMap hCellCount vCellCount (\c -> Set.member c m.visitedCords)
         |> List.filter identity
         |> List.length
 
@@ -222,8 +222,8 @@ updatePopStack model =
 
 updateVisitCell cord model =
     let
-        newLookup =
-            model.lookup
+        newVisitedCords =
+            model.visitedCords
                 |> Set.insert cord
 
         newConnections =
@@ -237,7 +237,7 @@ updateVisitCell cord model =
                 |> Maybe.withDefault model.connections
     in
     { model
-        | lookup = newLookup
+        | visitedCords = newVisitedCords
         , cStack = cord :: model.cStack
         , connections = newConnections
     }
@@ -305,7 +305,7 @@ gridSquare m cord =
             cord
 
         isVisited =
-            m.lookup |> Set.member cord
+            m.visitedCords |> Set.member cord
 
         isOnTopOfStack =
             getIsOnTopOfStack cord m
