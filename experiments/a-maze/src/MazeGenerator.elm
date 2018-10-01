@@ -49,9 +49,17 @@ init width height =
     MazeGenerator { defaultRecord | width = width, height = height }
 
 
+getTotalCellCount { width, height } =
+    width * height
+
+
+isSolved rec =
+    rec.visited.size == rec.width * rec.height
+
+
 step : MazeGenerator -> MazeGenerator
 step (MazeGenerator rec) =
-    (if rec.visited.size == rec.width * rec.height then
+    (if isSolved rec then
         rec
 
      else
@@ -65,7 +73,7 @@ step (MazeGenerator rec) =
         |> MazeGenerator
 
 
-stepHelp : Record -> Record
+stepHelp : Coordinate2D -> Record -> Record
 stepHelp stackTop rec =
     let
         totalCellCount =
