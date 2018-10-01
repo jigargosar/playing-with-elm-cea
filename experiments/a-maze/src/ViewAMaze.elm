@@ -3,7 +3,7 @@ module ViewAMaze exposing (view)
 import AMaze
 import Frame2d
 import Point2d
-import Ramda exposing (mapCoordinates2D, ter)
+import Ramda exposing (mapCoordinates2D, mapCoordinates2DFloat, ter)
 import Rectangle2d
 import Round
 import Svg exposing (g, line, rect)
@@ -35,16 +35,16 @@ viewMaze maze =
         drawMazeCellAt cellX cellY =
             let
                 pathSize =
-                    8
+                    2
 
                 wallSize =
-                    2
+                    1
 
                 mazeCellSize =
                     pathSize + wallSize
 
                 mazeInnerCellSizeInPx =
-                    2
+                    10
 
                 mazeCellSizeInPx =
                     mazeInnerCellSizeInPx * mazeCellSize
@@ -96,7 +96,7 @@ viewMaze maze =
                         (cellY * mazeCellSizeInPx |> round |> toFloat)
                     ]
                 ]
-                (mapCoordinates2D mazeCellSize mazeCellSize drawInnerGridCell)
+                (mapCoordinates2DFloat mazeCellSize mazeCellSize drawInnerGridCell)
     in
-    mapCoordinates2D maze.width maze.height drawMazeCellAt
+    mapCoordinates2DFloat maze.width maze.height drawMazeCellAt
         |> g []

@@ -7,11 +7,11 @@ import Random.Extra
 
 
 mazeWidth =
-    20
+    3
 
 
 mazeHeight =
-    25
+    5
 
 
 type alias MazePath =

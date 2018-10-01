@@ -1,4 +1,13 @@
-module Ramda exposing (add, appendTo, flip, ifElse, mapCoordinates2D, subBy, ter)
+module Ramda exposing
+    ( add
+    , appendTo
+    , flip
+    , ifElse
+    , mapCoordinates2D
+    , mapCoordinates2DFloat
+    , subBy
+    , ter
+    )
 
 
 ter bool v1 v2 =
@@ -45,6 +54,10 @@ mapCoordinates2D width height fn =
         |> List.map
             (\x ->
                 yCords
-                    |> List.map (\y -> fn (toFloat x) (toFloat y))
+                    |> List.map (\y -> fn x y)
             )
         |> List.concat
+
+
+mapCoordinates2DFloat w h fn =
+    mapCoordinates2D w h (\x y -> fn (toFloat x) (toFloat y))
