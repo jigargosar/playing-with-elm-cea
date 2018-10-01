@@ -3,8 +3,8 @@ module ViewSvgHelpers exposing (gridSquare, square, view)
 import ISvg exposing (iHeight, iTranslate, iWidth, iX, iY)
 import Svg exposing (Svg, defs, g, line, path, pattern, rect)
 import Svg.Attributes as SA exposing (d, id)
-import TypedSvg.Attributes exposing (patternUnits)
-import TypedSvg.Types exposing (CoordinateSystem(..))
+import TypedSvg.Attributes exposing (alignmentBaseline, patternUnits)
+import TypedSvg.Types exposing (AlignmentBaseline(..), CoordinateSystem(..))
 
 
 view content =
@@ -48,6 +48,7 @@ view content =
         [ SA.transform "scale(0.5,0.5)"
         , SA.width "200%"
         , SA.height "200%"
+        , SA.transform "scale(1,1)"
         , SA.fill "url(#grid)"
         ]
         []
@@ -77,14 +78,33 @@ gridSquare x y cellSize innerOffset =
         size =
             cellSize - (innerOffset * 2)
     in
-    rect
-        [ iX (x * xyMultiplier)
-        , iY (y * xyMultiplier)
-        , iWidth size
-        , iHeight size
-        , SA.fill "#cd37a9"
-        , SA.fill "none"
-        , SA.strokeWidth "2"
-        , SA.stroke "#000"
+    g
+        [ SA.transform
+            (iTranslate (x * xyMultiplier)
+                (y
+                    * xyMultiplier
+                )
+            )
         ]
-        []
+        [ rect
+            [ iX innerOffset
+            , iY innerOffset
+            , iWidth size
+            , iHeight size
+            , SA.fill "#cd37a9"
+            , SA.fill "none"
+            , SA.strokeWidth "2"
+            , SA.stroke "#000"
+            ]
+            []
+        , Svg.text_ [ SA.fontSize "10", alignmentBaseline AlignmentTextBeforeEdge ]
+            [ [ "("
+              , String.fromInt x
+              , ","
+              , String.fromInt y
+              , ")"
+              ]
+                |> String.join ""
+                |> Svg.text
+            ]
+        ]
