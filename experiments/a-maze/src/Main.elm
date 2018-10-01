@@ -64,7 +64,7 @@ update msg m =
             pure m
 
         New ->
-            pure m
+            updateGenerateNewMaze m |> pure
 
 
 pure model =
