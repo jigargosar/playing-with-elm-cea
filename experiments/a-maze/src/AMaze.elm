@@ -20,6 +20,10 @@ defaultCellData =
     MazeCellData False False
 
 
+walledCellData =
+    MazeCellData True True
+
+
 withDefaultCellData =
     Maybe.withDefault defaultCellData
 
@@ -50,13 +54,18 @@ randomGenerator w h =
     Random.map (AMaze w h) (dataGenerator w h)
 
 
+walled : Int -> Int -> AMaze
+walled w h =
+    AMaze w h (Ramda.flatMapCoordinates2D w h (always walledCellData))
+
+
 dataAt x y { data } =
     data |> Array.get y >> Maybe.andThen (Array.get x) >> withDefaultCellData
 
 
 mapData : (Int -> Int -> MazeCellData -> a) -> AMaze -> List a
 mapData fn m =
-    Ramda.mapCoordinates2D m.width m.height (dataMapper fn m)
+    Ramda.flatMapCoordinates2D m.width m.height (dataMapper fn m)
 
 
 dataMapper fn m x y =

@@ -5,7 +5,7 @@ import Frame2d
 import Html.Lazy
 import ISvg exposing (iHeight, iTranslate, iWidth, iX, iY)
 import Point2d
-import Ramda exposing (mapCoordinates2D, ter)
+import Ramda exposing (flatMapCoordinates2D, ter)
 import Rectangle2d
 import Round
 import Svg exposing (Svg, g, line, rect)
@@ -58,7 +58,7 @@ drawMazeCellAt cellX cellY cellData =
             (cellY * cellSizeInPx)
             |> SA.transform
         ]
-        (mapCoordinates2D
+        (flatMapCoordinates2D
             cellSize
             cellSize
             (drawInnerCellWithDataAt cellData)

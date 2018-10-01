@@ -1,9 +1,9 @@
 module Ramda exposing
     ( add
     , appendTo
+    , flatMapCoordinates2D
     , flip
     , ifElse
-    , mapCoordinates2D
     , subBy
     , ter
     )
@@ -41,7 +41,7 @@ ifElse pred true false value =
         false value
 
 
-mapCoordinates2D width height fn =
+flatMapCoordinates2D width height fn =
     let
         xCords =
             List.range 0 (width - 1)
