@@ -1,6 +1,7 @@
-module AMaze exposing (Maze, MazePath, dataAt, dataGenerator, mazeHeight, mazeWidth)
+module AMaze exposing (Maze, MazePath, dataAt, dataGenerator, mapData, mazeHeight, mazeWidth)
 
 import Array exposing (Array)
+import Ramda
 import Random
 import Random.Array
 import Random.Extra
@@ -41,3 +42,7 @@ dataGenerator =
 
 dataAt x y { data } =
     data |> Array.get y |> Maybe.andThen (Array.get x)
+
+
+mapData fn m =
+    Ramda.mapCoordinates2D m.width m.height (\x y -> fn x y (dataAt x y m))

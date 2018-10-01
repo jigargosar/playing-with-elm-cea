@@ -47,15 +47,7 @@ mazeCellSizeInPx =
 
 
 viewMaze maze =
-    let
-        dataAt x y =
-            maze |> AMaze.dataAt x y
-    in
-    mapCoordinates2D
-        maze.width
-        maze.height
-        (drawMazeCellAt dataAt)
-        |> g []
+    g [] (AMaze.mapData drawMazeCellAt maze)
 
 
 drawInnerCell x y fillS =
@@ -69,11 +61,7 @@ drawInnerCell x y fillS =
         []
 
 
-drawMazeCellAt dataAt cellX cellY =
-    let
-        cellData =
-            dataAt cellX cellY
-    in
+drawMazeCellAt cellX cellY cellData =
     g
         [ iTranslate
             (cellX * mazeCellSizeInPx)
