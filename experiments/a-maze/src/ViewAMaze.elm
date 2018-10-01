@@ -73,18 +73,22 @@ iTranslate x y =
         |> String.join ""
 
 
+iX =
+    String.fromInt >> SA.x
+
+
+iY =
+    String.fromInt >> SA.y
+
+
 drawMazeCellAt dataAt cellX cellY =
     let
         drawInnerGridCell x y =
             let
                 drawWithFill fillS =
                     rect
-                        [ (x * mazeInnerCellSizeInPx)
-                            |> String.fromInt
-                            |> SA.x
-                        , (y * mazeInnerCellSizeInPx)
-                            |> String.fromInt
-                            |> SA.y
+                        [ x * mazeInnerCellSizeInPx |> iX
+                        , y * mazeInnerCellSizeInPx |> iY
                         , SA.width (mazeInnerCellSizeInPx |> String.fromInt)
                         , SA.height (mazeInnerCellSizeInPx |> String.fromInt)
                         , SA.fill fillS
