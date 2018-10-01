@@ -1,4 +1,4 @@
-module MazeGenerator exposing (MazeGenerator, init)
+module MazeGenerator exposing (MazeGenerator, init, step)
 
 import Coordinate2D exposing (Coordinate2D)
 import Random

@@ -187,7 +187,16 @@ update msg m =
             { m | maze = AMaze.fillWalls m.maze } |> pure
 
         Step ->
-            m |> ifElse getIsSolved identity updateStep |> pure
+            m |> ifElse getIsSolved identity updateStep |> updateMazeGeneratorStep |> pure
+
+
+updateMazeGeneratorStep : Model -> Model
+updateMazeGeneratorStep m =
+    let
+        ( newMazeGen, newSeed ) =
+            MazeGenerator.step m.seed m.mazeGenerator
+    in
+    { m | mazeGenerator = newMazeGen, seed = newSeed }
 
 
 updateStep m =
