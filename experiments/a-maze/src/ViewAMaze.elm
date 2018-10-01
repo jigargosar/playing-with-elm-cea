@@ -27,7 +27,7 @@ view worldRect maze =
         , SA.opacity "0.4"
         ]
         []
-    , g [ transform [ Translate 20 20 ] ] [ Html.Lazy.lazy viewMaze maze ]
+    , g [ transform [ Translate 20 20 ] ] [ viewMaze maze ]
     ]
 
 
@@ -93,15 +93,10 @@ viewMaze maze =
                             ter (isSouthWallCord || isRightWallCord) drawWall drawPath
             in
             g
-                [ SA.transform
-                    ([ "translate("
-                     , String.fromInt (cellX * mazeCellSizeInPx)
-                     , ","
-                     , String.fromInt (cellY * mazeCellSizeInPx)
-                     , ")"
-                     ]
-                        |> String.join ""
-                    )
+                [ iTranslate
+                    (cellX * mazeCellSizeInPx)
+                    (cellY * mazeCellSizeInPx)
+                    |> SA.transform
                 ]
                 (mapCoordinates2D
                     mazeCellSize
@@ -111,3 +106,13 @@ viewMaze maze =
     in
     mapCoordinates2D maze.width maze.height drawMazeCellAt
         |> g []
+
+
+iTranslate x y =
+    [ "translate("
+    , String.fromInt x
+    , ","
+    , String.fromInt y
+    , ")"
+    ]
+        |> String.join ""
