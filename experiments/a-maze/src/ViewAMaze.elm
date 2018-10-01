@@ -53,15 +53,8 @@ viewMaze maze =
                     let
                         drawWithFill fillS =
                             rect
-                                [ SA.transform
-                                    ([ "translate("
-                                     , String.fromInt (x * mazeInnerCellSizeInPx)
-                                     , ","
-                                     , String.fromInt (y * mazeInnerCellSizeInPx)
-                                     , ")"
-                                     ]
-                                        |> String.join ""
-                                    )
+                                [ String.fromInt (x * mazeInnerCellSizeInPx) |> SA.x
+                                , String.fromInt (y * mazeInnerCellSizeInPx) |> SA.y
                                 , SA.width (mazeInnerCellSizeInPx |> String.fromInt)
                                 , SA.height (mazeInnerCellSizeInPx |> String.fromInt)
                                 , SA.fill fillS
