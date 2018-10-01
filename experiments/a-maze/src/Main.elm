@@ -10,7 +10,7 @@ import Dict exposing (Dict)
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class, disabled)
 import Html.Events exposing (onClick, onDoubleClick)
-import ISvg exposing (iCX, iCY, iHeight, iTranslate, iWidth, iX, iY)
+import ISvg exposing (iCX, iCY, iHeight, iTranslate, iWidth, iX, iX1, iX2, iY, iY1, iY2)
 import Ramda exposing (equals, flip, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
@@ -309,20 +309,11 @@ gridSquare m cord =
         sizeWithOffset =
             cellSizePx + (innerOffsetPx * 2)
 
-        xyMultiplier =
-            cellSizePx
-
         size =
             cellSizePx - (innerOffsetPx * 2)
     in
     Svg.g
-        [ SA.transform
-            (iTranslate (x * xyMultiplier)
-                (y
-                    * xyMultiplier
-                )
-            )
-        ]
+        [ SA.transform (iTranslate (x * cellSizePx) (y * cellSizePx)) ]
         [ Svg.rect
             [ iX innerOffsetPx
             , iY innerOffsetPx
@@ -367,11 +358,35 @@ viewAlgoData m =
         drawMazeCell cord =
             gridSquare m cord
 
-        viewCellData =
+        viewCells =
             Coordinate2D.flatMap hCellCount vCellCount drawMazeCell
                 |> Svg.g []
+
+        viewCellConnections =
+            let
+                transform =
+                    Coordinate2D.scale cellSizePx
+                        >> Coordinate2D.translate (cellSizePx // 2)
+
+                ( x1, y1 ) =
+                    ( 1, 1 ) |> transform
+
+                ( x2, y2 ) =
+                    ( 2, 1 ) |> transform
+            in
+            Svg.g []
+                [ Svg.line
+                    [ iX1 x1
+                    , iX2 x2
+                    , iY1 y1
+                    , iY2 y2
+                    , SA.strokeWidth "2"
+                    , SA.stroke "#000"
+                    ]
+                    []
+                ]
     in
-    Svg.g [] [ viewCellData ]
+    Svg.g [] [ viewCells, viewCellConnections ]
 
 
 viewAMaze m =

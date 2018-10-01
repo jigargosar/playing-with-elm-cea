@@ -1,4 +1,11 @@
-module Coordinate2D exposing (Coordinate2D, flatMap, map, perpendicularNeighboursOf)
+module Coordinate2D exposing
+    ( Coordinate2D
+    , flatMap
+    , map
+    , perpendicularNeighboursOf
+    , scale
+    , translate
+    )
 
 
 type alias Coordinate2D =
@@ -32,3 +39,11 @@ perpendicularNeighboursOf ( x, y ) =
     , ( x, y + 1 )
     , ( x, y - 1 )
     ]
+
+
+scale s ( x, y ) =
+    ( s * x, s * y )
+
+
+translate t ( x, y ) =
+    ( t + x, t + y )

@@ -1,4 +1,17 @@
-module ISvg exposing (iCX, iCY, iHeight, iScale, iTranslate, iWidth, iX, iY)
+module ISvg exposing
+    ( iCX
+    , iCY
+    , iHeight
+    , iScale
+    , iTranslate
+    , iWidth
+    , iX
+    , iX1
+    , iX2
+    , iY
+    , iY1
+    , iY2
+    )
 
 import Svg.Attributes as SA
 
@@ -31,12 +44,28 @@ iX =
     String.fromInt >> SA.x
 
 
+iX1 =
+    String.fromInt >> SA.x1
+
+
+iX2 =
+    String.fromInt >> SA.x2
+
+
 iCX =
     String.fromInt >> SA.cx
 
 
 iY =
     String.fromInt >> SA.y
+
+
+iY1 =
+    String.fromInt >> SA.y1
+
+
+iY2 =
+    String.fromInt >> SA.y2
 
 
 iCY =
