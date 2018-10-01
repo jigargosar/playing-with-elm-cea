@@ -90,13 +90,17 @@ viewMaze maze =
                             ter (isSouthWallCord || isRightWallCord) drawWall drawPath
             in
             g
-                [ transform
-                    [ Translate
-                        (cellX * mazeCellSizeInPx |> round |> toFloat)
-                        (cellY * mazeCellSizeInPx |> round |> toFloat)
-                    ]
+                [ SA.transform
+                    ([ "translate("
+                     , String.fromInt (cellX * mazeCellSizeInPx)
+                     , ","
+                     , String.fromInt (cellY * mazeCellSizeInPx)
+                     , ")"
+                     ]
+                        |> String.join ""
+                    )
                 ]
                 (mapCoordinates2DFloat mazeCellSize mazeCellSize drawInnerGridCell)
     in
-    mapCoordinates2DFloat maze.width maze.height drawMazeCellAt
+    mapCoordinates2D maze.width maze.height drawMazeCellAt
         |> g []
