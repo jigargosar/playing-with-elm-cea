@@ -138,7 +138,7 @@ viewAlgoData m =
             5
 
         drawMazeCell ( x, y ) =
-            ViewSvgHelpers.square2 x y cellSizePx spacing "#cd37a9"
+            ViewSvgHelpers.square2 x y cellSizePx spacing
     in
     Coordinate2D.flatMap
         mazeWidth

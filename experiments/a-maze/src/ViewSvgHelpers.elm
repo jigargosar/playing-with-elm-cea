@@ -30,7 +30,7 @@ square x y size fillS =
         []
 
 
-square2 x y size spacing fillS =
+square2 x y size spacing =
     let
         sizeWithOffset =
             size + spacing
@@ -40,7 +40,7 @@ square2 x y size spacing fillS =
         , iY (y * sizeWithOffset)
         , iWidth size
         , iHeight size
-        , SA.fill fillS
+        , SA.fill "#cd37a9"
         , SA.strokeWidth "2"
         , SA.stroke "#000"
         ]
