@@ -130,7 +130,17 @@ view m =
 
 viewAlgoData m =
     {- viewAMaze m -}
-    Svg.g [] []
+    let
+        cellSizePx =
+            15
+
+        drawMazeCell ( x, y ) =
+            ViewSvgHelpers.square2 x y cellSizePx "#cd37a9"
+    in
+    Coordinate2D.flatMap mazeWidth
+        mazeHeight
+        drawMazeCell
+        |> Svg.g []
 
 
 viewAMaze m =

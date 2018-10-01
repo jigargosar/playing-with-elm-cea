@@ -1,6 +1,6 @@
-module ViewSvgHelpers exposing (view)
+module ViewSvgHelpers exposing (square, square2, view)
 
-import ISvg exposing (iTranslate)
+import ISvg exposing (iHeight, iTranslate, iWidth, iX, iY)
 import Svg exposing (Svg, g, line, rect)
 import Svg.Attributes as SA
 
@@ -17,3 +17,25 @@ view content =
         []
     , g [ SA.transform (iTranslate 20 20) ] [ content ]
     ]
+
+
+square x y size fillS =
+    rect
+        [ iX x
+        , iY y
+        , iWidth size
+        , iHeight size
+        , SA.fill fillS
+        ]
+        []
+
+
+square2 x y size fillS =
+    rect
+        [ iX (x * size)
+        , iY (y * size)
+        , iWidth size
+        , iHeight size
+        , SA.fill fillS
+        ]
+        []
