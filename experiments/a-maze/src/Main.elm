@@ -193,7 +193,7 @@ update msg m =
             { m | maze = AMaze.fillWalls m.maze } |> pure
 
         Step ->
-            updateStep m |> pure
+            m |> ifElse getIsSolved identity updateStep |> pure
 
 
 updateStep m =
@@ -366,9 +366,12 @@ viewAlgoData m =
     let
         drawMazeCell cord =
             gridSquare m cord
+
+        viewCellData =
+            Coordinate2D.flatMap hCellCount vCellCount drawMazeCell
+                |> Svg.g []
     in
-    Coordinate2D.flatMap hCellCount vCellCount drawMazeCell
-        |> Svg.g []
+    Svg.g [] [ viewCellData ]
 
 
 viewAMaze m =
