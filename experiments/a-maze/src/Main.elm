@@ -33,24 +33,21 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
-    let
-        initialSeed =
-            Random.initialSeed now
-
-        ( newMaze, newSeed ) =
-            generateRandomMaze initialSeed
-    in
-    ( { seed = newSeed
-      , maze = newMaze |> AMaze.fillWalls
-      , stack = [ ( 0, 0 ) ]
-      }
-    , Cmd.none
-    )
+    update Walled
+        { seed = Random.initialSeed now
+        , maze = walledMaze
+        , stack = []
+        }
 
 
 generateRandomMaze : Random.Seed -> ( AMaze, Random.Seed )
 generateRandomMaze =
     Random.step (AMaze.randomGenerator 18 13)
+
+
+walledMaze : AMaze
+walledMaze =
+    AMaze.walled 18 13
 
 
 
@@ -73,7 +70,7 @@ update msg m =
             updateGenerateNewMaze m |> pure
 
         Walled ->
-            { m | maze = AMaze.fillWalls m.maze } |> pure
+            { m | maze = AMaze.fillWalls m.maze, stack = [ ( 0, 0 ) ] } |> pure
 
 
 pure model =

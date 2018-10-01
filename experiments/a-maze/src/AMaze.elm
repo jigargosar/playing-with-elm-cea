@@ -4,6 +4,7 @@ module AMaze exposing
     , fillWalls
     , mapData
     , randomGenerator
+    , walled
     )
 
 import Array exposing (Array)
@@ -14,7 +15,8 @@ import Random.Extra
 
 
 type alias MazeCellData =
-    { down : Bool, right : Bool
+    { down : Bool
+    , right : Bool
 
     {- , top:Bool, left:Bool -}
     }
