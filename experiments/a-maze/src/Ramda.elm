@@ -49,10 +49,10 @@ mapCoordinates2D width height fn =
         yCords =
             List.range 0 (height - 1)
     in
-    xCords
+    yCords
         |> List.map
-            (\x ->
-                yCords
-                    |> List.map (\y -> fn x y)
+            (\y ->
+                xCords
+                    |> List.map (\x -> fn x y)
             )
         |> List.concat

@@ -69,6 +69,14 @@ drawInnerCell x y fillS =
         []
 
 
+isSouthWallCord x y =
+    y >= pathSize
+
+
+isRightWallCord x y =
+    x >= pathSize
+
+
 drawMazeCellAt dataAt cellX cellY =
     let
         drawInnerGridCell x y =
@@ -85,17 +93,11 @@ drawMazeCellAt dataAt cellX cellY =
 
                 Just { down, right } ->
                     let
-                        isSouthWallCord =
-                            y >= pathSize
-
-                        isRightWallCord =
-                            x >= pathSize
-
                         shouldDrawWall =
-                            (isSouthWallCord && down)
-                                || (isRightWallCord && right)
+                            (isSouthWallCord x y && down)
+                                || (isRightWallCord x y && right)
                     in
-                    ter (isSouthWallCord || isRightWallCord) drawWall drawPath
+                    ter shouldDrawWall drawWall drawPath
     in
     g
         [ iTranslate
