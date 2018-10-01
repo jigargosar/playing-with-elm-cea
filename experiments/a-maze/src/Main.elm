@@ -134,14 +134,14 @@ viewAlgoData m =
         cellSizePx =
             50
 
-        innerSpacing =
+        spacingPx =
             10
 
         drawMazeCell ( x, y ) =
-            ViewSvgHelpers.gridSquare x y cellSizePx innerSpacing
+            ViewSvgHelpers.gridSquare x y cellSizePx spacingPx
 
         gridOffset =
-            (cellSizePx * 1) + innerSpacing
+            (cellSizePx * 1) + spacingPx
     in
     Coordinate2D.flatMap 10 8 drawMazeCell
         |> Svg.g [ SA.transform (iTranslate gridOffset gridOffset) ]
