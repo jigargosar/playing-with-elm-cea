@@ -3,6 +3,7 @@ module ViewAMaze exposing (view)
 import AMaze
 import Frame2d
 import Html.Lazy
+import ISvg exposing (iHeight, iTranslate, iWidth, iX, iY)
 import Point2d
 import Ramda exposing (mapCoordinates2D, ter)
 import Rectangle2d
@@ -111,29 +112,3 @@ drawMazeCellAt dataAt cellX cellY =
 
 
 ---- SVG INT HELPERS ----
-
-
-iTranslate x y =
-    [ "translate("
-    , String.fromInt x
-    , ","
-    , String.fromInt y
-    , ")"
-    ]
-        |> String.join ""
-
-
-iX =
-    String.fromInt >> SA.x
-
-
-iY =
-    String.fromInt >> SA.y
-
-
-iWidth =
-    String.fromInt >> SA.width
-
-
-iHeight =
-    String.fromInt >> SA.height
