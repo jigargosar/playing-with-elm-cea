@@ -31,25 +31,30 @@ view worldRect maze =
     ]
 
 
+pathSize =
+    2
+
+
+wallSize =
+    1
+
+
+mazeCellSize =
+    pathSize + wallSize
+
+
+mazeInnerCellSizeInPx =
+    10
+
+
+mazeCellSizeInPx =
+    mazeInnerCellSizeInPx * mazeCellSize
+
+
 viewMaze maze =
     let
         drawMazeCellAt cellX cellY =
             let
-                pathSize =
-                    2
-
-                wallSize =
-                    1
-
-                mazeCellSize =
-                    pathSize + wallSize
-
-                mazeInnerCellSizeInPx =
-                    10
-
-                mazeCellSizeInPx =
-                    mazeInnerCellSizeInPx * mazeCellSize
-
                 drawInnerGridCell x y =
                     let
                         drawWithFill fillS =
