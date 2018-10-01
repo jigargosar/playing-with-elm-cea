@@ -69,38 +69,10 @@ drawInnerCell x y fillS =
         []
 
 
-isSouthWallCord x y =
-    y == 2
-
-
-isRightWallCord x y =
-    x == 2
-
-
 drawMazeCellAt dataAt cellX cellY =
     let
         cellData =
             dataAt cellX cellY
-
-        drawInnerGridCell x y =
-            let
-                drawPath =
-                    drawInnerCell x y "#cd37a9"
-
-                drawWall =
-                    drawInnerCell x y "#000"
-            in
-            case cellData of
-                Nothing ->
-                    drawWall
-
-                Just { down, right } ->
-                    let
-                        shouldDrawWall =
-                            (isSouthWallCord x y && down)
-                                || (isRightWallCord x y && right)
-                    in
-                    ter shouldDrawWall drawWall drawPath
     in
     g
         [ iTranslate
@@ -111,9 +83,34 @@ drawMazeCellAt dataAt cellX cellY =
         (mapCoordinates2D
             mazeCellSize
             mazeCellSize
-            drawInnerGridCell
+            (drawInnerGridCell cellData)
         )
 
 
+isSouthWallCord x y =
+    y >= pathSize
 
----- SVG INT HELPERS ----
+
+isRightWallCord x y =
+    x >= pathSize
+
+
+drawInnerGridCell cellData x y =
+    let
+        drawPath =
+            drawInnerCell x y "#cd37a9"
+
+        drawWall =
+            drawInnerCell x y "#000"
+    in
+    case cellData of
+        Nothing ->
+            drawWall
+
+        Just { down, right } ->
+            let
+                shouldDrawWall =
+                    (isSouthWallCord x y && down)
+                        || (isRightWallCord x y && right)
+            in
+            ter shouldDrawWall drawWall drawPath
