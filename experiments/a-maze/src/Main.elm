@@ -9,7 +9,7 @@ import Data2D
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick, onDoubleClick)
-import ISvg exposing (iHeight, iTranslate, iWidth)
+import ISvg exposing (iHeight, iTranslate, iWidth, iX, iY)
 import Ramda exposing (equals, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
@@ -17,6 +17,8 @@ import Random.Extra
 import Svg
 import Svg.Attributes as SA
 import TypedSvg exposing (svg)
+import TypedSvg.Attributes exposing (alignmentBaseline)
+import TypedSvg.Types exposing (AlignmentBaseline(..))
 import ViewAMaze
 import ViewSvgHelpers
 
@@ -128,6 +130,53 @@ view m =
         ]
 
 
+isVisited cord m =
+    cord == ( 0, 0 )
+
+
+gridSquare x y cellSize innerOffset =
+    let
+        sizeWithOffset =
+            cellSize + (innerOffset * 2)
+
+        xyMultiplier =
+            cellSize
+
+        size =
+            cellSize - (innerOffset * 2)
+    in
+    Svg.g
+        [ SA.transform
+            (iTranslate (x * xyMultiplier)
+                (y
+                    * xyMultiplier
+                )
+            )
+        ]
+        [ Svg.rect
+            [ iX innerOffset
+            , iY innerOffset
+            , iWidth size
+            , iHeight size
+            , SA.fill "#cd37a9"
+            , SA.fill "none"
+            , SA.strokeWidth "2"
+            , SA.stroke "#000"
+            ]
+            []
+        , Svg.text_ [ SA.fontSize "10", alignmentBaseline AlignmentTextBeforeEdge ]
+            [ [ "("
+              , String.fromInt x
+              , ","
+              , String.fromInt y
+              , ")"
+              ]
+                |> String.join ""
+                |> Svg.text
+            ]
+        ]
+
+
 viewAlgoData m =
     {- viewAMaze m -}
     let
@@ -138,7 +187,7 @@ viewAlgoData m =
             20
 
         drawMazeCell ( x, y ) =
-            ViewSvgHelpers.gridSquare x y cellSizePx spacingPx
+            gridSquare x y cellSizePx spacingPx
 
         gridOffset =
             cellSizePx * 0
