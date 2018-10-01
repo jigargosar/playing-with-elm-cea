@@ -6,6 +6,7 @@ module MazeGenerator exposing
     , init
     , isSolved
     , isVisitedCord
+    , removeRandomConnections
     , step
     )
 
@@ -158,3 +159,9 @@ getIsOnTopOfStack cord (MazeGenerator { stack }) =
 
 isVisitedCord cord (MazeGenerator { visited }) =
     Set.member cord visited
+
+
+removeRandomConnections : Random.Seed -> MazeGenerator -> ( MazeGenerator, Random.Seed )
+removeRandomConnections seed (MazeGenerator rec) =
+    ( rec, seed )
+        |> Tuple.mapFirst MazeGenerator

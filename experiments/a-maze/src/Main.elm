@@ -46,7 +46,7 @@ init { now } =
     update WalledAMaze
         { seed = Random.initialSeed now
         , maze = walledMaze
-        , mazeGenerator = MazeGenerator.init 12 8
+        , mazeGenerator = MazeGenerator.init 24 16
         }
 
 
@@ -77,6 +77,7 @@ type Msg
     | RandomAMaze
     | WalledAMaze
     | Step
+    | RemoveRandomConnections
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -93,6 +94,13 @@ update msg m =
 
         Step ->
             m |> updateMazeGeneratorStep |> pure
+
+        RemoveRandomConnections ->
+            let
+                ( newMazeGenerator, newSeed ) =
+                    MazeGenerator.removeRandomConnections m.seed m.mazeGenerator
+            in
+            pure { m | mazeGenerator = newMazeGenerator, seed = newSeed }
 
 
 updateMazeGeneratorStep : Model -> Model
@@ -134,10 +142,6 @@ view m =
         [ div [ class "pa3 vs3" ]
             [ div [ class "flex items-end hs3" ]
                 [ div [ class "f2" ] [ text "A-Maze" ]
-
-                {- , button [ onClick RandomAMaze ] [ text "Random" ]
-                   , button [ onClick WalledAMaze ] [ text "Walled" ]
-                -}
                 , button
                     [ onClick Step
                     , disabled (MazeGenerator.isSolved m.mazeGenerator)
