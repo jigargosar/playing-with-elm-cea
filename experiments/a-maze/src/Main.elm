@@ -122,7 +122,7 @@ view m =
                     , iWidth worldWidth
                     , iHeight worldHeight
                     ]
-                    (viewAlgoData m)
+                    (viewAlgoData m |> ViewSvgHelpers.view)
                 ]
             ]
         ]
@@ -131,11 +131,10 @@ view m =
 viewAlgoData m =
     {- viewAMaze m -}
     Svg.g [] []
-        |> ViewSvgHelpers.view
 
 
 viewAMaze m =
-    ViewSvgHelpers.view (ViewAMaze.view m.maze)
+    ViewAMaze.view m.maze
 
 
 
