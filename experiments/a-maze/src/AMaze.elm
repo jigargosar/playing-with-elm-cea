@@ -1,6 +1,7 @@
 module AMaze exposing
     ( AMaze
     , MazeCellData
+    , fillWalls
     , mapData
     , randomGenerator
     )
@@ -62,6 +63,11 @@ randomGenerator w h =
 walled : Int -> Int -> AMaze
 walled w h =
     AMaze w h (createWalledMazeData w h)
+
+
+fillWalls : AMaze -> AMaze
+fillWalls { width, height } =
+    AMaze width height (createWalledMazeData width height)
 
 
 dataAt x y { data } =

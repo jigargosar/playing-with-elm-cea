@@ -55,6 +55,7 @@ generateRandomMaze =
 type Msg
     = NoOp
     | New
+    | Walled
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -65,6 +66,9 @@ update msg m =
 
         New ->
             updateGenerateNewMaze m |> pure
+
+        Walled ->
+            { m | maze = AMaze.fillWalls m.maze } |> pure
 
 
 pure model =
@@ -98,6 +102,7 @@ view model =
             [ div [ class "flex items-end hs3" ]
                 [ div [ class "f2" ] [ text "A-Maze" ]
                 , button [ onClick New ] [ text "New" ]
+                , button [ onClick Walled ] [ text "Walled" ]
                 ]
             , div [ class "no-sel" ]
                 [ svg
