@@ -33,15 +33,11 @@ init { now } =
         initialSeed =
             Random.initialSeed now
 
-        ( mazeDataList2D, seed ) =
-            Random.step AMaze.defaultDataGenerator initialSeed
+        ( initialMaze, newSeed ) =
+            Random.step (AMaze.mazeGenerator 18 13) initialSeed
     in
-    ( { seed = seed
-      , maze =
-            { width = mazeWidth
-            , height = mazeHeight
-            , data = mazeDataList2D
-            }
+    ( { seed = newSeed
+      , maze = initialMaze
       }
     , Cmd.none
     )

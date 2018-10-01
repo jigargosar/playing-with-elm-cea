@@ -1,4 +1,12 @@
-module AMaze exposing (AMaze, MazeCellData, defaultDataGenerator, mapData, mazeHeight, mazeWidth)
+module AMaze exposing
+    ( AMaze
+    , MazeCellData
+    , defaultDataGenerator
+    , mapData
+    , mazeGenerator
+    , mazeHeight
+    , mazeWidth
+    )
 
 import Array exposing (Array)
 import Ramda
@@ -53,8 +61,9 @@ dataGenerator w h =
     Random.Array.array h rowGenerator
 
 
+mazeGenerator : Int -> Int -> Random.Generator AMaze
 mazeGenerator w h =
-    Random.map (AMaze w h)
+    Random.map (AMaze w h) (dataGenerator w h)
 
 
 dataAt x y { data } =
