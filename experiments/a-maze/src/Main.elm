@@ -367,9 +367,9 @@ viewAlgoData m =
                 >> Coordinate2D.translate (cellSizePx // 2)
 
         viewCellConnections =
-            Svg.g [] [ viewCellConnection ( 1, 1 ) ( 2, 1 ) ]
+            Svg.g [] [ viewCellConnection ( ( 1, 1 ), ( 2, 1 ) ) ]
 
-        viewCellConnection from to =
+        viewCellConnection ( from, to ) =
             let
                 ( x1, y1 ) =
                     from |> transform
