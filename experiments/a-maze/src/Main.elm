@@ -157,6 +157,13 @@ getUnVisitedNeighboursOfTopOfStack m =
         |> Maybe.withDefault []
 
 
+getStackTopCellData m =
+    m.cStack
+        |> List.head
+        |> Maybe.map (getCellDataIn m)
+        |> Maybe.withDefault defaultCellData
+
+
 
 ---- UPDATE ----
 
@@ -183,20 +190,46 @@ update msg m =
         Step ->
             let
                 _ =
-                    getVisitedCellCount m |> Debug.log "VCC"
+                    ( getVisitedCellCount m, totalCellCount ) |> Debug.log "(visited,total)"
 
                 neighbourCordGenerator =
                     getUnVisitedNeighboursOfTopOfStack m
                         |> Debug.log "getValidNeighbourCords"
                         |> Random.List.choose
 
-                ( ( cord, _ ), newSeed ) =
+                ( ( maybeCord, _ ), newSeed ) =
                     Random.step neighbourCordGenerator m.seed
 
                 _ =
-                    cord |> Debug.log "randomCord"
+                    maybeCord |> Debug.log "randomCord"
+
+                newModel =
+                    { m | seed = newSeed }
             in
-            { m | seed = newSeed } |> pure
+            (case maybeCord of
+                Just cord ->
+                    updateVisitCell cord newModel
+
+                Nothing ->
+                    updatePopStack newModel
+            )
+                |> pure
+
+
+updatePopStack model =
+    { model | cStack = model.cStack |> List.drop 1 }
+
+
+updateVisitCell cord model =
+    let
+        cordCD =
+            getCellData cord model
+
+        newLookup =
+            model.lookup
+                |> Dict.insert cord { cordCD | isVisited = True }
+    in
+    { model | lookup = newLookup, cStack = cord :: model.cStack }
 
 
 pure model =
