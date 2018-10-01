@@ -219,6 +219,9 @@ gridSquare m cord =
         isVisited =
             getCellData cord m |> .isVisited
 
+        isOnTopOfStack =
+            m.cStack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
+
         sizeWithOffset =
             cellSizePx + (innerOffsetPx * 2)
 
@@ -261,7 +264,7 @@ gridSquare m cord =
             [ cellSizePx // 2 |> iCX
             , cellSizePx // 2 |> iCY
             , SA.r "5"
-            , ter isVisited "blue" "none" |> SA.fill
+            , ter isOnTopOfStack "blue" "none" |> SA.fill
             ]
             []
         ]
