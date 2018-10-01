@@ -1,4 +1,4 @@
-module AMaze exposing (AMaze, MazeCellData, dataGenerator, mapData, mazeHeight, mazeWidth)
+module AMaze exposing (AMaze, MazeCellData, defaultDataGenerator, mapData, mazeHeight, mazeWidth)
 
 import Array exposing (Array)
 import Ramda
@@ -35,17 +35,26 @@ type alias MazeData =
     Array (Array MazeCellData)
 
 
-dataGenerator : Random.Generator (Array (Array MazeCellData))
-dataGenerator =
+defaultDataGenerator : Random.Generator MazeData
+defaultDataGenerator =
+    dataGenerator mazeWidth mazeHeight
+
+
+dataGenerator : Int -> Int -> Random.Generator MazeData
+dataGenerator w h =
     let
         pathGenerator : Random.Generator MazeCellData
         pathGenerator =
             Random.map2 MazeCellData Random.Extra.bool Random.Extra.bool
 
         rowGenerator =
-            Random.Array.array mazeWidth pathGenerator
+            Random.Array.array w pathGenerator
     in
-    Random.Array.array mazeHeight rowGenerator
+    Random.Array.array h rowGenerator
+
+
+mazeGenerator w h =
+    Random.map (AMaze w h)
 
 
 dataAt x y { data } =

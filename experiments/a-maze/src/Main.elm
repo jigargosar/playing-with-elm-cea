@@ -34,7 +34,7 @@ init { now } =
             Random.initialSeed now
 
         ( mazeDataList2D, seed ) =
-            Random.step AMaze.dataGenerator initialSeed
+            Random.step AMaze.defaultDataGenerator initialSeed
     in
     ( { seed = seed
       , maze =
