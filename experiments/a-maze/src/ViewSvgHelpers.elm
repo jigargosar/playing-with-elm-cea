@@ -47,13 +47,7 @@ view content =
     , rect
         [ SA.width "100%"
         , SA.height "100%"
-
-        --        , SA.fill "#fff"
         , SA.fill "url(#grid)"
-
-        --        , SA.stroke "#cd37a9"
-        --        , SA.strokeWidth "2"
-        --        , SA.opacity "0.4"
         ]
         []
     , g [ SA.transform (iTranslate 0 0) ] [ content ]
