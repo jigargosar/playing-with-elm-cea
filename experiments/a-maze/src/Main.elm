@@ -6,6 +6,7 @@ import Browser
 import Browser.Events
 import Coordinate2D exposing (Coordinate2D)
 import Data2D
+import Dict exposing (Dict)
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick, onDoubleClick)
@@ -27,8 +28,26 @@ import ViewSvgHelpers
 ---- MODEL ----
 
 
+type alias CellData =
+    { isVisited : Bool }
+
+
+defaultCellData : CellData
+defaultCellData =
+    { isVisited = False }
+
+
+type alias Lookup =
+    Dict Coordinate2D CellData
+
+
+emptyLookup : Lookup
+emptyLookup =
+    Dict.empty
+
+
 type alias Model =
-    { seed : Random.Seed, maze : AMaze, algoData : {} }
+    { seed : Random.Seed, maze : AMaze, lookup : Lookup }
 
 
 type alias Flags =
@@ -40,7 +59,7 @@ init { now } =
     update WalledAMaze
         { seed = Random.initialSeed now
         , maze = walledMaze
-        , algoData = {}
+        , lookup = emptyLookup
         }
 
 
@@ -60,6 +79,11 @@ generateRandomMaze =
 walledMaze : AMaze
 walledMaze =
     AMaze.walled mazeWidth mazeHeight
+
+
+getCellData : Coordinate2D -> Model -> CellData
+getCellData cord m =
+    m.lookup |> Dict.get cord |> Maybe.withDefault defaultCellData
 
 
 
@@ -144,7 +168,7 @@ gridSquare m cord =
             cord
 
         isVisited =
-            cord == ( 0, 0 )
+            getCellData cord m |> .isVisited
 
         sizeWithOffset =
             cellSizePx + (innerOffsetPx * 2)
