@@ -164,13 +164,14 @@ innerOffsetPx =
     20
 
 
+gridSquare : Model -> Coordinate2D -> Svg msg
 gridSquare m cord =
     let
         ( x, y ) =
             cord
 
         isVisited =
-            m.visitedCords |> Set.member cord
+            m.mazeGenerator |> MazeGenerator.isVisitedCord cord
 
         isOnTopOfStack =
             MazeGenerator.getIsOnTopOfStack cord m.mazeGenerator
@@ -242,7 +243,7 @@ viewAlgoData m =
             let
                 lines : List (Svg msg)
                 lines =
-                    m.connections
+                    MazeGenerator.getConnections m.mazeGenerator
                         |> Set.toList
                         |> List.map viewCellConnection
             in

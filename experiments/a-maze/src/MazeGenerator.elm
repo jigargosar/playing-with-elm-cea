@@ -1,9 +1,11 @@
 module MazeGenerator exposing
     ( MazeGenerator
+    , getConnections
     , getDimensions
     , getIsOnTopOfStack
     , init
     , isSolved
+    , isVisitedCord
     , step
     )
 
@@ -78,6 +80,11 @@ isSolved (MazeGenerator rec) =
     isSolvedRec rec
 
 
+getConnections : MazeGenerator -> ConnectionSet
+getConnections (MazeGenerator rec) =
+    rec.connections
+
+
 step : Random.Seed -> MazeGenerator -> ( MazeGenerator, Random.Seed )
 step seed (MazeGenerator rec) =
     (if isSolvedRec rec then
@@ -101,7 +108,7 @@ stepHelp seed stackTop rec =
         isWithinBounds ( x, y ) =
             x >= 0 && y >= 0 && x < rec.width && y < rec.height
 
-        isVisited cord =
+        isVisitedRec cord =
             Set.member cord rec.visited
 
         _ =
@@ -111,7 +118,7 @@ stepHelp seed stackTop rec =
             stackTop
                 |> Coordinate2D.perpendicularNeighboursOf
                 |> List.filter isWithinBounds
-                |> List.filter (isVisited >> not)
+                |> List.filter (isVisitedRec >> not)
 
         unVisitedNeighbourGenerator =
             unVisitedNeighbours
@@ -147,3 +154,7 @@ getDimensions (MazeGenerator { width, height }) =
 getIsOnTopOfStack : Coordinate2D -> MazeGenerator -> Bool
 getIsOnTopOfStack cord (MazeGenerator { stack }) =
     stack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
+
+
+isVisitedCord cord (MazeGenerator { visited }) =
+    Set.member cord visited
