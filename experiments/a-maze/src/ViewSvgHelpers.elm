@@ -66,14 +66,20 @@ square x y size fillS =
         []
 
 
-gridSquare x y size spacing =
+gridSquare x y cellSize innerOffset =
     let
         sizeWithOffset =
-            size + (spacing * 2)
+            cellSize + (innerOffset * 2)
+
+        xyMultiplier =
+            cellSize
+
+        size =
+            cellSize - (innerOffset * 2)
     in
     rect
-        [ iX (x * sizeWithOffset)
-        , iY (y * sizeWithOffset)
+        [ iX (x * xyMultiplier)
+        , iY (y * xyMultiplier)
         , iWidth size
         , iHeight size
         , SA.fill "#cd37a9"
