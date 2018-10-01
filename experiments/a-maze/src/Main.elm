@@ -19,8 +19,12 @@ import ViewAMaze
 ---- MODEL ----
 
 
+type alias Coordinate2D =
+    ( Int, Int )
+
+
 type alias Model =
-    { seed : Random.Seed, maze : AMaze }
+    { seed : Random.Seed, maze : AMaze, stack : List Coordinate2D }
 
 
 type alias Flags =
@@ -38,6 +42,7 @@ init { now } =
     in
     ( { seed = newSeed
       , maze = newMaze
+      , stack = [ ( 0, 0 ) ]
       }
     , Cmd.none
     )

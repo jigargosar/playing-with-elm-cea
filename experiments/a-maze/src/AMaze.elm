@@ -14,7 +14,10 @@ import Random.Extra
 
 
 type alias MazeCellData =
-    { down : Bool, right : Bool }
+    { down : Bool, right : Bool
+
+    {- , top:Bool, left:Bool -}
+    }
 
 
 type alias AMaze =
