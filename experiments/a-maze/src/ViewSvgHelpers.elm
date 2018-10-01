@@ -15,7 +15,6 @@ view content =
             , iHeight 10
             , patternUnits CoordinateSystemUserSpaceOnUse
             ]
-            {- <path d="M 10 0 L 0 0 0 10" fill="none" stroke="silver" stroke-width="0.5"/> -}
             [ path
                 [ d "M 10 0 L 0 0 0 10"
                 , SA.fill "none"
@@ -30,7 +29,6 @@ view content =
             , iHeight 100
             , patternUnits CoordinateSystemUserSpaceOnUse
             ]
-            {- <path d="M 10 0 L 0 0 0 10" fill="none" stroke="silver" stroke-width="0.5"/> -}
             [ rect
                 [ SA.width "100"
                 , SA.height "100"
