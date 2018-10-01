@@ -15,6 +15,7 @@ import Ramda exposing (equals, flip, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
 import Random.Extra
+import Random.List
 import Svg
 import Svg.Attributes as SA
 import TypedSvg exposing (svg)
@@ -184,16 +185,18 @@ update msg m =
                 _ =
                     getVisitedCellCount m |> Debug.log "VCC"
 
-                unVisitedCells =
+                neighbourCordGenerator =
                     getUnVisitedNeighboursOfTopOfStack m
                         |> Debug.log "getValidNeighbourCords"
-            in
-            case unVisitedCells of
-                head :: rest ->
-                    pure m
+                        |> Random.List.choose
 
-                [] ->
-                    pure m
+                ( ( cord, _ ), newSeed ) =
+                    Random.step neighbourCordGenerator m.seed
+
+                _ =
+                    cord |> Debug.log "randomCord"
+            in
+            { m | seed = newSeed } |> pure
 
 
 pure model =
