@@ -87,7 +87,7 @@ update msg m =
                     Data2D.repeat mazeWidth mazeHeight { visited = False }
 
                 withTop cord =
-                    AMaze.perpendicularNeighboursOf cord |> Debug.log "wT"
+                    Data2D.perpendicularNeighboursOf cord algoState |> Debug.log "wT"
 
                 top =
                     List.head m.stack |> Maybe.map withTop
@@ -120,7 +120,7 @@ worldHeight =
 
 
 view : Model -> Html Msg
-view model =
+view m =
     div []
         [ div [ class "pa3 vs3" ]
             [ div [ class "flex items-end hs3" ]
@@ -135,10 +135,14 @@ view model =
                     , iWidth worldWidth
                     , iHeight worldHeight
                     ]
-                    (ViewAMaze.view model.maze)
+                    (viewAMaze m)
                 ]
             ]
         ]
+
+
+viewAMaze m =
+    ViewAMaze.view m.maze
 
 
 

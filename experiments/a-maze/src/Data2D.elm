@@ -1,11 +1,16 @@
-module Data2D exposing (Data2D, Data2DF, repeat)
+module Data2D exposing (Data2D, Data2DF, perpendicularNeighboursOf, repeat)
 
 import Array2D exposing (Array2D)
 import Coordinate2D exposing (Coordinate2D)
+import Ramda exposing (flip)
 
 
 type Data2D a
     = Data2D (Array2D a)
+
+
+type alias Cell a =
+    ( Coordinate2D, a )
 
 
 type alias Data2DF a =
@@ -36,5 +41,11 @@ get ( x, y ) =
     unwrap (Array2D.get y x)
 
 
-pNeighbours cord (Data2D a2) =
-    Array2D.get
+getIn : Data2D a -> Coordinate2D -> Maybe a
+getIn =
+    flip get
+
+
+perpendicularNeighboursOf cord data2D =
+    Coordinate2D.perpendicularNeighboursOf cord
+        |> List.map (getIn data2D)
