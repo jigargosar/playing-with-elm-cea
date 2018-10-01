@@ -113,18 +113,12 @@ stepHelp seed stackTop rec =
     in
     case maybeCord of
         Just cord ->
-            let
-                newVisitedCords =
-                    rec.visited |> Set.insert cord
-
-                newConnections =
+            ( { rec
+                | visited = rec.visited |> Set.insert cord
+                , stack = cord :: rec.stack
+                , connections =
                     rec.connections
                         |> Set.insert ( stackTop, cord )
-            in
-            ( { rec
-                | visited = newVisitedCords
-                , stack = cord :: rec.stack
-                , connections = newConnections
               }
             , newSeed
             )
