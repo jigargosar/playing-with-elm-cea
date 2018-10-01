@@ -4,7 +4,6 @@ module Ramda exposing
     , flip
     , ifElse
     , mapCoordinates2D
-    , mapCoordinates2DFloat
     , subBy
     , ter
     )
@@ -57,7 +56,3 @@ mapCoordinates2D width height fn =
                     |> List.map (\y -> fn x y)
             )
         |> List.concat
-
-
-mapCoordinates2DFloat w h fn =
-    mapCoordinates2D w h (\x y -> fn (toFloat x) (toFloat y))

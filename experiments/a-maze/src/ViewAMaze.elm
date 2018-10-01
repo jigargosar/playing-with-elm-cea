@@ -3,7 +3,7 @@ module ViewAMaze exposing (view)
 import AMaze
 import Frame2d
 import Point2d
-import Ramda exposing (mapCoordinates2D, mapCoordinates2DFloat, ter)
+import Ramda exposing (mapCoordinates2D, ter)
 import Rectangle2d
 import Round
 import Svg exposing (g, line, rect)
