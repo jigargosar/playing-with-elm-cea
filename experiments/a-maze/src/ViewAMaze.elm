@@ -96,8 +96,6 @@ drawInnerCell x y fillS =
         , iWidth mazeInnerCellSizeInPx
         , iHeight mazeInnerCellSizeInPx
         , SA.fill fillS
-        , SA.strokeWidth "0"
-        , SA.stroke "#000"
         ]
         []
 
