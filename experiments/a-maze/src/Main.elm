@@ -124,6 +124,11 @@ getVisitedCellCount m =
         |> List.length
 
 
+getIsOnTopOfStack : Coordinate2D -> Model -> Bool
+getIsOnTopOfStack cord m =
+    m.cStack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
+
+
 
 ---- UPDATE ----
 
@@ -220,7 +225,7 @@ gridSquare m cord =
             getCellData cord m |> .isVisited
 
         isOnTopOfStack =
-            m.cStack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
+            getIsOnTopOfStack cord m
 
         sizeWithOffset =
             cellSizePx + (innerOffsetPx * 2)
