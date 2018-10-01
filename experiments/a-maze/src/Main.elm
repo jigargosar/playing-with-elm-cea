@@ -131,7 +131,7 @@ getIsOnTopOfStack cord m =
 
 isValidCord : Coordinate2D -> Bool
 isValidCord ( x, y ) =
-    x >= 0 && y > 0 && x < hCellCount && y < vCellCount
+    x >= 0 && y >= 0 && x < hCellCount && y < vCellCount
 
 
 getValidNeighbourCords : Coordinate2D -> List Coordinate2D
@@ -166,6 +166,11 @@ update msg m =
             let
                 _ =
                     getVisitedCellCount m |> Debug.log "VCC"
+
+                _ =
+                    List.head m.cStack
+                        |> Maybe.map getValidNeighbourCords
+                        |> Debug.log "getValidNeighbourCords"
             in
             pure m
 
