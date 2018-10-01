@@ -1,4 +1,8 @@
-module Coordinate2D exposing (Coordinate2D, flatMap, map)
+module Coordinate2D exposing (Coordinate2D, flatMap, map, perpendicularNeighboursOf)
+
+
+type alias Coordinate2D =
+    ( Int, Int )
 
 
 flatMap width height fn =
@@ -21,5 +25,6 @@ map width height fn =
             )
 
 
-type alias Coordinate2D =
-    ( Int, Int )
+perpendicularNeighboursOf : Coordinate2D -> List Coordinate2D
+perpendicularNeighboursOf ( x, y ) =
+    []

@@ -95,5 +95,15 @@ dataMapper fn m cord =
     fn cord (dataAt cord m)
 
 
-perpendicularNeighboursOf ( x, y ) m =
-    1
+perpendicularNeighboursOf : Coordinate2D -> AMaze -> Maybe Coordinate2D
+perpendicularNeighboursOf cord m =
+    let
+        rejectInvalid =
+            identity
+
+        maybeChooseOne _ =
+            Maybe.Just ( 0, 0 )
+    in
+    Coordinate2D.perpendicularNeighboursOf cord
+        |> rejectInvalid
+        |> maybeChooseOne
