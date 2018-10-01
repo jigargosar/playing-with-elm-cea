@@ -11,7 +11,7 @@ import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick, onDoubleClick)
 import ISvg exposing (iCX, iCY, iHeight, iTranslate, iWidth, iX, iY)
-import Ramda exposing (equals, ifElse, isEmptyList, ter)
+import Ramda exposing (equals, flip, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
 import Random.Extra
@@ -86,9 +86,33 @@ walledMaze =
     AMaze.walled mazeWidth mazeHeight
 
 
+hCellCount =
+    6
+
+
+vCellCount =
+    4
+
+
+totalCellCount =
+    hCellCount * vCellCount
+
+
 getCellData : Coordinate2D -> Model -> CellData
 getCellData cord m =
     m.lookup |> Dict.get cord |> Maybe.withDefault defaultCellData
+
+
+getCellDataIn : Model -> Coordinate2D -> CellData
+getCellDataIn =
+    flip getCellData
+
+
+getVisitedCellCount : Model -> Int
+getVisitedCellCount m =
+    Coordinate2D.flatMap hCellCount vCellCount (getCellDataIn m)
+        |> List.filter .isVisited
+        |> List.length
 
 
 
@@ -117,7 +141,7 @@ update msg m =
         Step ->
             let
                 _ =
-                    1
+                    getVisitedCellCount m |> Debug.log "VCC"
             in
             pure m
 
@@ -240,7 +264,7 @@ viewAlgoData m =
         drawMazeCell cord =
             gridSquare m cord
     in
-    Coordinate2D.flatMap 6 4 drawMazeCell
+    Coordinate2D.flatMap hCellCount vCellCount drawMazeCell
         |> Svg.g []
 
 
