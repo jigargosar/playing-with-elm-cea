@@ -9,15 +9,9 @@ import Rectangle2d
 import Round
 import Svg exposing (g, line, rect)
 import Svg.Attributes as SA
-import TypedSvg.Attributes exposing (..)
-import TypedSvg.Types exposing (Transform(..))
 
 
-view worldRect maze =
-    let
-        ( tx, ty ) =
-            Rectangle2d.centerPoint worldRect |> Point2d.coordinates
-    in
+view maze =
     [ rect
         [ SA.width "100%"
         , SA.height "100%"
