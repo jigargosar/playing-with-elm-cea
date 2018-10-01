@@ -53,7 +53,7 @@ emptyVisitedCords =
 
 initialVisitedCords : VisitedCords
 initialVisitedCords =
-    emptyVisitedCords |> Set.insert ( 0, 0 )
+    Set.fromList [ ( 0, 0 ) ]
 
 
 type alias CStack =
@@ -135,9 +135,7 @@ getIsCellVisitedIn =
 
 getVisitedCellCount : Model -> Int
 getVisitedCellCount m =
-    Coordinate2D.flatMap hCellCount vCellCount (\c -> Set.member c m.visitedCords)
-        |> List.filter identity
-        |> List.length
+    m.visitedCords |> Set.size
 
 
 getIsOnTopOfStack : Coordinate2D -> Model -> Bool
