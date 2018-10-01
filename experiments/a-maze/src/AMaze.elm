@@ -16,6 +16,14 @@ type alias MazeCellData =
     { down : Bool, right : Bool }
 
 
+type alias AMaze =
+    { width : Int, height : Int, data : MazeData }
+
+
+type alias MazeData =
+    Array (Array MazeCellData)
+
+
 defaultCellData =
     MazeCellData False False
 
@@ -24,16 +32,13 @@ walledCellData =
     MazeCellData True True
 
 
+createWalledMazeData : Int -> Int -> MazeData
+createWalledMazeData w h =
+    Array.repeat h (Array.repeat w walledCellData)
+
+
 withDefaultCellData =
     Maybe.withDefault defaultCellData
-
-
-type alias AMaze =
-    { width : Int, height : Int, data : MazeData }
-
-
-type alias MazeData =
-    Array (Array MazeCellData)
 
 
 dataGenerator : Int -> Int -> Random.Generator MazeData
@@ -54,10 +59,9 @@ randomGenerator w h =
     Random.map (AMaze w h) (dataGenerator w h)
 
 
-
---walled : Int -> Int -> AMaze
---walled w h =
---    AMaze w h (Ramda.flatMapCoordinates2D w h (always walledCellData))
+walled : Int -> Int -> AMaze
+walled w h =
+    AMaze w h (createWalledMazeData w h)
 
 
 dataAt x y { data } =
