@@ -13,7 +13,9 @@ module MazeGenerator exposing
 import Coordinate2D exposing (Coordinate2D)
 import Ramda exposing (equals)
 import Random
+import Random.Array
 import Random.List
+import Random.Set
 import Set exposing (Set)
 
 
@@ -163,5 +165,15 @@ isVisitedCord cord (MazeGenerator { visited }) =
 
 removeRandomConnections : Random.Seed -> MazeGenerator -> ( MazeGenerator, Random.Seed )
 removeRandomConnections seed (MazeGenerator rec) =
-    ( rec, seed )
+    let
+        newConnectionsGenerator =
+            rec.connections
+                |> Set.toList
+                |> Random.List.shuffle
+                |> Random.map (List.drop 10 >> Set.fromList)
+
+        ( newConnections, newSeed ) =
+            Random.step newConnectionsGenerator seed
+    in
+    ( { rec | connections = newConnections }, newSeed )
         |> Tuple.mapFirst MazeGenerator

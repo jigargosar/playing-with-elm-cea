@@ -147,6 +147,10 @@ view m =
                     , disabled (MazeGenerator.isSolved m.mazeGenerator)
                     ]
                     [ text "Step" ]
+                , button
+                    [ onClick RemoveRandomConnections
+                    ]
+                    [ text "RemoveRandomConnections" ]
                 ]
             , div [ class "no-sel" ]
                 [ svg
