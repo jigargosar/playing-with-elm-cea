@@ -9,7 +9,7 @@ import Dict exposing (Dict)
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class, disabled)
 import Html.Events exposing (onClick, onDoubleClick)
-import ISvg exposing (iCX, iCY, iHeight, iTranslate, iWidth, iX, iX1, iX2, iY, iY1, iY2)
+import ISvg exposing (iCX, iCY, iFontSize, iHeight, iTranslate, iWidth, iX, iX1, iX2, iY, iY1, iY2)
 import MazeGenerator exposing (MazeGenerator)
 import Ramda exposing (equals, flip, ifElse, isEmptyList, ter)
 import Random
@@ -20,8 +20,8 @@ import Set exposing (Set)
 import Svg exposing (Svg)
 import Svg.Attributes as SA
 import TypedSvg exposing (svg)
-import TypedSvg.Attributes exposing (alignmentBaseline)
-import TypedSvg.Types exposing (AlignmentBaseline(..))
+import TypedSvg.Attributes exposing (alignmentBaseline, strokeLinecap)
+import TypedSvg.Types exposing (AlignmentBaseline(..), StrokeLinecap(..))
 import ViewAMaze
 import ViewSvgHelpers
 
@@ -46,7 +46,7 @@ init { now } =
     update WalledAMaze
         { seed = Random.initialSeed now
         , maze = walledMaze
-        , mazeGenerator = MazeGenerator.init 6 4
+        , mazeGenerator = MazeGenerator.init 12 8
         }
 
 
@@ -157,11 +157,11 @@ view m =
 
 
 cellSizePx =
-    100
+    25
 
 
 innerOffsetPx =
-    20
+    cellSizePx // 5
 
 
 gridSquare : Model -> Coordinate2D -> Svg msg
@@ -191,11 +191,12 @@ gridSquare m cord =
             , iHeight size
             , SA.fill "#cd37a9"
             , SA.fill "none"
-            , SA.strokeWidth "2"
+            , SA.strokeWidth "3"
             , SA.stroke "#000"
+            , SA.opacity "0.1"
             ]
             []
-        , Svg.text_ [ SA.fontSize "10", alignmentBaseline AlignmentTextBeforeEdge ]
+        , Svg.text_ [ iFontSize innerOffsetPx, alignmentBaseline AlignmentTextBeforeEdge ]
             [ [ "("
               , String.fromInt x
               , ","
@@ -205,20 +206,22 @@ gridSquare m cord =
                 |> String.join ""
                 |> Svg.text
             ]
-        , Svg.circle
-            [ cellSizePx // 2 |> iCX
-            , cellSizePx // 2 |> iCY
-            , SA.r "5"
-            , ter isVisited "blue" "none" |> SA.fill
+        , Svg.g [ SA.opacity "0.5" ]
+            [ Svg.circle
+                [ cellSizePx // 2 |> iCX
+                , cellSizePx // 2 |> iCY
+                , SA.r "5"
+                , ter isVisited "blue" "none" |> SA.fill
+                ]
+                []
+            , Svg.circle
+                [ cellSizePx // 2 |> iCX
+                , cellSizePx // 2 |> iCY
+                , SA.r "5"
+                , ter isOnTopOfStack "red" "none" |> SA.fill
+                ]
+                []
             ]
-            []
-        , Svg.circle
-            [ cellSizePx // 2 |> iCX
-            , cellSizePx // 2 |> iCY
-            , SA.r "5"
-            , ter isOnTopOfStack "red" "none" |> SA.fill
-            ]
-            []
         ]
 
 
@@ -259,16 +262,17 @@ viewAlgoData m =
             in
             Svg.line
                 [ iX1 x1
-                , iX2 x2
                 , iY1 y1
+                , iX2 x2
                 , iY2 y2
                 , SA.strokeWidth "3"
                 , SA.stroke "blue"
-                , SA.opacity "0.5"
+                , SA.opacity "0.7"
+                , strokeLinecap StrokeLinecapRound
                 ]
                 []
     in
-    Svg.g [] [ viewCells, viewCellConnections ]
+    Svg.g [] [ viewCellConnections, viewCells ]
 
 
 viewAMaze m =

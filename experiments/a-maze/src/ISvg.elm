@@ -1,6 +1,7 @@
 module ISvg exposing
     ( iCX
     , iCY
+    , iFontSize
     , iHeight
     , iScale
     , iTranslate
@@ -78,3 +79,7 @@ iWidth =
 
 iHeight =
     String.fromInt >> SA.height
+
+
+iFontSize =
+    String.fromInt >> SA.fontSize
