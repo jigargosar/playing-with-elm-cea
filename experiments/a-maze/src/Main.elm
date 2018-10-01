@@ -8,7 +8,7 @@ import Coordinate2D exposing (Coordinate2D)
 import Data2D
 import Dict exposing (Dict)
 import Html exposing (Html, button, div, h1, img, text)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, disabled)
 import Html.Events exposing (onClick, onDoubleClick)
 import ISvg exposing (iCX, iCY, iHeight, iTranslate, iWidth, iX, iY)
 import Ramda exposing (equals, flip, ifElse, isEmptyList, ter)
@@ -106,6 +106,11 @@ vCellCount =
 
 totalCellCount =
     hCellCount * vCellCount
+
+
+getIsSolved : Model -> Bool
+getIsSolved =
+    getVisitedCellCount >> equals totalCellCount
 
 
 getCellData : Coordinate2D -> Model -> CellData
@@ -266,7 +271,7 @@ view m =
                 {- , button [ onClick RandomAMaze ] [ text "Random" ]
                    , button [ onClick WalledAMaze ] [ text "Walled" ]
                 -}
-                , button [ onClick Step ] [ text "Step" ]
+                , button [ onClick Step, disabled (getIsSolved m) ] [ text "Step" ]
                 ]
             , div [ class "no-sel" ]
                 [ svg
