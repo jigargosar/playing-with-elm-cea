@@ -41,8 +41,7 @@ square2 x y size spacing fillS =
         , iWidth size
         , iHeight size
         , SA.fill fillS
-
-        --        , SA.strokeWidth "2"
-        --        , SA.stroke "#000"
+        , SA.strokeWidth "2"
+        , SA.stroke "#000"
         ]
         []
