@@ -9,7 +9,7 @@ import Data2D
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick, onDoubleClick)
-import ISvg exposing (iHeight, iWidth)
+import ISvg exposing (iHeight, iTranslate, iWidth)
 import Ramda exposing (equals, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
@@ -134,13 +134,17 @@ viewAlgoData m =
         cellSizePx =
             15
 
+        spacing =
+            5
+
         drawMazeCell ( x, y ) =
-            ViewSvgHelpers.square2 x y cellSizePx "#cd37a9"
+            ViewSvgHelpers.square2 x y cellSizePx spacing "#cd37a9"
     in
-    Coordinate2D.flatMap mazeWidth
+    Coordinate2D.flatMap
+        mazeWidth
         mazeHeight
         drawMazeCell
-        |> Svg.g []
+        |> Svg.g [ SA.transform (iTranslate 15 15) ]
 
 
 viewAMaze m =

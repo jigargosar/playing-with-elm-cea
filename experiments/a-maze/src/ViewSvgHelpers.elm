@@ -15,7 +15,7 @@ view content =
         , SA.opacity "0.4"
         ]
         []
-    , g [ SA.transform (iTranslate 20 20) ] [ content ]
+    , g [ SA.transform (iTranslate 0 0) ] [ content ]
     ]
 
 
@@ -30,12 +30,19 @@ square x y size fillS =
         []
 
 
-square2 x y size fillS =
+square2 x y size spacing fillS =
+    let
+        sizeWithOffset =
+            size + spacing
+    in
     rect
-        [ iX (x * size)
-        , iY (y * size)
+        [ iX (x * sizeWithOffset)
+        , iY (y * sizeWithOffset)
         , iWidth size
         , iHeight size
         , SA.fill fillS
+
+        --        , SA.strokeWidth "2"
+        --        , SA.stroke "#000"
         ]
         []
