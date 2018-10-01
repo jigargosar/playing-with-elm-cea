@@ -81,27 +81,36 @@ iY =
     String.fromInt >> SA.y
 
 
+iWidth =
+    String.fromInt >> SA.width
+
+
+iHeight =
+    String.fromInt >> SA.height
+
+
+drawWithFill x y fillS =
+    rect
+        [ x * mazeInnerCellSizeInPx |> iX
+        , y * mazeInnerCellSizeInPx |> iY
+        , iWidth mazeInnerCellSizeInPx
+        , iHeight mazeInnerCellSizeInPx
+        , SA.fill fillS
+        , SA.strokeWidth "0"
+        , SA.stroke "#000"
+        ]
+        []
+
+
 drawMazeCellAt dataAt cellX cellY =
     let
         drawInnerGridCell x y =
             let
-                drawWithFill fillS =
-                    rect
-                        [ x * mazeInnerCellSizeInPx |> iX
-                        , y * mazeInnerCellSizeInPx |> iY
-                        , SA.width (mazeInnerCellSizeInPx |> String.fromInt)
-                        , SA.height (mazeInnerCellSizeInPx |> String.fromInt)
-                        , SA.fill fillS
-                        , SA.strokeWidth "0"
-                        , SA.stroke "#000"
-                        ]
-                        []
-
                 drawPath =
-                    drawWithFill "#cd37a9"
+                    drawWithFill x y "#cd37a9"
 
                 drawWall =
-                    drawWithFill "#000"
+                    drawWithFill x y "#000"
             in
             case dataAt x y of
                 Nothing ->
