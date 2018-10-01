@@ -3,12 +3,13 @@ module AMaze exposing
     , MazeCellData
     , fillWalls
     , mapData
+    , perpendicularNeighboursOf
     , randomGenerator
     , walled
     )
 
 import Array exposing (Array)
-import Ramda
+import Ramda exposing (Coordinate2D)
 import Random
 import Random.Array
 import Random.Extra
@@ -75,14 +76,24 @@ fillWalls { width, height } =
     AMaze width height (createWalledMazeData width height)
 
 
-dataAt x y { data } =
-    data |> Array.get y >> Maybe.andThen (Array.get x) >> withDefaultCellData
+dataAt : Coordinate2D -> AMaze -> MazeCellData
+dataAt cord =
+    maybeDataAtCord cord >> withDefaultCellData
 
 
-mapData : (Int -> Int -> MazeCellData -> a) -> AMaze -> List a
+maybeDataAtCord ( x, y ) { data } =
+    data |> Array.get y >> Maybe.andThen (Array.get x)
+
+
+mapData : (Coordinate2D -> MazeCellData -> a) -> AMaze -> List a
 mapData fn m =
     Ramda.flatMapCoordinates2D m.width m.height (dataMapper fn m)
 
 
-dataMapper fn m x y =
-    fn x y (dataAt x y m)
+dataMapper : (Coordinate2D -> MazeCellData -> a) -> AMaze -> Coordinate2D -> a
+dataMapper fn m cord =
+    fn cord (dataAt cord m)
+
+
+perpendicularNeighboursOf ( x, y ) m =
+    1

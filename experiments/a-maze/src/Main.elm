@@ -7,7 +7,7 @@ import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick, onDoubleClick)
 import ISvg exposing (iHeight, iWidth)
-import Ramda exposing (equals, ifElse, isEmptyList, ter)
+import Ramda exposing (Coordinate2D, equals, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
 import Random.Extra
@@ -18,10 +18,6 @@ import ViewAMaze
 
 
 ---- MODEL ----
-
-
-type alias Coordinate2D =
-    ( Int, Int )
 
 
 type alias Model =
@@ -84,8 +80,11 @@ update msg m =
 
         Step ->
             let
+                withTop cord =
+                    AMaze.perpendicularNeighboursOf cord |> Debug.log "wT"
+
                 top =
-                    List.head m.stack
+                    List.head m.stack |> Maybe.map withTop
             in
             m |> ifElse (.stack >> isEmptyList) pure pure
 

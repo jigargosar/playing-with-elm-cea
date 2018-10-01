@@ -1,11 +1,11 @@
 module ViewAMaze exposing (view)
 
-import AMaze exposing (MazeCellData)
+import AMaze exposing (AMaze, MazeCellData)
 import Frame2d
 import Html.Lazy
 import ISvg exposing (iHeight, iTranslate, iWidth, iX, iY)
 import Point2d
-import Ramda exposing (flatMapCoordinates2D, ter)
+import Ramda exposing (Coordinate2D, flatMapCoordinates2D, ter)
 import Rectangle2d
 import Round
 import Svg exposing (Svg, g, line, rect)
@@ -46,12 +46,13 @@ cellSizeInPx =
     innerCellSizeInPx * cellSize
 
 
+viewMaze : AMaze -> Svg msg
 viewMaze maze =
     g [] (AMaze.mapData drawMazeCellAt maze)
 
 
-drawMazeCellAt : Int -> Int -> MazeCellData -> Svg msg
-drawMazeCellAt cellX cellY cellData =
+drawMazeCellAt : Coordinate2D -> MazeCellData -> Svg msg
+drawMazeCellAt ( cellX, cellY ) cellData =
     g
         [ iTranslate
             (cellX * cellSizeInPx)
@@ -73,8 +74,8 @@ isRightWallCord x y =
     x >= pathSize
 
 
-drawInnerCellWithDataAt : MazeCellData -> Int -> Int -> Svg msg
-drawInnerCellWithDataAt { down, right } x y =
+drawInnerCellWithDataAt : MazeCellData -> Coordinate2D -> Svg msg
+drawInnerCellWithDataAt { down, right } ( x, y ) =
     let
         drawPath =
             drawInnerCell x y "#cd37a9"

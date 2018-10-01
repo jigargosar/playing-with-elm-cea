@@ -1,5 +1,6 @@
 module Ramda exposing
-    ( add
+    ( Coordinate2D
+    , add
     , appendTo
     , equals
     , flatMapCoordinates2D
@@ -67,5 +68,9 @@ mapCoordinates2D width height fn =
         |> List.map
             (\y ->
                 xCords
-                    |> List.map (\x -> fn x y)
+                    |> List.map (\x -> fn ( x, y ))
             )
+
+
+type alias Coordinate2D =
+    ( Int, Int )
