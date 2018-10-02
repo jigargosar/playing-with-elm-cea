@@ -121,15 +121,15 @@ view m =
             [ div [ class "f2" ] [ text "A-Maze" ]
             , button [ onClick Reset ] [ text "Reset" ]
             , button
-                [ onClick Step
-                , disabled (MG.isSolved m.mazeGen)
-                ]
-                [ text "Step" ]
-            , button
                 [ onClick Solve
                 , disabled (MG.isSolved m.mazeGen)
                 ]
                 [ text "Solve" ]
+            , button
+                [ onClick Step
+                , disabled (MG.isSolved m.mazeGen)
+                ]
+                [ text "Step" ]
             ]
         , div [ class "no-sel" ] [ viewSvg m ]
         ]
