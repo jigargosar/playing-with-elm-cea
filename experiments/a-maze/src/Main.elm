@@ -252,8 +252,11 @@ viewMazeGenerator mg =
                         , strokeLinecap StrokeLinecapRound
                         ]
                         []
+
+                viewArrow =
+                    Svg.g [] [ l, l2, l3 ]
             in
-            Svg.g [] [ l, l2, l3 ]
+            l
     in
     MazeGenerator.mapConnections (normalizeConnection >> viewCellConnection) mg
         ++ MazeGenerator.concatMap viewMazeGeneratorCell mg
