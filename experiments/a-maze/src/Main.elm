@@ -9,22 +9,7 @@ import Html exposing (Html, button, div, h1, img, input, label, text)
 import Html.Attributes exposing (checked, class, disabled, type_, value)
 import Html.Events exposing (onCheck, onClick, onDoubleClick)
 import Html.Lazy
-import ISvg
-    exposing
-        ( iCX
-        , iCY
-        , iFontSize
-        , iHeight
-        , iTranslate
-        , iTranslateCord
-        , iWidth
-        , iX
-        , iX1
-        , iX2
-        , iY
-        , iY1
-        , iY2
-        )
+import ISvg exposing (iCX, iCY, iFontSize, iHeight, iR, iStrokeWidth, iTranslate, iTranslateCord, iWidth, iX, iX1, iX2, iY, iY1, iY2)
 import MazeGenerator as MG exposing (MazeGenerator)
 import Ramda exposing (equals, flip, ifElse, isEmptyList, ter, unless)
 import Random
@@ -158,7 +143,7 @@ viewHeaderContent m =
 
 
 cellSizePx =
-    25
+    50
 
 
 canvasWidth =
@@ -170,11 +155,11 @@ canvasHeight =
 
 
 mw =
-    (canvasWidth // cellSizePx) - 2
+    canvasWidth // cellSizePx
 
 
 mh =
-    (canvasHeight // cellSizePx) - 2
+    canvasHeight // cellSizePx
 
 
 viewSvg m =
@@ -258,6 +243,9 @@ viewMazeGenerator mg =
         innerSquareSize =
             cellSizePx - (innerOffsetPx * 2)
 
+        innerStrokeWidth =
+            innerOffsetPx // 2
+
         viewMazeGeneratorCell : Coordinate2D -> MG.CellInfo -> Svg msg
         viewMazeGeneratorCell cord { visited, current } =
             Svg.g
@@ -266,35 +254,37 @@ viewMazeGenerator mg =
                     >> iTranslateCord
                     >> SA.transform
                 ]
-                [ Svg.rect
-                    [ iX innerOffsetPx
-                    , iY innerOffsetPx
-                    , iWidth innerSquareSize
-                    , iHeight innerSquareSize
-                    , SA.fill "#cd37a9"
-                    , SA.fill "none"
-                    , SA.strokeWidth "3"
-                    , SA.stroke "#000"
-                    , SA.opacity "0.1"
-                    ]
-                    []
-                , Svg.text_
+                [ {- Svg.rect
+                         [ iX innerOffsetPx
+                         , iY innerOffsetPx
+                         , iWidth innerSquareSize
+                         , iHeight innerSquareSize
+                         , SA.fill "#cd37a9"
+                         , SA.fill "none"
+                         , iStrokeWidth innerOffsetPx
+                         , SA.stroke "#000"
+                         , SA.opacity "0.1"
+                         ]
+                         []
+                     ,
+                  -}
+                  Svg.text_
                     [ iFontSize innerOffsetPx
                     , SA.alignmentBaseline "text-before-edge"
                     ]
                     [ C2.toString cord |> Svg.text ]
-                , Svg.g [ SA.opacity "0.5" ]
+                , Svg.g [ SA.opacity "1" ]
                     [ Svg.circle
                         [ cellSizePx // 2 |> iCX
                         , cellSizePx // 2 |> iCY
-                        , SA.r "5"
+                        , iR innerOffsetPx
                         , ter visited "blue" "none" |> SA.fill
                         ]
                         []
                     , Svg.circle
                         [ cellSizePx // 2 |> iCX
                         , cellSizePx // 2 |> iCY
-                        , SA.r "5"
+                        , iR innerOffsetPx
                         , ter current "red" "none" |> SA.fill
                         ]
                         []
@@ -319,9 +309,9 @@ viewMazeGenerator mg =
                         , iY1 y1
                         , iX2 x2
                         , iY2 y2
-                        , SA.strokeWidth "3"
+                        , iStrokeWidth innerStrokeWidth
                         , SA.stroke "blue"
-                        , SA.opacity "0.3"
+                        , SA.opacity "1"
                         , strokeLinecap StrokeLinecapRound
                         ]
                         []
@@ -332,7 +322,7 @@ viewMazeGenerator mg =
                         , iY1 (y1 - 5)
                         , iX2 x2
                         , iY2 y2
-                        , SA.strokeWidth "3"
+                        , iStrokeWidth innerStrokeWidth
                         , SA.stroke "blue"
                         , SA.opacity "0.3"
                         , strokeLinecap StrokeLinecapRound
@@ -345,7 +335,7 @@ viewMazeGenerator mg =
                         , iY1 (y1 + 5)
                         , iX2 x2
                         , iY2 y2
-                        , SA.strokeWidth "3"
+                        , iStrokeWidth innerStrokeWidth
                         , SA.stroke "blue"
                         , SA.opacity "0.3"
                         , strokeLinecap StrokeLinecapRound

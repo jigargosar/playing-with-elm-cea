@@ -3,7 +3,9 @@ module ISvg exposing
     , iCY
     , iFontSize
     , iHeight
+    , iR
     , iScale
+    , iStrokeWidth
     , iTranslate
     , iTranslateCord
     , iWidth
@@ -86,5 +88,13 @@ iHeight =
     String.fromInt >> SA.height
 
 
+iR =
+    String.fromInt >> SA.r
+
+
 iFontSize =
     String.fromInt >> SA.fontSize
+
+
+iStrokeWidth =
+    String.fromInt >> SA.strokeWidth
