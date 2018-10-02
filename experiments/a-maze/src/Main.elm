@@ -189,7 +189,7 @@ viewMazeGenerator mg =
                     []
                 , Svg.text_
                     [ iFontSize innerOffsetPx
-                    , alignmentBaseline AlignmentTextBeforeEdge
+                    , SA.alignmentBaseline "text-before-edge"
                     ]
                     [ C2.toString cord |> Svg.text ]
                 , Svg.g [ SA.opacity "0.5" ]
