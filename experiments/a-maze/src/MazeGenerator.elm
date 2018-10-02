@@ -114,9 +114,6 @@ stepHelp seed stackTop rec =
         isVisitedRec cord =
             Set.member cord rec.visited
 
-        _ =
-            ( getVisitedCellCount rec, getTotalCellCount rec ) |> Debug.log "(visited,total)"
-
         unVisitedNeighbours =
             stackTop
                 |> Coordinate2D.perpendicularNeighboursOf
@@ -125,14 +122,10 @@ stepHelp seed stackTop rec =
 
         unVisitedNeighbourGenerator =
             unVisitedNeighbours
-                |> Debug.log "unVisitedNeighbours"
                 |> Random.List.choose
 
         ( ( maybeCord, _ ), newSeed ) =
             Random.step unVisitedNeighbourGenerator seed
-
-        _ =
-            maybeCord |> Debug.log "randomCord"
     in
     case maybeCord of
         Just cord ->
