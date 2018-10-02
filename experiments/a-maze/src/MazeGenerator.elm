@@ -65,9 +65,9 @@ type MazeGenerator
     = MazeGenerator Record
 
 
-init : Int -> Int -> MazeGenerator
-init width height =
-    MazeGenerator { defaultRecord | width = width, height = height }
+init : Random.Seed -> Int -> Int -> MazeGenerator
+init seed width height =
+    MazeGenerator { defaultRecord | seed = seed, width = width, height = height }
 
 
 getTotalCellCount : Record -> Int

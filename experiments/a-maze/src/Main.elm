@@ -66,7 +66,7 @@ init { now } =
     in
     pure
         { seed = modelSeed
-        , mazeGenerator = MazeGenerator.init 12 6
+        , mazeGenerator = MazeGenerator.init mazeSeed 12 6
         }
 
 
