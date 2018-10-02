@@ -5,7 +5,7 @@ module Ramda exposing
     , equals
     , flip
     , ifElse
-    , isEmptyList
+    , isListEmpty
     , subBy
     , ter
     , unless
@@ -13,7 +13,7 @@ module Ramda exposing
     )
 
 
-isEmptyList =
+isListEmpty =
     List.length >> equals 0
 
 

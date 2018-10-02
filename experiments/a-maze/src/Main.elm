@@ -11,7 +11,7 @@ import Html.Events exposing (onCheck, onClick, onDoubleClick)
 import Html.Lazy
 import ISvg exposing (iCX, iCY, iFontSize, iHeight, iR, iStrokeWidth, iTranslate, iTranslateCord, iWidth, iX, iX1, iX2, iY, iY1, iY2)
 import MazeGenerator as MG exposing (MazeGenerator)
-import Ramda exposing (equals, flip, ifElse, isEmptyList, ter, unless)
+import Ramda exposing (equals, flip, ifElse, isListEmpty, ter, unless)
 import Random
 import Random.Array
 import Random.Extra
