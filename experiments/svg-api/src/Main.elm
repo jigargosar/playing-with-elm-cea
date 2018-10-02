@@ -62,7 +62,11 @@ view : Model -> Html Msg
 view model =
     div [ class "measure-wide center pa2 h-100 flex flex-column vs3 " ]
         [ div [ class "f3" ] [ text "SVG API" ]
-        , Svg.svg [ SA.width "100%", SA.height "100%", SA.fill "transparent" ]
+        , Svg.svg
+            [ SA.width "100%"
+            , SA.height "100%"
+            , SA.fill "transparent"
+            ]
             [ Svg.rect
                 [ SA.width "100%"
                 , SA.height "100%"
