@@ -271,7 +271,7 @@ viewMazeGenerator mg =
         viewMazeGeneratorCell cord { visited, current } =
             Svg.g
                 [ cord
-                    |> C2.scale cellSizePx
+                    |> transform
                     >> iTranslateCord
                     >> SA.transform
                 ]
@@ -282,16 +282,12 @@ viewMazeGenerator mg =
                     [ C2.toString cord |> Svg.text ]
                 , Svg.g [ SA.opacity "1" ]
                     [ Svg.circle
-                        [ cellSizePx // 2 |> iCX
-                        , cellSizePx // 2 |> iCY
-                        , iR innerOffsetPx
+                        [ iR innerOffsetPx
                         , ter visited "blue" "none" |> SA.fill
                         ]
                         []
                     , Svg.circle
-                        [ cellSizePx // 2 |> iCX
-                        , cellSizePx // 2 |> iCY
-                        , iR innerOffsetPx
+                        [ iR innerOffsetPx
                         , ter current "red" "none" |> SA.fill
                         ]
                         []
