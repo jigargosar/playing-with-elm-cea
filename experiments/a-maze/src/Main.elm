@@ -133,7 +133,7 @@ viewSvg m =
         , iWidth (canvasWidth + 10)
         , iHeight (canvasHeight + 10)
         ]
-        (viewAlgoData m |> ViewSvgHelpers.view)
+        (viewMazeGenerator m.mazeGenerator |> ViewSvgHelpers.view)
 
 
 cellSizePx =
@@ -144,17 +144,17 @@ innerOffsetPx =
     cellSizePx // 5
 
 
-gridSquare : Model -> Coordinate2D -> Svg msg
+gridSquare : MazeGenerator -> Coordinate2D -> Svg msg
 gridSquare m cord =
     let
         ( x, y ) =
             cord
 
         isVisited =
-            m.mazeGenerator |> MazeGenerator.isVisitedCord cord
+            MazeGenerator.isVisitedCord cord m
 
         isOnTopOfStack =
-            MazeGenerator.getIsOnTopOfStack cord m.mazeGenerator
+            MazeGenerator.getIsOnTopOfStack cord m
 
         sizeWithOffset =
             cellSizePx + (innerOffsetPx * 2)
@@ -205,14 +205,14 @@ gridSquare m cord =
         ]
 
 
-viewAlgoData : Model -> List (Svg msg)
-viewAlgoData m =
+viewMazeGenerator : MazeGenerator -> List (Svg msg)
+viewMazeGenerator m =
     let
         drawMazeCell cord =
             gridSquare m cord
 
         { width, height } =
-            MazeGenerator.getDimensions m.mazeGenerator
+            MazeGenerator.getDimensions m
 
         viewCells =
             Coordinate2D.flatMap width height drawMazeCell
@@ -225,7 +225,7 @@ viewAlgoData m =
             let
                 lines : List (Svg msg)
                 lines =
-                    MazeGenerator.getConnections m.mazeGenerator
+                    MazeGenerator.getConnections m
                         |> Set.toList
                         |> List.map viewCellConnection
             in
