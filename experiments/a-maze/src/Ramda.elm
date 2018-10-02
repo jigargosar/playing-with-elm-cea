@@ -53,12 +53,18 @@ ifElse pred true false value =
         false value
 
 
+when : (a -> Bool) -> (a -> a) -> a -> a
 when pred true value =
-    if pred value then
-        true value
+    ifElse pred true identity value
 
-    else
-        value
+
+
+{- if pred value then
+       true value
+
+   else
+       value
+-}
 
 
 unless pred =
