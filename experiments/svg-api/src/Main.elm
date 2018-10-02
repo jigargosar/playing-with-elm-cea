@@ -1,12 +1,14 @@
-module Main exposing (..)
+module Main exposing (Flags, Model, Msg(..), init, main, subscriptions, update, view)
 
 import Browser
+import Browser.Dom
 import Browser.Events
-import Html exposing (Html, text, div, h1, img)
+import Html exposing (Html, div, h1, img, text)
 import Html.Attributes exposing (class, src)
 import Html.Lazy
 import Svg
-import Browser.Dom
+
+
 
 ---- MODEL ----
 
@@ -16,7 +18,7 @@ type alias Model =
 
 
 type alias Flags =
-    { now : Int }
+    { now : Int, vw : Int, vh : Int }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -35,7 +37,19 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg m =
+    case msg of
+        NoOp ->
+            pure m
+
+        AnimationFrame ->
+            pure m
+
+        Resize nw nh ->
+            pure m
+
+
+pure model =
     ( model, Cmd.none )
 
 
@@ -45,8 +59,8 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [class "pa3 flex flex-column vs3"]
-        [ div[class "f3"][text "SVG API"]
+    div [ class "pa3 flex flex-column vs3" ]
+        [ div [ class "f3" ] [ text "SVG API" ]
         , Svg.svg [] []
         ]
 
@@ -56,11 +70,10 @@ view model =
 
 
 subscriptions _ =
-    Sub.batch [
-    Browser.Events.onAnimationFrameDelta (\_ -> AnimationFrame)
-    ,
-    Browser.Events.onResize (Resize)
-    ]
+    Sub.batch
+        [ Browser.Events.onAnimationFrameDelta (\_ -> AnimationFrame)
+        , Browser.Events.onResize Resize
+        ]
 
 
 main : Program Flags Model Msg
