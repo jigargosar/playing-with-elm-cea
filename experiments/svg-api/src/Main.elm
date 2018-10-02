@@ -14,7 +14,7 @@ import Svg
 
 
 type alias Model =
-    {}
+    { vw : Int, vh : Int }
 
 
 type alias Flags =
@@ -22,8 +22,8 @@ type alias Flags =
 
 
 init : Flags -> ( Model, Cmd Msg )
-init { now } =
-    ( {}, Cmd.none )
+init { now, vw, vh } =
+    ( { vw = vw, vh = vh }, Cmd.none )
 
 
 
@@ -46,7 +46,7 @@ update msg m =
             pure m
 
         Resize nw nh ->
-            pure m
+            pure { m | vw = nw, vh = nh }
 
 
 pure model =
