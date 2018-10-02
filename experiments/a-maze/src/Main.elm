@@ -200,17 +200,11 @@ viewMazeGeneratorCell cord { visited, current } =
 
 
 viewMazeGenerator : MazeGenerator -> List (Svg msg)
-viewMazeGenerator m =
+viewMazeGenerator mg =
     let
-        { width, height } =
-            MazeGenerator.getDimensions m
-
         transform =
             Coordinate2D.scale cellSizePx
                 >> Coordinate2D.translate (cellSizePx // 2)
-
-        viewCellConnections =
-            MazeGenerator.mapConnections viewCellConnection m
 
         viewCellConnection ( from, to ) =
             let
@@ -232,8 +226,8 @@ viewMazeGenerator m =
                 ]
                 []
     in
-    viewCellConnections
-        ++ MazeGenerator.concatMap viewMazeGeneratorCell m
+    MazeGenerator.mapConnections viewCellConnection mg
+        ++ MazeGenerator.concatMap viewMazeGeneratorCell mg
 
 
 
