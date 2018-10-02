@@ -144,8 +144,8 @@ innerOffsetPx =
     cellSizePx // 5
 
 
-gridSquare : MazeGenerator -> Coordinate2D -> Svg msg
-gridSquare m cord =
+gridSquare : Coordinate2D -> MazeGenerator -> Svg msg
+gridSquare cord m =
     let
         ( x, y ) =
             cord
@@ -208,14 +208,11 @@ gridSquare m cord =
 viewMazeGenerator : MazeGenerator -> List (Svg msg)
 viewMazeGenerator m =
     let
-        drawMazeCell cord =
-            gridSquare m cord
-
         { width, height } =
             MazeGenerator.getDimensions m
 
         viewCells =
-            Coordinate2D.flatMap width height drawMazeCell
+            Coordinate2D.flatMap width height (flip gridSquare m)
 
         transform =
             Coordinate2D.scale cellSizePx
