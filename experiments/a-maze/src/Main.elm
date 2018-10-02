@@ -248,5 +248,5 @@ main =
         { view = view
         , init = init
         , update = update
-        , subscriptions = subscriptions
+        , subscriptions = \_ -> Sub.none
         }
