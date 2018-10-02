@@ -11,7 +11,7 @@ import Html.Events exposing (onCheck, onClick, onDoubleClick)
 import Html.Lazy
 import ISvg exposing (iCX, iCY, iFontSize, iHeight, iR, iStrokeWidth, iTranslate, iTranslateCord, iWidth, iX, iX1, iX2, iY, iY1, iY2)
 import MazeGenerator as MG exposing (MazeGenerator)
-import Ramda exposing (equals, flip, ifElse, isListEmpty, ter, unless)
+import Ramda exposing (consTo, equals, flip, ifElse, isListEmpty, ter, unless)
 import Random
 import Random.Array
 import Random.Extra
@@ -285,8 +285,21 @@ viewMazeGenerator mg =
                 ]
                 [ C2.toString cord |> Svg.text ]
 
+        blueCircle =
+            Svg.circle [ iR innerOffsetPx, SA.fill "blue" ] []
+
+        redCircle =
+            Svg.circle [ iR innerOffsetPx, SA.fill "red" ] []
+
         viewMazeGeneratorCell : Coordinate2D -> MG.CellInfo -> Svg msg
         viewMazeGeneratorCell cord { visited, current } =
+            let
+                visitedCircle =
+                    ter visited [ blueCircle ] []
+
+                currentCircle =
+                    ter current [ redCircle ] []
+            in
             Svg.g []
                 [ viewCellCoordinates cord
                 , Svg.g
@@ -295,19 +308,7 @@ viewMazeGenerator mg =
                         >> iTranslateCord
                         >> SA.transform
                     ]
-                    [ Svg.g [ SA.opacity "1" ]
-                        [ Svg.circle
-                            [ iR innerOffsetPx
-                            , ter visited "blue" "none" |> SA.fill
-                            ]
-                            []
-                        , Svg.circle
-                            [ iR innerOffsetPx
-                            , ter current "red" "none" |> SA.fill
-                            ]
-                            []
-                        ]
-                    ]
+                    (visitedCircle ++ currentCircle)
                 ]
 
         viewCellConnection ( from, to ) =
