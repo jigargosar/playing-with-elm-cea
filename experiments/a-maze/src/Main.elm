@@ -3,12 +3,27 @@ module Main exposing (main)
 import Array2D
 import Browser
 import Browser.Events
-import Coordinate2D exposing (Coordinate2D)
+import Coordinate2D as C2 exposing (Coordinate2D)
 import Dict exposing (Dict)
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class, disabled)
 import Html.Events exposing (onClick, onDoubleClick)
-import ISvg exposing (iCX, iCY, iFontSize, iHeight, iTranslate, iWidth, iX, iX1, iX2, iY, iY1, iY2)
+import ISvg
+    exposing
+        ( iCX
+        , iCY
+        , iFontSize
+        , iHeight
+        , iTranslate
+        , iTranslateCord
+        , iWidth
+        , iX
+        , iX1
+        , iX2
+        , iY
+        , iY1
+        , iY2
+        )
 import MazeGenerator exposing (MazeGenerator)
 import Ramda exposing (equals, flip, ifElse, isEmptyList, ter)
 import Random
@@ -155,7 +170,11 @@ viewMazeGenerator mg =
                     cord
             in
             Svg.g
-                [ SA.transform (iTranslate (x * cellSizePx) (y * cellSizePx)) ]
+                [ cord
+                    |> C2.scale cellSizePx
+                    >> iTranslateCord
+                    >> SA.transform
+                ]
                 [ Svg.rect
                     [ iX innerOffsetPx
                     , iY innerOffsetPx
@@ -197,8 +216,8 @@ viewMazeGenerator mg =
                 ]
 
         transform =
-            Coordinate2D.scale cellSizePx
-                >> Coordinate2D.translate (cellSizePx // 2)
+            C2.scale cellSizePx
+                >> C2.translate (cellSizePx // 2)
 
         viewCellConnection ( from, to ) =
             let
