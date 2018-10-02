@@ -1,5 +1,6 @@
 module Coordinate2D exposing
-    ( Coordinate2D
+    ( Connection2D
+    , Coordinate2D
     , concatMap
     , map
     , perpendicularNeighboursOf
@@ -58,3 +59,7 @@ toString ( x, y ) =
     , ")"
     ]
         |> String.join ""
+
+
+type alias Connection2D =
+    ( Coordinate2D, Coordinate2D )

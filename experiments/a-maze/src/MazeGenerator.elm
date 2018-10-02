@@ -11,7 +11,7 @@ module MazeGenerator exposing
     , step
     )
 
-import Coordinate2D exposing (Coordinate2D)
+import Coordinate2D exposing (Connection2D, Coordinate2D)
 import Ramda exposing (ensureAtLeast, equals)
 import Random
 import Random.Array
@@ -21,7 +21,7 @@ import Set exposing (Set)
 
 
 type alias Connection =
-    ( Coordinate2D, Coordinate2D )
+    Connection2D
 
 
 type alias ConnectionSet =
