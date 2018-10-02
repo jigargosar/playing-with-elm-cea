@@ -153,6 +153,20 @@ viewSvg m =
 
 viewMaze mg =
     let
+        connections : Set MazeGenerator.Connection
+        connections =
+            MazeGenerator.mapConnections normalizeConnection mg
+                |> Set.fromList
+
+        isConnected cp =
+            Set.member cp connections
+
+        isSouthConnected ( x, y ) =
+            isConnected ( ( x, y ), ( x, y + 1 ) )
+
+        isEastConnected ( x, y ) =
+            isConnected ( ( x, y ), ( x + 1, y ) )
+
         viewCell cord _ =
             let
                 size =
@@ -172,7 +186,7 @@ viewMaze mg =
                     , SA.fill "#000"
                     , SA.strokeWidth "1"
                     , SA.stroke "#fff"
-                    , SA.opacity "1"
+                    , ter (isEastConnected cord) "0" "1" |> SA.opacity
                     ]
                     []
                 , Svg.rect
@@ -185,7 +199,7 @@ viewMaze mg =
                     , SA.fill "#000"
                     , SA.strokeWidth "1"
                     , SA.stroke "#fff"
-                    , SA.opacity "1"
+                    , ter (isSouthConnected cord) "0" "1" |> SA.opacity
                     ]
                     []
                 ]
