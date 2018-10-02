@@ -274,18 +274,21 @@ viewMazeGenerator mg =
             translateToCellTop
                 >> C2.translate (cellSizePx // 2)
 
+        viewCellCoordinates cord =
+            Svg.text_
+                [ iFontSize innerOffsetPx
+                , SA.alignmentBaseline "text-before-edge"
+                , cord
+                    |> translateToCellTop
+                    >> iTranslateCord
+                    >> SA.transform
+                ]
+                [ C2.toString cord |> Svg.text ]
+
         viewMazeGeneratorCell : Coordinate2D -> MG.CellInfo -> Svg msg
         viewMazeGeneratorCell cord { visited, current } =
             Svg.g []
-                [ Svg.text_
-                    [ iFontSize innerOffsetPx
-                    , SA.alignmentBaseline "text-before-edge"
-                    , cord
-                        |> translateToCellTop
-                        >> iTranslateCord
-                        >> SA.transform
-                    ]
-                    [ C2.toString cord |> Svg.text ]
+                [ viewCellCoordinates cord
                 , Svg.g
                     [ cord
                         |> translateToCellCenter
