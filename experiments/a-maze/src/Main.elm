@@ -5,8 +5,8 @@ import Browser
 import Browser.Events
 import Coordinate2D as C2 exposing (Coordinate2D, normalizeConnection)
 import Dict exposing (Dict)
-import Html exposing (Html, button, div, h1, img, text)
-import Html.Attributes exposing (class, disabled)
+import Html exposing (Html, button, div, h1, img, input, text)
+import Html.Attributes exposing (class, disabled, type_)
 import Html.Events exposing (onClick, onDoubleClick)
 import Html.Lazy
 import ISvg
@@ -48,6 +48,7 @@ import ViewSvgHelpers
 type alias Model =
     { seed : Random.Seed
     , mazeGen : MazeGenerator
+    , autoStep : Bool
     }
 
 
@@ -71,7 +72,12 @@ init { now } =
     pure
         { seed = modelSeed
         , mazeGen = MG.init mazeSeed 24 16
+        , autoStep = True
         }
+
+
+isSolved m =
+    MG.isSolved m.mazeGen
 
 
 
@@ -83,6 +89,8 @@ type Msg
     | Step
     | Solve
     | Reset
+    | AnimationFrame
+    | AutoStep
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -91,14 +99,20 @@ update msg m =
         NoOp ->
             pure m
 
+        AnimationFrame ->
+            m |> ifElse .autoStep (update Step) pure
+
         Step ->
-            m |> overMG MG.step |> pure
+            ifElse isSolved identity (overMG MG.step) m |> pure
 
         Solve ->
             m |> overMG MG.solve |> pure
 
         Reset ->
             m |> overMG MG.reset |> pure
+
+        AutoStep ->
+            pure { m | autoStep = not m.autoStep }
 
 
 overMG : MG.MazeGeneratorF -> ModelF
@@ -117,22 +131,24 @@ pure model =
 view : Model -> Html Msg
 view m =
     div [ class "pa3 vs3" ]
-        [ div [ class "flex items-end hs3" ]
-            [ div [ class "f2" ] [ text "A-Maze" ]
-            , button [ onClick Reset ] [ text "Reset" ]
-            , button
-                [ onClick Solve
-                , disabled (MG.isSolved m.mazeGen)
-                ]
-                [ text "Solve" ]
-            , button
-                [ onClick Step
-                , disabled (MG.isSolved m.mazeGen)
-                ]
-                [ text "Step" ]
-            ]
+        [ div [ class "flex items-end hs3" ] (viewHeaderContent m)
         , div [ class "no-sel" ] [ viewSvg m ]
         ]
+
+
+viewHeaderContent m =
+    let
+        solved =
+            isSolved m
+    in
+    [ div [ class "f2" ] [ text "A-Maze" ]
+    , div [ class "flex items-center hs2 " ]
+        [ button [ onClick Reset ] [ text "Reset" ]
+        , button [ onClick Solve, disabled solved ] [ text "Solve" ]
+        , button [ onClick Step, disabled solved ] [ text "Step" ]
+        , div [] [ input [ type_ "checkbox" ] [] ]
+        ]
+    ]
 
 
 viewSvg m =
@@ -335,7 +351,7 @@ viewMazeGenerator mg =
 
 
 subscriptions _ =
-    Sub.batch [ Browser.Events.onAnimationFrameDelta (\_ -> NoOp) ]
+    Sub.batch [ Browser.Events.onAnimationFrameDelta (\_ -> AnimationFrame) ]
 
 
 main : Program Flags Model Msg
