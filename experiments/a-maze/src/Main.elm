@@ -54,6 +54,7 @@ init { now } =
 type Msg
     = NoOp
     | Step
+    | End
     | RemoveRandomConnections
 
 
@@ -64,7 +65,18 @@ update msg m =
             pure m
 
         Step ->
-            m |> updateMazeGeneratorStep |> pure
+            let
+                ( newMazeGen, newSeed ) =
+                    MazeGenerator.step m.seed m.mazeGenerator
+            in
+            { m | mazeGenerator = newMazeGen, seed = newSeed } |> pure
+
+        End ->
+            let
+                ( newMazeGen, newSeed ) =
+                    MazeGenerator.step m.seed m.mazeGenerator
+            in
+            { m | mazeGenerator = newMazeGen, seed = newSeed } |> pure
 
         RemoveRandomConnections ->
             let
@@ -72,15 +84,6 @@ update msg m =
                     MazeGenerator.removeRandomConnections m.seed m.mazeGenerator
             in
             pure { m | mazeGenerator = newMazeGenerator, seed = newSeed }
-
-
-updateMazeGeneratorStep : Model -> Model
-updateMazeGeneratorStep m =
-    let
-        ( newMazeGen, newSeed ) =
-            MazeGenerator.step m.seed m.mazeGenerator
-    in
-    { m | mazeGenerator = newMazeGen, seed = newSeed }
 
 
 pure model =

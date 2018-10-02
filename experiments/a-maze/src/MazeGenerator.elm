@@ -104,6 +104,15 @@ step seed (MazeGenerator rec) =
         |> Tuple.mapFirst MazeGenerator
 
 
+solve : Random.Seed -> MazeGenerator -> ( MazeGenerator, Random.Seed )
+solve seed mg =
+    if isSolved mg then
+        ( mg, seed )
+
+    else
+        step seed mg |> (\( a, b ) -> solve b a)
+
+
 stepHelp : Random.Seed -> Coordinate2D -> Record -> ( Record, Random.Seed )
 stepHelp seed stackTop rec =
     let
