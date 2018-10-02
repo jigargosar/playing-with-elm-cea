@@ -1,6 +1,6 @@
 {
-  "short_name": "Elm App",
-  "name": "Create Elm App Sample",
+  "short_name": "A-Maze-Zing",
+  "name": "Maze Generation Demo",
   "icons": [
     {
       "src": "favicon.ico",
