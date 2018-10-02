@@ -8,6 +8,8 @@ module Ramda exposing
     , isEmptyList
     , subBy
     , ter
+    , unless
+    , when
     )
 
 
@@ -49,6 +51,18 @@ ifElse pred true false value =
 
     else
         false value
+
+
+when pred true value =
+    if pred value then
+        true value
+
+    else
+        value
+
+
+unless pred =
+    when (pred >> not)
 
 
 ensureAtLeast : comparable -> comparable -> comparable

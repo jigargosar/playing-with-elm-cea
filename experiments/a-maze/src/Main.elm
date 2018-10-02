@@ -26,7 +26,7 @@ import ISvg
         , iY2
         )
 import MazeGenerator as MG exposing (MazeGenerator)
-import Ramda exposing (equals, flip, ifElse, isEmptyList, ter)
+import Ramda exposing (equals, flip, ifElse, isEmptyList, ter, unless)
 import Random
 import Random.Array
 import Random.Extra
@@ -103,7 +103,7 @@ update msg m =
             m |> ifElse .autoStep (update Step) pure
 
         Step ->
-            ifElse isSolved identity (overMG MG.step) m |> pure
+            unless isSolved (overMG MG.step) m |> pure
 
         Solve ->
             m |> overMG MG.solve |> pure
