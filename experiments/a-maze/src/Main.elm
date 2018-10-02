@@ -27,6 +27,30 @@ import ViewSvgHelpers
 
 
 
+---- CONSTANTS ----
+
+
+cellSizePx =
+    50
+
+
+canvasWidthPx =
+    650
+
+
+canvasHeightPx =
+    400
+
+
+mazeWidth =
+    canvasWidthPx // cellSizePx
+
+
+mazeHeight =
+    canvasHeightPx // cellSizePx
+
+
+
 ---- MODEL ----
 
 
@@ -142,26 +166,6 @@ viewHeaderContent m =
     ]
 
 
-cellSizePx =
-    50
-
-
-canvasWidthPx =
-    650
-
-
-canvasHeightPx =
-    400
-
-
-mazeWidth =
-    canvasWidthPx // cellSizePx
-
-
-mazeHeight =
-    canvasHeightPx // cellSizePx
-
-
 viewSvg m =
     svg
         [ SA.class "flex center"
@@ -208,11 +212,7 @@ viewMaze mg =
                     , iY y
                     , iWidth offset
                     , iHeight size
-                    , SA.fill "#cd37a9"
-                    , SA.fill "none"
                     , SA.fill "#000"
-                    , SA.strokeWidth "1"
-                    , SA.stroke "#fff"
                     , ter (isEastConnected cord) "0" "1" |> SA.opacity
                     ]
                     []
@@ -221,11 +221,7 @@ viewMaze mg =
                     , iY (y + size - offset)
                     , iWidth size
                     , iHeight offset
-                    , SA.fill "#cd37a9"
-                    , SA.fill "none"
                     , SA.fill "#000"
-                    , SA.strokeWidth "1"
-                    , SA.stroke "#fff"
                     , ter (isSouthConnected cord) "0" "1" |> SA.opacity
                     ]
                     []
