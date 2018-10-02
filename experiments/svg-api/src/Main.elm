@@ -7,8 +7,12 @@ import Html exposing (Html, div, h1, img, text)
 import Html.Attributes exposing (class, src)
 import Html.Lazy
 import ISvg exposing (..)
+import Json.Decode as D
+import Json.Encode as E
+import Set exposing (Set)
 import Svg
 import Svg.Attributes as SA
+import Svg.Events as SE
 
 
 
@@ -20,7 +24,7 @@ type alias Ball =
 
 
 type alias Model =
-    { vw : Int, vh : Int, ball : Ball }
+    { vw : Int, vh : Int, ball : Ball, keySet : Set String }
 
 
 type alias Flags =
@@ -29,7 +33,13 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now, vw, vh } =
-    ( { vw = vw, vh = vh, ball = Ball 100 100 20 }, Cmd.none )
+    ( { vw = vw
+      , vh = vh
+      , ball = Ball 100 100 20
+      , keySet = Set.empty
+      }
+    , Cmd.none
+    )
 
 
 
@@ -38,8 +48,9 @@ init { now, vw, vh } =
 
 type Msg
     = NoOp
-    | AnimationFrame
+    | AnimationFrame Float
     | Resize Int Int
+    | KeyDown String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -48,11 +59,14 @@ update msg m =
         NoOp ->
             pure m
 
-        AnimationFrame ->
+        AnimationFrame delta ->
             pure m
 
         Resize nw nh ->
             { m | vw = nw, vh = nh } |> Debug.log "[Resize] model:" |> pure
+
+        KeyDown key ->
+            { m | keySet = Set.insert key m.keySet } |> pure
 
 
 pure model =
@@ -96,8 +110,9 @@ viewBall { x, y, r } =
 
 subscriptions _ =
     Sub.batch
-        [ Browser.Events.onAnimationFrameDelta (\_ -> AnimationFrame)
+        [ Browser.Events.onAnimationFrameDelta AnimationFrame
         , Browser.Events.onResize Resize
+        , Browser.Events.onKeyDown (D.map KeyDown (D.field "key" D.string))
         ]
 
 
