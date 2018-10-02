@@ -54,3 +54,7 @@ ifElse pred true false value =
 ensureAtLeast : comparable -> comparable -> comparable
 ensureAtLeast =
     max
+
+
+swap ( a, b ) =
+    ( b, a )

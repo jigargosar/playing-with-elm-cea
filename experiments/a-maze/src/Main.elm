@@ -3,7 +3,7 @@ module Main exposing (main)
 import Array2D
 import Browser
 import Browser.Events
-import Coordinate2D as C2 exposing (Coordinate2D)
+import Coordinate2D as C2 exposing (Coordinate2D, normalizeConnection)
 import Dict exposing (Dict)
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class, disabled)
@@ -206,8 +206,11 @@ viewMazeGenerator mg =
             C2.scale cellSizePx
                 >> C2.translate (cellSizePx // 2)
 
-        viewCellConnection ( from, to ) =
+        viewCellConnection connection =
             let
+                ( from, to ) =
+                    normalizeConnection connection
+
                 ( x1, y1 ) =
                     from |> transform
 
