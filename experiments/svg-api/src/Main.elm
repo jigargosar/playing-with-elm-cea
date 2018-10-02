@@ -6,7 +6,7 @@ import Html exposing (Html, text, div, h1, img)
 import Html.Attributes exposing (class, src)
 import Html.Lazy
 import Svg
-
+import Browser.Dom
 
 ---- MODEL ----
 
@@ -31,6 +31,7 @@ init { now } =
 type Msg
     = NoOp
     | AnimationFrame
+    | Resize Int Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -55,7 +56,11 @@ view model =
 
 
 subscriptions _ =
-    Sub.batch [ Browser.Events.onAnimationFrameDelta (\_ -> AnimationFrame) ]
+    Sub.batch [
+    Browser.Events.onAnimationFrameDelta (\_ -> AnimationFrame)
+    ,
+    Browser.Events.onResize (Resize)
+    ]
 
 
 main : Program Flags Model Msg
