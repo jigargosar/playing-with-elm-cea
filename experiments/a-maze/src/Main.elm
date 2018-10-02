@@ -123,16 +123,18 @@ view m =
                     ]
                     [ text "RemoveRandomConnections" ]
                 ]
-            , div [ class "no-sel" ]
-                [ svg
-                    [ SA.class "flex center"
-                    , iWidth (worldWidth + 10)
-                    , iHeight (worldHeight + 10)
-                    ]
-                    (viewAlgoData m |> ViewSvgHelpers.view)
-                ]
+            , div [ class "no-sel" ] [ viewSvg m ]
             ]
         ]
+
+
+viewSvg m =
+    svg
+        [ SA.class "flex center"
+        , iWidth (worldWidth + 10)
+        , iHeight (worldHeight + 10)
+        ]
+        (viewAlgoData m |> ViewSvgHelpers.view)
 
 
 cellSizePx =
