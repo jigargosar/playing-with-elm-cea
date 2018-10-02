@@ -269,42 +269,44 @@ viewMazeGenerator mg =
 
         viewMazeGeneratorCell : Coordinate2D -> MG.CellInfo -> Svg msg
         viewMazeGeneratorCell cord { visited, current } =
-            Svg.g
-                [ cord
-                    |> transform
-                    >> iTranslateCord
-                    >> SA.transform
-                ]
-                [ Svg.text_
-                    [ iFontSize innerOffsetPx
-                    , SA.alignmentBaseline "text-before-edge"
+            Svg.g []
+                [ Svg.g
+                    [ cord
+                        |> translateToCellCenter
+                        >> iTranslateCord
+                        >> SA.transform
                     ]
-                    [ C2.toString cord |> Svg.text ]
-                , Svg.g [ SA.opacity "1" ]
-                    [ Svg.circle
-                        [ iR innerOffsetPx
-                        , ter visited "blue" "none" |> SA.fill
+                    [ Svg.text_
+                        [ iFontSize innerOffsetPx
+                        , SA.alignmentBaseline "text-before-edge"
                         ]
-                        []
-                    , Svg.circle
-                        [ iR innerOffsetPx
-                        , ter current "red" "none" |> SA.fill
+                        [ C2.toString cord |> Svg.text ]
+                    , Svg.g [ SA.opacity "1" ]
+                        [ Svg.circle
+                            [ iR innerOffsetPx
+                            , ter visited "blue" "none" |> SA.fill
+                            ]
+                            []
+                        , Svg.circle
+                            [ iR innerOffsetPx
+                            , ter current "red" "none" |> SA.fill
+                            ]
+                            []
                         ]
-                        []
                     ]
                 ]
 
-        transform =
+        translateToCellCenter =
             C2.scale cellSizePx
                 >> C2.translate (cellSizePx // 2)
 
         viewCellConnection ( from, to ) =
             let
                 ( x1, y1 ) =
-                    from |> transform
+                    from |> translateToCellCenter
 
                 ( x2, y2 ) =
-                    to |> transform
+                    to |> translateToCellCenter
             in
             Svg.line
                 [ iX1 x1
