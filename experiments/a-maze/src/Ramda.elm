@@ -1,6 +1,7 @@
 module Ramda exposing
     ( add
     , appendTo
+    , ensureAtLeast
     , equals
     , flip
     , ifElse
@@ -48,3 +49,8 @@ ifElse pred true false value =
 
     else
         false value
+
+
+ensureAtLeast : comparable -> comparable -> comparable
+ensureAtLeast =
+    max

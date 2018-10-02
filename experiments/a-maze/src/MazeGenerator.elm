@@ -16,7 +16,7 @@ module MazeGenerator exposing
     )
 
 import Coordinate2D exposing (Coordinate2D)
-import Ramda exposing (equals)
+import Ramda exposing (ensureAtLeast, equals)
 import Random
 import Random.Array
 import Random.List
@@ -57,16 +57,13 @@ type MazeGenerator
 init : Random.Seed -> Int -> Int -> MazeGenerator
 init seed width height =
     let
-        ensureAtLeast1 =
-            max 1
-
         rec : Record
         rec =
             { visited = Set.fromList [ ( 0, 0 ) ]
             , stack = [ ( 0, 0 ) ]
             , connections = Set.empty
-            , width = ensureAtLeast1 width
-            , height = ensureAtLeast1 height
+            , width = ensureAtLeast 1 width
+            , height = ensureAtLeast 1 height
             , seed = seed
             }
     in
