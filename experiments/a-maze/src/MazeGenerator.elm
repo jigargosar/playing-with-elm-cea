@@ -7,6 +7,7 @@ module MazeGenerator exposing
     , isSolved
     , isVisitedCord
     , removeRandomConnections
+    , solve
     , step
     )
 

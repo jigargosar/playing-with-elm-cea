@@ -54,7 +54,7 @@ init { now } =
 type Msg
     = NoOp
     | Step
-    | End
+    | Solve
     | RemoveRandomConnections
 
 
@@ -71,10 +71,10 @@ update msg m =
             in
             { m | mazeGenerator = newMazeGen, seed = newSeed } |> pure
 
-        End ->
+        Solve ->
             let
                 ( newMazeGen, newSeed ) =
-                    MazeGenerator.step m.seed m.mazeGenerator
+                    MazeGenerator.solve m.seed m.mazeGenerator
             in
             { m | mazeGenerator = newMazeGen, seed = newSeed } |> pure
 
@@ -113,6 +113,11 @@ view m =
                     , disabled (MazeGenerator.isSolved m.mazeGenerator)
                     ]
                     [ text "Step" ]
+                , button
+                    [ onClick Solve
+                    , disabled (MazeGenerator.isSolved m.mazeGenerator)
+                    ]
+                    [ text "Solve" ]
                 , button
                     [ onClick RemoveRandomConnections
                     ]
