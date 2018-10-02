@@ -71,7 +71,7 @@ view model =
                 , SA.height "100%"
                 , SA.strokeWidth "0.5"
                 , SA.stroke "#000"
-                , SA.fill "transparent"
+                , SA.fill "none"
                 ]
                 []
             ]
