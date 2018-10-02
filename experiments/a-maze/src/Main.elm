@@ -252,7 +252,7 @@ viewMaze mg =
             in
             edgedCell
     in
-    MG.concatMap viewCell mg
+    MG.concatMapCellInfo viewCell mg
 
 
 viewMazeGenerator : MazeGenerator -> List (Svg msg)
@@ -300,16 +300,13 @@ viewMazeGenerator mg =
                 currentCircle =
                     ter current [ redCircle ] []
             in
-            Svg.g []
-                [ viewCellCoordinates cord
-                , Svg.g
-                    [ cord
-                        |> translateToCellCenter
-                        >> iTranslateCord
-                        >> SA.transform
-                    ]
-                    (visitedCircle ++ currentCircle)
+            Svg.g
+                [ cord
+                    |> translateToCellCenter
+                    >> iTranslateCord
+                    >> SA.transform
                 ]
+                (visitedCircle ++ currentCircle)
 
         viewCellConnection ( from, to ) =
             let
@@ -331,8 +328,9 @@ viewMazeGenerator mg =
                 ]
                 []
     in
-    MG.mapConnections (normalizeConnection >> viewCellConnection) mg
-        ++ MG.concatMap viewMazeGeneratorCell mg
+    MG.concatMapCords viewCellCoordinates mg
+        ++ MG.mapConnections (normalizeConnection >> viewCellConnection) mg
+        ++ MG.concatMapCellInfo viewMazeGeneratorCell mg
 
 
 

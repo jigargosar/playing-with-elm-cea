@@ -3,7 +3,8 @@ module MazeGenerator exposing
     , Connection
     , MazeGenerator
     , MazeGeneratorF
-    , concatMap
+    , concatMapCellInfo
+    , concatMapCords
     , init
     , isSolved
     , mapConnections
@@ -184,8 +185,8 @@ type alias CellInfo =
     { visited : Bool, current : Bool }
 
 
-concatMap : (Coordinate2D -> CellInfo -> a) -> MazeGenerator -> List a
-concatMap fn mg =
+concatMapCellInfo : (Coordinate2D -> CellInfo -> a) -> MazeGenerator -> List a
+concatMapCellInfo fn mg =
     let
         mapper cord =
             fn cord
@@ -197,6 +198,15 @@ concatMap fn mg =
             getDimensions mg
     in
     Coordinate2D.concatMap width height mapper
+
+
+concatMapCords : (Coordinate2D -> a) -> MazeGenerator -> List a
+concatMapCords fn mg =
+    let
+        { width, height } =
+            getDimensions mg
+    in
+    Coordinate2D.concatMap width height fn
 
 
 mapConnections : (Connection -> a) -> MazeGenerator -> List a
