@@ -17,6 +17,7 @@ isListEmpty =
     List.length >> equals 0
 
 
+ter : Bool -> a -> a -> a
 ter bool v1 v2 =
     if bool then
         v1
@@ -25,6 +26,7 @@ ter bool v1 v2 =
         v2
 
 
+equals : a -> a -> Bool
 equals =
     (==)
 
@@ -49,12 +51,9 @@ consTo =
     flip (::)
 
 
+ifElse : (v -> Bool) -> (v -> a) -> (v -> a) -> v -> a
 ifElse pred true false value =
-    if pred value then
-        true value
-
-    else
-        false value
+    ter (pred value) (true value) (false value)
 
 
 when : (a -> Bool) -> (a -> a) -> a -> a
