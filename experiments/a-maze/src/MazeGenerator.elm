@@ -50,24 +50,24 @@ type alias Record =
     }
 
 
-defaultRecord : Record
-defaultRecord =
-    { visited = Set.fromList [ ( 0, 0 ) ]
-    , stack = [ ( 0, 0 ) ]
-    , connections = Set.empty
-    , width = 1
-    , height = 1
-    , seed = Random.initialSeed 0
-    }
-
-
 type MazeGenerator
     = MazeGenerator Record
 
 
 init : Random.Seed -> Int -> Int -> MazeGenerator
 init seed width height =
-    MazeGenerator { defaultRecord | seed = seed, width = width, height = height }
+    let
+        rec : Record
+        rec =
+            { visited = Set.fromList [ ( 0, 0 ) ]
+            , stack = [ ( 0, 0 ) ]
+            , connections = Set.empty
+            , width = width
+            , height = height
+            , seed = seed
+            }
+    in
+    MazeGenerator rec
 
 
 getTotalCellCount : Record -> Int
