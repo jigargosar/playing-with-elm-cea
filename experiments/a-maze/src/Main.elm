@@ -275,21 +275,7 @@ viewMazeGenerator mg =
                     >> iTranslateCord
                     >> SA.transform
                 ]
-                [ {- Svg.rect
-                         [ iX innerOffsetPx
-                         , iY innerOffsetPx
-                         , iWidth innerSquareSize
-                         , iHeight innerSquareSize
-                         , SA.fill "#cd37a9"
-                         , SA.fill "none"
-                         , iStrokeWidth innerOffsetPx
-                         , SA.stroke "#000"
-                         , SA.opacity "0.1"
-                         ]
-                         []
-                     ,
-                  -}
-                  Svg.text_
+                [ Svg.text_
                     [ iFontSize innerOffsetPx
                     , SA.alignmentBaseline "text-before-edge"
                     ]
@@ -323,50 +309,18 @@ viewMazeGenerator mg =
 
                 ( x2, y2 ) =
                     to |> transform
-
-                l =
-                    Svg.line
-                        [ iX1 x1
-                        , iY1 y1
-                        , iX2 x2
-                        , iY2 y2
-                        , iStrokeWidth innerStrokeWidth
-                        , SA.stroke "blue"
-                        , SA.opacity "1"
-                        , strokeLinecap StrokeLinecapRound
-                        ]
-                        []
-
-                l2 =
-                    Svg.line
-                        [ iX1 (x1 - 5)
-                        , iY1 (y1 - 5)
-                        , iX2 x2
-                        , iY2 y2
-                        , iStrokeWidth innerStrokeWidth
-                        , SA.stroke "blue"
-                        , SA.opacity "0.3"
-                        , strokeLinecap StrokeLinecapRound
-                        ]
-                        []
-
-                l3 =
-                    Svg.line
-                        [ iX1 (x1 + 5)
-                        , iY1 (y1 + 5)
-                        , iX2 x2
-                        , iY2 y2
-                        , iStrokeWidth innerStrokeWidth
-                        , SA.stroke "blue"
-                        , SA.opacity "0.3"
-                        , strokeLinecap StrokeLinecapRound
-                        ]
-                        []
-
-                viewArrow =
-                    Svg.g [] [ l, l2, l3 ]
             in
-            l
+            Svg.line
+                [ iX1 x1
+                , iY1 y1
+                , iX2 x2
+                , iY2 y2
+                , iStrokeWidth innerStrokeWidth
+                , SA.stroke "blue"
+                , SA.opacity "1"
+                , strokeLinecap StrokeLinecapRound
+                ]
+                []
     in
     MG.mapConnections (normalizeConnection >> viewCellConnection) mg
         ++ MG.concatMap viewMazeGeneratorCell mg
