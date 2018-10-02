@@ -116,23 +116,22 @@ pure model =
 
 view : Model -> Html Msg
 view m =
-    div []
-        [ div [ class "pa3 vs3" ]
-            [ div [ class "flex items-end hs3" ]
-                [ div [ class "f2" ] [ text "A-Maze" ]
-                , button
-                    [ onClick Step
-                    , disabled (MG.isSolved m.mazeGen)
-                    ]
-                    [ text "Step" ]
-                , button
-                    [ onClick Solve
-                    , disabled (MG.isSolved m.mazeGen)
-                    ]
-                    [ text "Solve" ]
+    div [ class "pa3 vs3" ]
+        [ div [ class "flex items-end hs3" ]
+            [ div [ class "f2" ] [ text "A-Maze" ]
+            , button [ onClick Reset ] [ text "Reset" ]
+            , button
+                [ onClick Step
+                , disabled (MG.isSolved m.mazeGen)
                 ]
-            , div [ class "no-sel" ] [ viewSvg m ]
+                [ text "Step" ]
+            , button
+                [ onClick Solve
+                , disabled (MG.isSolved m.mazeGen)
+                ]
+                [ text "Solve" ]
             ]
+        , div [ class "no-sel" ] [ viewSvg m ]
         ]
 
 
