@@ -8,6 +8,7 @@ import Dict exposing (Dict)
 import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class, disabled)
 import Html.Events exposing (onClick, onDoubleClick)
+import Html.Lazy
 import ISvg
     exposing
         ( iCX
@@ -245,8 +246,8 @@ subscriptions _ =
 main : Program Flags Model Msg
 main =
     Browser.element
-        { view = view
+        { view = Html.Lazy.lazy view
         , init = init
         , update = update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }
