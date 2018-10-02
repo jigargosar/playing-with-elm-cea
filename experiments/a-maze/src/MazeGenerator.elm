@@ -170,7 +170,7 @@ getIsOnTopOfStack cord (MazeGenerator { stack }) =
     stack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
 
 
-isVisitedCord cord (MazeGenerator { visitedSet }) =
+isCordVisited cord (MazeGenerator { visitedSet }) =
     Set.member cord visitedSet
 
 
@@ -210,17 +210,14 @@ type alias CellInfo =
 concatMap : (Coordinate2D -> CellInfo -> a) -> MazeGenerator -> List a
 concatMap fn mg =
     let
+        mapper cord =
+            fn cord
+                { visited = isCordVisited cord mg
+                , current = getIsOnTopOfStack cord mg
+                }
+
         { width, height } =
             getDimensions mg
-
-        isVisited cord =
-            isVisitedCord cord mg
-
-        isOnTopOfStack cord =
-            getIsOnTopOfStack cord mg
-
-        mapper cord =
-            fn cord { visited = isVisited cord, current = isOnTopOfStack cord }
     in
     Coordinate2D.concatMap width height mapper
 
