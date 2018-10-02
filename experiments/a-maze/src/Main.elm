@@ -227,27 +227,30 @@ viewMaze mg =
                             ]
                             []
                         ]
+
+                edgedCell =
+                    Svg.g []
+                        [ Svg.rect
+                            [ iX (x + size - wallThickness)
+                            , iY y
+                            , iWidth wallThickness
+                            , iHeight size
+                            , SA.fill "#000"
+                            , ter (isEastConnected cord) "0" "1" |> SA.opacity
+                            ]
+                            []
+                        , Svg.rect
+                            [ iX x
+                            , iY (y + size - wallThickness)
+                            , iWidth size
+                            , iHeight wallThickness
+                            , SA.fill "#000"
+                            , ter (isSouthConnected cord) "0" "1" |> SA.opacity
+                            ]
+                            []
+                        ]
             in
-            Svg.g []
-                [ Svg.rect
-                    [ iX (x + size - wallThickness)
-                    , iY y
-                    , iWidth wallThickness
-                    , iHeight size
-                    , SA.fill "#000"
-                    , ter (isEastConnected cord) "0" "1" |> SA.opacity
-                    ]
-                    []
-                , Svg.rect
-                    [ iX x
-                    , iY (y + size - wallThickness)
-                    , iWidth size
-                    , iHeight wallThickness
-                    , SA.fill "#000"
-                    , ter (isSouthConnected cord) "0" "1" |> SA.opacity
-                    ]
-                    []
-                ]
+            edgedCell
     in
     MG.concatMap viewCell mg
 
