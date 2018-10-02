@@ -165,10 +165,6 @@ viewMazeGenerator mg =
 
         viewMazeGeneratorCell : Coordinate2D -> MazeGenerator.CellInfo -> Svg msg
         viewMazeGeneratorCell cord { visited, current } =
-            let
-                ( x, y ) =
-                    cord
-            in
             Svg.g
                 [ cord
                     |> C2.scale cellSizePx
