@@ -58,3 +58,18 @@ toString ( x, y ) =
     , ")"
     ]
         |> String.join ""
+
+
+min c1 c2 =
+    let
+        ( x1, y1 ) =
+            c1
+
+        ( x2, y2 ) =
+            c2
+    in
+    if x1 < x2 || y1 < y2 then
+        c1
+
+    else
+        c2
