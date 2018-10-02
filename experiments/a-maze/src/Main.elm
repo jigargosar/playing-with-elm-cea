@@ -195,7 +195,7 @@ viewMaze mg =
         isEastConnected ( x, y ) =
             isConnected ( ( x, y ), ( x + 1, y ) )
 
-        offset =
+        wallThickness =
             cellSizePx // 5
 
         size =
@@ -205,12 +205,34 @@ viewMaze mg =
             let
                 ( x, y ) =
                     C2.scale size cord
+
+                extendedCell =
+                    Svg.g []
+                        [ Svg.rect
+                            [ iX (x + size - wallThickness)
+                            , iY (y - wallThickness)
+                            , iWidth wallThickness
+                            , iHeight (size + wallThickness)
+                            , SA.fill "#000"
+                            , ter (isEastConnected cord) "0" "1" |> SA.opacity
+                            ]
+                            []
+                        , Svg.rect
+                            [ iX (x - wallThickness)
+                            , iY (y + size - wallThickness)
+                            , iWidth (size + wallThickness)
+                            , iHeight wallThickness
+                            , SA.fill "#000"
+                            , ter (isSouthConnected cord) "0" "1" |> SA.opacity
+                            ]
+                            []
+                        ]
             in
             Svg.g []
                 [ Svg.rect
-                    [ iX (x + size - offset)
+                    [ iX (x + size - wallThickness)
                     , iY y
-                    , iWidth offset
+                    , iWidth wallThickness
                     , iHeight size
                     , SA.fill "#000"
                     , ter (isEastConnected cord) "0" "1" |> SA.opacity
@@ -218,9 +240,9 @@ viewMaze mg =
                     []
                 , Svg.rect
                     [ iX x
-                    , iY (y + size - offset)
+                    , iY (y + size - wallThickness)
                     , iWidth size
-                    , iHeight offset
+                    , iHeight wallThickness
                     , SA.fill "#000"
                     , ter (isSouthConnected cord) "0" "1" |> SA.opacity
                     ]
