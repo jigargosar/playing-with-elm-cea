@@ -41,6 +41,7 @@ add =
     (+)
 
 
+consTo : List a -> a -> List a
 consTo =
     flip (::)
 
