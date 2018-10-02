@@ -165,8 +165,8 @@ getDimensions (MazeGenerator { width, height }) =
     { width = width, height = height }
 
 
-getIsOnTopOfStack : Coordinate2D -> MazeGenerator -> Bool
-getIsOnTopOfStack cord (MazeGenerator { stack }) =
+isCordOnTopOfStack : Coordinate2D -> MazeGenerator -> Bool
+isCordOnTopOfStack cord (MazeGenerator { stack }) =
     stack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
 
 
@@ -213,7 +213,7 @@ concatMap fn mg =
         mapper cord =
             fn cord
                 { visited = isCordVisited cord mg
-                , current = getIsOnTopOfStack cord mg
+                , current = isCordOnTopOfStack cord mg
                 }
 
         { width, height } =
