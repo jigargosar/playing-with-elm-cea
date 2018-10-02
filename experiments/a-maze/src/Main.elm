@@ -32,7 +32,7 @@ import ViewSvgHelpers
 
 type alias Model =
     { seed : Random.Seed
-    , mazeGen : MazeGenerator
+    , mazeG : MazeGenerator
     , autoStep : Bool
     }
 
@@ -56,13 +56,13 @@ init { now } =
     in
     pure
         { seed = modelSeed
-        , mazeGen = MG.init mazeSeed mw mh
+        , mazeG = MG.init mazeSeed mw mh
         , autoStep = True
         }
 
 
 isSolved m =
-    MG.isSolved m.mazeGen
+    MG.isSolved m.mazeG
 
 
 
@@ -88,21 +88,21 @@ update msg m =
             m |> ifElse .autoStep (update Step) pure
 
         Step ->
-            unless isSolved (overMazeGen MG.step) m |> pure
+            unless isSolved (overMazeG MG.step) m |> pure
 
         Solve ->
-            overMazeGen MG.solve m |> pure
+            overMazeG MG.solve m |> pure
 
         Reset ->
-            overMazeGen MG.reset m |> pure
+            overMazeG MG.reset m |> pure
 
         AutoStep bool ->
             pure { m | autoStep = bool }
 
 
-overMazeGen : MG.MazeGeneratorF -> ModelF
-overMazeGen fn m =
-    { m | mazeGen = fn m.mazeGen }
+overMazeG : MG.MazeGeneratorF -> ModelF
+overMazeG fn m =
+    { m | mazeG = fn m.mazeG }
 
 
 pure model =
@@ -168,8 +168,8 @@ viewSvg m =
         , iWidth (canvasWidth + 10)
         , iHeight (canvasHeight + 10)
         ]
-        ([ Svg.g [ SA.opacity "0.2" ] (viewMazeGenerator m.mazeGen)
-         , Svg.g [] (viewMaze m.mazeGen)
+        ([ Svg.g [ SA.opacity "0.2" ] (viewMazeGenerator m.mazeG)
+         , Svg.g [] (viewMaze m.mazeG)
          ]
             |> ViewSvgHelpers.view
         )
