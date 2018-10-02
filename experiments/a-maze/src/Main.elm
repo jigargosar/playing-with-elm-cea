@@ -88,25 +88,13 @@ update msg m =
             pure m
 
         Step ->
-            let
-                ( newMazeGen, newSeed ) =
-                    MazeGenerator.step m.seed m.mazeGenerator
-            in
-            { m | mazeGenerator = newMazeGen, seed = newSeed } |> pure
+            { m | mazeGenerator = MazeGenerator.step m.mazeGenerator } |> pure
 
         Solve ->
-            let
-                ( newMazeGen, newSeed ) =
-                    MazeGenerator.solve m.seed m.mazeGenerator
-            in
-            { m | mazeGenerator = newMazeGen, seed = newSeed } |> pure
+            { m | mazeGenerator = MazeGenerator.solve m.mazeGenerator } |> pure
 
         RemoveRandomConnections ->
-            let
-                ( newMazeGenerator, newSeed ) =
-                    MazeGenerator.removeRandomConnections m.seed m.mazeGenerator
-            in
-            pure { m | mazeGenerator = newMazeGenerator, seed = newSeed }
+            { m | mazeGenerator = MazeGenerator.removeRandomConnections m.mazeGenerator } |> pure
 
 
 pure model =
