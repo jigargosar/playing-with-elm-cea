@@ -144,8 +144,8 @@ innerOffsetPx =
     cellSizePx // 5
 
 
-gridSquare : Coordinate2D -> MazeGenerator -> Svg msg
-gridSquare cord m =
+viewMazeGeneratorCell : Coordinate2D -> MazeGenerator -> Svg msg
+viewMazeGeneratorCell cord m =
     let
         ( x, y ) =
             cord
@@ -246,7 +246,7 @@ viewMazeGenerator m =
                 []
     in
     viewCellConnections
-        ++ Coordinate2D.concatMap width height (flip gridSquare m)
+        ++ MazeGenerator.concatMap viewMazeGeneratorCell m
 
 
 

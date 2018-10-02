@@ -1,5 +1,6 @@
 module MazeGenerator exposing
     ( MazeGenerator
+    , concatMap
     , getConnections
     , getDimensions
     , getIsOnTopOfStack
@@ -191,3 +192,11 @@ removeRandomConnections seed (MazeGenerator rec) =
     in
     Random.step newRecGenerator seed
         |> Tuple.mapFirst MazeGenerator
+
+
+concatMap fn mg =
+    let
+        { width, height } =
+            getDimensions mg
+    in
+    Coordinate2D.concatMap width height (\cord -> fn cord mg)
