@@ -144,17 +144,17 @@ innerOffsetPx =
     cellSizePx // 5
 
 
-viewMazeGeneratorCell : Coordinate2D -> MazeGenerator -> Svg msg
-viewMazeGeneratorCell cord m =
+viewMazeGeneratorCell : Coordinate2D -> MazeGenerator.CellInfo -> Svg msg
+viewMazeGeneratorCell cord { visited, current } =
     let
         ( x, y ) =
             cord
 
         isVisited =
-            MazeGenerator.isVisitedCord cord m
+            visited
 
         isOnTopOfStack =
-            MazeGenerator.getIsOnTopOfStack cord m
+            current
 
         sizeWithOffset =
             cellSizePx + (innerOffsetPx * 2)
