@@ -57,13 +57,16 @@ type MazeGenerator
 init : Random.Seed -> Int -> Int -> MazeGenerator
 init seed width height =
     let
+        atLeast1 =
+            max 1
+
         rec : Record
         rec =
             { visited = Set.fromList [ ( 0, 0 ) ]
             , stack = [ ( 0, 0 ) ]
             , connections = Set.empty
-            , width = width
-            , height = height
+            , width = atLeast1 width
+            , height = atLeast1 height
             , seed = seed
             }
     in
