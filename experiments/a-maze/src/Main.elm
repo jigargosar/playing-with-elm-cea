@@ -5,9 +5,9 @@ import Browser
 import Browser.Events
 import Coordinate2D as C2 exposing (Coordinate2D, normalizeConnection)
 import Dict exposing (Dict)
-import Html exposing (Html, button, div, h1, img, input, text)
-import Html.Attributes exposing (class, disabled, type_)
-import Html.Events exposing (onClick, onDoubleClick)
+import Html exposing (Html, button, div, h1, img, input, label, text)
+import Html.Attributes exposing (checked, class, disabled, type_, value)
+import Html.Events exposing (onCheck, onClick, onDoubleClick)
 import Html.Lazy
 import ISvg
     exposing
@@ -90,7 +90,7 @@ type Msg
     | Solve
     | Reset
     | AnimationFrame
-    | AutoStep
+    | AutoStep Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -106,13 +106,13 @@ update msg m =
             unless isSolved (overMG MG.step) m |> pure
 
         Solve ->
-            m |> overMG MG.solve |> pure
+            overMG MG.solve m |> pure
 
         Reset ->
-            m |> overMG MG.reset |> pure
+            overMG MG.reset m |> pure
 
-        AutoStep ->
-            pure { m | autoStep = not m.autoStep }
+        AutoStep bool ->
+            pure { m | autoStep = bool }
 
 
 overMG : MG.MazeGeneratorF -> ModelF
@@ -140,13 +140,19 @@ viewHeaderContent m =
     let
         solved =
             isSolved m
+
+        stepDisabled =
+            solved || m.autoStep
     in
     [ div [ class "f2" ] [ text "A-Maze" ]
     , div [ class "flex items-center hs2 " ]
         [ button [ onClick Reset ] [ text "Reset" ]
         , button [ onClick Solve, disabled solved ] [ text "Solve" ]
-        , button [ onClick Step, disabled solved ] [ text "Step" ]
-        , div [] [ input [ type_ "checkbox" ] [] ]
+        , label [ class "flex items-center hs2" ]
+            [ input [ type_ "checkbox", checked m.autoStep, onCheck AutoStep ] []
+            , div [ class "no-sel" ] [ text "Auto Step" ]
+            ]
+        , button [ onClick Step, disabled stepDisabled ] [ text "Step" ]
         ]
     ]
 
