@@ -213,18 +213,47 @@ viewMazeGenerator mg =
 
                 ( x2, y2 ) =
                     to |> transform
+
+                l =
+                    Svg.line
+                        [ iX1 x1
+                        , iY1 y1
+                        , iX2 x2
+                        , iY2 y2
+                        , SA.strokeWidth "3"
+                        , SA.stroke "blue"
+                        , SA.opacity "0.3"
+                        , strokeLinecap StrokeLinecapRound
+                        ]
+                        []
+
+                l2 =
+                    Svg.line
+                        [ iX1 (x1 - 5)
+                        , iY1 (y1 - 5)
+                        , iX2 x2
+                        , iY2 y2
+                        , SA.strokeWidth "3"
+                        , SA.stroke "blue"
+                        , SA.opacity "0.3"
+                        , strokeLinecap StrokeLinecapRound
+                        ]
+                        []
+
+                l3 =
+                    Svg.line
+                        [ iX1 (x1 + 5)
+                        , iY1 (y1 + 5)
+                        , iX2 x2
+                        , iY2 y2
+                        , SA.strokeWidth "3"
+                        , SA.stroke "blue"
+                        , SA.opacity "0.3"
+                        , strokeLinecap StrokeLinecapRound
+                        ]
+                        []
             in
-            Svg.line
-                [ iX1 x1
-                , iY1 y1
-                , iX2 x2
-                , iY2 y2
-                , SA.strokeWidth "3"
-                , SA.stroke "blue"
-                , SA.opacity "0.7"
-                , strokeLinecap StrokeLinecapRound
-                ]
-                []
+            Svg.g [] [ l, l2, l3 ]
     in
     MazeGenerator.mapConnections viewCellConnection mg
         ++ MazeGenerator.concatMap viewMazeGeneratorCell mg
