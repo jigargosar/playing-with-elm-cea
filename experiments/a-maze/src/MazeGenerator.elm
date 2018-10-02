@@ -1,5 +1,6 @@
 module MazeGenerator exposing
     ( CellInfo
+    , Connection
     , MazeGenerator
     , concatMap
     , getConnections
@@ -8,6 +9,7 @@ module MazeGenerator exposing
     , init
     , isSolved
     , isVisitedCord
+    , mapConnections
     , removeRandomConnections
     , solve
     , step
@@ -215,3 +217,10 @@ concatMap fn mg =
             fn cord { visited = isVisited cord, current = isOnTopOfStack cord }
     in
     Coordinate2D.concatMap width height mapper
+
+
+mapConnections : (Connection -> a) -> MazeGenerator -> List a
+mapConnections fn mg =
+    getConnections mg
+        |> Set.toList
+        |> List.map fn

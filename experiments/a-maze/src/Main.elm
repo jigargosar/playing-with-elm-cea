@@ -210,14 +210,7 @@ viewMazeGenerator m =
                 >> Coordinate2D.translate (cellSizePx // 2)
 
         viewCellConnections =
-            let
-                lines : List (Svg msg)
-                lines =
-                    MazeGenerator.getConnections m
-                        |> Set.toList
-                        |> List.map viewCellConnection
-            in
-            lines
+            MazeGenerator.mapConnections viewCellConnection m
 
         viewCellConnection ( from, to ) =
             let
