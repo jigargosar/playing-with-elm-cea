@@ -126,10 +126,10 @@ viewHeaderContent m =
         solved =
             isSolved m
 
-        stepDisabled =
+        cantStep =
             solved || m.autoStep
     in
-    [ div [ class "f2" ] [ text "A-Maze" ]
+    [ div [ class "f2" ] [ text "A-Maze-Zing" ]
     , div [ class "flex items-center hs2 " ]
         [ button [ onClick Reset ] [ text "Reset" ]
         , button [ onClick Solve, disabled solved ] [ text "Solve" ]
@@ -137,7 +137,7 @@ viewHeaderContent m =
             [ input [ type_ "checkbox", checked m.autoStep, onCheck AutoStep ] []
             , div [ class "no-sel" ] [ text "Auto Step" ]
             ]
-        , button [ onClick Step, disabled stepDisabled ] [ text "Step" ]
+        , button [ onClick Step, disabled cantStep ] [ text "Step" ]
         ]
     ]
 
