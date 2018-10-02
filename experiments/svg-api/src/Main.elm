@@ -65,13 +65,13 @@ view model =
         , Svg.svg
             [ SA.width "100%"
             , SA.height "100%"
-            , SA.fill "transparent"
             ]
             [ Svg.rect
                 [ SA.width "100%"
                 , SA.height "100%"
-                , SA.strokeWidth "1"
+                , SA.strokeWidth "0.5"
                 , SA.stroke "#000"
+                , SA.fill "transparent"
                 ]
                 []
             ]
