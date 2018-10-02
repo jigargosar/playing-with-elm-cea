@@ -66,7 +66,7 @@ init { now } =
     in
     pure
         { seed = modelSeed
-        , mazeGenerator = MazeGenerator.init mazeSeed 12 6
+        , mazeGenerator = MazeGenerator.init mazeSeed 24 16
         }
 
 
@@ -78,7 +78,6 @@ type Msg
     = NoOp
     | Step
     | Solve
-    | RemoveRandomConnections
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -92,9 +91,6 @@ update msg m =
 
         Solve ->
             { m | mazeGenerator = MazeGenerator.solve m.mazeGenerator } |> pure
-
-        RemoveRandomConnections ->
-            { m | mazeGenerator = MazeGenerator.removeRandomConnections m.mazeGenerator } |> pure
 
 
 pure model =
@@ -121,10 +117,6 @@ view m =
                     , disabled (MazeGenerator.isSolved m.mazeGenerator)
                     ]
                     [ text "Solve" ]
-                , button
-                    [ onClick RemoveRandomConnections
-                    ]
-                    [ text "RemoveRandomConnections" ]
                 ]
             , div [ class "no-sel" ] [ viewSvg m ]
             ]
@@ -151,6 +143,10 @@ viewSvg m =
         )
 
 
+cellSizePx =
+    25
+
+
 viewMaze mg =
     let
         connections : Set MazeGenerator.Connection
@@ -167,19 +163,22 @@ viewMaze mg =
         isEastConnected ( x, y ) =
             isConnected ( ( x, y ), ( x + 1, y ) )
 
+        offset =
+            cellSizePx // 5
+
+        size =
+            cellSizePx
+
         viewCell cord _ =
             let
-                size =
-                    50
-
                 ( x, y ) =
                     C2.scale size cord
             in
             Svg.g []
                 [ Svg.rect
-                    [ iX (x + 50 - 10)
+                    [ iX (x + size - offset)
                     , iY y
-                    , iWidth 10
+                    , iWidth offset
                     , iHeight size
                     , SA.fill "#cd37a9"
                     , SA.fill "none"
@@ -191,9 +190,9 @@ viewMaze mg =
                     []
                 , Svg.rect
                     [ iX x
-                    , iY (y + 50 - 10)
+                    , iY (y + size - offset)
                     , iWidth size
-                    , iHeight 10
+                    , iHeight offset
                     , SA.fill "#cd37a9"
                     , SA.fill "none"
                     , SA.fill "#000"
@@ -210,9 +209,6 @@ viewMaze mg =
 viewMazeGenerator : MazeGenerator -> List (Svg msg)
 viewMazeGenerator mg =
     let
-        cellSizePx =
-            50
-
         innerOffsetPx =
             cellSizePx // 5
 

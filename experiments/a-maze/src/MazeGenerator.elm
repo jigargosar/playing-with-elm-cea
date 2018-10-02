@@ -6,7 +6,6 @@ module MazeGenerator exposing
     , init
     , isSolved
     , mapConnections
-    , removeRandomConnections
     , solve
     , step
     )
@@ -172,35 +171,6 @@ isCordOnTopOfStack cord (MazeGenerator { stack }) =
 
 isCordVisited cord (MazeGenerator { visitedSet }) =
     Set.member cord visitedSet
-
-
-removeRandomConnections : MazeGeneratorF
-removeRandomConnections (MazeGenerator rec) =
-    let
-        connectionSetGenerator : Random.Generator ConnectionSet
-        connectionSetGenerator =
-            rec.connectionSet
-                |> Set.toList
-                |> Random.List.shuffle
-                |> Random.map (List.drop 10 >> Set.fromList)
-
-        visitedSetGenerator : Random.Generator VisitedSet
-        visitedSetGenerator =
-            rec.visitedSet
-                |> Set.toList
-                |> Random.List.shuffle
-                |> Random.map (List.drop 10 >> Set.fromList)
-
-        newRecGenerator : Random.Generator Record
-        newRecGenerator =
-            Random.map2 (\c v -> { rec | connectionSet = c, visitedSet = v })
-                connectionSetGenerator
-                visitedSetGenerator
-
-        ( newRec, newSeed ) =
-            Random.step newRecGenerator rec.seed
-    in
-    MazeGenerator { newRec | seed = newSeed }
 
 
 type alias CellInfo =
