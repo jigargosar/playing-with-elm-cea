@@ -139,7 +139,7 @@ pure model =
 
 view : Model -> Html Msg
 view m =
-    div [ class "pa3 vs3" ]
+    div [ class "pa3 vs3 flex flex-column items-center" ]
         [ div [ class "flex items-end hs3" ] (viewHeaderContent m)
         , div [ class "no-sel" ] [ viewSvg m ]
         ]
