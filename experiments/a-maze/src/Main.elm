@@ -136,72 +136,66 @@ viewSvg m =
         (viewMazeGenerator m.mazeGenerator |> ViewSvgHelpers.view)
 
 
-cellSizePx =
-    50
-
-
-innerOffsetPx =
-    cellSizePx // 5
-
-
-viewMazeGeneratorCell : Coordinate2D -> MazeGenerator.CellInfo -> Svg msg
-viewMazeGeneratorCell cord { visited, current } =
-    let
-        ( x, y ) =
-            cord
-
-        sizeWithOffset =
-            cellSizePx + (innerOffsetPx * 2)
-
-        size =
-            cellSizePx - (innerOffsetPx * 2)
-    in
-    Svg.g
-        [ SA.transform (iTranslate (x * cellSizePx) (y * cellSizePx)) ]
-        [ Svg.rect
-            [ iX innerOffsetPx
-            , iY innerOffsetPx
-            , iWidth size
-            , iHeight size
-            , SA.fill "#cd37a9"
-            , SA.fill "none"
-            , SA.strokeWidth "3"
-            , SA.stroke "#000"
-            , SA.opacity "0.1"
-            ]
-            []
-        , Svg.text_ [ iFontSize innerOffsetPx, alignmentBaseline AlignmentTextBeforeEdge ]
-            [ [ "("
-              , String.fromInt x
-              , ","
-              , String.fromInt y
-              , ")"
-              ]
-                |> String.join ""
-                |> Svg.text
-            ]
-        , Svg.g [ SA.opacity "0.5" ]
-            [ Svg.circle
-                [ cellSizePx // 2 |> iCX
-                , cellSizePx // 2 |> iCY
-                , SA.r "5"
-                , ter visited "blue" "none" |> SA.fill
-                ]
-                []
-            , Svg.circle
-                [ cellSizePx // 2 |> iCX
-                , cellSizePx // 2 |> iCY
-                , SA.r "5"
-                , ter current "red" "none" |> SA.fill
-                ]
-                []
-            ]
-        ]
-
-
 viewMazeGenerator : MazeGenerator -> List (Svg msg)
 viewMazeGenerator mg =
     let
+        cellSizePx =
+            50
+
+        innerOffsetPx =
+            cellSizePx // 5
+
+        innerSquareSize =
+            cellSizePx - (innerOffsetPx * 2)
+
+        viewMazeGeneratorCell : Coordinate2D -> MazeGenerator.CellInfo -> Svg msg
+        viewMazeGeneratorCell cord { visited, current } =
+            let
+                ( x, y ) =
+                    cord
+            in
+            Svg.g
+                [ SA.transform (iTranslate (x * cellSizePx) (y * cellSizePx)) ]
+                [ Svg.rect
+                    [ iX innerOffsetPx
+                    , iY innerOffsetPx
+                    , iWidth innerSquareSize
+                    , iHeight innerSquareSize
+                    , SA.fill "#cd37a9"
+                    , SA.fill "none"
+                    , SA.strokeWidth "3"
+                    , SA.stroke "#000"
+                    , SA.opacity "0.1"
+                    ]
+                    []
+                , Svg.text_ [ iFontSize innerOffsetPx, alignmentBaseline AlignmentTextBeforeEdge ]
+                    [ [ "("
+                      , String.fromInt x
+                      , ","
+                      , String.fromInt y
+                      , ")"
+                      ]
+                        |> String.join ""
+                        |> Svg.text
+                    ]
+                , Svg.g [ SA.opacity "0.5" ]
+                    [ Svg.circle
+                        [ cellSizePx // 2 |> iCX
+                        , cellSizePx // 2 |> iCY
+                        , SA.r "5"
+                        , ter visited "blue" "none" |> SA.fill
+                        ]
+                        []
+                    , Svg.circle
+                        [ cellSizePx // 2 |> iCX
+                        , cellSizePx // 2 |> iCY
+                        , SA.r "5"
+                        , ter current "red" "none" |> SA.fill
+                        ]
+                        []
+                    ]
+                ]
+
         transform =
             Coordinate2D.scale cellSizePx
                 >> Coordinate2D.translate (cellSizePx // 2)

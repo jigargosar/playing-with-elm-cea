@@ -5,6 +5,7 @@ module ISvg exposing
     , iHeight
     , iScale
     , iTranslate
+    , iTranslateCord
     , iWidth
     , iX
     , iX1
@@ -22,6 +23,10 @@ import Svg.Attributes as SA
 
 
 iTranslate x y =
+    iTranslateCord ( x, y )
+
+
+iTranslateCord ( x, y ) =
     [ "translate("
     , String.fromInt x
     , ","
