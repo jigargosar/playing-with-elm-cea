@@ -1,3 +1,16 @@
-.idea/workspace.xml
+# Distribution
+build/
+
+# elm-package generated files
 elm-stuff
-build
+
+# elm-repl generated files
+repl-temp-*
+
+# Dependency directories
+node_modules
+
+# Desktop Services Store on macOS
+.DS_Store
+
+.idea/workspace.xml
