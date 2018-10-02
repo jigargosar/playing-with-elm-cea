@@ -267,21 +267,28 @@ viewMazeGenerator mg =
         innerStrokeWidth =
             innerOffsetPx // 2
 
+        translateToCellTop =
+            C2.scale cellSizePx
+
+        translateToCellCenter =
+            translateToCellTop
+                >> C2.translate (cellSizePx // 2)
+
         viewMazeGeneratorCell : Coordinate2D -> MG.CellInfo -> Svg msg
         viewMazeGeneratorCell cord { visited, current } =
             Svg.g []
-                [ Svg.g
+                [ Svg.text_
+                    [ iFontSize innerOffsetPx
+                    , SA.alignmentBaseline "text-before-edge"
+                    ]
+                    [ C2.toString cord |> Svg.text ]
+                , Svg.g
                     [ cord
                         |> translateToCellCenter
                         >> iTranslateCord
                         >> SA.transform
                     ]
-                    [ Svg.text_
-                        [ iFontSize innerOffsetPx
-                        , SA.alignmentBaseline "text-before-edge"
-                        ]
-                        [ C2.toString cord |> Svg.text ]
-                    , Svg.g [ SA.opacity "1" ]
+                    [ Svg.g [ SA.opacity "1" ]
                         [ Svg.circle
                             [ iR innerOffsetPx
                             , ter visited "blue" "none" |> SA.fill
@@ -295,10 +302,6 @@ viewMazeGenerator mg =
                         ]
                     ]
                 ]
-
-        translateToCellCenter =
-            C2.scale cellSizePx
-                >> C2.translate (cellSizePx // 2)
 
         viewCellConnection ( from, to ) =
             let
