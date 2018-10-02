@@ -46,6 +46,7 @@ type alias Record =
     , connections : ConnectionSet
     , width : Int
     , height : Int
+    , seed : Random.Seed
     }
 
 
@@ -56,6 +57,7 @@ defaultRecord =
     , connections = Set.empty
     , width = 1
     , height = 1
+    , seed = Random.initialSeed 0
     }
 
 

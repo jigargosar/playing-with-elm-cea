@@ -57,8 +57,15 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
+    let
+        initialSeed =
+            Random.initialSeed now
+
+        ( mazeSeed, modelSeed ) =
+            Random.step Random.independentSeed initialSeed
+    in
     pure
-        { seed = Random.initialSeed now
+        { seed = modelSeed
         , mazeGenerator = MazeGenerator.init 12 6
         }
 
