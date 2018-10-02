@@ -3,12 +3,8 @@ module MazeGenerator exposing
     , Connection
     , MazeGenerator
     , concatMap
-    , getConnections
-    , getDimensions
-    , getIsOnTopOfStack
     , init
     , isSolved
-    , isVisitedCord
     , mapConnections
     , removeRandomConnections
     , solve
