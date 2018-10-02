@@ -173,13 +173,13 @@ viewSvg m =
         , iHeight (canvasHeightPx + 10)
         ]
         ([ Svg.g [ SA.opacity "0.2" ] (viewMazeGenerator m.mazeG)
-         , Svg.g [] (viewMaze m.mazeG)
+         , Svg.g [] (viewMazeWalls m.mazeG)
          ]
             |> ViewSvgHelpers.view
         )
 
 
-viewMaze mg =
+viewMazeWalls mg =
     let
         connections : Set MG.Connection
         connections =
