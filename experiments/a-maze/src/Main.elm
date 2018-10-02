@@ -280,6 +280,10 @@ viewMazeGenerator mg =
                 [ Svg.text_
                     [ iFontSize innerOffsetPx
                     , SA.alignmentBaseline "text-before-edge"
+                    , cord
+                        |> translateToCellTop
+                        >> iTranslateCord
+                        >> SA.transform
                     ]
                     [ C2.toString cord |> Svg.text ]
                 , Svg.g
