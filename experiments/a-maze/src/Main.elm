@@ -56,7 +56,7 @@ init { now } =
     in
     pure
         { seed = modelSeed
-        , mazeG = MG.init mazeSeed mw mh
+        , mazeG = MG.init mazeSeed mazeWidth mazeHeight
         , autoStep = True
         }
 
@@ -146,27 +146,27 @@ cellSizePx =
     50
 
 
-canvasWidth =
+canvasWidthPx =
     650
 
 
-canvasHeight =
+canvasHeightPx =
     400
 
 
-mw =
-    canvasWidth // cellSizePx
+mazeWidth =
+    canvasWidthPx // cellSizePx
 
 
-mh =
-    canvasHeight // cellSizePx
+mazeHeight =
+    canvasHeightPx // cellSizePx
 
 
 viewSvg m =
     svg
         [ SA.class "flex center"
-        , iWidth (canvasWidth + 10)
-        , iHeight (canvasHeight + 10)
+        , iWidth (canvasWidthPx + 10)
+        , iHeight (canvasHeightPx + 10)
         ]
         ([ Svg.g [ SA.opacity "0.2" ] (viewMazeGenerator m.mazeG)
          , Svg.g [] (viewMaze m.mazeG)
