@@ -1,6 +1,6 @@
 module Ramda exposing
     ( add
-    , appendTo
+    , consTo
     , ensureAtLeast
     , equals
     , flip
@@ -41,7 +41,7 @@ add =
     (+)
 
 
-appendTo =
+consTo =
     flip (::)
 
 
