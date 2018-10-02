@@ -6,6 +6,7 @@ import Browser.Events
 import Html exposing (Html, div, h1, img, text)
 import Html.Attributes exposing (class, src)
 import Html.Lazy
+import ISvg exposing (..)
 import Svg
 import Svg.Attributes as SA
 
@@ -14,8 +15,12 @@ import Svg.Attributes as SA
 ---- MODEL ----
 
 
+type alias Ball =
+    { x : Int, y : Int, r : Int }
+
+
 type alias Model =
-    { vw : Int, vh : Int }
+    { vw : Int, vh : Int, ball : Ball }
 
 
 type alias Flags =
@@ -24,7 +29,7 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now, vw, vh } =
-    ( { vw = vw, vh = vh }, Cmd.none )
+    ( { vw = vw, vh = vh, ball = Ball 100 100 20 }, Cmd.none )
 
 
 
@@ -59,7 +64,7 @@ pure model =
 
 
 view : Model -> Html Msg
-view model =
+view m =
     div [ class "measure-wide center pa2 h-100 flex flex-column vs3 " ]
         [ div [ class "f3" ] [ text "SVG API" ]
         , Svg.svg
@@ -74,7 +79,14 @@ view model =
                 , SA.fill "none"
                 ]
                 []
+            , viewBall m.ball
             ]
+        ]
+
+
+viewBall { x, y, r } =
+    Svg.g []
+        [ Svg.circle [ iCX x, iCY y, iR r, SA.fill "blue", SA.opacity "0.6" ] []
         ]
 
 
