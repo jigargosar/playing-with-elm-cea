@@ -177,15 +177,15 @@ isCordVisited cord (MazeGenerator { visitedSet }) =
 removeRandomConnections : MazeGeneratorF
 removeRandomConnections (MazeGenerator rec) =
     let
-        newConnectionsGenerator : Random.Generator ConnectionSet
-        newConnectionsGenerator =
+        connectionSetGenerator : Random.Generator ConnectionSet
+        connectionSetGenerator =
             rec.connectionSet
                 |> Set.toList
                 |> Random.List.shuffle
                 |> Random.map (List.drop 10 >> Set.fromList)
 
-        newVisitedGenerator : Random.Generator VisitedSet
-        newVisitedGenerator =
+        visitedSetGenerator : Random.Generator VisitedSet
+        visitedSetGenerator =
             rec.visitedSet
                 |> Set.toList
                 |> Random.List.shuffle
@@ -194,8 +194,8 @@ removeRandomConnections (MazeGenerator rec) =
         newRecGenerator : Random.Generator Record
         newRecGenerator =
             Random.map2 (\c v -> { rec | connectionSet = c, visitedSet = v })
-                newConnectionsGenerator
-                newVisitedGenerator
+                connectionSetGenerator
+                visitedSetGenerator
 
         ( newRec, newSeed ) =
             Random.step newRecGenerator rec.seed
