@@ -211,9 +211,6 @@ viewMazeGenerator m =
         { width, height } =
             MazeGenerator.getDimensions m
 
-        viewCells =
-            Coordinate2D.flatMap width height (flip gridSquare m)
-
         transform =
             Coordinate2D.scale cellSizePx
                 >> Coordinate2D.translate (cellSizePx // 2)
@@ -248,7 +245,7 @@ viewMazeGenerator m =
                 ]
                 []
     in
-    viewCellConnections ++ viewCells
+    viewCellConnections ++ Coordinate2D.flatMap width height (flip gridSquare m)
 
 
 
