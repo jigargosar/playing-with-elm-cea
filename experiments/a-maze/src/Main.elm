@@ -206,11 +206,8 @@ viewMazeGenerator mg =
             C2.scale cellSizePx
                 >> C2.translate (cellSizePx // 2)
 
-        viewCellConnection connection =
+        viewCellConnection ( from, to ) =
             let
-                ( from, to ) =
-                    normalizeConnection connection
-
                 ( x1, y1 ) =
                     from |> transform
 
@@ -258,7 +255,7 @@ viewMazeGenerator mg =
             in
             Svg.g [] [ l, l2, l3 ]
     in
-    MazeGenerator.mapConnections viewCellConnection mg
+    MazeGenerator.mapConnections (normalizeConnection >> viewCellConnection) mg
         ++ MazeGenerator.concatMap viewMazeGeneratorCell mg
 
 
