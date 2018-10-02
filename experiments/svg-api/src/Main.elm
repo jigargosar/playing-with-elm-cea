@@ -46,7 +46,7 @@ update msg m =
             pure m
 
         Resize nw nh ->
-            pure { m | vw = nw, vh = nh }
+            { m | vw = nw, vh = nh } |> Debug.log "winDim" |> pure
 
 
 pure model =
