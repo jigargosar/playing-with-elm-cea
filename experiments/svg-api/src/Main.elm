@@ -14,6 +14,8 @@ import Set exposing (Set)
 import Svg
 import Svg.Attributes as SA
 import Svg.Events as SE
+import TypedSvg.Attributes as TA
+import TypedSvg.Attributes.InPx as TP
 
 
 
@@ -21,7 +23,7 @@ import Svg.Events as SE
 
 
 type alias Ball =
-    { x : Int, y : Int, r : Int }
+    { x : Float, y : Int, r : Int }
 
 
 type alias Model =
@@ -74,6 +76,10 @@ update msg m =
 
                 newBall =
                     { ball | x = newBallX }
+
+                {- _ =
+                   Debug.log "delta" delta
+                -}
             in
             { m | ball = newBall } |> pure
 
@@ -118,7 +124,7 @@ view m =
 
 viewBall { x, y, r } =
     Svg.g []
-        [ Svg.circle [ iCX x, iCY y, iR r, SA.fill "blue", SA.opacity "0.6" ] []
+        [ Svg.circle [ TP.cx x, iCY y, iR r, SA.fill "blue", SA.opacity "0.6" ] []
         ]
 
 
