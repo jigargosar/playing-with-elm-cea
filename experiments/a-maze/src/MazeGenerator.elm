@@ -37,9 +37,9 @@ type alias Stack =
 
 
 type alias Record =
-    { visited : VisitedSet
+    { visitedSet : VisitedSet
     , stack : Stack
-    , connections : ConnectionSet
+    , connectionSet : ConnectionSet
     , width : Int
     , height : Int
     , seed : Random.Seed
@@ -55,9 +55,9 @@ init seed width height =
     let
         rec : Record
         rec =
-            { visited = Set.fromList [ ( 0, 0 ) ]
+            { visitedSet = Set.fromList [ ( 0, 0 ) ]
             , stack = [ ( 0, 0 ) ]
-            , connections = Set.empty
+            , connectionSet = Set.empty
             , width = ensureAtLeast 1 width
             , height = ensureAtLeast 1 height
             , seed = seed
@@ -72,8 +72,8 @@ getTotalCellCount { width, height } =
 
 
 getVisitedCellCount : Record -> Int
-getVisitedCellCount { visited } =
-    Set.size visited
+getVisitedCellCount { visitedSet } =
+    Set.size visitedSet
 
 
 isSolvedRec : Record -> Bool
@@ -88,7 +88,7 @@ isSolved (MazeGenerator rec) =
 
 getConnections : MazeGenerator -> ConnectionSet
 getConnections (MazeGenerator rec) =
-    rec.connections
+    rec.connectionSet
 
 
 step : Random.Seed -> MazeGenerator -> ( MazeGenerator, Random.Seed )
@@ -124,7 +124,7 @@ stepHelp seed stackTop rec =
             x >= 0 && y >= 0 && x < rec.width && y < rec.height
 
         isVisitedRec cord =
-            Set.member cord rec.visited
+            Set.member cord rec.visitedSet
 
         unVisitedNeighbours =
             stackTop
@@ -142,10 +142,10 @@ stepHelp seed stackTop rec =
     case maybeCord of
         Just cord ->
             ( { rec
-                | visited = rec.visited |> Set.insert cord
+                | visitedSet = rec.visitedSet |> Set.insert cord
                 , stack = cord :: rec.stack
-                , connections =
-                    rec.connections
+                , connectionSet =
+                    rec.connectionSet
                         |> Set.insert ( stackTop, cord )
               }
             , newSeed
@@ -164,8 +164,8 @@ getIsOnTopOfStack cord (MazeGenerator { stack }) =
     stack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
 
 
-isVisitedCord cord (MazeGenerator { visited }) =
-    Set.member cord visited
+isVisitedCord cord (MazeGenerator { visitedSet }) =
+    Set.member cord visitedSet
 
 
 removeRandomConnections : Random.Seed -> MazeGenerator -> ( MazeGenerator, Random.Seed )
@@ -173,21 +173,21 @@ removeRandomConnections seed (MazeGenerator rec) =
     let
         newConnectionsGenerator : Random.Generator ConnectionSet
         newConnectionsGenerator =
-            rec.connections
+            rec.connectionSet
                 |> Set.toList
                 |> Random.List.shuffle
                 |> Random.map (List.drop 10 >> Set.fromList)
 
         newVisitedGenerator : Random.Generator VisitedSet
         newVisitedGenerator =
-            rec.visited
+            rec.visitedSet
                 |> Set.toList
                 |> Random.List.shuffle
                 |> Random.map (List.drop 10 >> Set.fromList)
 
         newRecGenerator : Random.Generator Record
         newRecGenerator =
-            Random.map2 (\c v -> { rec | connections = c, visited = v })
+            Random.map2 (\c v -> { rec | connectionSet = c, visitedSet = v })
                 newConnectionsGenerator
                 newVisitedGenerator
     in
@@ -196,7 +196,7 @@ removeRandomConnections seed (MazeGenerator rec) =
 
 
 type alias CellInfo =
-    { visited : Bool, current : Bool }
+    { visitedSet : Bool, current : Bool }
 
 
 concatMap : (Coordinate2D -> CellInfo -> a) -> MazeGenerator -> List a
@@ -212,7 +212,7 @@ concatMap fn mg =
             getIsOnTopOfStack cord mg
 
         mapper cord =
-            fn cord { visited = isVisited cord, current = isOnTopOfStack cord }
+            fn cord { visitedSet = isVisited cord, current = isOnTopOfStack cord }
     in
     Coordinate2D.concatMap width height mapper
 
