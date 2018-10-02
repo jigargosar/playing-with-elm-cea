@@ -94,14 +94,6 @@ pure model =
 ---- VIEW ----
 
 
-worldWidth =
-    650
-
-
-worldHeight =
-    500
-
-
 view : Model -> Html Msg
 view m =
     div []
@@ -129,10 +121,17 @@ view m =
 
 
 viewSvg m =
+    let
+        canvasWidth =
+            650
+
+        canvasHeight =
+            500
+    in
     svg
         [ SA.class "flex center"
-        , iWidth (worldWidth + 10)
-        , iHeight (worldHeight + 10)
+        , iWidth (canvasWidth + 10)
+        , iHeight (canvasHeight + 10)
         ]
         (viewAlgoData m |> ViewSvgHelpers.view)
 
