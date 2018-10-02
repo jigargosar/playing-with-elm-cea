@@ -152,7 +152,45 @@ viewSvg m =
 
 
 viewMaze mg =
-    viewMazeGenerator mg
+    let
+        viewCell cord _ =
+            let
+                size =
+                    50
+
+                ( x, y ) =
+                    C2.scale size cord
+            in
+            Svg.g []
+                [ Svg.rect
+                    [ iX (x + 50 - 10)
+                    , iY y
+                    , iWidth 10
+                    , iHeight size
+                    , SA.fill "#cd37a9"
+                    , SA.fill "none"
+                    , SA.fill "#000"
+                    , SA.strokeWidth "1"
+                    , SA.stroke "#fff"
+                    , SA.opacity "1"
+                    ]
+                    []
+                , Svg.rect
+                    [ iX x
+                    , iY (y + 50 - 10)
+                    , iWidth size
+                    , iHeight 10
+                    , SA.fill "#cd37a9"
+                    , SA.fill "none"
+                    , SA.fill "#000"
+                    , SA.strokeWidth "1"
+                    , SA.stroke "#fff"
+                    , SA.opacity "1"
+                    ]
+                    []
+                ]
+    in
+    MazeGenerator.concatMap viewCell mg
 
 
 viewMazeGenerator : MazeGenerator -> List (Svg msg)
