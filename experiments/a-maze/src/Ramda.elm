@@ -67,6 +67,7 @@ when pred true value =
 -}
 
 
+unless : (a -> Bool) -> (a -> a) -> a -> a
 unless pred =
     when (pred >> not)
 
