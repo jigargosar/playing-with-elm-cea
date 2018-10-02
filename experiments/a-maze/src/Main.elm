@@ -144,7 +144,15 @@ viewSvg m =
         , iWidth (canvasWidth + 10)
         , iHeight (canvasHeight + 10)
         ]
-        (viewMazeGenerator m.mazeGenerator |> ViewSvgHelpers.view)
+        ([ Svg.g [ SA.opacity "0.2" ] (viewMazeGenerator m.mazeGenerator)
+         , Svg.g [] (viewMaze m.mazeGenerator)
+         ]
+            |> ViewSvgHelpers.view
+        )
+
+
+viewMaze mg =
+    viewMazeGenerator mg
 
 
 viewMazeGenerator : MazeGenerator -> List (Svg msg)
