@@ -46,7 +46,7 @@ init { now } =
     update WalledAMaze
         { seed = Random.initialSeed now
         , maze = walledMaze
-        , mazeGenerator = MazeGenerator.init 24 16
+        , mazeGenerator = MazeGenerator.init 12 6
         }
 
 
@@ -165,7 +165,7 @@ view m =
 
 
 cellSizePx =
-    25
+    50
 
 
 innerOffsetPx =
