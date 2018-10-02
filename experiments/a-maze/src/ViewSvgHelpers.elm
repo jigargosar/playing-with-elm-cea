@@ -52,8 +52,8 @@ view content =
         , SA.fill "url(#grid)"
         ]
         []
-    , g [ SA.transform (iTranslate 0 0) ] [ content ]
     ]
+        ++ content
 
 
 square x y size fillS =

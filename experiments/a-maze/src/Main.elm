@@ -1,6 +1,5 @@
 module Main exposing (main)
 
-import AMaze exposing (AMaze)
 import Array2D
 import Browser
 import Browser.Events
@@ -19,10 +18,10 @@ import Random.List
 import Set exposing (Set)
 import Svg exposing (Svg)
 import Svg.Attributes as SA
+import Svg.Keyed
 import TypedSvg exposing (svg)
 import TypedSvg.Attributes exposing (alignmentBaseline, strokeLinecap)
 import TypedSvg.Types exposing (AlignmentBaseline(..), StrokeLinecap(..))
-import ViewAMaze
 import ViewSvgHelpers
 
 
@@ -32,7 +31,6 @@ import ViewSvgHelpers
 
 type alias Model =
     { seed : Random.Seed
-    , maze : AMaze
     , mazeGenerator : MazeGenerator
     }
 
@@ -43,29 +41,10 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
-    update WalledAMaze
+    pure
         { seed = Random.initialSeed now
-        , maze = walledMaze
         , mazeGenerator = MazeGenerator.init 12 6
         }
-
-
-mazeWidth =
-    18
-
-
-mazeHeight =
-    15
-
-
-generateRandomMaze : Random.Seed -> ( AMaze, Random.Seed )
-generateRandomMaze =
-    Random.step (AMaze.randomGenerator mazeWidth mazeHeight)
-
-
-walledMaze : AMaze
-walledMaze =
-    AMaze.walled mazeWidth mazeHeight
 
 
 
@@ -74,8 +53,6 @@ walledMaze =
 
 type Msg
     = NoOp
-    | RandomAMaze
-    | WalledAMaze
     | Step
     | RemoveRandomConnections
 
@@ -85,12 +62,6 @@ update msg m =
     case msg of
         NoOp ->
             pure m
-
-        RandomAMaze ->
-            updateGenerateNewMaze m |> pure
-
-        WalledAMaze ->
-            { m | maze = AMaze.fillWalls m.maze } |> pure
 
         Step ->
             m |> updateMazeGeneratorStep |> pure
@@ -114,14 +85,6 @@ updateMazeGeneratorStep m =
 
 pure model =
     ( model, Cmd.none )
-
-
-updateGenerateNewMaze m =
-    let
-        ( newMaze, newSeed ) =
-            generateRandomMaze m.seed
-    in
-    { m | seed = newSeed, maze = newMaze }
 
 
 
@@ -233,7 +196,7 @@ gridSquare m cord =
         ]
 
 
-viewAlgoData : Model -> Svg msg
+viewAlgoData : Model -> List (Svg msg)
 viewAlgoData m =
     let
         drawMazeCell cord =
@@ -244,7 +207,6 @@ viewAlgoData m =
 
         viewCells =
             Coordinate2D.flatMap width height drawMazeCell
-                |> Svg.g []
 
         transform =
             Coordinate2D.scale cellSizePx
@@ -258,7 +220,7 @@ viewAlgoData m =
                         |> Set.toList
                         |> List.map viewCellConnection
             in
-            Svg.g [] lines
+            lines
 
         viewCellConnection ( from, to ) =
             let
@@ -280,11 +242,7 @@ viewAlgoData m =
                 ]
                 []
     in
-    Svg.g [] [ viewCellConnections, viewCells ]
-
-
-viewAMaze m =
-    ViewAMaze.view m.maze
+    viewCellConnections ++ viewCells
 
 
 
