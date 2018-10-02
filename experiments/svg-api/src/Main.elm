@@ -9,6 +9,7 @@ import Html.Lazy
 import ISvg exposing (..)
 import Json.Decode as D
 import Json.Encode as E
+import Ramda exposing (ifElse, subBy)
 import Set exposing (Set)
 import Svg
 import Svg.Attributes as SA
@@ -51,6 +52,7 @@ type Msg
     | AnimationFrame Float
     | Resize Int Int
     | KeyDown String
+    | KeyUp String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -60,13 +62,29 @@ update msg m =
             pure m
 
         AnimationFrame delta ->
-            pure m
+            let
+                newBallX =
+                    ifElse (.keySet >> Set.member "ArrowLeft")
+                        (.ball >> .x >> subBy 1)
+                        (.ball >> .x)
+                        m
+
+                ball =
+                    m.ball
+
+                newBall =
+                    { ball | x = newBallX }
+            in
+            { m | ball = newBall } |> pure
 
         Resize nw nh ->
             { m | vw = nw, vh = nh } |> Debug.log "[Resize] model:" |> pure
 
         KeyDown key ->
             { m | keySet = Set.insert key m.keySet } |> pure
+
+        KeyUp key ->
+            { m | keySet = Set.remove key m.keySet } |> pure
 
 
 pure model =
@@ -113,6 +131,7 @@ subscriptions _ =
         [ Browser.Events.onAnimationFrameDelta AnimationFrame
         , Browser.Events.onResize Resize
         , Browser.Events.onKeyDown (D.map KeyDown (D.field "key" D.string))
+        , Browser.Events.onKeyUp (D.map KeyUp (D.field "key" D.string))
         ]
 
 
