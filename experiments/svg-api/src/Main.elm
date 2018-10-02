@@ -59,7 +59,7 @@ pure model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "pa3 flex flex-column vs3" ]
+    div [ class "measure-wide center pa3 flex flex-column vs3 " ]
         [ div [ class "f3" ] [ text "SVG API" ]
         , Svg.svg [] []
         ]
