@@ -150,12 +150,6 @@ viewMazeGeneratorCell cord { visited, current } =
         ( x, y ) =
             cord
 
-        isVisited =
-            visited
-
-        isOnTopOfStack =
-            current
-
         sizeWithOffset =
             cellSizePx + (innerOffsetPx * 2)
 
@@ -191,14 +185,14 @@ viewMazeGeneratorCell cord { visited, current } =
                 [ cellSizePx // 2 |> iCX
                 , cellSizePx // 2 |> iCY
                 , SA.r "5"
-                , ter isVisited "blue" "none" |> SA.fill
+                , ter visited "blue" "none" |> SA.fill
                 ]
                 []
             , Svg.circle
                 [ cellSizePx // 2 |> iCX
                 , cellSizePx // 2 |> iCY
                 , SA.r "5"
-                , ter isOnTopOfStack "red" "none" |> SA.fill
+                , ter current "red" "none" |> SA.fill
                 ]
                 []
             ]
