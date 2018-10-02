@@ -29,14 +29,17 @@ equals =
     (==)
 
 
-flip fn a b =
-    fn b a
+flip : (a -> b -> c) -> b -> a -> c
+flip fn b a =
+    fn a b
 
 
+subBy : number -> number -> number
 subBy =
     flip (-)
 
 
+add : number -> number -> number
 add =
     (+)
 
