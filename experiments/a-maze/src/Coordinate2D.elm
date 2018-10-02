@@ -4,6 +4,7 @@ module Coordinate2D exposing
     , map
     , perpendicularNeighboursOf
     , scale
+    , toString
     , translate
     )
 
@@ -47,3 +48,13 @@ scale s ( x, y ) =
 
 translate t ( x, y ) =
     ( t + x, t + y )
+
+
+toString ( x, y ) =
+    [ "("
+    , String.fromInt x
+    , ","
+    , String.fromInt y
+    , ")"
+    ]
+        |> String.join ""

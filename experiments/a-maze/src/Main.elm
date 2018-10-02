@@ -191,15 +191,7 @@ viewMazeGenerator mg =
                     [ iFontSize innerOffsetPx
                     , alignmentBaseline AlignmentTextBeforeEdge
                     ]
-                    [ [ "("
-                      , String.fromInt x
-                      , ","
-                      , String.fromInt y
-                      , ")"
-                      ]
-                        |> String.join ""
-                        |> Svg.text
-                    ]
+                    [ C2.toString cord |> Svg.text ]
                 , Svg.g [ SA.opacity "0.5" ]
                     [ Svg.circle
                         [ cellSizePx // 2 |> iCX
