@@ -1,6 +1,6 @@
 module Coordinate2D exposing
     ( Coordinate2D
-    , flatMap
+    , concatMap
     , map
     , perpendicularNeighboursOf
     , scale
@@ -12,7 +12,7 @@ type alias Coordinate2D =
     ( Int, Int )
 
 
-flatMap width height fn =
+concatMap width height fn =
     map width height fn |> List.concat
 
 

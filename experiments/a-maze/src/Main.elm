@@ -245,7 +245,7 @@ viewMazeGenerator m =
                 ]
                 []
     in
-    viewCellConnections ++ Coordinate2D.flatMap width height (flip gridSquare m)
+    viewCellConnections ++ Coordinate2D.concatMap width height (flip gridSquare m)
 
 
 
