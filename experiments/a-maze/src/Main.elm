@@ -187,7 +187,10 @@ viewMazeGenerator mg =
                     , SA.opacity "0.1"
                     ]
                     []
-                , Svg.text_ [ iFontSize innerOffsetPx, alignmentBaseline AlignmentTextBeforeEdge ]
+                , Svg.text_
+                    [ iFontSize innerOffsetPx
+                    , alignmentBaseline AlignmentTextBeforeEdge
+                    ]
                     [ [ "("
                       , String.fromInt x
                       , ","
