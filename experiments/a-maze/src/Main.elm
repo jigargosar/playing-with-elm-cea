@@ -25,7 +25,7 @@ import ISvg
         , iY1
         , iY2
         )
-import MazeGenerator exposing (MazeGenerator)
+import MazeGenerator as MG exposing (MazeGenerator)
 import Ramda exposing (equals, flip, ifElse, isEmptyList, ter)
 import Random
 import Random.Array
@@ -47,8 +47,12 @@ import ViewSvgHelpers
 
 type alias Model =
     { seed : Random.Seed
-    , mazeGenerator : MazeGenerator
+    , mazeGen : MazeGenerator
     }
+
+
+type alias ModelF =
+    Model -> Model
 
 
 type alias Flags =
@@ -66,7 +70,7 @@ init { now } =
     in
     pure
         { seed = modelSeed
-        , mazeGenerator = MazeGenerator.init mazeSeed 24 16
+        , mazeGen = MG.init mazeSeed 24 16
         }
 
 
@@ -78,6 +82,7 @@ type Msg
     = NoOp
     | Step
     | Solve
+    | Reset
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -87,10 +92,18 @@ update msg m =
             pure m
 
         Step ->
-            { m | mazeGenerator = MazeGenerator.step m.mazeGenerator } |> pure
+            m |> overMG MG.step |> pure
 
         Solve ->
-            { m | mazeGenerator = MazeGenerator.solve m.mazeGenerator } |> pure
+            m |> overMG MG.solve |> pure
+
+        Reset ->
+            m |> overMG MG.reset |> pure
+
+
+overMG : MG.MazeGeneratorF -> ModelF
+overMG fn m =
+    { m | mazeGen = fn m.mazeGen }
 
 
 pure model =
@@ -109,12 +122,12 @@ view m =
                 [ div [ class "f2" ] [ text "A-Maze" ]
                 , button
                     [ onClick Step
-                    , disabled (MazeGenerator.isSolved m.mazeGenerator)
+                    , disabled (MG.isSolved m.mazeGen)
                     ]
                     [ text "Step" ]
                 , button
                     [ onClick Solve
-                    , disabled (MazeGenerator.isSolved m.mazeGenerator)
+                    , disabled (MG.isSolved m.mazeGen)
                     ]
                     [ text "Solve" ]
                 ]
@@ -136,8 +149,8 @@ viewSvg m =
         , iWidth (canvasWidth + 10)
         , iHeight (canvasHeight + 10)
         ]
-        ([ Svg.g [ SA.opacity "0.2" ] (viewMazeGenerator m.mazeGenerator)
-         , Svg.g [] (viewMaze m.mazeGenerator)
+        ([ Svg.g [ SA.opacity "0.2" ] (viewMazeGenerator m.mazeGen)
+         , Svg.g [] (viewMaze m.mazeGen)
          ]
             |> ViewSvgHelpers.view
         )
@@ -149,9 +162,9 @@ cellSizePx =
 
 viewMaze mg =
     let
-        connections : Set MazeGenerator.Connection
+        connections : Set MG.Connection
         connections =
-            MazeGenerator.mapConnections normalizeConnection mg
+            MG.mapConnections normalizeConnection mg
                 |> Set.fromList
 
         isConnected cp =
@@ -203,7 +216,7 @@ viewMaze mg =
                     []
                 ]
     in
-    MazeGenerator.concatMap viewCell mg
+    MG.concatMap viewCell mg
 
 
 viewMazeGenerator : MazeGenerator -> List (Svg msg)
@@ -215,7 +228,7 @@ viewMazeGenerator mg =
         innerSquareSize =
             cellSizePx - (innerOffsetPx * 2)
 
-        viewMazeGeneratorCell : Coordinate2D -> MazeGenerator.CellInfo -> Svg msg
+        viewMazeGeneratorCell : Coordinate2D -> MG.CellInfo -> Svg msg
         viewMazeGeneratorCell cord { visited, current } =
             Svg.g
                 [ cord
@@ -314,8 +327,8 @@ viewMazeGenerator mg =
             in
             l
     in
-    MazeGenerator.mapConnections (normalizeConnection >> viewCellConnection) mg
-        ++ MazeGenerator.concatMap viewMazeGeneratorCell mg
+    MG.mapConnections (normalizeConnection >> viewCellConnection) mg
+        ++ MG.concatMap viewMazeGeneratorCell mg
 
 
 

@@ -2,10 +2,12 @@ module MazeGenerator exposing
     ( CellInfo
     , Connection
     , MazeGenerator
+    , MazeGeneratorF
     , concatMap
     , init
     , isSolved
     , mapConnections
+    , reset
     , solve
     , step
     )
@@ -53,20 +55,25 @@ type alias MazeGeneratorF =
     MazeGenerator -> MazeGenerator
 
 
+createRec : Random.Seed -> Int -> Int -> Record
+createRec seed width height =
+    { visitedSet = Set.fromList [ ( 0, 0 ) ]
+    , stack = [ ( 0, 0 ) ]
+    , connectionSet = Set.empty
+    , width = ensureAtLeast 1 width
+    , height = ensureAtLeast 1 height
+    , seed = seed
+    }
+
+
 init : Random.Seed -> Int -> Int -> MazeGenerator
 init seed width height =
-    let
-        rec : Record
-        rec =
-            { visitedSet = Set.fromList [ ( 0, 0 ) ]
-            , stack = [ ( 0, 0 ) ]
-            , connectionSet = Set.empty
-            , width = ensureAtLeast 1 width
-            , height = ensureAtLeast 1 height
-            , seed = seed
-            }
-    in
-    MazeGenerator rec
+    MazeGenerator (createRec seed width height)
+
+
+reset : MazeGeneratorF
+reset (MazeGenerator { seed, width, height }) =
+    MazeGenerator (createRec seed width height)
 
 
 getTotalCellCount : Record -> Int
