@@ -88,20 +88,20 @@ update msg m =
             m |> ifElse .autoStep (update Step) pure
 
         Step ->
-            unless isSolved (overMG MG.step) m |> pure
+            unless isSolved (overMazeGen MG.step) m |> pure
 
         Solve ->
-            overMG MG.solve m |> pure
+            overMazeGen MG.solve m |> pure
 
         Reset ->
-            overMG MG.reset m |> pure
+            overMazeGen MG.reset m |> pure
 
         AutoStep bool ->
             pure { m | autoStep = bool }
 
 
-overMG : MG.MazeGeneratorF -> ModelF
-overMG fn m =
+overMazeGen : MG.MazeGeneratorF -> ModelF
+overMazeGen fn m =
     { m | mazeGen = fn m.mazeGen }
 
 
