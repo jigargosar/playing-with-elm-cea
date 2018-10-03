@@ -59,6 +59,16 @@ isRightDown =
     isKeyDown "ArrowRight"
 
 
+isUpDown : Model -> Bool
+isUpDown =
+    isKeyDown "ArrowUp"
+
+
+isDownDown : Model -> Bool
+isDownDown =
+    isKeyDown "ArrowDown"
+
+
 
 ---- UPDATE ----
 
@@ -84,6 +94,9 @@ update msg m =
 
                 xDirection =
                     ter (isLeftDown m) (-1) (ter (isRightDown m) (1) (0))
+
+                yDirection =
+                    ter (isUpDown m) (-1) (ter (isDownDown m) (1) (0))
 
                 speedMultiplier =
                     1
