@@ -219,15 +219,10 @@ computeNewBallPos delta m =
                 |> List.any (intersects ballPosSize)
     in
         (if collided then
-            computeBallPositionAvoidingCollision newPos ball m 5
+            computeBallPositionAvoidingCollision newPos ball m 10
          else
             newPos
         )
-
-
-
-{- ter collided (computeBallPositionAvoidingCollision newPos ball m) newPos -}
-{- ter collided (ball.pos) newPos -}
 
 
 computeBallPositionAvoidingCollision newPos ball m max =
