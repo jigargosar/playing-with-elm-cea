@@ -22,12 +22,27 @@ import TypedSvg.Attributes.InPx as TP
 ---- MODEL ----
 
 
+type alias Position =
+    ( Float, Float )
+
+
+type alias Dimension =
+    ( Float, Float )
+
+
+type alias Wall =
+    { pos : Position, size : Dimension }
+
+
 type alias Ball =
     { pos : ( Float, Float ), r : Float }
 
 
 type alias Model =
-    { ball : Ball, keySet : Set String }
+    { ball : Ball
+    , walls : List Wall
+    , keySet : Set String
+    }
 
 
 type alias Flags =
@@ -38,6 +53,7 @@ init : Flags -> ( Model, Cmd Msg )
 init { now, vw, vh } =
     ( { ball = Ball ( 100, 100 ) 15
       , keySet = Set.empty
+      , walls = []
       }
     , Cmd.none
     )
