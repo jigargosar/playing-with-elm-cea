@@ -285,14 +285,16 @@ viewBall ball =
     in
         Svg.g []
             [ Svg.circle (cPosR pos r ++ [ SA.fill "blue", SA.opacity "0.6" ]) []
-            , Svg.rect
-                (rectAttrFromBB ballBB
-                    ++ [ SA.fill "none"
-                       , SA.stroke "red"
-                       , SA.opacity "0.6"
-                       ]
-                )
-                []
+
+            {- , Svg.rect
+               (rectAttrFromBB ballBB
+                   ++ [ SA.fill "none"
+                      , SA.stroke "red"
+                      , SA.opacity "0.6"
+                      ]
+               )
+               []
+            -}
             ]
 
 
@@ -311,14 +313,16 @@ viewWall wall =
                    ]
             )
             []
-        , Svg.rect
-            (rectAttrFromBB wall
-                ++ [ SA.fill "none"
-                   , SA.stroke "red"
-                   , SA.opacity "0.6"
-                   ]
-            )
-            []
+
+        {- , Svg.rect
+           (rectAttrFromBB wall
+               ++ [ SA.fill "none"
+                  , SA.stroke "red"
+                  , SA.opacity "0.6"
+                  ]
+           )
+           []
+        -}
         ]
 
 
