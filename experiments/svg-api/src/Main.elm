@@ -132,8 +132,11 @@ update msg m =
                 delta =
                     elapsed / 1000
 
+                newVel =
+                    computeBallVelocity delta m
+
                 ball =
-                    m.ball
+                    setBallVelocity newVel m.ball
 
                 newBall =
                     { ball | pos = computeNewBallPos delta m }
@@ -196,24 +199,28 @@ computeBallVelocity delta m =
             |> mapT (ballSpeedInPxPerSecond * delta |> (*))
 
 
+setBallVelocity vel ball =
+    { ball | vel = vel }
+
+
 computeNewBallPos delta m =
     let
-        ballVelocity =
-            computeBallVelocity delta m
-
-        { pos, r } =
+        ball =
             m.ball
 
+        ballVelocity =
+            ball.vel
+
         newPos =
-            addVec pos ballVelocity
+            addVec ball.pos ball.velocity
 
         ballBB =
-            getBallPosSize { pos = newPos, r = r }
+            getBallPosSize { pos = newPos, r = ball.r }
 
         collided =
             m.walls |> List.any (intersects ballBB)
     in
-        ter collided pos newPos
+        ter collided ball.pos newPos
 
 
 pure model =
