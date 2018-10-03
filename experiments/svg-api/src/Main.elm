@@ -212,7 +212,7 @@ computeNewBallPos delta m =
             ball.vel
 
         newPos =
-            addVec ball.pos ball.velocity
+            addVec ball.pos ball.vel
 
         ballBB =
             getBallPosSize { pos = newPos, r = ball.r }
