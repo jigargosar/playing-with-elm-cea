@@ -87,8 +87,11 @@ update msg m =
         NoOp ->
             pure m
 
-        AnimationFrame delta ->
+        AnimationFrame elapsed ->
             let
+                delta =
+                    elapsed / 1000
+
                 ball =
                     m.ball
 
@@ -98,14 +101,14 @@ update msg m =
                 yDirection =
                     ter (isUpDown m) (-1) (ter (isDownDown m) (1) (0))
 
-                speedMultiplier =
-                    0.5
+                ballSpeedPerSecond =
+                    60
 
                 xOffset =
-                    xDirection * speedMultiplier
+                    xDirection * ballSpeedPerSecond * delta
 
                 yOffset =
-                    yDirection * speedMultiplier
+                    yDirection * ballSpeedPerSecond * delta
 
                 newBall =
                     { ball | x = ball.x + xOffset, y = ball.y + yOffset }
