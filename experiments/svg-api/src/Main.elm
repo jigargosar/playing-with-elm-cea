@@ -279,7 +279,7 @@ viewWall wall =
             wall.pos
 
         ( w, h ) =
-            addVec wall.pos wall.size
+            wall.size
     in
         Svg.rect
             [ TP.x x
