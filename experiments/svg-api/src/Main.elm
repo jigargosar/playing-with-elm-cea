@@ -27,7 +27,7 @@ type alias Ball =
 
 
 type alias Model =
-    { vw : Int, vh : Int, ball : Ball, keySet : Set String, worldDimension : ( Float, Float ) }
+    { ball : Ball, keySet : Set String }
 
 
 type alias Flags =
@@ -36,13 +36,10 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now, vw, vh } =
-    ( { vw = vw
-      , vh = vh
-      , ball = Ball ( 100, 100 ) 20
+    ( { ball = Ball ( 100, 100 ) 20
       , keySet = Set.empty
-      , worldDimension = ( 1024, 1024 )
       }
-    , Cmd.batch [ updateWorldDimensionCmd ]
+    , Cmd.none
     )
 
 
@@ -84,18 +81,19 @@ getArrowKeyXYDirection m =
         ( xDirection, yDirection )
 
 
+getWorldDimension m =
+    ( 600, 350 )
+
+
 
 ---- UPDATE ----
 
 
 type Msg
     = NoOp
-    | Visibility Browser.Events.Visibility
     | AnimationFrame Float
-    | Resize Int Int
     | KeyDown String
     | KeyUp String
-    | WorldElement (Result Browser.Dom.Error Browser.Dom.Element)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -103,23 +101,6 @@ update msg m =
     case msg of
         NoOp ->
             pure m
-
-        WorldElement (Ok el) ->
-            let
-                { width, height } =
-                    el.element
-            in
-                { m | worldDimension = ( width, height ) } |> pure
-
-        WorldElement (Err err) ->
-            pure m
-
-        Visibility v ->
-            let
-                _ =
-                    Debug.log "vvv" v
-            in
-                pure m
 
         AnimationFrame elapsed ->
             let
@@ -138,20 +119,11 @@ update msg m =
             in
                 { m | ball = newBall } |> pure
 
-        Resize nw nh ->
-            { m | vw = nw, vh = nh }
-                |> withCmd updateWorldDimensionCmd
-
         KeyDown key ->
             { m | keySet = Set.insert key m.keySet } |> pure
 
         KeyUp key ->
             { m | keySet = Set.remove key m.keySet } |> pure
-
-
-updateWorldDimensionCmd =
-    Browser.Dom.getElement "svgView"
-        |> Task.attempt WorldElement
 
 
 computeNewBallPos delta m =
@@ -164,7 +136,7 @@ computeNewBallPos delta m =
                 |> mapT (ballSpeedInPxPerSecond * delta |> (*))
 
         ( ww, wh ) =
-            m.worldDimension
+            getWorldDimension m
 
         r =
             m.ball.r
@@ -201,22 +173,30 @@ view m =
     div [ class "flex flex-column items-center pa2 h-100 " ]
         [ div [ class "flex flex-column vs3" ]
             [ div [ class "f3" ] [ text "SVG API" ]
-            , Svg.svg
-                [ width 600
-                , height 350
-                ]
-                [ Svg.rect
-                    [ SA.width "100%"
-                    , SA.height "100%"
-                    , SA.strokeWidth "0.2"
-                    , SA.stroke "#000"
-                    , SA.fill "lightblue"
-                    ]
-                    []
-                , viewBall m.ball
-                ]
+            , viewSvg m
             ]
         ]
+
+
+viewSvg m =
+    let
+        ( w, h ) =
+            getWorldDimension m
+    in
+        Svg.svg
+            [ width w
+            , height h
+            ]
+            [ Svg.rect
+                [ SA.width "100%"
+                , SA.height "100%"
+                , SA.strokeWidth "0.2"
+                , SA.stroke "#000"
+                , SA.fill "lightblue"
+                ]
+                []
+            , viewBall m.ball
+            ]
 
 
 cPosR ( x, y ) r =
@@ -237,8 +217,6 @@ viewBall { pos, r } =
 subscriptions _ =
     Sub.batch
         [ Browser.Events.onAnimationFrameDelta AnimationFrame
-        , Browser.Events.onResize Resize
-        , Browser.Events.onVisibilityChange Visibility
         , Browser.Events.onKeyDown (D.map KeyDown (D.field "key" D.string))
         , Browser.Events.onKeyUp (D.map KeyUp (D.field "key" D.string))
         ]
