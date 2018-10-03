@@ -106,15 +106,8 @@ update msg m =
                 ball =
                     m.ball
 
-                ballSpeedInPxPerSecond =
-                    200
-
-                ballVelocity =
-                    getArrowKeyXYDirection m
-                        |> mapT (ballSpeedInPxPerSecond * delta |> (*))
-
                 newBall =
-                    { ball | pos = addVec ball.pos ballVelocity }
+                    { ball | pos = computeNewBallPos delta m }
 
                 {- _ =
                    Debug.log "delta" delta
@@ -130,6 +123,18 @@ update msg m =
 
         KeyUp key ->
             { m | keySet = Set.remove key m.keySet } |> pure
+
+
+computeNewBallPos delta m =
+    let
+        ballSpeedInPxPerSecond =
+            200
+
+        ballVelocity =
+            getArrowKeyXYDirection m
+                |> mapT (ballSpeedInPxPerSecond * delta |> (*))
+    in
+        addVec m.ball.pos ballVelocity
 
 
 pure model =
