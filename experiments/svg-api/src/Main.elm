@@ -101,12 +101,18 @@ update msg m =
         NoOp ->
             pure m
 
-        WorldElement r ->
+        WorldElement (Ok el) ->
             let
                 _ =
-                    Debug.log "WorldElement" r
+                    Debug.log "WorldElement" el
+
+                { width, height } =
+                    el.element
             in
-                pure m
+                { m | worldDimension = ( width, height ) } |> pure
+
+        WorldElement (Err err) ->
+            pure m
 
         AnimationFrame elapsed ->
             let
@@ -189,6 +195,7 @@ view m =
         , Svg.svg
             [ SA.width "100%"
             , SA.height "100%"
+            , SA.id "svgView"
             ]
             [ Svg.rect
                 [ SA.width "100%"
