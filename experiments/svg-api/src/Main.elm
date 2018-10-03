@@ -77,7 +77,7 @@ getArrowKeyXYDirection m =
             ter (isLeftDown m) -1 0 + ter (isRightDown m) 1 0
 
         yDirection =
-            ter (isUpDown m) -1 0 + (ter (isDownDown m) 1 0)
+            ter (isUpDown m) -1 0 + ter (isDownDown m) 1 0
     in
         ( xDirection, yDirection )
 
