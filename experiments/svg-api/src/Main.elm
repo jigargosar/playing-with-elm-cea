@@ -103,9 +103,6 @@ update msg m =
 
         WorldElement (Ok el) ->
             let
-                _ =
-                    Debug.log "WorldElement" el
-
                 { width, height } =
                     el.element
             in
