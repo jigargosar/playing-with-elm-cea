@@ -9,7 +9,7 @@ import Html.Lazy
 import ISvg exposing (..)
 import Json.Decode as D
 import Json.Encode as E
-import Ramda exposing (ifElse, mapT, scale, subBy, ter)
+import Ramda exposing (ensureAtLeast, ifElse, mapT, scale, subBy, ter)
 import Set exposing (Set)
 import Svg exposing (Svg)
 import Svg.Attributes as SA
@@ -133,8 +133,12 @@ computeNewBallPos delta m =
         ballVelocity =
             getArrowKeyXYDirection m
                 |> mapT (ballSpeedInPxPerSecond * delta |> (*))
+
+        newPos =
+            addVec m.ball.pos ballVelocity
+                |> mapT (clamp m.ball.r 300)
     in
-        addVec m.ball.pos ballVelocity
+        newPos
 
 
 pure model =
