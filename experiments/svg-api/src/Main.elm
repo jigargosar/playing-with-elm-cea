@@ -131,16 +131,18 @@ update msg m =
         Resize nw nh ->
             { m | vw = nw, vh = nh }
                 |> Debug.log "[Resize] model:"
-                |> withCmd
-                    (Browser.Dom.getElement "svgView"
-                        |> Task.attempt WorldElement
-                    )
+                |> withCmd upateWorldDimensionCmd
 
         KeyDown key ->
             { m | keySet = Set.insert key m.keySet } |> pure
 
         KeyUp key ->
             { m | keySet = Set.remove key m.keySet } |> pure
+
+
+upateWorldDimensionCmd =
+    Browser.Dom.getElement "svgView"
+        |> Task.attempt WorldElement
 
 
 computeNewBallPos delta m =
