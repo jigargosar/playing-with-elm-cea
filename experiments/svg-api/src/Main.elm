@@ -9,7 +9,7 @@ import Html.Lazy
 import ISvg exposing (..)
 import Json.Decode as D
 import Json.Encode as E
-import Ramda exposing (ifElse, subBy, ter)
+import Ramda exposing (ifElse, subBy)
 import Set exposing (Set)
 import Svg
 import Svg.Attributes as SA
@@ -45,6 +45,10 @@ init { now, vw, vh } =
     )
 
 
+isKeyDown : String -> Model -> Bool
+isKeyDown key =
+    .keySet>> Set.member key
+
 
 ---- UPDATE ----
 
@@ -65,24 +69,16 @@ update msg m =
 
         AnimationFrame delta ->
             let
-                isKeyDown =
-                    m.keySet >> Set.member
-
                 ball =
                     m.ball
-
 
                 newBallX =
-                    ter (isKeyDown "ArrowLeft")
-                        1
-                        .x
-                        m.ball
-                        |> ifElse (isKeyDown "ArrowRight")
-                            (.x >> Ramda.add 1)
-                            .x
+                    ifElse (.keySet >> Set.member "ArrowLeft")
+                        (.ball >> .x >> subBy 1)
+                        (.ball >> .x)
+                        m
 
-                ball =
-                    m.ball
+
 
                 newBall =
                     { ball | x = newBallX }
