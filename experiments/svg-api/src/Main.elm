@@ -231,7 +231,22 @@ viewWalls walls =
 
 viewWall : Wall -> Svg msg
 viewWall wall =
-    Svg.rect [] []
+    let
+        ( x, y ) =
+            wall.pos
+
+        ( w, h ) =
+            addVec wall.pos wall.size
+    in
+        Svg.rect
+            [ TP.x x
+            , TP.y y
+            , TP.width w
+            , TP.height h
+            , SA.fill "darkblue"
+            , SA.opacity "0.8"
+            ]
+            []
 
 
 
