@@ -69,6 +69,17 @@ isDownDown =
     isKeyDown "ArrowDown"
 
 
+getArrowKeyXYDirection m =
+    let
+        xDirection =
+            ter (isLeftDown m) (-1) (ter (isRightDown m) (1) (0))
+
+        yDirection =
+            ter (isUpDown m) (-1) (ter (isDownDown m) (1) (0))
+    in
+        ( xDirection, yDirection )
+
+
 
 ---- UPDATE ----
 
@@ -95,11 +106,8 @@ update msg m =
                 ball =
                     m.ball
 
-                xDirection =
-                    ter (isLeftDown m) (-1) (ter (isRightDown m) (1) (0))
-
-                yDirection =
-                    ter (isUpDown m) (-1) (ter (isDownDown m) (1) (0))
+                ( xDirection, yDirection ) =
+                    getArrowKeyXYDirection m
 
                 ballSpeedInPxPerSecond =
                     200
