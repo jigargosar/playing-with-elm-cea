@@ -169,6 +169,7 @@ view m =
                 , SA.fill "none"
                 ]
                 []
+            , viewWorldBoundary
             , viewBall m.ball
             ]
         ]
@@ -176,6 +177,18 @@ view m =
 
 cPosR ( x, y ) r =
     [ TP.cx x, TP.cy y, TP.r r ]
+
+
+viewWorldBoundary =
+    Svg.rect
+        [ SA.width "300"
+        , SA.height "300"
+
+        --        , SA.strokeWidth "0"
+        --        , SA.stroke "#000"
+        , SA.fill "lightblue"
+        ]
+        []
 
 
 viewBall : Ball -> Svg msg
