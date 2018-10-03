@@ -208,32 +208,40 @@ computeNewBallPos m =
         ball =
             m.ball
 
-        newPos =
+        newPos1 =
             addVec ball.pos ball.vel
 
         ballPosSize =
-            getBallPosSize { ball | pos = newPos }
+            getBallPosSize { ball | pos = newPos1 }
 
         collided =
             m.walls
                 |> List.any (intersects ballPosSize)
     in
         (if collided then
-            computeNewBallPos2 m.ball m
+            let
+                _ =
+                    Debug.log "np1: collided" newPos1
+            in
+                computeNewBallPos2 m.ball m
          else
-            newPos
+            newPos1
         )
 
 
 computeNewBallPos2 ball m =
     let
-        newPos1 =
+        newPos2 =
             addVec ball.pos (ball.vel |> mapT (round >> toFloat))
     in
-        (if isBallCollidingWithWalls newPos1 ball m then
-            ball.pos
+        (if isBallCollidingWithWalls newPos2 ball m then
+            let
+                _ =
+                    Debug.log "np2: collided" newPos2
+            in
+                ball.pos
          else
-            newPos1
+            newPos2
         )
 
 
