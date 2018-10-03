@@ -9,7 +9,7 @@ import Html.Lazy
 import ISvg exposing (..)
 import Json.Decode as D
 import Json.Encode as E
-import Ramda exposing (ifElse, subBy)
+import Ramda exposing (ifElse, subBy, ter)
 import Set exposing (Set)
 import Svg
 import Svg.Attributes as SA
@@ -82,14 +82,17 @@ update msg m =
                 ball =
                     m.ball
 
-                newBallX =
-                    ifElse (.keySet >> Set.member "ArrowLeft")
-                        (.ball >> .x >> subBy 1)
-                        (.ball >> .x)
-                        m
+                xDirection =
+                    ter (isLeftDown m) (-1) (ter (isRightDown m) (1) (0))
+
+                speedMultiplier =
+                    1
+
+                xOffset =
+                    xDirection * speedMultiplier
 
                 newBall =
-                    { ball | x = newBallX }
+                    { ball | x = ball.x + xOffset }
 
                 {- _ =
                    Debug.log "delta" delta
