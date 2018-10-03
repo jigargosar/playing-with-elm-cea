@@ -274,22 +274,13 @@ viewWalls walls =
 
 viewWall : Wall -> Svg msg
 viewWall wall =
-    let
-        ( x, y ) =
-            wall.pos
-
-        ( w, h ) =
-            wall.size
-    in
-        Svg.rect
-            [ TP.x x
-            , TP.y y
-            , TP.width w
-            , TP.height h
-            , SA.fill "darkblue"
-            , SA.opacity "0.8"
-            ]
-            []
+    Svg.rect
+        (rectAttrFromBB wall
+            ++ [ SA.fill "darkblue"
+               , SA.opacity "0.8"
+               ]
+        )
+        []
 
 
 
