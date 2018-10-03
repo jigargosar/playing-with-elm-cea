@@ -54,6 +54,11 @@ isLeftDown =
     isKeyDown "ArrowLeft"
 
 
+isRightDown : Model -> Bool
+isRightDown =
+    isKeyDown "ArrowRight"
+
+
 
 ---- UPDATE ----
 
