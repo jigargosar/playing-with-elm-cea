@@ -26,7 +26,7 @@ type alias Ball =
 
 
 type alias Model =
-    { vw : Int, vh : Int, ball : Ball, keySet : Set String }
+    { vw : Int, vh : Int, ball : Ball, keySet : Set String, worldDimension : ( Float, Float ) }
 
 
 type alias Flags =
@@ -39,6 +39,7 @@ init { now, vw, vh } =
       , vh = vh
       , ball = Ball ( 100, 100 ) 20
       , keySet = Set.empty
+      , worldDimension = ( 400, 300 )
       }
     , Cmd.none
     )
@@ -134,9 +135,15 @@ computeNewBallPos delta m =
             getArrowKeyXYDirection m
                 |> mapT (ballSpeedInPxPerSecond * delta |> (*))
 
+        ( ww, wh ) =
+            m.worldDimension
+
+        r =
+            m.ball.r
+
         newPos =
             addVec m.ball.pos ballVelocity
-                |> mapT (clamp m.ball.r 300)
+                |> Tuple.mapBoth (clamp r (ww - r)) (clamp r (wh - r))
     in
         newPos
 
@@ -169,7 +176,7 @@ view m =
                 , SA.fill "none"
                 ]
                 []
-            , viewWorldBoundary
+            , viewWorldBoundary m.worldDimension
             , viewBall m.ball
             ]
         ]
@@ -179,10 +186,10 @@ cPosR ( x, y ) r =
     [ TP.cx x, TP.cy y, TP.r r ]
 
 
-viewWorldBoundary =
+viewWorldBoundary ( width, height ) =
     Svg.rect
-        [ SA.width "300"
-        , SA.height "300"
+        [ TP.width width
+        , TP.height height
 
         --        , SA.strokeWidth "0"
         --        , SA.stroke "#000"
