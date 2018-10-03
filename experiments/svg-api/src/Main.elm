@@ -164,15 +164,15 @@ view m =
         ]
 
 
+cXY ( x, y ) =
+    [ TP.cx x, TP.cy y ]
+
+
 viewBall : Ball -> Svg msg
 viewBall { pos, r } =
-    let
-        ( x, y ) =
-            pos
-    in
-        Svg.g []
-            [ Svg.circle [ TP.cx x, TP.cy y, iR r, SA.fill "blue", SA.opacity "0.6" ] []
-            ]
+    Svg.g []
+        [ Svg.circle (cXY pos ++ [ iR r, SA.fill "blue", SA.opacity "0.6" ]) []
+        ]
 
 
 
