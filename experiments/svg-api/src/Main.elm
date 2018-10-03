@@ -219,49 +219,9 @@ computeNewBallPos delta m =
                 |> List.any (intersects ballPosSize)
     in
         (if collided then
-            computeBallPositionAvoidingCollision newPos ball m 10
-         else
-            newPos
-        )
-
-
-computeBallPositionAvoidingCollision newPos ball m max =
-    let
-        startVector =
-            ball.pos |> mapT (round >> toFloat) |> Vector2d.fromComponents
-
-        endVector =
-            newPos |> mapT (round >> toFloat) |> Vector2d.fromComponents
-
-        movementVector =
-            Vector2d.difference endVector startVector
-                |> Debug.log "mv"
-
-        newPos_ =
-            Vector2d.normalize movementVector
-                |> Debug.log "nv"
-                |> Vector2d.reverse
-                |> Vector2d.sum endVector
-                |> Vector2d.components
-
-        ballPosSize =
-            getBallPosSize { ball | pos = newPos_ }
-
-        collided =
-            m.walls |> List.any (intersects ballPosSize)
-
-        result =
-            (\_ ->
-                if collided then
-                    computeBallPositionAvoidingCollision newPos_ ball m (max - 1)
-                else
-                    newPos_
-            )
-    in
-        (if max <= 0 then
             ball.pos
          else
-            result ()
+            newPos
         )
 
 
