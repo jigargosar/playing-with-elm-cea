@@ -5,5 +5,8 @@
   "license": "MIT",
   "dependencies": {
     "tachyons": "^4.11.1"
+  },
+  "scripts": {
+    "make":"elm make src/Main.elm --report=json --output=/dev/null"
   }
 }
