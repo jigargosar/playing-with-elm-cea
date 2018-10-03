@@ -1,5 +1,6 @@
 module Main exposing (Flags, Model, Msg(..), init, main, subscriptions, update, view)
 
+import BoundingBox2d
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -146,18 +147,46 @@ update msg m =
             { m | keySet = Set.remove key m.keySet } |> pure
 
 
-intersects a b =
-    False
+type alias EX =
+    { minX : Float, maxX : Float, minY : Float, maxY : Float }
 
 
-getBallBB { pos, r } =
+posSizeToRecord { pos, size } =
+    let
+        ( x, y ) =
+            pos
+
+        ( w, h ) =
+            size
+    in
+        { x = x, y = y, w = w, h = h }
+
+
+posSizeToExtrema { pos, size } =
+    let
+        ( x, y ) =
+            pos
+
+        ( w, h ) =
+            size
+    in
+        EX x (x + w) y (y + h)
+
+
+intersects posSize1 posSize2 =
+    BoundingBox2d.intersects
+        (posSizeToExtrema posSize1 |> BoundingBox2d.fromExtrema)
+        (posSizeToExtrema posSize2 |> BoundingBox2d.fromExtrema)
+
+
+getBallPosSize { pos, r } =
     { pos = pos |> addVec ( -r, -r ), size = ( r * 2, r * 2 ) }
 
 
 computeNewBallPos delta m =
     let
         ballSpeedInPxPerSecond =
-            200
+            60
 
         ballVelocity =
             getArrowKeyXYDirection m
@@ -170,12 +199,12 @@ computeNewBallPos delta m =
             addVec pos ballVelocity
 
         ballBB =
-            getBallBB { pos = newPos, r = r }
+            getBallPosSize { pos = newPos, r = r }
 
-        _ =
+        collided =
             m.walls |> List.any (intersects ballBB)
     in
-        newPos
+        ter collided pos newPos
 
 
 pure model =
@@ -252,7 +281,7 @@ viewBall ball =
             ball
 
         ballBB =
-            getBallBB ball
+            getBallPosSize ball
     in
         Svg.g []
             [ Svg.circle (cPosR pos r ++ [ SA.fill "blue", SA.opacity "0.6" ]) []
