@@ -88,6 +88,7 @@ getArrowKeyXYDirection m =
 
 type Msg
     = NoOp
+    | Visibility Browser.Events.Visibility
     | AnimationFrame Float
     | Resize Int Int
     | KeyDown String
@@ -111,6 +112,13 @@ update msg m =
         WorldElement (Err err) ->
             pure m
 
+        Visibility v ->
+            let
+                _ =
+                    Debug.log "vvv" v
+            in
+                pure m
+
         AnimationFrame elapsed ->
             let
                 delta =
@@ -130,7 +138,6 @@ update msg m =
 
         Resize nw nh ->
             { m | vw = nw, vh = nh }
-                |> Debug.log "[Resize] model:"
                 |> withCmd upateWorldDimensionCmd
 
         KeyDown key ->
@@ -241,6 +248,7 @@ subscriptions _ =
     Sub.batch
         [ Browser.Events.onAnimationFrameDelta AnimationFrame
         , Browser.Events.onResize Resize
+        , Browser.Events.onVisibilityChange Visibility
         , Browser.Events.onKeyDown (D.map KeyDown (D.field "key" D.string))
         , Browser.Events.onKeyUp (D.map KeyUp (D.field "key" D.string))
         ]
