@@ -137,7 +137,7 @@ update msg m =
                     updateBallVelocity delta m
 
                 newBall =
-                    { ball | pos = computeNewBallPos delta m }
+                    { ball | pos = computeNewBallPos m }
 
                 {- _ =
                    Debug.log "delta" delta
@@ -203,7 +203,7 @@ updateBallVelocity delta m =
         { ball | vel = ( xVel, yVel ) }
 
 
-computeNewBallPos delta m =
+computeNewBallPos m =
     let
         ball =
             m.ball
@@ -219,18 +219,31 @@ computeNewBallPos delta m =
                 |> List.any (intersects ballPosSize)
     in
         (if collided then
-            computeNewBallPos2 delta m
+            computeNewBallPos2 m.ball m
          else
             newPos
         )
 
 
-computeNewBallPos2 delta m =
+computeNewBallPos2 ball m =
     let
-        ball =
-            m.ball
+        newPos1 =
+            addVec ball.pos (ball.vel |> mapT (round >> toFloat))
     in
-        ball.pos
+        (if isBallCollidingWithWalls newPos1 ball m then
+            ball.pos
+         else
+            newPos1
+        )
+
+
+isBallCollidingWithWalls newPos ball m =
+    let
+        ballPosSize =
+            getBallPosSize { ball | pos = newPos }
+    in
+        m.walls
+            |> List.any (intersects ballPosSize)
 
 
 pure model =
