@@ -22,7 +22,7 @@ import TypedSvg.Attributes.InPx as TP
 
 
 type alias Ball =
-    { x : Float, y : Float, r : Int }
+    { pos : ( Float, Float ), r : Int }
 
 
 type alias Model =
@@ -37,7 +37,7 @@ init : Flags -> ( Model, Cmd Msg )
 init { now, vw, vh } =
     ( { vw = vw
       , vh = vh
-      , ball = Ball 100 100 20
+      , ball = Ball ( 100, 100 ) 20
       , keySet = Set.empty
       }
     , Cmd.none
@@ -113,8 +113,11 @@ update msg m =
                     getArrowKeyXYDirection m
                         |> mapT (ballSpeedInPxPerSecond * delta |> (*))
 
+                ( x, y ) =
+                    ball.pos
+
                 newBall =
-                    { ball | x = ball.x + xOffset, y = ball.y + yOffset }
+                    { ball | pos = ( x + xOffset, y + yOffset ) }
 
                 {- _ =
                    Debug.log "delta" delta
@@ -162,10 +165,14 @@ view m =
 
 
 viewBall : Ball -> Svg msg
-viewBall { x, y, r } =
-    Svg.g []
-        [ Svg.circle [ TP.cx x, TP.cy y, iR r, SA.fill "blue", SA.opacity "0.6" ] []
-        ]
+viewBall { pos, r } =
+    let
+        ( x, y ) =
+            pos
+    in
+        Svg.g []
+            [ Svg.circle [ TP.cx x, TP.cy y, iR r, SA.fill "blue", SA.opacity "0.6" ] []
+            ]
 
 
 
