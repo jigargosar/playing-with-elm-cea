@@ -36,7 +36,7 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now, vw, vh } =
-    ( { ball = Ball ( 100, 100 ) 20
+    ( { ball = Ball ( 100, 100 ) 15
       , keySet = Set.empty
       }
     , Cmd.none
