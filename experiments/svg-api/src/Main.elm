@@ -209,6 +209,7 @@ viewSvg m =
                 ]
                 []
             , viewBall m.ball
+            , viewWalls m.walls
             ]
 
 
@@ -221,6 +222,16 @@ viewBall { pos, r } =
     Svg.g []
         [ Svg.circle (cPosR pos r ++ [ SA.fill "blue", SA.opacity "0.6" ]) []
         ]
+
+
+viewWalls : List Wall -> Svg msg
+viewWalls walls =
+    Svg.g [] (walls |> List.map viewWall)
+
+
+viewWall : Wall -> Svg msg
+viewWall wall =
+    Svg.rect [] []
 
 
 
