@@ -14,6 +14,7 @@ import Set exposing (Set)
 import Svg exposing (Svg)
 import Svg.Attributes as SA
 import Svg.Events as SE
+import Task
 import TypedSvg.Attributes as TA
 import TypedSvg.Attributes.InPx as TP
 
@@ -91,6 +92,7 @@ type Msg
     | Resize Int Int
     | KeyDown String
     | KeyUp String
+    | WorldElement (Result Browser.Dom.Error Browser.Dom.Element)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -98,6 +100,13 @@ update msg m =
     case msg of
         NoOp ->
             pure m
+
+        WorldElement r ->
+            let
+                _ =
+                    Debug.log "WorldElement" r
+            in
+                pure m
 
         AnimationFrame elapsed ->
             let
@@ -117,7 +126,12 @@ update msg m =
                 { m | ball = newBall } |> pure
 
         Resize nw nh ->
-            { m | vw = nw, vh = nh } |> Debug.log "[Resize] model:" |> pure
+            { m | vw = nw, vh = nh }
+                |> Debug.log "[Resize] model:"
+                |> withCmd
+                    (Browser.Dom.getElement "svgView"
+                        |> Task.attempt WorldElement
+                    )
 
         KeyDown key ->
             { m | keySet = Set.insert key m.keySet } |> pure
@@ -150,6 +164,14 @@ computeNewBallPos delta m =
 
 pure model =
     ( model, Cmd.none )
+
+
+addCmd c2 =
+    Tuple.mapSecond (\c1 -> Cmd.batch [ c1, c2 ])
+
+
+withCmd c m =
+    pure m |> addCmd c
 
 
 addVec ( x1, y1 ) ( x2, y2 ) =
