@@ -18,7 +18,6 @@ import TypedSvg.Attributes as TA
 import TypedSvg.Attributes.InPx as TP
 
 
-
 ---- MODEL ----
 
 
@@ -47,7 +46,13 @@ init { now, vw, vh } =
 
 isKeyDown : String -> Model -> Bool
 isKeyDown key =
-    .keySet>> Set.member key
+    .keySet >> Set.member key
+
+
+isLeftDown : Model -> Bool
+isLeftDown =
+    isKeyDown "ArrowLeft"
+
 
 
 ---- UPDATE ----
@@ -78,8 +83,6 @@ update msg m =
                         (.ball >> .x)
                         m
 
-
-
                 newBall =
                     { ball | x = newBallX }
 
@@ -87,7 +90,7 @@ update msg m =
                    Debug.log "delta" delta
                 -}
             in
-            { m | ball = newBall } |> pure
+                { m | ball = newBall } |> pure
 
         Resize nw nh ->
             { m | vw = nw, vh = nh } |> Debug.log "[Resize] model:" |> pure
