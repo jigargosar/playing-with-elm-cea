@@ -4,7 +4,7 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import Html exposing (Html, div, h1, img, text)
-import Html.Attributes exposing (class, src)
+import Html.Attributes exposing (class, height, src, style, width)
 import Html.Lazy
 import ISvg exposing (..)
 import Json.Decode as D
@@ -198,41 +198,29 @@ addVec ( x1, y1 ) ( x2, y2 ) =
 
 view : Model -> Html Msg
 view m =
-    div [ class "measure-wide center pa2 h-100 flex flex-column vs3 " ]
-        [ div [ class "f3" ] [ text "SVG API" ]
-        , Svg.svg
-            [ SA.width "100%"
-            , SA.height "100%"
-            , SA.id "svgView"
-            ]
-            [ Svg.rect
-                [ SA.width "100%"
-                , SA.height "100%"
-                , SA.strokeWidth "0.5"
-                , SA.stroke "#000"
-                , SA.fill "none"
+    div [ class "flex flex-column items-center pa2 h-100 " ]
+        [ div [ class "flex flex-column vs3" ]
+            [ div [ class "f3" ] [ text "SVG API" ]
+            , Svg.svg
+                [ width 600
+                , height 350
                 ]
-                []
-            , viewWorldBoundary m.worldDimension
-            , viewBall m.ball
+                [ Svg.rect
+                    [ SA.width "100%"
+                    , SA.height "100%"
+                    , SA.strokeWidth "0.2"
+                    , SA.stroke "#000"
+                    , SA.fill "lightblue"
+                    ]
+                    []
+                , viewBall m.ball
+                ]
             ]
         ]
 
 
 cPosR ( x, y ) r =
     [ TP.cx x, TP.cy y, TP.r r ]
-
-
-viewWorldBoundary ( width, height ) =
-    Svg.rect
-        [ TP.width width
-        , TP.height height
-
-        --        , SA.strokeWidth "0"
-        --        , SA.stroke "#000"
-        , SA.fill "lightblue"
-        ]
-        []
 
 
 viewBall : Ball -> Svg msg
