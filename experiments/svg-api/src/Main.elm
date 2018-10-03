@@ -11,7 +11,7 @@ import Json.Decode as D
 import Json.Encode as E
 import Ramda exposing (ifElse, subBy, ter)
 import Set exposing (Set)
-import Svg
+import Svg exposing (Svg)
 import Svg.Attributes as SA
 import Svg.Events as SE
 import TypedSvg.Attributes as TA
@@ -22,7 +22,7 @@ import TypedSvg.Attributes.InPx as TP
 
 
 type alias Ball =
-    { x : Float, y : Int, r : Int }
+    { x : Float, y : Float, r : Int }
 
 
 type alias Model =
@@ -99,13 +99,16 @@ update msg m =
                     ter (isUpDown m) (-1) (ter (isDownDown m) (1) (0))
 
                 speedMultiplier =
-                    1
+                    0.5
 
                 xOffset =
                     xDirection * speedMultiplier
 
+                yOffset =
+                    yDirection * speedMultiplier
+
                 newBall =
-                    { ball | x = ball.x + xOffset }
+                    { ball | x = ball.x + xOffset, y = ball.y + yOffset }
 
                 {- _ =
                    Debug.log "delta" delta
@@ -152,9 +155,10 @@ view m =
         ]
 
 
+viewBall : Ball -> Svg msg
 viewBall { x, y, r } =
     Svg.g []
-        [ Svg.circle [ TP.cx x, iCY y, iR r, SA.fill "blue", SA.opacity "0.6" ] []
+        [ Svg.circle [ TP.cx x, TP.cy y, iR r, SA.fill "blue", SA.opacity "0.6" ] []
         ]
 
 
