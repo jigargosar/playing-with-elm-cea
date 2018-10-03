@@ -219,10 +219,18 @@ computeNewBallPos delta m =
                 |> List.any (intersects ballPosSize)
     in
         (if collided then
-            ball.pos
+            computeNewBallPos2 delta m
          else
             newPos
         )
+
+
+computeNewBallPos2 delta m =
+    let
+        ball =
+            m.ball
+    in
+        ball.pos
 
 
 pure model =
