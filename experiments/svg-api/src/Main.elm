@@ -219,11 +219,7 @@ computeNewBallPos m =
                 |> List.any (intersects ballPosSize)
     in
         (if collided then
-            let
-                _ =
-                    Debug.log "np1: collided" newPos1
-            in
-                computeNewBallPos2 m.ball m
+            computeNewBallPos2 m.ball m
          else
             newPos1
         )
@@ -239,41 +235,40 @@ computeNewBallPos2 ball m =
 
         vel2 =
             (ball.vel |> mapTRF)
-
-        newPos2 =
-            addVec pos vel2
-
-        vel3 =
-            vel2
-                |> mapT
-                    (\dd ->
-                        (if dd == 0 then
-                            dd
-                         else
-                            dd
-                                + (negate dd / dd)
-                        )
-                    )
-
-        newPos3 =
-            addVec pos vel3
     in
-        (if isBallCollidingWithWalls newPos2 ball m then
-            let
-                _ =
-                    Debug.log "np2: collided" ( newPos2, vel2 )
-            in
-                if isBallCollidingWithWalls newPos3 ball m then
-                    let
-                        _ =
-                            Debug.log "np3: collided" ( newPos3, vel3 )
-                    in
-                        pos
-                else
-                    newPos3
-         else
-            newPos2
-        )
+        computeNewBallPosWithPosAndVel pos vel2 ball m 5
+
+
+computeNewBallPosWithPosAndVel pos vel ball m max =
+    (if max <= 0 then
+        ball.pos
+     else
+        let
+            newPos =
+                addVec pos vel
+        in
+            (if isBallCollidingWithWalls newPos ball m then
+                let
+                    _ =
+                        Debug.log "collided:max" ( max, newPos, vel )
+
+                    newVel =
+                        vel
+                            |> mapT
+                                (\dd ->
+                                    (if dd == 0 then
+                                        dd
+                                     else
+                                        dd
+                                            + (negate dd / dd)
+                                    )
+                                )
+                in
+                    computeNewBallPosWithPosAndVel pos newVel ball m (max - 1)
+             else
+                ball.pos
+            )
+    )
 
 
 isBallCollidingWithWalls newPos ball m =
