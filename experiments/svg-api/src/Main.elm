@@ -146,8 +146,12 @@ update msg m =
             { m | keySet = Set.remove key m.keySet } |> pure
 
 
-intersectWith _ _ =
-    True
+intersects a b =
+    False
+
+
+getBallBB { pos, r } =
+    { pos = pos |> addVec ( -r, -r ), size = ( r * 2, r * 2 ) }
 
 
 computeNewBallPos delta m =
@@ -165,11 +169,11 @@ computeNewBallPos delta m =
         newPos =
             addVec pos ballVelocity
 
-        ballRect =
-            { pos = newPos, size = ( r, r ) }
+        ballBB =
+            getBallBB { pos = newPos, r = r }
 
         _ =
-            m.walls |> List.any (intersectWith ballRect)
+            m.walls |> List.any (intersects ballBB)
     in
         newPos
 
@@ -230,11 +234,37 @@ cPosR ( x, y ) r =
     [ TP.cx x, TP.cy y, TP.r r ]
 
 
+rectAttrFromBB { pos, size } =
+    let
+        ( x, y ) =
+            pos
+
+        ( w, h ) =
+            size
+    in
+        [ TP.x x, TP.y y, TP.width w, TP.height h ]
+
+
 viewBall : Ball -> Svg msg
-viewBall { pos, r } =
-    Svg.g []
-        [ Svg.circle (cPosR pos r ++ [ SA.fill "blue", SA.opacity "0.6" ]) []
-        ]
+viewBall ball =
+    let
+        { pos, r } =
+            ball
+
+        ballBB =
+            getBallBB ball
+    in
+        Svg.g []
+            [ Svg.circle (cPosR pos r ++ [ SA.fill "blue", SA.opacity "0.6" ]) []
+            , Svg.rect
+                (rectAttrFromBB ballBB
+                    ++ [ SA.fill "none"
+                       , SA.stroke "red"
+                       , SA.opacity "0.6"
+                       ]
+                )
+                []
+            ]
 
 
 viewWalls : List Wall -> Svg msg
