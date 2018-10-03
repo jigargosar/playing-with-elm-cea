@@ -231,8 +231,11 @@ computeNewBallPos m =
 
 computeNewBallPos2 ball m =
     let
+        mapTRF =
+            mapT (round >> toFloat)
+
         newPos2 =
-            addVec ball.pos (ball.vel |> mapT (round >> toFloat))
+            addVec (ball.pos |> mapTRF) (ball.vel |> mapTRF)
     in
         (if isBallCollidingWithWalls newPos2 ball m then
             let
