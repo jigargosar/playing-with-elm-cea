@@ -31,12 +31,16 @@ type alias Dimension =
     ( Float, Float )
 
 
+type alias Velocity =
+    ( Float, Float )
+
+
 type alias Wall =
     { pos : Position, size : Dimension }
 
 
 type alias Ball =
-    { pos : ( Float, Float ), r : Float }
+    { pos : ( Float, Float ), r : Float, vel : Velocity }
 
 
 type alias Model =
@@ -52,7 +56,7 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now, vw, vh } =
-    ( { ball = Ball ( 100, 100 ) 15
+    ( { ball = Ball ( 100, 100 ) 15 ( 0, 0 )
       , keySet = Set.empty
       , walls = [ Wall ( 0, 0 ) ( Tuple.first worldDimension, 10 ) ]
       }
@@ -183,14 +187,19 @@ getBallPosSize { pos, r } =
     { pos = pos |> addVec ( -r, -r ), size = ( r * 2, r * 2 ) }
 
 
-computeNewBallPos delta m =
+computeBallVelocity delta m =
     let
         ballSpeedInPxPerSecond =
             60
+    in
+        getArrowKeyXYDirection m
+            |> mapT (ballSpeedInPxPerSecond * delta |> (*))
 
+
+computeNewBallPos delta m =
+    let
         ballVelocity =
-            getArrowKeyXYDirection m
-                |> mapT (ballSpeedInPxPerSecond * delta |> (*))
+            computeBallVelocity delta m
 
         { pos, r } =
             m.ball
