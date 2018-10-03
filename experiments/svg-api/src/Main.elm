@@ -202,19 +202,6 @@ updateBallVelocity delta m =
         { ball | vel = ( xVel, yVel ) }
 
 
-computeBallVelocity delta m =
-    let
-        ballSpeedInPxPerSecond =
-            1
-    in
-        getArrowKeyXYDirection m
-            |> mapT (ballSpeedInPxPerSecond * delta |> (*))
-
-
-setBallVelocity vel ball =
-    { ball | vel = addVec ball.vel vel }
-
-
 computeNewBallPos delta m =
     let
         ball =
