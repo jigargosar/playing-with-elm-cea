@@ -135,15 +135,11 @@ computeNewBallPos delta m =
             getArrowKeyXYDirection m
                 |> mapT (ballSpeedInPxPerSecond * delta |> (*))
 
-        ( ww, wh ) =
-            getWorldDimension m
-
         r =
             m.ball.r
 
         newPos =
             addVec m.ball.pos ballVelocity
-                |> Tuple.mapBoth (clamp r (ww - r)) (clamp r (wh - r))
     in
         newPos
 
