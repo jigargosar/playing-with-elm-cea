@@ -220,9 +220,6 @@ computeNewBallPos delta m =
         ball =
             m.ball
 
-        ballVelocity =
-            ball.vel
-
         newPos =
             addVec ball.pos ball.vel
 
