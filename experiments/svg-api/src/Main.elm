@@ -109,15 +109,12 @@ update msg m =
                 ballSpeedInPxPerSecond =
                     200
 
-                ( xOffset, yOffset ) =
+                ballVelocity =
                     getArrowKeyXYDirection m
                         |> mapT (ballSpeedInPxPerSecond * delta |> (*))
 
-                ( x, y ) =
-                    ball.pos
-
                 newBall =
-                    { ball | pos = ( x + xOffset, y + yOffset ) }
+                    { ball | pos = addVec ball.pos ballVelocity }
 
                 {- _ =
                    Debug.log "delta" delta
@@ -137,6 +134,10 @@ update msg m =
 
 pure model =
     ( model, Cmd.none )
+
+
+addVec ( x1, y1 ) ( x2, y2 ) =
+    ( x1 + x2, y1 + y2 )
 
 
 
