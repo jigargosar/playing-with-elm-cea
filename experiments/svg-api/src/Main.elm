@@ -53,7 +53,7 @@ init : Flags -> ( Model, Cmd Msg )
 init { now, vw, vh } =
     ( { ball = Ball ( 100, 100 ) 15
       , keySet = Set.empty
-      , walls = []
+      , walls = [ Wall ( 0, 0 ) ( Tuple.first worldDimension, 10 ) ]
       }
     , Cmd.none
     )
@@ -97,8 +97,12 @@ getArrowKeyXYDirection m =
         ( xDirection, yDirection )
 
 
-getWorldDimension m =
+worldDimension =
     ( 600, 350 )
+
+
+getWorldDimension m =
+    worldDimension
 
 
 
