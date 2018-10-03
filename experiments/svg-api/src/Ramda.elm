@@ -1,16 +1,19 @@
-module Ramda exposing
-    ( add
-    , consTo
-    , ensureAtLeast
-    , equals
-    , flip
-    , ifElse
-    , isListEmpty
-    , subBy
-    , ter
-    , unless
-    , when
-    )
+module Ramda
+    exposing
+        ( add
+        , consTo
+        , ensureAtLeast
+        , equals
+        , flip
+        , ifElse
+        , isListEmpty
+        , subBy
+        , ter
+        , unless
+        , when
+        , mapT
+        , scale
+        )
 
 
 isListEmpty =
@@ -21,9 +24,12 @@ ter : Bool -> a -> a -> a
 ter bool v1 v2 =
     if bool then
         v1
-
     else
         v2
+
+
+scale =
+    (*)
 
 
 equals : a -> a -> Bool
@@ -83,3 +89,7 @@ ensureAtLeast =
 swap : ( a, b ) -> ( b, a )
 swap ( a, b ) =
     ( b, a )
+
+
+mapT fn =
+    Tuple.mapBoth fn fn

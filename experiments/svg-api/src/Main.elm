@@ -9,7 +9,7 @@ import Html.Lazy
 import ISvg exposing (..)
 import Json.Decode as D
 import Json.Encode as E
-import Ramda exposing (ifElse, subBy, ter)
+import Ramda exposing (ifElse, mapT, scale, subBy, ter)
 import Set exposing (Set)
 import Svg exposing (Svg)
 import Svg.Attributes as SA
@@ -106,17 +106,12 @@ update msg m =
                 ball =
                     m.ball
 
-                ( xDirection, yDirection ) =
-                    getArrowKeyXYDirection m
-
                 ballSpeedInPxPerSecond =
                     200
 
-                xOffset =
-                    xDirection * ballSpeedInPxPerSecond * delta
-
-                yOffset =
-                    yDirection * ballSpeedInPxPerSecond * delta
+                ( xOffset, yOffset ) =
+                    getArrowKeyXYDirection m
+                        |> mapT (ballSpeedInPxPerSecond * delta |> (*))
 
                 newBall =
                     { ball | x = ball.x + xOffset, y = ball.y + yOffset }
