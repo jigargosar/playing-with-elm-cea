@@ -132,11 +132,8 @@ update msg m =
                 delta =
                     elapsed / 1000
 
-                newVel =
-                    computeBallVelocity delta m
-
                 ball =
-                    setBallVelocity newVel m.ball
+                    updateBallVelocity delta m
 
                 newBall =
                     { ball | pos = computeNewBallPos delta m }
@@ -190,17 +187,32 @@ getBallPosSize { pos, r } =
     { pos = pos |> addVec ( -r, -r ), size = ( r * 2, r * 2 ) }
 
 
+updateBallVelocity delta m =
+    let
+        ball =
+            m.ball
+
+        ballSpeedInPxPerSecond =
+            60
+
+        ( xVel, yVel ) =
+            getArrowKeyXYDirection m
+                |> mapT (ballSpeedInPxPerSecond * delta |> (*))
+    in
+        { ball | vel = ( xVel, yVel ) }
+
+
 computeBallVelocity delta m =
     let
         ballSpeedInPxPerSecond =
-            60
+            1
     in
         getArrowKeyXYDirection m
             |> mapT (ballSpeedInPxPerSecond * delta |> (*))
 
 
 setBallVelocity vel ball =
-    { ball | vel = vel }
+    { ball | vel = addVec ball.vel vel }
 
 
 computeNewBallPos delta m =
