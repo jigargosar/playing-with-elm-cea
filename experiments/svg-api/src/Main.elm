@@ -135,9 +135,6 @@ computeNewBallPos delta m =
             getArrowKeyXYDirection m
                 |> mapT (ballSpeedInPxPerSecond * delta |> (*))
 
-        r =
-            m.ball.r
-
         newPos =
             addVec m.ball.pos ballVelocity
     in
