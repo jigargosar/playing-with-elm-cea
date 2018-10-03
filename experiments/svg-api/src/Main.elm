@@ -219,65 +219,10 @@ computeNewBallPos m =
                 |> List.any (intersects ballPosSize)
     in
         (if collided then
-            computeNewBallPos2 m.ball m
+            ball.pos
          else
             newPos1
         )
-
-
-computeNewBallPos2 ball m =
-    let
-        mapTRF =
-            mapT (truncate >> toFloat)
-
-        pos =
-            (ball.pos |> mapTRF)
-
-        vel2 =
-            (ball.vel |> mapTRF)
-    in
-        computeNewBallPosWithPosAndVel pos vel2 ball m 5
-
-
-computeNewBallPosWithPosAndVel pos vel ball m max =
-    (if max <= 0 then
-        ball.pos
-     else
-        let
-            newPos =
-                addVec pos vel
-        in
-            (if isBallCollidingWithWalls newPos ball m then
-                let
-                    _ =
-                        Debug.log "collided:max" ( max, newPos, vel )
-
-                    newVel =
-                        vel
-                            |> mapT
-                                (\dd ->
-                                    (if dd == 0 then
-                                        dd
-                                     else
-                                        dd
-                                            + (negate dd / dd)
-                                    )
-                                )
-                in
-                    computeNewBallPosWithPosAndVel pos newVel ball m (max - 1)
-             else
-                ball.pos
-            )
-    )
-
-
-isBallCollidingWithWalls newPos ball m =
-    let
-        ballPosSize =
-            getBallPosSize { ball | pos = newPos }
-    in
-        m.walls
-            |> List.any (intersects ballPosSize)
 
 
 pure model =
