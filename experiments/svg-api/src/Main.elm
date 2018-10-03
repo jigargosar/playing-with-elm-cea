@@ -42,7 +42,7 @@ init { now, vw, vh } =
       , keySet = Set.empty
       , worldDimension = ( 1024, 1024 )
       }
-    , Cmd.batch [ upateWorldDimensionCmd ]
+    , Cmd.batch [ updateWorldDimensionCmd ]
     )
 
 
@@ -140,7 +140,7 @@ update msg m =
 
         Resize nw nh ->
             { m | vw = nw, vh = nh }
-                |> withCmd upateWorldDimensionCmd
+                |> withCmd updateWorldDimensionCmd
 
         KeyDown key ->
             { m | keySet = Set.insert key m.keySet } |> pure
@@ -149,7 +149,7 @@ update msg m =
             { m | keySet = Set.remove key m.keySet } |> pure
 
 
-upateWorldDimensionCmd =
+updateWorldDimensionCmd =
     Browser.Dom.getElement "svgView"
         |> Task.attempt WorldElement
 
