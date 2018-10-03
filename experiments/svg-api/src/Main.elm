@@ -101,14 +101,14 @@ update msg m =
                 yDirection =
                     ter (isUpDown m) (-1) (ter (isDownDown m) (1) (0))
 
-                ballSpeedPerSecond =
-                    60
+                ballSpeedInPxPerSecond =
+                    200
 
                 xOffset =
-                    xDirection * ballSpeedPerSecond * delta
+                    xDirection * ballSpeedInPxPerSecond * delta
 
                 yOffset =
-                    yDirection * ballSpeedPerSecond * delta
+                    yDirection * ballSpeedInPxPerSecond * delta
 
                 newBall =
                     { ball | x = ball.x + xOffset, y = ball.y + yOffset }
