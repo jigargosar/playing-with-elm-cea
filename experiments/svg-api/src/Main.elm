@@ -146,6 +146,10 @@ update msg m =
             { m | keySet = Set.remove key m.keySet } |> pure
 
 
+intersectWith _ _ =
+    True
+
+
 computeNewBallPos delta m =
     let
         ballSpeedInPxPerSecond =
@@ -155,8 +159,17 @@ computeNewBallPos delta m =
             getArrowKeyXYDirection m
                 |> mapT (ballSpeedInPxPerSecond * delta |> (*))
 
+        { pos, r } =
+            m.ball
+
         newPos =
-            addVec m.ball.pos ballVelocity
+            addVec pos ballVelocity
+
+        ballRect =
+            { pos = newPos, size = ( r, r ) }
+
+        _ =
+            m.walls |> List.any (intersectWith ballRect)
     in
         newPos
 
