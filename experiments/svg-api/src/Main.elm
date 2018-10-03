@@ -40,9 +40,9 @@ init { now, vw, vh } =
       , vh = vh
       , ball = Ball ( 100, 100 ) 20
       , keySet = Set.empty
-      , worldDimension = ( 400, 300 )
+      , worldDimension = ( 1024, 1024 )
       }
-    , Cmd.none
+    , Cmd.batch [ upateWorldDimensionCmd ]
     )
 
 
