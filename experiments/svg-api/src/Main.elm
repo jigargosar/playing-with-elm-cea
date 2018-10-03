@@ -210,11 +210,11 @@ computeNewBallPos delta m =
         newPos =
             addVec ball.pos ball.vel
 
-        ballBB =
-            getBallPosSize { pos = newPos, r = ball.r }
+        ballPosSize =
+            getBallPosSize { ball | pos = newPos }
 
         collided =
-            m.walls |> List.any (intersects ballBB)
+            m.walls |> List.any (intersects ballPosSize)
     in
         ter collided (computeBallPositionAvoidingCollision newPos ball) newPos
 
