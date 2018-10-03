@@ -216,7 +216,11 @@ computeNewBallPos delta m =
         collided =
             m.walls |> List.any (intersects ballBB)
     in
-        ter collided ball.pos newPos
+        ter collided (computeBallPositionAvoidingCollision newPos ball) newPos
+
+
+computeBallPositionAvoidingCollision newPos ball =
+    ball.pos
 
 
 pure model =
