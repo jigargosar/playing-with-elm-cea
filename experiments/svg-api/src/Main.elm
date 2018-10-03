@@ -194,7 +194,7 @@ updateBallVelocity delta m =
             m.ball
 
         ballSpeedInPxPerSecond =
-            60
+            200
 
         ( xVel, yVel ) =
             getArrowKeyXYDirection m
@@ -215,26 +215,59 @@ computeNewBallPos delta m =
             getBallPosSize { ball | pos = newPos }
 
         collided =
-            m.walls |> List.any (intersects ballPosSize)
+            m.walls
+                |> List.any (intersects ballPosSize)
     in
-        ter collided (computeBallPositionAvoidingCollision newPos ball) newPos
+        (if collided then
+            computeBallPositionAvoidingCollision newPos ball m 5
+         else
+            newPos
+        )
 
 
-computeBallPositionAvoidingCollision newPos ball =
+
+{- ter collided (computeBallPositionAvoidingCollision newPos ball m) newPos -}
+{- ter collided (ball.pos) newPos -}
+
+
+computeBallPositionAvoidingCollision newPos ball m max =
     let
         startVector =
-            Vector2d.fromComponents ball.pos
+            ball.pos |> mapT (round >> toFloat) |> Vector2d.fromComponents
 
         endVector =
-            Vector2d.fromComponents newPos
+            newPos |> mapT (round >> toFloat) |> Vector2d.fromComponents
 
         movementVector =
             Vector2d.difference endVector startVector
+                |> Debug.log "mv"
 
-        _ =
+        newPos_ =
             Vector2d.normalize movementVector
+                |> Debug.log "nv"
+                |> Vector2d.reverse
+                |> Vector2d.sum endVector
+                |> Vector2d.components
+
+        ballPosSize =
+            getBallPosSize { ball | pos = newPos_ }
+
+        collided =
+            m.walls |> List.any (intersects ballPosSize)
+
+        result =
+            (\_ ->
+                if collided then
+                    computeBallPositionAvoidingCollision newPos_ ball m (max - 1)
+                else
+                    newPos_
+            )
     in
-        ball.pos
+        (if max <= 0 then
+            ball.pos
+         else
+            result ()
+        )
 
 
 pure model =
