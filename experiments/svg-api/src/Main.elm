@@ -22,7 +22,7 @@ import TypedSvg.Attributes.InPx as TP
 
 
 type alias Ball =
-    { pos : ( Float, Float ), r : Int }
+    { pos : ( Float, Float ), r : Float }
 
 
 type alias Model =
@@ -164,14 +164,14 @@ view m =
         ]
 
 
-cXY ( x, y ) =
-    [ TP.cx x, TP.cy y ]
+cPosR ( x, y ) r =
+    [ TP.cx x, TP.cy y, TP.r r ]
 
 
 viewBall : Ball -> Svg msg
 viewBall { pos, r } =
     Svg.g []
-        [ Svg.circle (cXY pos ++ [ iR r, SA.fill "blue", SA.opacity "0.6" ]) []
+        [ Svg.circle (cPosR pos r ++ [ SA.fill "blue", SA.opacity "0.6" ]) []
         ]
 
 
