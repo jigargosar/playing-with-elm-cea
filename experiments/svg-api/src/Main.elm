@@ -274,13 +274,23 @@ viewWalls walls =
 
 viewWall : Wall -> Svg msg
 viewWall wall =
-    Svg.rect
-        (rectAttrFromBB wall
-            ++ [ SA.fill "darkblue"
-               , SA.opacity "0.8"
-               ]
-        )
-        []
+    Svg.g []
+        [ Svg.rect
+            (rectAttrFromBB wall
+                ++ [ SA.fill "darkblue"
+                   , SA.opacity "0.8"
+                   ]
+            )
+            []
+        , Svg.rect
+            (rectAttrFromBB wall
+                ++ [ SA.fill "none"
+                   , SA.stroke "red"
+                   , SA.opacity "0.6"
+                   ]
+            )
+            []
+        ]
 
 
 
