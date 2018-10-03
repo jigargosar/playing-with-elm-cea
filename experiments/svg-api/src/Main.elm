@@ -18,6 +18,7 @@ import Svg.Events as SE
 import Task
 import TypedSvg.Attributes as TA
 import TypedSvg.Attributes.InPx as TP
+import Vector2d
 
 
 ---- MODEL ----
@@ -220,7 +221,20 @@ computeNewBallPos delta m =
 
 
 computeBallPositionAvoidingCollision newPos ball =
-    ball.pos
+    let
+        startVector =
+            Vector2d.fromComponents ball.pos
+
+        endVector =
+            Vector2d.fromComponents newPos
+
+        movementVector =
+            Vector2d.difference endVector startVector
+
+        _ =
+            Vector2d.normalize movementVector
+    in
+        ball.pos
 
 
 pure model =
@@ -237,6 +251,10 @@ withCmd c m =
 
 addVec ( x1, y1 ) ( x2, y2 ) =
     ( x1 + x2, y1 + y2 )
+
+
+subVec ( x1, y1 ) ( x2, y2 ) =
+    ( -x1 + x2, -y1 + y2 )
 
 
 
