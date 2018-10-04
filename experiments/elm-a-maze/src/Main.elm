@@ -4,6 +4,8 @@ import Browser as B
 import Browser.Events as BE
 import Html as H exposing (Html)
 import Html.Attributes as HA
+import Ramda exposing (tupleToList)
+import Size
 import Svg.Attributes as SA
 import Html.Lazy as HL
 import Set exposing (Set)
@@ -72,12 +74,12 @@ update msg m =
 ---- VIEW ----
 
 
-worldSizeComponent =
-    ( 600, 350 )
+worldSize =
+    Size.fromComponent ( 600, 350 )
 
 
-worldSizeRecord =
-    { width = 600, height = 350 }
+worldSizeIntT =
+    Size.toRoundIntComponent worldSize
 
 
 view : Model -> Html Msg
@@ -92,13 +94,10 @@ view m =
 
 viewSvg m =
     let
-        ( w, h ) =
-            worldSizeComponent
+        attrs =
+            worldSizeIntT |> Tuple.mapBoth HA.width HA.height |> tupleToList
     in
-        S.svg
-            [ HA.width worldSizeRecord.width
-            , HA.height worldSizeRecord.height
-            ]
+        S.svg attrs
             [ S.rect
                 [ SA.width "100%"
                 , SA.height "100%"

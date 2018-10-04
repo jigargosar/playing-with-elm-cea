@@ -13,6 +13,7 @@ module Ramda
         , when
         , mapBothWith
         , scale
+        , tupleToList
         )
 
 
@@ -84,3 +85,8 @@ swap ( a, b ) =
 
 mapBothWith fn =
     Tuple.mapBoth fn fn
+
+
+tupleToList : ( a, a ) -> List a
+tupleToList ( a, b ) =
+    [ a, b ]

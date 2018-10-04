@@ -7,15 +7,28 @@ module Size
         , toComponent
         , fromComponent
         , fromRecord
+        , toRoundIntComponent
+        , IntComponent
         )
+
+import Ramda exposing (mapBothWith)
+import Round
 
 
 type alias Record =
     { width : Float, height : Float }
 
 
+type alias Pair a =
+    ( a, a )
+
+
 type alias Component =
-    ( Float, Float )
+    Pair Float
+
+
+type alias IntComponent =
+    Pair Int
 
 
 type Size
@@ -41,3 +54,8 @@ toRecord (Size r) =
 toComponent : Size -> Component
 toComponent =
     toRecord >> \r -> ( r.width, r.height )
+
+
+toRoundIntComponent : Size -> IntComponent
+toRoundIntComponent =
+    toComponent >> mapBothWith round
