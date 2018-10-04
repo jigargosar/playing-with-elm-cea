@@ -136,6 +136,10 @@ viewSvg m =
             ]
 
 
+cellSize =
+    50.0
+
+
 viewGameContent m =
     S.g [] (viewGridCells m.gridSize)
 
@@ -146,9 +150,6 @@ viewGridCells size =
 
 viewGridCell cord =
     let
-        cellSize =
-            50.0
-
         xyAttr =
             cord |> R.mapBothWith (toFloat >> (*) cellSize >> px) |> Tuple.mapBoth TA.x TA.y |> R.tupleToList
 
