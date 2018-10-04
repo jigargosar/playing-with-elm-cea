@@ -1,5 +1,6 @@
 module App exposing (..)
 
+import Animation
 import Color exposing (Color)
 import Html as H exposing (Html)
 import Html.Lazy as H
@@ -46,6 +47,7 @@ type alias Model =
     , vx : Int
     , vy : Int
     , pressedKeys : List Keyboard.Key
+    , pageLoadedAt : Int
     }
 
 
@@ -61,6 +63,7 @@ init { now } =
     , vx = 0
     , vy = 0
     , pressedKeys = []
+    , pageLoadedAt = now
     }
         |> noCmd
 
@@ -79,6 +82,11 @@ clampGridY y m =
             m.gridSize
     in
         clamp 0 (h - 1) y
+
+
+getClock : Time.Posix -> Model -> Animation.Clock
+getClock time m =
+    Time.posixToMillis time - m.pageLoadedAt |> toFloat
 
 
 
