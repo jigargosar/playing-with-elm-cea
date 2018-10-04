@@ -5,6 +5,7 @@ import Html as H exposing (Html)
 import Html.Lazy as H
 import Html.Attributes as H
 import Html.Attributes as HA
+import Light
 import Ramda as R
 import Size
 import Svg as S
@@ -124,7 +125,9 @@ viewSvg m =
                 , S.height "100%"
                 , TA.strokeWidth (px 0.2)
                 , TA.stroke Color.black
-                , Color.toHsla Color.blue |> \h -> { h | saturation = 1, lightness = 0.7 } |> Color.fromHsla >> fillColor
+                , Color.blue
+                    |> Light.overCompactHsla (\h -> { h | s = 1, l = 0.7 })
+                    |> fillColor
                 , fillOpacityFloat 1
 
                 --                , opacityFloat 0.5
