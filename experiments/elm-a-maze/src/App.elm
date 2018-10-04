@@ -151,12 +151,16 @@ viewGridCells size =
 viewGridCell cord =
     let
         xyAttr =
-            cord |> R.mapBothWith (toFloat >> (*) cellSize >> px) |> Tuple.mapBoth TA.x TA.y |> R.tupleToList
+            cellCordToXYAttrs cord
 
         whAttr =
             px cellSize |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
     in
         S.rect (xyAttr ++ whAttr ++ [ strokeColor Color.black, TP.strokeWidth 1, TA.noFill ]) []
+
+
+cellCordToXYAttrs cord =
+    cord |> R.mapBothWith (toFloat >> (*) cellSize >> px) |> Tuple.mapBoth TA.x TA.y |> R.tupleToList
 
 
 gridConcatMap size fn =
