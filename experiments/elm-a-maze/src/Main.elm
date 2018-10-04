@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Color
+import Color exposing (Color)
 import Html as H exposing (Html)
 import Html.Lazy as H
 import Html.Attributes as H
@@ -8,13 +8,14 @@ import Html.Attributes as HA
 import Light
 import Ramda as R
 import Size
+import Svg
 import Svg as S
+import Svg.Attributes as S
+import Svg.Attributes as SA
 import TypedSvg as T
 import TypedSvg.Attributes as TA
 import TypedSvg.Attributes.InPx as T
 import TypedSvg.Attributes.InPx as TP
-import Svg.Attributes as S
-import Svg.Attributes as SA
 import Browser as B
 import Browser.Events as B
 import Browser.Events as BE
@@ -110,7 +111,10 @@ viewSvg : Model -> View
 viewSvg m =
     let
         attrs =
-            worldSizeIntT |> Tuple.mapBoth HA.width HA.height |> R.tupleToList
+            worldSize
+                |> Size.toComponent
+                |> Tuple.mapBoth TP.width TP.height
+                |> R.tupleToList
     in
         S.svg attrs
             [ S.rect
@@ -138,6 +142,11 @@ viewGameContent m =
 ---- SVG ATTRIBUTES ----
 
 
+type alias SvgAttribute msg =
+    Svg.Attribute msg
+
+
+fillColor : Color -> SvgAttribute msg
 fillColor =
     Fill >> TA.fill
 
