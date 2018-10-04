@@ -20,6 +20,7 @@ import Browser.Events as BE
 import Set exposing (Set)
 import Json.Decode as D
 import Json.Encode as E
+import TypedSvg.Types exposing (Fill(..), px)
 
 
 ---- MODEL ----
@@ -100,6 +101,18 @@ view m =
         ]
 
 
+fillColor =
+    Fill >> TA.fill
+
+
+fillOpacityFloat =
+    TypedSvg.Types.Opacity >> TA.fillOpacity
+
+
+opacityFloat =
+    TypedSvg.Types.Opacity >> TA.opacity
+
+
 viewSvg m =
     let
         attrs =
@@ -109,9 +122,12 @@ viewSvg m =
             [ S.rect
                 [ S.width "100%"
                 , S.height "100%"
-                , T.strokeWidth 0.2
+                , TA.strokeWidth (px 0.2)
                 , TA.stroke Color.black
-                , S.fill "lightblue"
+                , Color.toHsla Color.blue |> \h -> { h | saturation = 1, lightness = 0.7 } |> Color.fromHsla >> fillColor
+                , fillOpacityFloat 1
+
+                --                , opacityFloat 0.5
                 ]
                 []
             , viewGameContent m
