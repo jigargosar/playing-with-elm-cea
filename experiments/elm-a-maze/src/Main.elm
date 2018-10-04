@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Color
 import Html as H exposing (Html)
 import Html.Lazy as H
 import Html.Attributes as H
@@ -7,6 +8,10 @@ import Html.Attributes as HA
 import Ramda as R
 import Size
 import Svg as S
+import TypedSvg as T
+import TypedSvg.Attributes as TA
+import TypedSvg.Attributes.InPx as T
+import TypedSvg.Attributes.InPx as TP
 import Svg.Attributes as S
 import Svg.Attributes as SA
 import Browser as B
@@ -104,8 +109,8 @@ viewSvg m =
             [ S.rect
                 [ S.width "100%"
                 , S.height "100%"
-                , S.strokeWidth "0.2"
-                , S.stroke "#000"
+                , T.strokeWidth 0.2
+                , TA.stroke Color.black
                 , S.fill "lightblue"
                 ]
                 []
