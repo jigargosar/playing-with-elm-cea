@@ -1,6 +1,6 @@
 module App exposing (..)
 
-import Animation
+import Animation exposing (Animation)
 import Color exposing (Color)
 import Html as H exposing (Html)
 import Html.Lazy as H
@@ -48,6 +48,7 @@ type alias Model =
     , vy : Int
     , pressedKeys : List Keyboard.Key
     , pageLoadedAt : Int
+    , anim : Animation
     }
 
 
@@ -64,7 +65,14 @@ init { now } =
     , vy = 0
     , pressedKeys = []
     , pageLoadedAt = now
+    , anim =
+        Animation.animation 0
+            |> Animation.from 0
+            |> Animation.to cellSize
+            |> Animation.duration 5000
+            |> Animation.delay 1000
     }
+        |> Debug.log "initModel"
         |> noCmd
 
 
@@ -131,7 +139,27 @@ update msg m =
             noCmd m
 
         AnimationFrame posix ->
-            noCmd m
+            let
+                clock =
+                    (getClock posix m)
+
+                anim =
+                    m.anim
+
+                isRunning =
+                    Animation.isRunning clock anim
+
+                isScheduled =
+                    Animation.isScheduled clock anim
+
+                _ =
+                    (if isRunning then
+                        Debug.log "isRunning" isRunning
+                     else
+                        False
+                    )
+            in
+                noCmd m
 
         KeyDown key ->
             { m | keySet = Set.insert key m.keySet } |> noCmd
