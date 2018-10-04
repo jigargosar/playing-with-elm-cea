@@ -152,11 +152,17 @@ viewGameContent m =
 
 viewPlayer cord =
     let
+        offset =
+            5.0
+
         xyAttr =
-            cord |> R.mapBothWith (toFloat >> (*) cellSize >> px) |> Tuple.mapBoth TA.x TA.y |> R.tupleToList
+            cord
+                |> R.mapBothWith (toFloat >> (*) cellSize >> (+) offset >> px)
+                |> Tuple.mapBoth TA.x TA.y
+                |> R.tupleToList
 
         whAttr =
-            px cellSize |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
+            cellSize |> (+) (-offset * 2) |> px |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
     in
         [ S.rect (xyAttr ++ whAttr ++ [ fillColor Color.lightOrange ]) [] ]
 
