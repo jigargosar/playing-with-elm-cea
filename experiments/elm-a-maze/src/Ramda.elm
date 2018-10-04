@@ -14,6 +14,7 @@ module Ramda
         , mapBothWith
         , scale
         , tupleToList
+        , toTuple
         )
 
 
@@ -90,3 +91,7 @@ mapBothWith fn =
 tupleToList : ( a, a ) -> List a
 tupleToList ( a, b ) =
     [ a, b ]
+
+
+toTuple a =
+    Tuple.pair a a

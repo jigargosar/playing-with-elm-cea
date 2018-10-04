@@ -162,7 +162,12 @@ viewPlayer cord =
                 |> R.tupleToList
 
         whAttrs =
-            cellSize |> (+) (-offset * 2) |> px |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
+            cellSize
+                |> (+) (-offset * 2)
+                |> px
+                |> R.toTuple
+                |> Tuple.mapBoth TA.width TA.height
+                |> R.tupleToList
 
         cXYAttrs =
             cellSize / 2.0 |> \s -> ( s, s ) |> Tuple.mapBoth TP.cx TP.cy |> R.tupleToList
