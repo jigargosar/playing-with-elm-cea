@@ -35,6 +35,7 @@ type alias IntPair =
 type alias Model =
     { keySet : Set String
     , gridSize : IntPair
+    , playerPos : IntPair
     }
 
 
@@ -44,7 +45,11 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
-    { keySet = Set.empty, gridSize = ( 10, 5 ) } |> noCmd
+    { keySet = Set.empty
+    , gridSize = ( 10, 5 )
+    , playerPo = ( 0, 0 )
+    }
+        |> noCmd
 
 
 
