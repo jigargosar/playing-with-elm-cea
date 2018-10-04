@@ -6,6 +6,7 @@ import Html.Lazy as H
 import Html.Attributes as H
 import Html.Attributes as HA
 import Keyboard
+import Keyboard.Arrows
 import Light
 import Ramda as R
 import Size
@@ -33,6 +34,10 @@ type alias IntPair =
     ( Int, Int )
 
 
+addIntPair ( a1, b1 ) ( a2, b2 ) =
+    ( a1 + a2, b1 + b2 )
+
+
 type alias Model =
     { keySet : Set String
     , gridSize : IntPair
@@ -55,6 +60,22 @@ init { now } =
     , pressedKeys = []
     }
         |> noCmd
+
+
+clampGridX x m =
+    let
+        ( w, _ ) =
+            m.gridSize
+    in
+        clamp 0 (w - 1) x
+
+
+clampGridY y m =
+    let
+        ( _, h ) =
+            m.gridSize
+    in
+        clamp 0 (h - 1) y
 
 
 
@@ -88,7 +109,28 @@ update msg m =
             noCmd m
 
         KeyMsg keyMsg ->
-            noCmd { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys }
+            let
+                ( updatedPressedKeys, keyChange ) =
+                    Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg m.pressedKeys
+
+                computeNewPos kc =
+                    case kc of
+                        Keyboard.KeyDown _ ->
+                            Keyboard.Arrows.arrows updatedPressedKeys
+                                |> (\{ x, y } -> ( x, -y ))
+                                |> addIntPair m.playerPos
+                                |> Tuple.mapBoth (\x -> clampGridX x m) (\y -> clampGridY y m)
+
+                        _ ->
+                            m.playerPos
+
+                newPlayerPos =
+                    keyChange
+                        |> Maybe.map (Debug.log "kc" >> computeNewPos)
+                        |> Maybe.withDefault m.playerPos
+                        |> Debug.log "newPos"
+            in
+                noCmd { m | pressedKeys = updatedPressedKeys, playerPos = newPlayerPos }
 
         AnimationFrame elapsed ->
             noCmd m
@@ -166,8 +208,8 @@ viewPlayer cord =
 
         xyAttrs =
             cord
-                |> R.mapBothWith (toFloat >> (*) cellSize >> (+) offset >> px)
-                |> Tuple.mapBoth TA.x TA.y
+                |> R.mapBothWith (toFloat >> (*) cellSize >> (+) offset)
+                |> Tuple.mapBoth TP.x TP.y
                 |> R.tupleToList
 
         whAttrs =
@@ -179,7 +221,10 @@ viewPlayer cord =
                 |> R.tupleToList
 
         cXYAttrs =
-            cellSize / 2.0 |> \s -> ( s, s ) |> Tuple.mapBoth TP.cx TP.cy |> R.tupleToList
+            cord
+                |> R.mapBothWith (toFloat >> (*) cellSize >> (+) (cellSize / 2.0))
+                |> Tuple.mapBoth TP.cx TP.cy
+                |> R.tupleToList
 
         rAttr =
             (cellSize - offset) / 2 |> TP.r
