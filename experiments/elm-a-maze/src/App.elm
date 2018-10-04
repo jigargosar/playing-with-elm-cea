@@ -146,7 +146,19 @@ cellSize =
 
 
 viewGameContent m =
-    S.g [ TA.transform [ Translate cellSize cellSize ] ] (viewGridCells m.gridSize)
+    S.g [ TA.transform [ Translate cellSize cellSize ] ]
+        (viewGridCells m.gridSize ++ viewPlayer m.playerPos)
+
+
+viewPlayer cord =
+    let
+        xyAttr =
+            cord |> R.mapBothWith (toFloat >> (*) cellSize >> px) |> Tuple.mapBoth TA.x TA.y |> R.tupleToList
+
+        whAttr =
+            px cellSize |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
+    in
+        [ S.rect (xyAttr ++ whAttr ++ [ fillColor Color.lightOrange ]) [] ]
 
 
 viewGridCells size =
