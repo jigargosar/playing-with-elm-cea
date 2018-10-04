@@ -96,8 +96,8 @@ viewSvg m =
             worldSizeComponent
     in
         S.svg
-            [ HA.width w
-            , HA.height h
+            [ HA.width worldSizeRecord.width
+            , HA.height worldSizeRecord.height
             ]
             [ S.rect
                 [ SA.width "100%"
