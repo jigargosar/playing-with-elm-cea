@@ -82,9 +82,9 @@ animToGridCellPx clock anim =
               )
 
 
-getPlayerCellXY : Animation.Clock -> Model -> ( Float, Float )
-getPlayerCellXY clock m =
-    ( m.pxAnim, m.pyAnim ) |> R.mapBothWith (animToGridCellPx clock)
+getPlayerCellXY : Model -> ( Float, Float )
+getPlayerCellXY m =
+    ( m.pxAnim, m.pyAnim ) |> R.mapBothWith (animToGridCellPx m.clock)
 
 
 clampGridX x m =
@@ -215,7 +215,7 @@ cellSize =
 
 viewGameContent m =
     S.g [ TA.transform [ Translate cellSize cellSize ] ]
-        (viewGridCells m.gridSize ++ viewPlayer (getPlayerCellXY m.clock m))
+        (viewGridCells m.gridSize ++ viewPlayer (getPlayerCellXY m))
 
 
 viewPlayer cord =
