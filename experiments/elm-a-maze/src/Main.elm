@@ -1,17 +1,19 @@
 module Main exposing (..)
 
+import Html as H exposing (Html)
+import Html.Lazy as H
+import Html.Attributes as H
+import Html.Attributes as HA
+import Ramda as R
+import Size
+import Svg as S
+import Svg.Attributes as S
+import Svg.Attributes as SA
 import Browser as B
 import Browser.Events as BE
-import Html as H exposing (Html)
-import Html.Attributes as HA
-import Ramda exposing (tupleToList)
-import Size
-import Svg.Attributes as SA
-import Html.Lazy as HL
 import Set exposing (Set)
 import Json.Decode as D
 import Json.Encode as E
-import Svg as S
 
 
 ---- MODEL ----
@@ -95,15 +97,15 @@ view m =
 viewSvg m =
     let
         attrs =
-            worldSizeIntT |> Tuple.mapBoth HA.width HA.height |> tupleToList
+            worldSizeIntT |> Tuple.mapBoth HA.width HA.height |> R.tupleToList
     in
         S.svg attrs
             [ S.rect
-                [ SA.width "100%"
-                , SA.height "100%"
-                , SA.strokeWidth "0.2"
-                , SA.stroke "#000"
-                , SA.fill "lightblue"
+                [ S.width "100%"
+                , S.height "100%"
+                , S.strokeWidth "0.2"
+                , S.stroke "#000"
+                , S.fill "lightblue"
                 ]
                 []
             , viewGameContent m
@@ -129,7 +131,7 @@ subscriptions _ =
 main : Program Flags Model Msg
 main =
     B.element
-        { view = HL.lazy view
+        { view = H.lazy view
         , init = init
         , update = update
         , subscriptions = subscriptions
