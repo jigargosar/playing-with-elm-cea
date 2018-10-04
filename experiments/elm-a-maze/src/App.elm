@@ -37,6 +37,7 @@ type alias Model =
     { keySet : Set String
     , gridSize : IntPair
     , playerPos : IntPair
+    , playerNextPos : IntPair
     , pressedKeys : List Keyboard.Key
     }
 
@@ -50,6 +51,7 @@ init { now } =
     { keySet = Set.empty
     , gridSize = ( 10, 5 )
     , playerPos = ( 0, 0 )
+    , playerNextPos = ( 0, 0 )
     , pressedKeys = []
     }
         |> noCmd
