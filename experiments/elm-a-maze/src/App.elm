@@ -49,6 +49,7 @@ type alias Model =
     , vy : Int
     , pressedKeys : List Keyboard.Key
     , pageLoadedAt : Int
+    , clock : Animation.Clock
     }
 
 
@@ -66,6 +67,7 @@ init { now } =
     , vy = 0
     , pressedKeys = []
     , pageLoadedAt = now
+    , clock = 0
     }
         |> Debug.log "initModel"
         |> noCmd
@@ -156,7 +158,7 @@ update msg m =
             noCmd m
 
         AnimationFrame posix ->
-            noCmd m
+            noCmd { m | clock = getClock posix m }
 
         KeyDown key ->
             { m | keySet = Set.insert key m.keySet } |> noCmd
