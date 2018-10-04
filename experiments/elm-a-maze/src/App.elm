@@ -28,8 +28,13 @@ import TypedSvg.Types exposing (Fill(..), px)
 ---- MODEL ----
 
 
+type alias IntPair =
+    ( Int, Int )
+
+
 type alias Model =
     { keySet : Set String
+    , gridSize : IntPair
     }
 
 
@@ -39,7 +44,7 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
-    { keySet = Set.empty } |> noCmd
+    { keySet = Set.empty, gridSize = ( 3, 3 ) } |> noCmd
 
 
 
