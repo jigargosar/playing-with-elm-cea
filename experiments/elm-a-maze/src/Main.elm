@@ -106,18 +106,6 @@ view m =
         ]
 
 
-fillColor =
-    Fill >> TA.fill
-
-
-fillOpacityFloat =
-    TypedSvg.Types.Opacity >> TA.fillOpacity
-
-
-opacityFloat =
-    TypedSvg.Types.Opacity >> TA.opacity
-
-
 viewSvg : Model -> View
 viewSvg m =
     let
@@ -144,6 +132,22 @@ viewSvg m =
 
 viewGameContent m =
     S.g [] []
+
+
+
+---- SVG ATTRIBUTES ----
+
+
+fillColor =
+    Fill >> TA.fill
+
+
+fillOpacityFloat =
+    TypedSvg.Types.Opacity >> TA.fillOpacity
+
+
+opacityFloat =
+    TypedSvg.Types.Opacity >> TA.opacity
 
 
 
