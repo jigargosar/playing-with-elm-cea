@@ -43,6 +43,7 @@ type alias Model =
     { keySet : Set String
     , gridSize : IntPair
     , playerPos : IntPair
+    , playerVelocity : IntPair
     , pressedKeys : List Keyboard.Key
     , posUpdatedAt : Int
     }
@@ -57,6 +58,7 @@ init { now } =
     { keySet = Set.empty
     , gridSize = ( 10, 5 )
     , playerPos = ( 0, 0 )
+    , playerVelocity = ( 0, 0 )
     , pressedKeys = []
     , posUpdatedAt = now
     }
@@ -115,7 +117,7 @@ update msg m =
                 ( updatedPressedKeys, keyChange ) =
                     Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg m.pressedKeys
             in
-                noCmd { m | pressedKeys = updatedPressedKeys }
+                noCmd { m | pressedKeys = updatedPressedKeys, playerVelocity = arrowsToVelocity m }
 
         AnimationFrameDelta elapsed ->
             noCmd m
@@ -147,9 +149,13 @@ update msg m =
             { m | keySet = Set.remove key m.keySet } |> noCmd
 
 
-computeNewPos m =
+arrowsToVelocity m =
     Keyboard.Arrows.arrows m.pressedKeys
         |> (\{ x, y } -> ( x, -y ))
+
+
+computeNewPos m =
+    m.playerVelocity
         |> addIntPair m.playerPos
         |> Tuple.mapBoth (\x -> clampGridX x m) (\y -> clampGridY y m)
 
