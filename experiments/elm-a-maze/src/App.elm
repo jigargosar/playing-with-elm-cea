@@ -44,6 +44,8 @@ type alias Model =
     { keySet : Set String
     , gridSize : IntPair
     , playerPos : IntPair
+    , pxAnim : Animation
+    , pyAnim : Animation
     , playerXOffset : Float
     , vx : Int
     , vy : Int
@@ -62,6 +64,8 @@ init { now } =
     { keySet = Set.empty
     , gridSize = ( 10, 5 )
     , playerPos = ( 0, 0 )
+    , pxAnim = Animation.static 0
+    , pyAnim = Animation.static 0
     , playerXOffset = 0
     , vx = 0
     , vy = 0
