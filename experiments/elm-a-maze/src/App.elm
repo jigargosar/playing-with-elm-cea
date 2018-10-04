@@ -69,10 +69,6 @@ init { now } =
         |> noCmd
 
 
-getPlayerCords m =
-    ( 0, 1 ) |> R.mapBothWith ((*) cellSize)
-
-
 animToGridCellPx clock anim =
     let
         start =
