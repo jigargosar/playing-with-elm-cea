@@ -22,7 +22,7 @@ import Browser.Events as BE
 import Set exposing (Set)
 import Json.Decode as D
 import Json.Encode as E
-import TypedSvg.Types exposing (Fill(..), px)
+import TypedSvg.Types exposing (Fill(..), Transform(..), px)
 
 
 ---- MODEL ----
@@ -141,7 +141,7 @@ cellSize =
 
 
 viewGameContent m =
-    S.g [] (viewGridCells m.gridSize)
+    S.g [ TA.transform [ Translate cellSize cellSize ] ] (viewGridCells m.gridSize)
 
 
 viewGridCells size =
