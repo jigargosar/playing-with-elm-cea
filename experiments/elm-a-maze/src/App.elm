@@ -137,7 +137,45 @@ viewSvg m =
 
 
 viewGameContent m =
-    S.g [] []
+    S.g [] (viewGridCells m.gridSize)
+
+
+viewGridCells size =
+    gridConcatMap size viewGridCell
+
+
+viewGridCell cord =
+    let
+        cellSize =
+            10.0
+
+        xyAttr =
+            cord |> R.mapBothWith (toFloat >> (*) cellSize >> px) |> Tuple.mapBoth TA.x TA.y |> R.tupleToList
+
+        whAttr =
+            px cellSize |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
+    in
+        S.rect (xyAttr ++ whAttr ++ [ strokeColor Color.black, TP.strokeWidth 1, TA.noFill ]) []
+
+
+gridConcatMap size fn =
+    gridMap size fn |> List.concat
+
+
+gridMap ( width, height ) fn =
+    let
+        xCords =
+            List.range 0 (width - 1)
+
+        yCords =
+            List.range 0 (height - 1)
+    in
+        yCords
+            |> List.map
+                (\y ->
+                    xCords
+                        |> List.map (\x -> fn ( x, y ))
+                )
 
 
 
@@ -151,6 +189,11 @@ type alias SvgAttribute msg =
 fillColor : Color -> SvgAttribute msg
 fillColor =
     Fill >> TA.fill
+
+
+strokeColor : Color -> SvgAttribute msg
+strokeColor =
+    TA.stroke
 
 
 fillOpacityFloat =
