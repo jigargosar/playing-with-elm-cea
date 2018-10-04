@@ -71,7 +71,7 @@ init { now } =
         Animation.animation 0
             |> Animation.from 0
             |> Animation.to cellSize
-            |> Animation.duration 5000
+            |> Animation.duration 750
             |> Animation.delay 1000
     }
         |> Debug.log "initModel"
@@ -148,17 +148,20 @@ update msg m =
                 anim =
                     m.anim
 
+                isScheduled =
+                    Animation.isScheduled clock anim
+
                 isRunning =
                     Animation.isRunning clock anim
 
-                isScheduled =
-                    Animation.isScheduled clock anim
+                isDone =
+                    Animation.isDone clock anim
 
                 newXOffset =
                     (if isRunning then
                         (Animation.animate clock anim)
                      else
-                        0
+                        R.ter isScheduled 0 cellSize
                     )
             in
                 noCmd { m | playerXOffset = newXOffset }
