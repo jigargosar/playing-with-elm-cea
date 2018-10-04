@@ -69,12 +69,24 @@ init { now } =
         |> noCmd
 
 
+isRunning anim m =
+    Animation.isRunning m.clock anim
+
+
+isScheduled anim m =
+    Animation.isScheduled m.clock anim
+
+
+isDone anim m =
+    Animation.isDone m.clock anim
+
+
 animToGridCellPx clock anim =
     let
-        start =
-            (Animation.getStart anim) * cellSize
+        from =
+            (Animation.getFrom anim) * cellSize
     in
-        start
+        from
             + (if Animation.isScheduled clock anim then
                 0
                else
@@ -84,7 +96,12 @@ animToGridCellPx clock anim =
 
 getPlayerCellXY : Model -> ( Float, Float )
 getPlayerCellXY m =
-    ( m.pxAnim, m.pyAnim ) |> R.mapBothWith (animToGridCellPx m.clock)
+    ( m.pxAnim, m.pyAnim )
+        |> R.mapBothWith (animToGridCellPx m.clock)
+
+
+
+--        |> Debug.log "getPlayerCellXY"
 
 
 clampGridX x m =
@@ -119,6 +136,7 @@ type Msg
     | AnimationFrame Time.Posix
     | KeyDown String
     | KeyUp String
+    | Player
 
 
 noCmd model =
@@ -149,8 +167,45 @@ update msg m =
         AnimationFrameDelta elapsed ->
             noCmd m
 
+        Player ->
+            let
+                { x, y } =
+                    Keyboard.Arrows.arrows m.pressedKeys
+
+                newPxAnim =
+                    let
+                        anim =
+                            m.pxAnim
+
+                        clock =
+                            m.clock
+
+                        from =
+                            Animation.getFrom anim
+
+                        newX =
+                            from + (toFloat x)
+                    in
+                        case compare x 0 of
+                            EQ ->
+                                anim
+
+                            LT ->
+                                anim
+
+                            GT ->
+                                (if isScheduled anim m || isDone anim m then
+                                    anim
+                                        |> Animation.retarget clock newX
+                                        |> Debug.log "pxAnim"
+                                 else
+                                    m.pxAnim
+                                )
+            in
+                noCmd { m | pxAnim = newPxAnim }
+
         AnimationFrame posix ->
-            noCmd { m | clock = getClock posix m }
+            update Player { m | clock = getClock posix m }
 
         KeyDown key ->
             { m | keySet = Set.insert key m.keySet } |> noCmd
