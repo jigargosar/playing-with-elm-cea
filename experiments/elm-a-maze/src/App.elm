@@ -45,8 +45,6 @@ type alias Model =
     , gridSize : IntPair
     , pxAnim : Animation
     , pyAnim : Animation
-    , vx : Int
-    , vy : Int
     , pressedKeys : List Keyboard.Key
     , pageLoadedAt : Int
     , clock : Animation.Clock
@@ -63,8 +61,6 @@ init { now } =
     , gridSize = ( 10, 5 )
     , pxAnim = Animation.static 0
     , pyAnim = Animation.static 0
-    , vx = 0
-    , vy = 0
     , pressedKeys = []
     , pageLoadedAt = now
     , clock = 0
@@ -223,7 +219,7 @@ cellSize =
 
 viewGameContent m =
     S.g [ TA.transform [ Translate cellSize cellSize ] ]
-        (viewGridCells m.gridSize ++ viewPlayer (getPlayerCords m))
+        (viewGridCells m.gridSize ++ viewPlayer (getPlayerCellXY m.clock m))
 
 
 viewPlayer cord =
