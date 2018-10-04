@@ -47,7 +47,7 @@ init : Flags -> ( Model, Cmd Msg )
 init { now } =
     { keySet = Set.empty
     , gridSize = ( 10, 5 )
-    , playerPo = ( 0, 0 )
+    , playerPos = ( 0, 0 )
     }
         |> noCmd
 
