@@ -75,6 +75,24 @@ getPlayerCords m =
     ( 0, 0 )
 
 
+animToGridCellPx clock anim =
+    let
+        start =
+            (Animation.getStart anim) * cellSize
+    in
+        start
+            + (if Animation.isScheduled clock anim then
+                0
+               else
+                Animation.animate clock anim
+              )
+
+
+getPlayerXY : Animation.Clock -> Model -> ( Float, Float )
+getPlayerXY clock m =
+    ( m.pxAnim, m.pyAnim ) |> R.mapBothWith (animToGridCellPx clock)
+
+
 clampGridX x m =
     let
         ( w, _ ) =
