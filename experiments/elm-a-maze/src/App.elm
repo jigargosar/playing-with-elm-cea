@@ -14,6 +14,7 @@ import Svg
 import Svg as S
 import Svg.Attributes as S
 import Svg.Attributes as SA
+import Time
 import TypedSvg as T
 import TypedSvg.Attributes as TA
 import TypedSvg.Attributes.InPx as T
@@ -42,8 +43,8 @@ type alias Model =
     { keySet : Set String
     , gridSize : IntPair
     , playerPos : IntPair
-    , playerNextPos : IntPair
     , pressedKeys : List Keyboard.Key
+    , posUpdatedAt : Int
     }
 
 
@@ -56,8 +57,8 @@ init { now } =
     { keySet = Set.empty
     , gridSize = ( 10, 5 )
     , playerPos = ( 0, 0 )
-    , playerNextPos = ( 0, 0 )
     , pressedKeys = []
+    , posUpdatedAt = now
     }
         |> noCmd
 
@@ -85,7 +86,8 @@ clampGridY y m =
 type Msg
     = NoOp
     | KeyMsg Keyboard.Msg
-    | AnimationFrame Float
+    | AnimationFrameDelta Float
+    | AnimationFrame Time.Posix
     | KeyDown String
     | KeyUp String
 
@@ -112,34 +114,44 @@ update msg m =
             let
                 ( updatedPressedKeys, keyChange ) =
                     Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg m.pressedKeys
-
-                computeNewPos kc =
-                    case kc of
-                        Keyboard.KeyDown _ ->
-                            Keyboard.Arrows.arrows updatedPressedKeys
-                                |> (\{ x, y } -> ( x, -y ))
-                                |> addIntPair m.playerPos
-                                |> Tuple.mapBoth (\x -> clampGridX x m) (\y -> clampGridY y m)
-
-                        _ ->
-                            m.playerPos
-
-                newPlayerPos =
-                    keyChange
-                        |> Maybe.map (Debug.log "kc" >> computeNewPos)
-                        |> Maybe.withDefault m.playerPos
-                        |> Debug.log "newPos"
             in
-                noCmd { m | pressedKeys = updatedPressedKeys, playerPos = newPlayerPos }
+                noCmd { m | pressedKeys = updatedPressedKeys }
 
-        AnimationFrame elapsed ->
+        AnimationFrameDelta elapsed ->
             noCmd m
+
+        AnimationFrame posix ->
+            let
+                now =
+                    Time.posixToMillis posix
+
+                canUpdatePos =
+                    (now - m.posUpdatedAt) > (300)
+
+                newPos =
+                    computeNewPos m
+
+                newModel =
+                    (if canUpdatePos && not (newPos == m.playerPos) then
+                        { m | playerPos = newPos, posUpdatedAt = now }
+                     else
+                        m
+                    )
+            in
+                noCmd newModel
 
         KeyDown key ->
             { m | keySet = Set.insert key m.keySet } |> noCmd
 
         KeyUp key ->
             { m | keySet = Set.remove key m.keySet } |> noCmd
+
+
+computeNewPos m =
+    Keyboard.Arrows.arrows m.pressedKeys
+        |> (\{ x, y } -> ( x, -y ))
+        |> addIntPair m.playerPos
+        |> Tuple.mapBoth (\x -> clampGridX x m) (\y -> clampGridY y m)
 
 
 
@@ -306,7 +318,8 @@ type alias Subs =
 subscriptions : Subs
 subscriptions _ =
     Sub.batch
-        [ B.onAnimationFrameDelta AnimationFrame
+        [ B.onAnimationFrameDelta AnimationFrameDelta
+        , B.onAnimationFrame AnimationFrame
         , B.onKeyDown (D.map KeyDown (D.field "key" D.string))
         , B.onKeyUp (D.map KeyUp (D.field "key" D.string))
         , Sub.map KeyMsg Keyboard.subscriptions
