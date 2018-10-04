@@ -32,7 +32,3 @@ fromCompactHsla { h, s, l, a } =
 overCompactHsla : CompactHslaF -> ColorF
 overCompactHsla fn =
     toCompactHsla >> fn >> fromCompactHsla
-
-
-saturate =
-    Color.toHsla >> \h -> h
