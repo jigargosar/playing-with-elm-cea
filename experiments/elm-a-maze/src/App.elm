@@ -72,7 +72,7 @@ init { now } =
 
 
 getPlayerCords m =
-    ( 0, 0 )
+    ( 0, 1 ) |> R.mapBothWith ((*) cellSize)
 
 
 animToGridCellPx clock anim =
@@ -231,7 +231,7 @@ viewPlayer cord =
 
         cXYAttrs =
             cord
-                |> R.mapBothWith (toFloat >> (*) cellSize >> (+) (cellSize / 2.0))
+                |> R.mapBothWith ((+) (cellSize / 2.0))
                 |> Tuple.mapBoth TP.cx TP.cy
                 |> R.tupleToList
 
