@@ -125,9 +125,6 @@ viewSvg m =
                 , Color.blue
                     |> Light.overCompactHsla (\h -> { h | s = 1, l = 0.7 })
                     |> fillColor
-                , fillOpacityFloat 1
-
-                --                , opacityFloat 0.5
                 ]
                 []
             , viewGameContent m

@@ -1,1 +1,6 @@
 .idea/workspace.xml
+elm.js
+node_modules
+elm-stuff
+build
+dist
