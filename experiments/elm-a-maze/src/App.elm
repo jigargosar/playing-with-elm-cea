@@ -43,7 +43,6 @@ addIntPair ( a1, b1 ) ( a2, b2 ) =
 type alias Model =
     { keySet : Set String
     , gridSize : IntPair
-    , playerPos : IntPair
     , pxAnim : Animation
     , pyAnim : Animation
     , vx : Int
@@ -61,7 +60,6 @@ init : Flags -> ( Model, Cmd Msg )
 init { now } =
     { keySet = Set.empty
     , gridSize = ( 10, 5 )
-    , playerPos = ( 0, 0 )
     , pxAnim = Animation.static 0
     , pyAnim = Animation.static 0
     , vx = 0
@@ -71,6 +69,10 @@ init { now } =
     }
         |> Debug.log "initModel"
         |> noCmd
+
+
+getPlayerCords m =
+    ( 0, 0 )
 
 
 clampGridX x m =
@@ -201,7 +203,7 @@ cellSize =
 
 viewGameContent m =
     S.g [ TA.transform [ Translate cellSize cellSize ] ]
-        (viewGridCells m.gridSize ++ viewPlayer m.playerPos)
+        (viewGridCells m.gridSize ++ viewPlayer (getPlayerCords m))
 
 
 viewPlayer cord =
