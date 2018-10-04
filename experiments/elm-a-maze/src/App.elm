@@ -44,7 +44,7 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
-    { keySet = Set.empty, gridSize = ( 3, 3 ) } |> noCmd
+    { keySet = Set.empty, gridSize = ( 10, 5 ) } |> noCmd
 
 
 
