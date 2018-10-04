@@ -32,3 +32,8 @@ fromCompactHsla { h, s, l, a } =
 overCompactHsla : CompactHslaF -> ColorF
 overCompactHsla fn =
     toCompactHsla >> fn >> fromCompactHsla
+
+
+map : CompactHslaF -> ColorF
+map =
+    overCompactHsla

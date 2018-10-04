@@ -123,7 +123,7 @@ viewSvg m =
                 , TA.strokeWidth (px 0.2)
                 , TA.stroke Color.black
                 , Color.blue
-                    |> Light.overCompactHsla (\h -> { h | s = 1, l = 0.7 })
+                    |> Light.map (\h -> { h | s = 1, l = 0.7 })
                     |> fillColor
                 ]
                 []
