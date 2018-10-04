@@ -88,8 +88,8 @@ animToGridCellPx clock anim =
               )
 
 
-getPlayerXY : Animation.Clock -> Model -> ( Float, Float )
-getPlayerXY clock m =
+getPlayerCellXY : Animation.Clock -> Model -> ( Float, Float )
+getPlayerCellXY clock m =
     ( m.pxAnim, m.pyAnim ) |> R.mapBothWith (animToGridCellPx clock)
 
 
