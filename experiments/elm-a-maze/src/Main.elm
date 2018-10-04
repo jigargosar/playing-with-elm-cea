@@ -129,7 +129,7 @@ subscriptions _ =
 
 main : Program Flags Model Msg
 main =
-    Browser.element
+    B.element
         { view = HL.lazy view
         , init = init
         , update = update
