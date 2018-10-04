@@ -46,12 +46,10 @@ type alias Model =
     , playerPos : IntPair
     , pxAnim : Animation
     , pyAnim : Animation
-    , playerXOffset : Float
     , vx : Int
     , vy : Int
     , pressedKeys : List Keyboard.Key
     , pageLoadedAt : Int
-    , anim : Animation
     }
 
 
@@ -66,17 +64,10 @@ init { now } =
     , playerPos = ( 0, 0 )
     , pxAnim = Animation.static 0
     , pyAnim = Animation.static 0
-    , playerXOffset = 0
     , vx = 0
     , vy = 0
     , pressedKeys = []
     , pageLoadedAt = now
-    , anim =
-        Animation.animation 0
-            |> Animation.from 0
-            |> Animation.to cellSize
-            |> Animation.duration 750
-            |> Animation.delay 1000
     }
         |> Debug.log "initModel"
         |> noCmd
@@ -145,30 +136,7 @@ update msg m =
             noCmd m
 
         AnimationFrame posix ->
-            let
-                clock =
-                    (getClock posix m)
-
-                anim =
-                    m.anim
-
-                isScheduled =
-                    Animation.isScheduled clock anim
-
-                isRunning =
-                    Animation.isRunning clock anim
-
-                isDone =
-                    Animation.isDone clock anim
-
-                newXOffset =
-                    (if isRunning then
-                        (Animation.animate clock anim)
-                     else
-                        R.ter isScheduled 0 cellSize
-                    )
-            in
-                noCmd { m | playerXOffset = newXOffset }
+            noCmd m
 
         KeyDown key ->
             { m | keySet = Set.insert key m.keySet } |> noCmd
@@ -233,41 +201,24 @@ cellSize =
 
 viewGameContent m =
     S.g [ TA.transform [ Translate cellSize cellSize ] ]
-        (viewGridCells m.gridSize ++ viewPlayer m.playerPos m.playerXOffset)
+        (viewGridCells m.gridSize ++ viewPlayer m.playerPos)
 
 
-viewPlayer cord xAnimOffset =
+viewPlayer cord =
     let
         offset =
             5.0
 
-        {- xyAttrs =
-               cord
-                   |> R.mapBothWith (toFloat >> (*) cellSize >> (+) offset >> (+) xAnimOffset)
-                   |> Tuple.mapBoth TP.x TP.y
-                   |> R.tupleToList
-
-           whAttrs =
-               cellSize
-                   |> (+) (-offset * 2)
-                   |> px
-                   |> R.toTuple
-                   |> Tuple.mapBoth TA.width TA.height
-                   |> R.tupleToList
-        -}
         cXYAttrs =
             cord
                 |> R.mapBothWith (toFloat >> (*) cellSize >> (+) (cellSize / 2.0))
-                |> Tuple.mapBoth (((+) xAnimOffset) >> TP.cx) TP.cy
+                |> Tuple.mapBoth TP.cx TP.cy
                 |> R.tupleToList
 
         rAttr =
             (cellSize - offset) / 2 |> TP.r
     in
-        [ {- S.rect (xyAttrs ++ whAttrs ++ [ fillColor Color.lightOrange, opacityFloat 0 ]) []
-             ,
-          -}
-          S.circle (cXYAttrs ++ [ rAttr, fillColor Color.lightOrange ]) []
+        [ S.circle (cXYAttrs ++ [ rAttr, fillColor Color.lightOrange ]) []
         ]
 
 
