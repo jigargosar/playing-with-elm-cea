@@ -43,9 +43,7 @@ type alias Model =
     { keySet : Set String
     , gridSize : IntPair
     , playerPos : IntPair
-    , playerVelocity : IntPair
     , pressedKeys : List Keyboard.Key
-    , posUpdatedAt : Int
     }
 
 
@@ -58,9 +56,7 @@ init { now } =
     { keySet = Set.empty
     , gridSize = ( 10, 5 )
     , playerPos = ( 0, 0 )
-    , playerVelocity = ( 0, 0 )
     , pressedKeys = []
-    , posUpdatedAt = now
     }
         |> noCmd
 
@@ -117,47 +113,19 @@ update msg m =
                 ( updatedPressedKeys, keyChange ) =
                     Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg m.pressedKeys
             in
-                noCmd { m | pressedKeys = updatedPressedKeys, playerVelocity = arrowsToDirectionVec m }
+                noCmd { m | pressedKeys = updatedPressedKeys }
 
         AnimationFrameDelta elapsed ->
             noCmd m
 
         AnimationFrame posix ->
-            let
-                now =
-                    Time.posixToMillis posix
-
-                canUpdatePos =
-                    (now - m.posUpdatedAt) > (300)
-
-                newPos =
-                    computeNewPos m
-
-                newModel =
-                    (if canUpdatePos && not (newPos == m.playerPos) then
-                        { m | playerPos = newPos, posUpdatedAt = now, playerVelocity = ( 0, 0 ) }
-                     else
-                        m
-                    )
-            in
-                noCmd newModel
+            noCmd m
 
         KeyDown key ->
             { m | keySet = Set.insert key m.keySet } |> noCmd
 
         KeyUp key ->
             { m | keySet = Set.remove key m.keySet } |> noCmd
-
-
-arrowsToDirectionVec m =
-    Keyboard.Arrows.arrows m.pressedKeys
-        |> (\{ x, y } -> ( x, -y ))
-
-
-computeNewPos m =
-    m.playerVelocity
-        |> addIntPair m.playerPos
-        |> Tuple.mapBoth (\x -> clampGridX x m) (\y -> clampGridY y m)
 
 
 
