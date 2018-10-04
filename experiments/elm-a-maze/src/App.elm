@@ -155,20 +155,23 @@ viewPlayer cord =
         offset =
             5.0
 
-        xyAttr =
+        xyAttrs =
             cord
                 |> R.mapBothWith (toFloat >> (*) cellSize >> (+) offset >> px)
                 |> Tuple.mapBoth TA.x TA.y
                 |> R.tupleToList
 
-        whAttr =
+        whAttrs =
             cellSize |> (+) (-offset * 2) |> px |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
 
-        cXYAttr =
+        cXYAttrs =
             cellSize / 2.0 |> \s -> ( s, s ) |> Tuple.mapBoth TP.cx TP.cy |> R.tupleToList
+
+        rAttr =
+            (cellSize - offset) / 2 |> TP.r
     in
-        [ S.rect (xyAttr ++ whAttr ++ [ fillColor Color.lightOrange ]) []
-        , S.circle (cXYAttr ++ []) []
+        [ S.rect (xyAttrs ++ whAttrs ++ [ fillColor Color.lightOrange, opacityFloat 0 ]) []
+        , S.circle (cXYAttrs ++ [ rAttr, fillColor Color.lightOrange ]) []
         ]
 
 
