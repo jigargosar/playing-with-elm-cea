@@ -84,6 +84,10 @@ update msg m =
 ---- VIEW ----
 
 
+type alias View =
+    Html Msg
+
+
 worldSize =
     Size.fromComponent ( 600, 350 )
 
@@ -92,7 +96,7 @@ worldSizeIntT =
     Size.toRoundIntComponent worldSize
 
 
-view : Model -> Html Msg
+view : Model -> View
 view m =
     H.div [ HA.class "flex flex-column items-center pa2 h-100 " ]
         [ H.div [ HA.class "flex flex-column vs3" ]
@@ -114,6 +118,7 @@ opacityFloat =
     TypedSvg.Types.Opacity >> TA.opacity
 
 
+viewSvg : Model -> View
 viewSvg m =
     let
         attrs =
@@ -145,6 +150,11 @@ viewGameContent m =
 ---- PROGRAM ----
 
 
+type alias Subs =
+    Model -> Sub Msg
+
+
+subscriptions : Subs
 subscriptions _ =
     Sub.batch
         [ B.onAnimationFrameDelta AnimationFrame
