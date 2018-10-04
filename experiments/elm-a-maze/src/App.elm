@@ -117,7 +117,7 @@ update msg m =
                 ( updatedPressedKeys, keyChange ) =
                     Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg m.pressedKeys
             in
-                noCmd { m | pressedKeys = updatedPressedKeys, playerVelocity = arrowsToVelocity m }
+                noCmd { m | pressedKeys = updatedPressedKeys, playerVelocity = arrowsToDirectionVec m }
 
         AnimationFrameDelta elapsed ->
             noCmd m
@@ -135,7 +135,7 @@ update msg m =
 
                 newModel =
                     (if canUpdatePos && not (newPos == m.playerPos) then
-                        { m | playerPos = newPos, posUpdatedAt = now }
+                        { m | playerPos = newPos, posUpdatedAt = now, playerVelocity = ( 0, 0 ) }
                      else
                         m
                     )
@@ -149,7 +149,7 @@ update msg m =
             { m | keySet = Set.remove key m.keySet } |> noCmd
 
 
-arrowsToVelocity m =
+arrowsToDirectionVec m =
     Keyboard.Arrows.arrows m.pressedKeys
         |> (\{ x, y } -> ( x, -y ))
 
