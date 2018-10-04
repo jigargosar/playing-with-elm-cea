@@ -10,6 +10,7 @@ import Svg as S
 import Svg.Attributes as S
 import Svg.Attributes as SA
 import Browser as B
+import Browser.Events as B
 import Browser.Events as BE
 import Set exposing (Set)
 import Json.Decode as D
@@ -122,9 +123,9 @@ viewGameContent m =
 
 subscriptions _ =
     Sub.batch
-        [ BE.onAnimationFrameDelta AnimationFrame
-        , BE.onKeyDown (D.map KeyDown (D.field "key" D.string))
-        , BE.onKeyUp (D.map KeyUp (D.field "key" D.string))
+        [ B.onAnimationFrameDelta AnimationFrame
+        , B.onKeyDown (D.map KeyDown (D.field "key" D.string))
+        , B.onKeyUp (D.map KeyUp (D.field "key" D.string))
         ]
 
 
