@@ -163,8 +163,13 @@ viewPlayer cord =
 
         whAttr =
             cellSize |> (+) (-offset * 2) |> px |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
+
+        cXYAttr =
+            cellSize / 2.0 |> \s -> ( s, s ) |> Tuple.mapBoth TP.cx TP.cy |> R.tupleToList
     in
-        [ S.rect (xyAttr ++ whAttr ++ [ fillColor Color.lightOrange ]) [] ]
+        [ S.rect (xyAttr ++ whAttr ++ [ fillColor Color.lightOrange ]) []
+        , S.circle (cXYAttr ++ []) []
+        ]
 
 
 viewGridCells size =
