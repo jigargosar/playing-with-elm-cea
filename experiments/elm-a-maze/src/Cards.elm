@@ -25,41 +25,16 @@ import Json.Decode as D
 import Json.Encode as E
 import TypedSvg.Types exposing (Fill(..), px)
 import UiCards exposing (card, cardError, deck, show)
+import App
 
 
-type alias Model =
-    {}
-
-
-type Msg
-    = NoOp
-
-
-noCmd model =
-    ( model, Cmd.none )
-
-
-addCmd c2 =
-    Tuple.mapSecond (\c1 -> Cmd.batch [ c1, c2 ])
-
-
-withCmd c m =
-    noCmd m |> addCmd c
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg m =
-    case msg of
-        NoOp ->
-            noCmd m
-
-
+initialModel : App.Model
 initialModel =
-    {}
+    { keySet = Set.empty }
 
 
 main =
-    show update
+    show App.update
         [ deck "Card elements"
             [ card "Card" initialModel <|
                 \model ->
@@ -69,6 +44,6 @@ main =
                         ]
             , card "Error test" initialModel <|
                 \_ ->
-                    cardError "This is a test"
+                    cardError "This is a test 2 "
             ]
         ]
