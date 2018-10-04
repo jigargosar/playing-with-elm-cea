@@ -5,6 +5,7 @@ import Html as H exposing (Html)
 import Html.Lazy as H
 import Html.Attributes as H
 import Html.Attributes as HA
+import Keyboard
 import Light
 import Ramda as R
 import Size
@@ -36,6 +37,7 @@ type alias Model =
     { keySet : Set String
     , gridSize : IntPair
     , playerPos : IntPair
+    , pressedKeys : List Keyboard.Key
     }
 
 
@@ -48,6 +50,7 @@ init { now } =
     { keySet = Set.empty
     , gridSize = ( 10, 5 )
     , playerPos = ( 0, 0 )
+    , pressedKeys = []
     }
         |> noCmd
 
@@ -58,6 +61,7 @@ init { now } =
 
 type Msg
     = NoOp
+    | KeyMsg Keyboard.Msg
     | AnimationFrame Float
     | KeyDown String
     | KeyUp String
@@ -80,6 +84,9 @@ update msg m =
     case msg of
         NoOp ->
             noCmd m
+
+        KeyMsg keyMsg ->
+            noCmd { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys }
 
         AnimationFrame elapsed ->
             noCmd m
@@ -255,6 +262,7 @@ subscriptions _ =
         [ B.onAnimationFrameDelta AnimationFrame
         , B.onKeyDown (D.map KeyDown (D.field "key" D.string))
         , B.onKeyUp (D.map KeyUp (D.field "key" D.string))
+        , Sub.map KeyMsg Keyboard.subscriptions
         ]
 
 
