@@ -147,6 +147,11 @@ getDebugState m =
     { pressedKeys = m.pressedKeys |> Debug.toString }
 
 
+getArrows m =
+    Keyboard.Arrows.arrows m.pressedKeys
+        |> \{ x, y } -> ( x, -y )
+
+
 
 ---- UPDATE ----
 
@@ -231,8 +236,8 @@ update msg m =
                         else
                             anim
 
-                { x, y } =
-                    Keyboard.Arrows.arrows m.pressedKeys
+                ( x, y ) =
+                    getArrows m
 
                 ( xCells, yCells ) =
                     gridSize
@@ -304,7 +309,7 @@ debugView { pressedKeys } =
 
 viewSvg : Model -> View
 viewSvg m =
-    S.svg ([{- H.style "transform" "scale( 0.8 , 0.8 )" -}] ++ canvasWHStyles)
+    S.svg ([ H.style "transform" "scale( 0.9 , 0.9 )" ] ++ canvasWHStyles)
         [ S.rect
             [ S.width "100%"
             , S.height "100%"
