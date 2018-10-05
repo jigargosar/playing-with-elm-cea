@@ -346,6 +346,10 @@ getMonsterXInt { xa } =
     A.getTo xa |> round
 
 
+getMonsterYInt { ya } =
+    A.getTo ya |> round
+
+
 computeMonsterNewX offset m monster =
     let
         connections : Set MG.Connection
@@ -355,9 +359,23 @@ computeMonsterNewX offset m monster =
 
         isConnected cp =
             connections |> Set.member (C2.normalizeConnection cp)
+
+        currentY =
+            getMonsterYInt monster
+
+        oldX =
+            getMonsterXInt monster
+
+        newX =
+            (getMonsterXInt monster + offset)
+                |> clampGridX m
     in
-        (getMonsterXInt monster + offset)
-            |> clampGridX m
+        (if isConnected ( ( oldX, currentY ), ( newX, currentY ) ) then
+            newX
+         else
+            oldX
+        )
+            |> toFloat
 
 
 updateMonster : Model -> F Monster
@@ -371,7 +389,7 @@ updateMonster m monster =
          else
             let
                 newTo =
-                    clampGridX m (getMonsterXInt monster + 1) |> toFloat
+                    computeMonsterNewX 1 m monster
             in
                 { monster | xa = animRetargetTo newTo m monster.xa }
         )
