@@ -388,10 +388,10 @@ updateMonster m monster =
             monster
          else
             let
-                newTo =
+                newXTo =
                     computeMonsterNewX 1 m monster
             in
-                { monster | xa = animRetargetTo newTo m monster.xa }
+                { monster | xa = animRetargetTo newXTo m monster.xa }
         )
 
 
