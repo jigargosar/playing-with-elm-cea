@@ -1,6 +1,9 @@
 module App exposing (..)
 
 import Animation as A exposing (Animation)
+import Browser.Dom
+import Browser.Dom as BD
+import Browser.Dom as B
 import Color exposing (Color)
 import Coordinate2D as C2
 import Html as H exposing (Html)
@@ -23,6 +26,7 @@ import TypedSvg as T
 import TypedSvg.Attributes as TA
 import TypedSvg.Attributes.InPx as T
 import TypedSvg.Attributes.InPx as TP
+import Browser
 import Browser as B
 import Browser.Events as B
 import Browser.Events as BE
