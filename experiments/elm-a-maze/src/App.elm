@@ -1,6 +1,6 @@
 module App exposing (..)
 
-import Animation exposing (Animation)
+import Animation as A exposing (Animation)
 import Color exposing (Color)
 import Html as H exposing (Html)
 import Html.Lazy as H
@@ -47,7 +47,7 @@ type alias Model =
     , pyAnim : Animation
     , pressedKeys : List Keyboard.Key
     , pageLoadedAt : Int
-    , clock : Animation.Clock
+    , clock : A.Clock
     }
 
 
@@ -55,12 +55,17 @@ type alias Flags =
     { now : Int }
 
 
+createAnim from to { clock } =
+    A.animation clock
+        |> A.from from
+
+
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
     { keySet = Set.empty
     , gridSize = ( 10, 5 )
-    , pxAnim = Animation.static 0 |> Animation.ease identity
-    , pyAnim = Animation.static 0 |> Animation.ease identity
+    , pxAnim = A.static 0 |> A.ease identity
+    , pyAnim = A.static 0 |> A.ease identity
     , pressedKeys = []
     , pageLoadedAt = now
     , clock = 0
@@ -74,27 +79,27 @@ notRunning anim m =
 
 
 isRunning anim m =
-    Animation.isRunning m.clock anim
+    A.isRunning m.clock anim
 
 
 isScheduled anim m =
-    Animation.isScheduled m.clock anim
+    A.isScheduled m.clock anim
 
 
 isDone anim m =
-    Animation.isDone m.clock anim
+    A.isDone m.clock anim
 
 
 animCurrent anim m =
-    Animation.animate m.clock anim
+    A.animate m.clock anim
 
 
 animRetargetTo to anim m =
-    Animation.retarget m.clock to anim
+    A.retarget m.clock to anim
 
 
 animToGridCellPx clock anim =
-    (Animation.animate clock anim) * cellSize
+    (A.animate clock anim) * cellSize
 
 
 getPlayerCellXY : Model -> ( Float, Float )
@@ -119,7 +124,7 @@ clampGridY y m =
         clamp 0 (h - 1) y
 
 
-getClock : Time.Posix -> Model -> Animation.Clock
+getClock : Time.Posix -> Model -> A.Clock
 getClock time m =
     Time.posixToMillis time - m.pageLoadedAt |> toFloat
 
@@ -185,14 +190,21 @@ update msg m =
                         currentX =
                             (animCurrent anim m)
 
+                        from =
+                            A.getFrom anim
+
+                        to =
+                            A.getTo anim
+
                         diff =
-                            Animation.getFrom anim
-                                - Animation.getTo anim
-                                |> abs
+                            from - to |> abs
                     in
                         if x /= 0 then
-                            if notRunning anim m || diff <= 1 then
+                            if notRunning anim m then
                                 animRetargetTo (currentX + xDir) anim m
+                                    |> Debug.log "pxAnim"
+                            else if diff <= 1 then
+                                animRetargetTo (to + xDir) anim m
                                     |> Debug.log "pxAnim"
                             else
                                 anim
