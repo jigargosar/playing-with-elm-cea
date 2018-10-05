@@ -89,7 +89,7 @@ type alias Movement =
 
 
 type alias Monster =
-    { x : Int, y : Int, moving : Maybe Movement }
+    { x : Int, y : Int, movement : Maybe Movement }
 
 
 type alias Model =
@@ -327,7 +327,7 @@ update msg m =
 
 createMonsters : Model -> List Monster
 createMonsters m =
-    [ { x = 5, y = 5, moving = Nothing } ]
+    [ { x = 5, y = 5, movement = Nothing } ]
 
 
 computeNewXYAnim m =
@@ -512,7 +512,7 @@ bkgRect =
         , TA.strokeWidth (px 0.2)
         , TA.stroke Color.black
         , Color.blue
-            |> Light.map (\h -> { h | s = 1, l = 0.7 })
+            |> Light.map (\h -> { h | s = 0.7, l = 0.7 })
             |> fillColor
         ]
         []
@@ -520,7 +520,12 @@ bkgRect =
 
 viewGameContent m =
     S.g [ TA.transform [ Translate cellSize cellSize ] ]
-        ([ S.lazy viewGridCells m.gridSize, S.lazy viewMazeWalls m.mazeG, viewPlayer (getPlayerCellXY m) ])
+        ([ S.lazy viewGridCells m.gridSize
+         , S.lazy viewMazeWalls m.mazeG
+         , viewPlayer (getPlayerCellXY m)
+         , viewMonsters m.monsters
+         ]
+        )
 
 
 wallThickness =
@@ -604,7 +609,35 @@ viewPlayerHelp x y =
             TP.r radius
     in
         S.g []
-            [ S.circle (cXYAttrs ++ [ rAttr, fillColor Color.lightOrange ]) []
+            [ S.circle (cXYAttrs ++ [ rAttr, Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor ]) []
+            ]
+
+
+viewMonsters =
+    List.map viewMonster >> S.g []
+
+
+viewMonster : Monster -> View
+viewMonster { x, y, movement } =
+    let
+        offset =
+            5
+
+        radius =
+            (cellSize - wallThicknessF - offset) / 2
+
+        cXYAttrs =
+            ( x, y )
+                |> cordToPx
+                |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
+                |> Tuple.mapBoth TP.cx TP.cy
+                |> R.tupleToList
+
+        rAttr =
+            TP.r radius
+    in
+        S.g []
+            [ S.circle (cXYAttrs ++ [ rAttr, Color.darkOrange |> fillColor ]) []
             ]
 
 
