@@ -242,8 +242,14 @@ update msg m =
                         computeNewAnim xCells x m.pxAnim
                     else
                         m.pxAnim
+
+                newPyAnim =
+                    if y /= 0 then
+                        computeNewAnim yCells y m.pyAnim
+                    else
+                        m.pyAnim
             in
-                noCmd { m | pxAnim = newPxAnim }
+                noCmd { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
 
         AnimationFrame posix ->
             update Player { m | clock = getClock posix m }
