@@ -154,8 +154,8 @@ notRunning anim m =
     isScheduled anim m || isDone anim m
 
 
-isRunning anim m =
-    A.isRunning m.clock anim
+isRunning anim { clock } =
+    A.isRunning clock anim
 
 
 isScheduled anim m =
@@ -170,8 +170,8 @@ animCurrent anim m =
     A.animate m.clock anim
 
 
-animRetargetTo to anim m =
-    A.retarget m.clock to anim
+animRetargetTo to { clock } anim =
+    A.retarget clock to anim
 
 
 animToGridCellPx clock anim =
@@ -190,6 +190,7 @@ getMonsterCellXY clock mon =
         |> R.mapBothWith (animToGridCellPx clock)
 
 
+clampGridX : Int -> Model -> Int
 clampGridX x m =
     let
         ( w, _ ) =
@@ -337,8 +338,31 @@ update msg m =
                 |> Update.Extra.sequence update [ UpdatePlayer, UpdateMonsters ]
 
 
+type alias F a =
+    a -> a
+
+
+updateMonster : Model -> F Monster
 updateMonster m monster =
-    monster
+    let
+        isMoving =
+            isRunning monster.xa m || isRunning monster.ya m
+    in
+        (if isMoving then
+            monster
+         else
+            let
+                xa =
+                    monster.xa
+
+                to =
+                    A.getTo xa
+
+                newTo =
+                    clampGridX ((round to) + 1) m |> toFloat
+            in
+                { monster | xa = animRetargetTo newTo m xa }
+        )
 
 
 createMonsters : Model -> List Monster
