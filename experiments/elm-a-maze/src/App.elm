@@ -307,7 +307,7 @@ viewSvg m =
                 |> Tuple.mapBoth TP.width TP.height
                 |> R.tupleToList
     in
-        S.svg canvasWHAttrs
+        S.svg (canvasWHAttrs ++ [ H.style "transform" "scale( 0.8 , 0.8 )" ])
             [ S.rect
                 [ S.width "100%"
                 , S.height "100%"
