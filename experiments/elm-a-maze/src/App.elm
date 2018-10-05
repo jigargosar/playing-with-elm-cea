@@ -174,13 +174,12 @@ update msg m =
                             currentX =
                                 (Animation.animate clock anim)
                         in
-                            (if (isScheduled anim m || isDone anim m) && x /= 0 then
+                            if (isScheduled anim m || isDone anim m) && x /= 0 then
                                 anim
                                     |> Animation.retarget clock (currentX + xDir)
                                     |> Debug.log "pxAnim"
-                             else
+                            else
                                 anim
-                            )
             in
                 noCmd { m | pxAnim = newPxAnim }
 
