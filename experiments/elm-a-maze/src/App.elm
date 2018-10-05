@@ -206,10 +206,15 @@ update msg m =
 
                         travelled =
                             current - to |> abs
+
+                        newTo =
+                            to
+                                + newDirection
+                                |> clamp 0 ((cellCount - 1) * cellSize)
                     in
                         if newDirection /= 0 then
                             if notRunning anim m || travelled <= 1 then
-                                createAnim current (to + newDirection) m
+                                createAnim current newTo m
                                     |> Debug.log "pxAnim"
                             else
                                 anim
