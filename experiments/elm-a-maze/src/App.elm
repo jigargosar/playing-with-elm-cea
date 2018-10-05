@@ -190,8 +190,8 @@ getMonsterCellXY clock mon =
         |> R.mapBothWith (animToGridCellPx clock)
 
 
-clampGridX : Int -> Model -> Int
-clampGridX x m =
+clampGridX : Model -> F Int
+clampGridX m x =
     let
         ( w, _ ) =
             m.gridSize
@@ -346,6 +346,20 @@ getMonsterXInt { xa } =
     A.getTo xa |> round
 
 
+computeMonsterNewX offset m monster =
+    let
+        connections : Set MG.Connection
+        connections =
+            MG.mapConnections C2.normalizeConnection m.mazeG
+                |> Set.fromList
+
+        isConnected cp =
+            connections |> Set.member (C2.normalizeConnection cp)
+    in
+        (getMonsterXInt monster + offset)
+            |> clampGridX m
+
+
 updateMonster : Model -> F Monster
 updateMonster m monster =
     let
@@ -357,7 +371,7 @@ updateMonster m monster =
          else
             let
                 newTo =
-                    clampGridX (getMonsterXInt monster + 1) m |> toFloat
+                    clampGridX m (getMonsterXInt monster + 1) |> toFloat
             in
                 { monster | xa = animRetargetTo newTo m monster.xa }
         )
