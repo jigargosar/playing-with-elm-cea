@@ -198,7 +198,7 @@ update msg m =
                             from - to |> abs
 
                         currentDirection =
-                            from - to
+                            from - to |> R.sign
 
                         travelled =
                             current - to |> abs
@@ -279,7 +279,7 @@ view : Model -> View
 view m =
     H.div [ HA.class "flex flex-column items-center pa2 h-100 " ]
         [ H.div [ HA.class "flex flex-column vs3" ]
-            [ H.div [ HA.class "f3" ] [ H.text "SVG API" ]
+            [ H.div [ HA.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
             , viewSvg m
             ]
         ]

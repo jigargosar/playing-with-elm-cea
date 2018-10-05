@@ -15,6 +15,7 @@ module Ramda
         , scale
         , tupleToList
         , toTuple
+        , sign
         )
 
 
@@ -95,3 +96,7 @@ tupleToList ( a, b ) =
 
 toTuple a =
     Tuple.pair a a
+
+
+sign x =
+    ter (x == 0) 0 (x / abs x)
