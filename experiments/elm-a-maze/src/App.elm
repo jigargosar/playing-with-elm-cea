@@ -313,53 +313,59 @@ update msg m =
                     getFirstArrowKey m
                         |> Maybe.map
                             (\key ->
-                                (if isXArrowKey key then
-                                    let
-                                        newPxAnim_ =
-                                            if dx /= 0 && notRunning m.pyAnim m then
-                                                computeNewAnim
-                                                    (\xx ->
-                                                        let
-                                                            ( x1, x2 ) =
-                                                                xx |> R.mapBothWith round
+                                let
+                                    newPxAnim_ =
+                                        if dx /= 0 && notRunning m.pyAnim m then
+                                            computeNewAnim
+                                                (\xx ->
+                                                    let
+                                                        ( x1, x2 ) =
+                                                            xx |> R.mapBothWith round
 
-                                                            y =
-                                                                A.getTo m.pyAnim |> round
-                                                        in
-                                                            isConnected ( ( x1, y ), ( x2, y ) )
-                                                    )
-                                                    xCells
-                                                    dx
-                                                    m.pxAnim
-                                                    m
-                                            else
+                                                        y =
+                                                            A.getTo m.pyAnim |> round
+                                                    in
+                                                        isConnected ( ( x1, y ), ( x2, y ) )
+                                                )
+                                                xCells
+                                                dx
                                                 m.pxAnim
-                                    in
-                                        ( newPxAnim_, m.pyAnim )
-                                 else
-                                    let
-                                        newPyAnim_ =
-                                            if dy /= 0 && notRunning m.pxAnim m then
-                                                computeNewAnim
-                                                    (\yy ->
-                                                        let
-                                                            ( y1, y2 ) =
-                                                                yy |> R.mapBothWith round
+                                                m
+                                        else
+                                            m.pxAnim
 
-                                                            x =
-                                                                A.getTo m.pxAnim |> round
-                                                        in
-                                                            isConnected ( ( x, y1 ), ( x, y2 ) )
-                                                    )
-                                                    yCells
-                                                    dy
-                                                    m.pyAnim
-                                                    m
-                                            else
+                                    newPyAnim_ =
+                                        if dy /= 0 && notRunning m.pxAnim m then
+                                            computeNewAnim
+                                                (\yy ->
+                                                    let
+                                                        ( y1, y2 ) =
+                                                            yy |> R.mapBothWith round
+
+                                                        x =
+                                                            A.getTo m.pxAnim |> round
+                                                    in
+                                                        isConnected ( ( x, y1 ), ( x, y2 ) )
+                                                )
+                                                yCells
+                                                dy
                                                 m.pyAnim
-                                    in
+                                                m
+                                        else
+                                            m.pyAnim
+
+                                    yChanged =
+                                        A.equals newPyAnim_ m.pyAnim |> not
+
+                                    xChanged =
+                                        A.equals newPxAnim_ m.pxAnim |> not
+                                in
+                                    if xChanged && isXArrowKey key then
+                                        ( newPxAnim_, m.pyAnim )
+                                    else if yChanged && isYArrowKey key then
                                         ( m.pxAnim, newPyAnim_ )
-                                )
+                                    else
+                                        ( m.pxAnim, m.pyAnim )
                             )
                         |> Maybe.withDefault ( m.pxAnim, m.pyAnim )
             in
