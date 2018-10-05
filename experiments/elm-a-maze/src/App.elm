@@ -365,7 +365,7 @@ getMonsterYInt { ya } =
 computeMonsterNewX : Int -> Model -> Monster -> Maybe Float
 computeMonsterNewX offset m monster =
     let
-        connections : Set MG.Connection
+        connections : Set MG.ConnectionRecord
         connections =
             MG.mapConnections C2.normalizeConnection m.mazeG
                 |> Set.fromList
@@ -396,7 +396,7 @@ computeMonsterNewX offset m monster =
 computeMonsterNewY : Int -> Model -> Monster -> Maybe Float
 computeMonsterNewY offset m monster =
     let
-        connections : Set MG.Connection
+        connections : Set MG.ConnectionRecord
         connections =
             MG.mapConnections C2.normalizeConnection m.mazeG
                 |> Set.fromList
@@ -505,7 +505,7 @@ monsterGenerator m =
 
 createMonsters : Model -> ( List Monster, Random.Seed )
 createMonsters m =
-    Random.step (monsterGenerator m |> Random.list 2) m.seed
+    Random.step (monsterGenerator m |> Random.list 10) m.seed
 
 
 computeNewXYAnim m =
@@ -513,7 +513,7 @@ computeNewXYAnim m =
         |> Maybe.map
             (\key ->
                 let
-                    connections : Set MG.Connection
+                    connections : Set MG.ConnectionRecord
                     connections =
                         MG.mapConnections C2.normalizeConnection m.mazeG
                             |> Set.fromList
@@ -719,7 +719,7 @@ viewMazeWalls mg =
         cellSizePx =
             cellSize
 
-        connections : Set MG.Connection
+        connections : Set MG.ConnectionRecord
         connections =
             MG.mapConnections C2.normalizeConnection mg
                 |> Set.fromList

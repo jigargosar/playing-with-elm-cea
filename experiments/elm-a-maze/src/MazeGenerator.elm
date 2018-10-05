@@ -1,7 +1,7 @@
 module MazeGenerator
     exposing
         ( CellInfo
-        , Connection
+        , ConnectionRecord
         , MazeGenerator
         , MazeGeneratorF
         , concatMapCellInfo
@@ -23,12 +23,12 @@ import Random.Set
 import Set exposing (Set)
 
 
-type alias Connection =
+type alias ConnectionRecord =
     ( Coordinate2D, Coordinate2D )
 
 
 type alias ConnectionSet =
-    Set Connection
+    Set ConnectionRecord
 
 
 type alias VisitedSet =
@@ -208,7 +208,7 @@ concatMapCords fn mg =
         Coordinate2D.concatMap width height fn
 
 
-mapConnections : (Connection -> a) -> MazeGenerator -> List a
+mapConnections : (ConnectionRecord -> a) -> MazeGenerator -> List a
 mapConnections fn mg =
     getConnections mg
         |> Set.toList
