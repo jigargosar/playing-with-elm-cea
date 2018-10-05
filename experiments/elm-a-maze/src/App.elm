@@ -276,7 +276,7 @@ update msg m =
             noCmd m
 
         OnWindowBlur _ ->
-            noCmd m
+            { m | pressedKeys = [] } |> noCmd
 
         KeyMsg keyMsg ->
             let

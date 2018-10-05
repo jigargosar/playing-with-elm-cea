@@ -4,7 +4,7 @@ import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
 
 let documentElement = document.documentElement
-Elm.Main.init({
+const app = Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
     now: Date.now(),
@@ -13,4 +13,11 @@ Elm.Main.init({
   },
 })
 
+function onWindowBlur() {
+  app.ports.onWindowBlur.send(null)
+}
+
+window.addEventListener("blur", onWindowBlur)
+
 registerServiceWorker()
+
