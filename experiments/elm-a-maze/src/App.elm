@@ -321,7 +321,7 @@ worldSize =
 
 
 worldSizeIntT =
-    Size.toRoundIntComponent worldSize
+    gridSize |> R.mapBothWith ((+) 2 >> (*) cellSize >> round)
 
 
 concat a b =
@@ -329,8 +329,7 @@ concat a b =
 
 
 canvasWHStyles =
-    worldSize
-        |> Size.toRoundIntComponent
+    worldSizeIntT
         |> R.mapBothWith String.fromInt
         |> R.mapBothWith (R.flip concat "px")
         |> Tuple.mapBoth (H.style "min-width") (H.style "min-height")
