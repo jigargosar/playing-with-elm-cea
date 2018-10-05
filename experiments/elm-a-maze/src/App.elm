@@ -217,12 +217,9 @@ update msg m =
                                 + newDirection
                                 |> clamp 0 ((cellCount - 1) * cellSize)
                     in
-                        if newDirection /= 0 then
-                            if notRunning anim m || travelled <= 1 then
-                                createAnim current newTo m
-                                    |> Debug.log "pxAnim"
-                            else
-                                anim
+                        if notRunning anim m || diff < 1 then
+                            createAnim current newTo m
+                                |> Debug.log "pxAnim"
                         else
                             anim
 
@@ -233,7 +230,10 @@ update msg m =
                     gridSize
 
                 newPxAnim =
-                    computeNewAnim xCells x m.pxAnim
+                    if x /= 0 then
+                        computeNewAnim xCells x m.pxAnim
+                    else
+                        m.pxAnim
             in
                 noCmd { m | pxAnim = newPxAnim }
 
