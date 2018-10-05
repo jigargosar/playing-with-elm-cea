@@ -169,17 +169,16 @@ update msg m =
 
                         xDir =
                             toFloat x
+
+                        currentX =
+                            (Animation.animate clock anim)
                     in
-                        let
-                            currentX =
-                                (Animation.animate clock anim)
-                        in
-                            if (isScheduled anim m || isDone anim m) && x /= 0 then
-                                anim
-                                    |> Animation.retarget clock (currentX + xDir)
-                                    |> Debug.log "pxAnim"
-                            else
-                                anim
+                        if (isScheduled anim m || isDone anim m) && x /= 0 then
+                            anim
+                                |> Animation.retarget clock (currentX + xDir)
+                                |> Debug.log "pxAnim"
+                        else
+                            anim
             in
                 noCmd { m | pxAnim = newPxAnim }
 
