@@ -342,6 +342,10 @@ type alias F a =
     a -> a
 
 
+getMonsterXInt { xa } =
+    A.getTo xa |> round
+
+
 updateMonster : Model -> F Monster
 updateMonster m monster =
     let
@@ -352,16 +356,10 @@ updateMonster m monster =
             monster
          else
             let
-                xa =
-                    monster.xa
-
-                to =
-                    A.getTo xa
-
                 newTo =
-                    clampGridX ((round to) + 1) m |> toFloat
+                    clampGridX (getMonsterXInt monster + 1) m |> toFloat
             in
-                { monster | xa = animRetargetTo newTo m xa }
+                { monster | xa = animRetargetTo newTo m monster.xa }
         )
 
 
