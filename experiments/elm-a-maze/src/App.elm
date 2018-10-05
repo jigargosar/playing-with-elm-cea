@@ -275,14 +275,27 @@ worldSizeIntT =
     Size.toRoundIntComponent worldSize
 
 
+concat a b =
+    a ++ b
+
+
 view : Model -> View
 view m =
-    H.div [ HA.class "flex flex-column items-center pa2 h-100 " ]
-        [ H.div [ HA.class "flex flex-column vs3" ]
-            [ H.div [ HA.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
-            , viewSvg m
+    let
+        canvasWHAttrs =
+            worldSize
+                |> Size.toRoundIntComponent
+                |> R.mapBothWith String.fromInt
+                |> R.mapBothWith (R.flip concat "px")
+                |> Tuple.mapBoth (H.style "min-width") (H.style "min-height")
+                |> R.tupleToList
+    in
+        H.div ([ HA.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHAttrs)
+            [ H.div [ HA.class "flex flex-column vs3" ]
+                [ H.div [ HA.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
+                , viewSvg m
+                ]
             ]
-        ]
 
 
 viewSvg : Model -> View
