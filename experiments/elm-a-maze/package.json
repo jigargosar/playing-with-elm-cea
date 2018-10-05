@@ -5,5 +5,8 @@
   "license": "MIT",
   "dependencies": {
     "tachyons": "^4.11.1"
+  },
+  "scripts": {
+    "start":"nodemon -w yarn.lock -w elm.json -x env ELM_DEBUGGER=false elm-app start"
   }
 }
