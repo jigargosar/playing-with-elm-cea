@@ -220,7 +220,7 @@ update msg m =
                                 + newDirection
                                 |> clamp 0 (cellCount - 1)
                     in
-                        if notRunning anim m || directionReversed then
+                        if (notRunning anim m || directionReversed) && to /= newTo then
                             let
                                 _ =
                                     Debug.log "currentDirection, newDirection" ( currentDirection, newDirection )
