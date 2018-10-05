@@ -60,7 +60,7 @@ createAnim from to { clock } =
         |> A.from from
         |> A.to to
         |> A.ease identity
-        |> A.speed 0.5
+        |> A.speed 0.005
 
 
 defaultAnim =
@@ -207,11 +207,11 @@ update msg m =
                             from - to |> abs
                     in
                         if x /= 0 then
-                            if notRunning anim m then
-                                animRetargetTo (currentX + xDir) anim m
+                            if notRunning anim m || isRunning anim m |> not then
+                                createAnim currentX (to + xDir) m
                                     |> Debug.log "pxAnim"
-                            else if diff <= 1 then
-                                animRetargetTo (to + xDir) anim m
+                            else if diff < 1 then
+                                createAnim currentX (to + xDir) m
                                     |> Debug.log "pxAnim"
                             else
                                 anim
