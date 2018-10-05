@@ -309,11 +309,7 @@ update msg m =
             pure { m | pressedKeys = [] }
 
         KeyMsg keyMsg ->
-            let
-                ( updatedPressedKeys, keyChange ) =
-                    Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg m.pressedKeys
-            in
-                pure { m | pressedKeys = updatedPressedKeys }
+            pure { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys }
 
         AnimationFrameDelta elapsed ->
             let
