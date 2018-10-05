@@ -41,8 +41,7 @@ addIntPair ( a1, b1 ) ( a2, b2 ) =
 
 
 type alias Model =
-    { keySet : Set String
-    , gridSize : IntPair
+    { gridSize : IntPair
     , pxAnim : Animation
     , pyAnim : Animation
     , pressedKeys : List Keyboard.Key
@@ -73,8 +72,7 @@ gridSize =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
-    { keySet = Set.empty
-    , gridSize = ( 10, 5 )
+    { gridSize = ( 10, 5 )
     , pxAnim = defaultAnim
     , pyAnim = defaultAnim
     , pressedKeys = []
@@ -140,6 +138,15 @@ getClock time m =
     Time.posixToMillis time - m.pageLoadedAt |> toFloat
 
 
+type alias DebugState =
+    { pressedKeys : String }
+
+
+getDebugState : Model -> DebugState
+getDebugState m =
+    { pressedKeys = m.pressedKeys |> Debug.toString }
+
+
 
 ---- UPDATE ----
 
@@ -149,8 +156,6 @@ type Msg
     | KeyMsg Keyboard.Msg
     | AnimationFrameDelta Float
     | AnimationFrame Time.Posix
-    | KeyDown String
-    | KeyUp String
     | Player
 
 
@@ -234,12 +239,6 @@ update msg m =
 
         AnimationFrame posix ->
             update Player { m | clock = getClock posix m }
-
-        KeyDown key ->
-            { m | keySet = Set.insert key m.keySet } |> noCmd
-
-        KeyUp key ->
-            { m | keySet = Set.remove key m.keySet } |> noCmd
 
 
 
@@ -401,8 +400,6 @@ subscriptions _ =
     Sub.batch
         [ B.onAnimationFrameDelta AnimationFrameDelta
         , B.onAnimationFrame AnimationFrame
-        , B.onKeyDown (D.map KeyDown (D.field "key" D.string))
-        , B.onKeyUp (D.map KeyUp (D.field "key" D.string))
         , Sub.map KeyMsg Keyboard.subscriptions
         ]
 
