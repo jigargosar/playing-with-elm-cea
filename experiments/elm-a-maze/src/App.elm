@@ -148,7 +148,7 @@ init { now } =
         ( mazeSeed, modelSeed ) =
             Random.step Random.independentSeed initialSeed
     in
-        { gridSize = ( 10, 5 )
+        { gridSize = gridSize
         , seed = modelSeed
         , pxAnim = defaultAnim
         , pyAnim = defaultAnim
@@ -326,10 +326,10 @@ update msg m =
 
         AnimationFrameDelta elapsed ->
             let
-                newMonsters =
-                    R.ter (R.isListEmpty m.monsters) (createMonsters m) (m.monsters)
+                ( newMonsters, newSeed ) =
+                    R.ter (R.isListEmpty m.monsters) (createMonsters m) ( m.monsters, m.seed )
             in
-                { m | gridSize = gridSize, monsters = newMonsters } |> pure
+                { m | gridSize = gridSize, monsters = newMonsters, seed = newSeed } |> pure
 
         UpdatePlayer ->
             let
@@ -496,17 +496,16 @@ gridCordGenerator m =
         Random.map2 Tuple.pair (Random.int 0 maxX) (Random.int 0 maxY)
 
 
+monsterGenerator : Model -> Random.Generator Monster
 monsterGenerator m =
-    let
-        _ =
-            gridCordGenerator m
-    in
-        1
+    gridCordGenerator m
+        |> Random.map (R.mapBothWith (toFloat >> \c -> createMonsterAnim c c m))
+        |> Random.map (\( xa, ya ) -> Monster xa ya)
 
 
-createMonsters : Model -> List Monster
+createMonsters : Model -> ( List Monster, Random.Seed )
 createMonsters m =
-    [ { xa = createMonsterAnim 5 5 m, ya = createMonsterAnim 5 5 m } ]
+    Random.step (monsterGenerator m |> Random.list 2) m.seed
 
 
 computeNewXYAnim m =
