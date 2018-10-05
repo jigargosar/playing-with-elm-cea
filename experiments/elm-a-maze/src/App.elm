@@ -96,6 +96,7 @@ type alias Monster =
 
 type alias Model =
     { gridSize : IntPair
+    , seed : Random.Seed
     , pxAnim : Animation
     , pyAnim : Animation
     , pressedKeys : List Keyboard.Key
@@ -148,6 +149,7 @@ init { now } =
             Random.step Random.independentSeed initialSeed
     in
         { gridSize = ( 10, 5 )
+        , seed = modelSeed
         , pxAnim = defaultAnim
         , pyAnim = defaultAnim
         , pressedKeys = []
