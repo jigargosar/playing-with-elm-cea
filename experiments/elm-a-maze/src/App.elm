@@ -2,6 +2,7 @@ module App exposing (..)
 
 import Animation as A exposing (Animation)
 import Color exposing (Color)
+import Coordinate2D as C2
 import Html as H exposing (Html)
 import Html.Lazy as H
 import Html.Attributes as H
@@ -30,6 +31,24 @@ import Json.Decode as D
 import Json.Encode as E
 import TypedSvg.Types exposing (Fill(..), Transform(..), px)
 import MazeGenerator as MG exposing (MazeGenerator)
+import ISvg
+    exposing
+        ( iCX
+        , iCY
+        , iFontSize
+        , iHeight
+        , iR
+        , iStrokeWidth
+        , iTranslate
+        , iTranslateCord
+        , iWidth
+        , iX
+        , iX1
+        , iX2
+        , iY
+        , iY1
+        , iY2
+        )
 
 
 ---- MODEL ----
@@ -71,7 +90,7 @@ createAnim from to { clock } =
 
 
 defaultAnim =
-    createAnim 0 0 { clock = 0 }
+    createAnim 1 1 { clock = 0 }
 
 
 gridSize =
@@ -390,22 +409,83 @@ viewSvg m =
 
 viewGameContent m =
     S.g [ TA.transform [ Translate cellSize cellSize ] ]
-        (viewGridCells m.gridSize ++ viewPlayer (getPlayerCellXY m))
+        (viewGridCells m.gridSize ++ viewMazeWalls m.mazeG ++ viewPlayer (getPlayerCellXY m))
+
+
+wallThickness =
+    cellSize // 5
+
+
+viewMazeWalls mg =
+    let
+        cellSizePx =
+            cellSize
+
+        connections : Set MG.Connection
+        connections =
+            MG.mapConnections C2.normalizeConnection mg
+                |> Set.fromList
+
+        isConnected cp =
+            Set.member cp connections
+
+        isSouthConnected ( x, y ) =
+            isConnected ( ( x, y ), ( x, y + 1 ) )
+
+        isEastConnected ( x, y ) =
+            isConnected ( ( x, y ), ( x + 1, y ) )
+
+        size =
+            cellSizePx
+
+        viewCell cord _ =
+            let
+                ( x, y ) =
+                    C2.scale size cord
+            in
+                Svg.g []
+                    [ Svg.rect
+                        [ iX (x + size - wallThickness)
+                        , iY y
+                        , iWidth wallThickness
+                        , iHeight size
+                        , SA.fill "#000"
+                        , R.ter (isEastConnected cord) "0" "1" |> SA.opacity
+                        ]
+                        []
+                    , Svg.rect
+                        [ iX x
+                        , iY (y + size - wallThickness)
+                        , iWidth size
+                        , iHeight wallThickness
+                        , SA.fill "#000"
+                        , R.ter (isSouthConnected cord) "0" "1" |> SA.opacity
+                        ]
+                        []
+                    ]
+    in
+        MG.concatMapCellInfo viewCell mg
 
 
 viewPlayer cord =
     let
+        wallThicknessF =
+            toFloat wallThickness
+
         offset =
-            5.0
+            5
+
+        radius =
+            (cellSize - wallThicknessF - offset) / 2
 
         cXYAttrs =
             cord
-                |> R.mapBothWith ((+) (cellSize / 2.0))
+                |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
                 |> Tuple.mapBoth TP.cx TP.cy
                 |> R.tupleToList
 
         rAttr =
-            (cellSize - offset) / 2 |> TP.r
+            TP.r radius
     in
         [ S.circle (cXYAttrs ++ [ rAttr, fillColor Color.lightOrange ]) []
         ]
@@ -415,10 +495,14 @@ viewGridCells size =
     gridConcatMap size viewGridCell
 
 
+cordToPx =
+    R.mapBothWith (toFloat >> (*) cellSize)
+
+
 viewGridCell cord =
     let
         xyAttr =
-            cord |> R.mapBothWith (toFloat >> (*) cellSize >> px) |> Tuple.mapBoth TA.x TA.y |> R.tupleToList
+            cord |> cordToPx |> Tuple.mapBoth TP.x TP.y |> R.tupleToList
 
         whAttr =
             px cellSize |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
