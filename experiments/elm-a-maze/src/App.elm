@@ -573,7 +573,6 @@ viewPlayerHelp x y =
         cXYAttrs =
             ( x, y )
                 |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
-                |> Debug.log "cXYAttrs"
                 |> Tuple.mapBoth TP.cx TP.cy
                 |> R.tupleToList
 
