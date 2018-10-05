@@ -9,6 +9,7 @@ import Html.Attributes as HA
 import Keyboard
 import Keyboard.Arrows
 import Light
+import List.Extra
 import Ramda as R
 import Size
 import Svg
@@ -159,7 +160,14 @@ getArrows m =
                     xy
 
                 ( x, y ) ->
-                    xy
+                    getFirstArrowKey m
+                        |> Maybe.map (\k -> R.ter (isXArrowKey k) ( x, 0 ) ( 0, y ))
+                        |> Maybe.withDefault ( x, y )
+
+
+getFirstArrowKey : Model -> Maybe Keyboard.Key
+getFirstArrowKey =
+    .pressedKeys >> List.Extra.find isArrowKey
 
 
 arrowXKeyList =
@@ -172,6 +180,19 @@ arrowYKeyList =
 
 arrowKeyList =
     arrowXKeyList ++ arrowYKeyList
+
+
+isArrowKey : Keyboard.Key -> Bool
+isArrowKey key =
+    List.member key arrowKeyList
+
+
+isXArrowKey key =
+    List.member key arrowXKeyList
+
+
+isYArrowKey key =
+    List.member key arrowYKeyList
 
 
 
