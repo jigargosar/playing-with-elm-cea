@@ -180,11 +180,37 @@ update msg m =
 
         Player ->
             let
-                { x, y } =
-                    Keyboard.Arrows.arrows m.pressedKeys
+                computeNewAnim dd anim =
+                    let
+                        direction =
+                            toFloat dd
+
+                        current =
+                            (animCurrent anim m)
+
+                        from =
+                            A.getFrom anim
+
+                        to =
+                            A.getTo anim
+
+                        diff =
+                            from - to |> abs
+                    in
+                        if direction /= 0 then
+                            if notRunning anim m || diff < 1 then
+                                createAnim current (to + direction) m
+                                    |> Debug.log "pxAnim"
+                            else
+                                anim
+                        else
+                            anim
 
                 newPxAnim =
                     let
+                        { x, y } =
+                            Keyboard.Arrows.arrows m.pressedKeys
+
                         anim =
                             m.pxAnim
 
@@ -202,15 +228,18 @@ update msg m =
 
                         diff =
                             from - to |> abs
-                    in
-                        if x /= 0 then
-                            if notRunning anim m || diff < 1 then
-                                createAnim current (to + direction) m
-                                    |> Debug.log "pxAnim"
+
+                        newAnim =
+                            if x /= 0 then
+                                if notRunning anim m || diff < 1 then
+                                    createAnim current (to + direction) m
+                                        |> Debug.log "pxAnim"
+                                else
+                                    anim
                             else
                                 anim
-                        else
-                            anim
+                    in
+                        computeNewAnim x m.pxAnim
             in
                 noCmd { m | pxAnim = newPxAnim }
 
