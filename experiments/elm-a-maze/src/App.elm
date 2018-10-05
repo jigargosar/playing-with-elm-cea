@@ -288,13 +288,13 @@ view m =
 viewSvg : Model -> View
 viewSvg m =
     let
-        attrs =
+        canvasWHAttrs =
             worldSize
                 |> Size.toComponent
                 |> Tuple.mapBoth TP.width TP.height
                 |> R.tupleToList
     in
-        S.svg attrs
+        S.svg canvasWHAttrs
             [ S.rect
                 [ S.width "100%"
                 , S.height "100%"
