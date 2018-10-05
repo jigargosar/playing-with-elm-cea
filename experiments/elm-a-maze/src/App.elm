@@ -11,6 +11,7 @@ import Keyboard.Arrows
 import Light
 import List.Extra
 import Ramda as R
+import Random
 import Size
 import Svg
 import Svg as S
@@ -28,6 +29,7 @@ import Set exposing (Set)
 import Json.Decode as D
 import Json.Encode as E
 import TypedSvg.Types exposing (Fill(..), Transform(..), px)
+import MazeGenerator as MG exposing (MazeGenerator)
 
 
 ---- MODEL ----
@@ -52,6 +54,7 @@ type alias Model =
     , pressedKeys : List Keyboard.Key
     , pageLoadedAt : Int
     , clock : A.Clock
+    , mazeG : MazeGenerator
     }
 
 
@@ -81,15 +84,22 @@ cellSize =
 
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
-    { gridSize = ( 10, 5 )
-    , pxAnim = defaultAnim
-    , pyAnim = defaultAnim
-    , pressedKeys = []
-    , pageLoadedAt = now
-    , clock = 0
-    }
-        |> Debug.log "initModel"
-        |> noCmd
+    let
+        initialSeed =
+            Random.initialSeed now
+
+        ( mazeSeed, modelSeed ) =
+            Random.step Random.independentSeed initialSeed
+    in
+        { gridSize = ( 10, 5 )
+        , pxAnim = defaultAnim
+        , pyAnim = defaultAnim
+        , pressedKeys = []
+        , pageLoadedAt = now
+        , clock = 0
+        , mazeG = MG.init mazeSeed gridSize
+        }
+            |> noCmd
 
 
 notRunning anim m =

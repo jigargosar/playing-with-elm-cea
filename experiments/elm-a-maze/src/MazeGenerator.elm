@@ -1,17 +1,18 @@
-module MazeGenerator exposing
-    ( CellInfo
-    , Connection
-    , MazeGenerator
-    , MazeGeneratorF
-    , concatMapCellInfo
-    , concatMapCords
-    , init
-    , isSolved
-    , mapConnections
-    , reset
-    , solve
-    , step
-    )
+module MazeGenerator
+    exposing
+        ( CellInfo
+        , Connection
+        , MazeGenerator
+        , MazeGeneratorF
+        , concatMapCellInfo
+        , concatMapCords
+        , init
+        , isSolved
+        , mapConnections
+        , reset
+        , solve
+        , step
+        )
 
 import Coordinate2D exposing (Coordinate2D)
 import Ramda exposing (ensureAtLeast, equals)
@@ -67,8 +68,8 @@ createRec seed width height =
     }
 
 
-init : Random.Seed -> Int -> Int -> MazeGenerator
-init seed width height =
+init : Random.Seed -> ( Int, Int ) -> MazeGenerator
+init seed ( width, height ) =
     MazeGenerator (createRec seed width height)
 
 
@@ -106,7 +107,6 @@ step : MazeGeneratorF
 step (MazeGenerator rec) =
     (if isSolvedRec rec then
         rec
-
      else
         case rec.stack of
             top :: rest ->
@@ -122,7 +122,6 @@ solve : MazeGeneratorF
 solve mg =
     if isSolved mg then
         mg
-
     else
         step mg |> solve
 
@@ -150,22 +149,22 @@ stepHelp stackTop rec =
         ( ( maybeCord, _ ), newSeed ) =
             Random.step unVisitedNeighbourGenerator rec.seed
     in
-    case maybeCord of
-        Just cord ->
-            { rec
-                | seed = newSeed
-                , visitedSet = rec.visitedSet |> Set.insert cord
-                , stack = cord :: rec.stack
-                , connectionSet =
-                    rec.connectionSet
-                        |> Set.insert ( stackTop, cord )
-            }
+        case maybeCord of
+            Just cord ->
+                { rec
+                    | seed = newSeed
+                    , visitedSet = rec.visitedSet |> Set.insert cord
+                    , stack = cord :: rec.stack
+                    , connectionSet =
+                        rec.connectionSet
+                            |> Set.insert ( stackTop, cord )
+                }
 
-        Nothing ->
-            { rec
-                | seed = newSeed
-                , stack = rec.stack |> List.drop 1
-            }
+            Nothing ->
+                { rec
+                    | seed = newSeed
+                    , stack = rec.stack |> List.drop 1
+                }
 
 
 getDimensions (MazeGenerator { width, height }) =
@@ -197,7 +196,7 @@ concatMapCellInfo fn mg =
         { width, height } =
             getDimensions mg
     in
-    Coordinate2D.concatMap width height mapper
+        Coordinate2D.concatMap width height mapper
 
 
 concatMapCords : (Coordinate2D -> a) -> MazeGenerator -> List a
@@ -206,7 +205,7 @@ concatMapCords fn mg =
         { width, height } =
             getDimensions mg
     in
-    Coordinate2D.concatMap width height fn
+        Coordinate2D.concatMap width height fn
 
 
 mapConnections : (Connection -> a) -> MazeGenerator -> List a
