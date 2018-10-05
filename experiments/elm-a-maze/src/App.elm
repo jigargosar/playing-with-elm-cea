@@ -316,10 +316,6 @@ type alias View =
     Html Msg
 
 
-worldSize =
-    Size.fromComponent ( 600, 500 )
-
-
 worldSizeIntT =
     gridSize |> R.mapBothWith ((+) 2 >> (*) cellSize >> round)
 
