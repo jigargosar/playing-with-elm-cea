@@ -183,6 +183,12 @@ getPlayerCellXY m =
         |> R.mapBothWith (animToGridCellPx m.clock)
 
 
+getMonsterCellXY : A.Clock -> Monster -> ( Float, Float )
+getMonsterCellXY clock mon =
+    ( mon.xa, mon.ya )
+        |> R.mapBothWith (animToGridCellPx clock)
+
+
 clampGridX x m =
     let
         ( w, _ ) =
@@ -523,7 +529,7 @@ viewGameContent m =
         ([ S.lazy viewGridCells m.gridSize
          , S.lazy viewMazeWalls m.mazeG
          , viewPlayer (getPlayerCellXY m)
-         , viewMonsters m.monsters
+         , viewMonsters m.clock m.monsters
          ]
         )
 
@@ -613,12 +619,11 @@ viewPlayerHelp x y =
             ]
 
 
-viewMonsters =
-    List.map viewMonster >> S.g []
+viewMonsters clock =
+    List.map (getMonsterCellXY clock >> viewMonster) >> S.g []
 
 
-viewMonster : Monster -> View
-viewMonster { x, y, xa, ya } =
+viewMonster ( x, y ) =
     let
         offset =
             5
@@ -628,7 +633,6 @@ viewMonster { x, y, xa, ya } =
 
         cXYAttrs =
             ( x, y )
-                |> cordToPx
                 |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
                 |> Tuple.mapBoth TP.cx TP.cy
                 |> R.tupleToList
