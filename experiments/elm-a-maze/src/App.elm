@@ -119,7 +119,7 @@ createAnim from to { clock } =
         |> A.speed 0.003
 
 
-createMonster from to { clock } =
+createMonsterAnim from to { clock } =
     A.animation clock
         |> A.from from
         |> A.to to
@@ -482,9 +482,31 @@ updateMonster m monster =
         )
 
 
+getMaxGridXY : Model -> IntPair
+getMaxGridXY =
+    .gridSize >> R.mapBothWith ((+) -1)
+
+
+gridCordGenerator : Model -> Random.Generator IntPair
+gridCordGenerator m =
+    let
+        ( maxX, maxY ) =
+            getMaxGridXY m
+    in
+        Random.map2 Tuple.pair (Random.int 0 maxX) (Random.int 0 maxY)
+
+
+monsterGenerator m =
+    let
+        _ =
+            gridCordGenerator m
+    in
+        1
+
+
 createMonsters : Model -> List Monster
 createMonsters m =
-    [ { xa = createAnim 5 5 m, ya = createAnim 5 5 m } ]
+    [ { xa = createMonsterAnim 5 5 m, ya = createMonsterAnim 5 5 m } ]
 
 
 computeNewXYAnim m =
