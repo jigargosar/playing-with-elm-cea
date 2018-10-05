@@ -200,7 +200,8 @@ clampGridX m x =
         clamp 0 (w - 1) x
 
 
-clampGridY y m =
+clampGridY : Model -> F Int
+clampGridY m y =
     let
         ( _, h ) =
             m.gridSize
@@ -377,6 +378,37 @@ computeMonsterNewX offset m monster =
     in
         (if canMove then
             toFloat newX |> Just
+         else
+            Nothing
+        )
+
+
+computeMonsterNewY : Int -> Model -> Monster -> Maybe Float
+computeMonsterNewY offset m monster =
+    let
+        connections : Set MG.Connection
+        connections =
+            MG.mapConnections C2.normalizeConnection m.mazeG
+                |> Set.fromList
+
+        isConnected cp =
+            connections |> Set.member (C2.normalizeConnection cp)
+
+        currentX =
+            getMonsterXInt monster
+
+        oldY =
+            getMonsterYInt monster
+
+        newY =
+            (oldY + offset)
+                |> clampGridY m
+
+        canMove =
+            oldY /= newY && isConnected ( ( currentX, oldY ), ( currentX, newY ) )
+    in
+        (if canMove then
+            toFloat newY |> Just
          else
             Nothing
         )
