@@ -118,6 +118,14 @@ createAnim from to { clock } =
         |> A.speed 0.003
 
 
+createMonster from to { clock } =
+    A.animation clock
+        |> A.from from
+        |> A.to to
+        |> A.ease identity
+        |> A.speed 0.002
+
+
 defaultAnim =
     createAnim 1 1 { clock = 0 }
 
@@ -457,7 +465,18 @@ updateMonster m monster =
         (if isMoving then
             monster
          else
-            { monster | xa = computeMonsterNewXa m monster }
+            let
+                newXa =
+                    computeMonsterNewXa m monster
+
+                newYa =
+                    computeMonsterNewYa m monster
+            in
+                (if Basics.modBy 10 (round m.clock) > 5 then
+                    { monster | xa = newXa }
+                 else
+                    { monster | ya = newYa }
+                )
         )
 
 
