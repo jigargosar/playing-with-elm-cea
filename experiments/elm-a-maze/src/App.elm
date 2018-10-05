@@ -1,4 +1,4 @@
-module App exposing (..)
+port module App exposing (..)
 
 import Animation as A exposing (Animation)
 import Browser.Dom
@@ -53,6 +53,13 @@ import ISvg
         , iY1
         , iY2
         )
+
+
+---- PORTS ----
+
+
+port onWindowBlur : (() -> msg) -> Sub msg
+
 
 
 ---- MODEL ----
@@ -243,6 +250,7 @@ isYArrowKey key =
 
 type Msg
     = NoOp
+    | OnWindowBlur ()
     | KeyMsg Keyboard.Msg
     | AnimationFrameDelta Float
     | AnimationFrame Time.Posix
@@ -265,6 +273,9 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg m =
     case msg of
         NoOp ->
+            noCmd m
+
+        OnWindowBlur _ ->
             noCmd m
 
         KeyMsg keyMsg ->
@@ -575,6 +586,7 @@ subscriptions _ =
         [ B.onAnimationFrameDelta AnimationFrameDelta
         , B.onAnimationFrame AnimationFrame
         , Sub.map KeyMsg Keyboard.subscriptions
+        , onWindowBlur OnWindowBlur
         ]
 
 
