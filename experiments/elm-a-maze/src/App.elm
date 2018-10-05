@@ -37,8 +37,12 @@ type alias IntPair =
     ( Int, Int )
 
 
-addIntPair ( a1, b1 ) ( a2, b2 ) =
+addBothPairs ( a1, b1 ) ( a2, b2 ) =
     ( a1 + a2, b1 + b2 )
+
+
+multiplyBothPairs ( a1, b1 ) ( a2, b2 ) =
+    ( a1 * a2, b1 * b2 )
 
 
 type alias Model =
@@ -60,7 +64,7 @@ createAnim from to { clock } =
         |> A.from from
         |> A.to to
         |> A.ease identity
-        |> A.speed 0.001
+        |> A.speed 0.003
 
 
 defaultAnim =
@@ -68,7 +72,7 @@ defaultAnim =
 
 
 gridSize =
-    ( 10, 10 )
+    ( 10, 8 )
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -163,6 +167,7 @@ getArrows m =
                     getFirstArrowKey m
                         |> Maybe.map (\k -> R.ter (isXArrowKey k) ( x, 0 ) ( 0, y ))
                         |> Maybe.withDefault ( x, y )
+                        |> Debug.log "getArrows"
 
 
 getFirstArrowKey : Model -> Maybe Keyboard.Key
@@ -286,13 +291,13 @@ update msg m =
                     gridSize
 
                 newPxAnim =
-                    if x /= 0 then
+                    if x /= 0 && notRunning m.pyAnim m then
                         computeNewAnim xCells x m.pxAnim
                     else
                         m.pxAnim
 
                 newPyAnim =
-                    if y /= 0 then
+                    if y /= 0 && notRunning newPxAnim m then
                         computeNewAnim yCells y m.pyAnim
                     else
                         m.pyAnim
@@ -312,7 +317,7 @@ type alias View =
 
 
 worldSize =
-    Size.fromComponent ( 600, 600 )
+    Size.fromComponent ( 600, 500 )
 
 
 worldSizeIntT =
@@ -337,7 +342,12 @@ view m =
     H.div ([ H.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHStyles)
         [ H.div [ H.class "flex flex-column vs3" ]
             [ H.div [ H.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
-            , H.div [ H.class "flex-auto overflow-scroll" ] [ viewSvg m ]
+            , H.div
+                [ H.class "flex-auto overflow-scroll"
+
+                {- , H.style "transform" "scale( 0.8 , 0.8 )" -}
+                ]
+                [ viewSvg m ]
             , H.div [ H.class "" ]
                 [ getDebugState m |> debugView
                 ]
@@ -352,7 +362,7 @@ debugView { pressedKeys } =
 
 viewSvg : Model -> View
 viewSvg m =
-    S.svg ([ H.style "transform" "scale( 0.9 , 0.9 )" ] ++ canvasWHStyles)
+    S.svg ([{- H.style "transform" "scale( 0.9 , 0.9 )" -}] ++ canvasWHStyles)
         [ S.rect
             [ S.width "100%"
             , S.height "100%"
