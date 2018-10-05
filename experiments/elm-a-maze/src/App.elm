@@ -279,49 +279,42 @@ concat a b =
     a ++ b
 
 
+canvasWHStyles =
+    worldSize
+        |> Size.toRoundIntComponent
+        |> R.mapBothWith String.fromInt
+        |> R.mapBothWith (R.flip concat "px")
+        |> Tuple.mapBoth (H.style "min-width") (H.style "min-height")
+        |> R.tupleToList
+
+
 view : Model -> View
 view m =
-    let
-        canvasWHAttrs =
-            worldSize
-                |> Size.toRoundIntComponent
-                |> R.mapBothWith String.fromInt
-                |> R.mapBothWith (R.flip concat "px")
-                |> Tuple.mapBoth (H.style "min-width") (H.style "min-height")
-                |> R.tupleToList
-    in
-        H.div ([ HA.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHAttrs)
-            [ H.div [ HA.class "flex flex-column vs3" ]
-                [ H.div [ HA.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
-                , viewSvg m
-                ]
+    H.div ([ HA.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHStyles)
+        [ H.div [ HA.class "flex flex-column vs3" ]
+            [ H.div [ HA.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
+            , viewSvg m
             ]
+        ]
 
 
 viewSvg : Model -> View
 viewSvg m =
-    let
-        canvasWHAttrs =
-            worldSize
-                |> Size.toComponent
-                |> Tuple.mapBoth TP.width TP.height
-                |> R.tupleToList
-    in
-        S.svg (canvasWHAttrs ++ [ H.style "transform" "scale( 0.8 , 0.8 )" ])
-            [ S.rect
-                [ S.width "100%"
-                , S.height "100%"
-                , TP.x 0
-                , TP.y 0
-                , TA.strokeWidth (px 0.2)
-                , TA.stroke Color.black
-                , Color.blue
-                    |> Light.map (\h -> { h | s = 1, l = 0.7 })
-                    |> fillColor
-                ]
-                []
-            , viewGameContent m
+    S.svg ([ H.style "transform" "scale( 0.8 , 0.8 )" ] ++ canvasWHStyles)
+        [ S.rect
+            [ S.width "100%"
+            , S.height "100%"
+            , TP.x 0
+            , TP.y 0
+            , TA.strokeWidth (px 0.2)
+            , TA.stroke Color.black
+            , Color.blue
+                |> Light.map (\h -> { h | s = 1, l = 0.7 })
+                |> fillColor
             ]
+            []
+        , viewGameContent m
+        ]
 
 
 cellSize =
