@@ -184,7 +184,7 @@ update msg m =
 
         Player ->
             let
-                computeNewAnim dd anim =
+                computeNewAnim cellCount dd anim =
                     let
                         newDirection =
                             toFloat dd
@@ -216,40 +216,14 @@ update msg m =
                         else
                             anim
 
+                { x, y } =
+                    Keyboard.Arrows.arrows m.pressedKeys
+
+                ( xCells, yCells ) =
+                    gridSize
+
                 newPxAnim =
-                    let
-                        { x, y } =
-                            Keyboard.Arrows.arrows m.pressedKeys
-
-                        anim =
-                            m.pxAnim
-
-                        direction =
-                            toFloat x
-
-                        current =
-                            (animCurrent anim m)
-
-                        from =
-                            A.getFrom anim
-
-                        to =
-                            A.getTo anim
-
-                        diff =
-                            from - to |> abs
-
-                        newAnim =
-                            if x /= 0 then
-                                if notRunning anim m || diff < 1 then
-                                    createAnim current (to + direction) m
-                                        |> Debug.log "pxAnim"
-                                else
-                                    anim
-                            else
-                                anim
-                    in
-                        computeNewAnim x m.pxAnim
+                    computeNewAnim xCells x m.pxAnim
             in
                 noCmd { m | pxAnim = newPxAnim }
 
