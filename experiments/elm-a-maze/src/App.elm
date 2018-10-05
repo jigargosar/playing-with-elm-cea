@@ -382,6 +382,10 @@ computeMonsterNewX offset m monster =
         )
 
 
+getAnimDir anim =
+    A.getTo anim - A.getFrom anim |> R.sign |> R.when (R.equals 0) (always 1) |> round
+
+
 computeMonsterNewXa : Model -> Monster -> Animation
 computeMonsterNewXa m monster =
     let
@@ -389,11 +393,11 @@ computeMonsterNewXa m monster =
             monster.xa
 
         xDir =
-            A.getTo xa - A.getFrom xa |> R.sign |> R.when (R.equals 0) (always 1) |> round
+            getAnimDir xa
     in
         computeMonsterNewX xDir m monster
             |> Maybe.Extra.orElseLazy (\_ -> computeMonsterNewX -xDir m monster)
-            |> Maybe.map (\newXTo -> animRetargetTo newXTo m xa)
+            |> Maybe.map (\newTo -> animRetargetTo newTo m xa)
             |> Maybe.withDefault xa
 
 
