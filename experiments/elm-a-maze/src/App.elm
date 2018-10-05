@@ -82,26 +82,13 @@ isDone anim m =
 
 
 animToGridCellPx clock anim =
-    let
-        from =
-            (Animation.getFrom anim) * cellSize
-    in
-        from
-            + (if Animation.isScheduled clock anim then
-                0
-               else
-                Animation.animate clock anim
-              )
+    (Animation.animate clock anim) * cellSize
 
 
 getPlayerCellXY : Model -> ( Float, Float )
 getPlayerCellXY m =
     ( m.pxAnim, m.pyAnim )
         |> R.mapBothWith (animToGridCellPx m.clock)
-
-
-
---        |> Debug.log "getPlayerCellXY"
 
 
 clampGridX x m =
@@ -180,27 +167,20 @@ update msg m =
                         clock =
                             m.clock
 
-                        from =
-                            Animation.getFrom anim
-
-                        newX =
-                            from + (toFloat x)
+                        xDir =
+                            toFloat x
                     in
-                        case compare x 0 of
-                            EQ ->
+                        let
+                            currentX =
+                                (Animation.animate clock anim)
+                        in
+                            (if (isScheduled anim m || isDone anim m) && x /= 0 then
                                 anim
-
-                            LT ->
+                                    |> Animation.retarget clock (currentX + xDir)
+                                    |> Debug.log "pxAnim"
+                             else
                                 anim
-
-                            GT ->
-                                (if isScheduled anim m || isDone anim m then
-                                    anim
-                                        |> Animation.retarget clock newX
-                                        |> Debug.log "pxAnim"
-                                 else
-                                    m.pxAnim
-                                )
+                            )
             in
                 noCmd { m | pxAnim = newPxAnim }
 
