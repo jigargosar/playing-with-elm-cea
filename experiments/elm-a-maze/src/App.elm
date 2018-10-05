@@ -138,11 +138,11 @@ getClock time m =
     Time.posixToMillis time - m.pageLoadedAt |> toFloat
 
 
-type alias DebugState =
+type alias DebugModel =
     { pressedKeys : String }
 
 
-getDebugState : Model -> DebugState
+getDebugState : Model -> DebugModel
 getDebugState m =
     { pressedKeys = m.pressedKeys |> Debug.toString }
 
@@ -272,12 +272,20 @@ canvasWHStyles =
 
 view : Model -> View
 view m =
-    H.div ([ HA.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHStyles)
-        [ H.div [ HA.class "flex flex-column vs3" ]
-            [ H.div [ HA.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
-            , viewSvg m
+    H.div ([ H.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHStyles)
+        [ H.div [ H.class "flex flex-column vs3" ]
+            [ H.div [ H.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
+            , H.div [ H.class "flex-auto overflow-scroll" ] [ viewSvg m ]
+            , H.div [ H.class "" ]
+                [ getDebugState m |> debugView
+                ]
             ]
         ]
+
+
+debugView : DebugModel -> View
+debugView { pressedKeys } =
+    H.div [] [ H.text pressedKeys ]
 
 
 viewSvg : Model -> View
