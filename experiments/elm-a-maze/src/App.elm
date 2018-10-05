@@ -53,6 +53,8 @@ import ISvg
         , iY1
         , iY2
         )
+import Svg.Lazy
+import Svg.Lazy as S
 
 
 ---- PORTS ----
@@ -490,7 +492,7 @@ viewSvg m =
 
 viewGameContent m =
     S.g [ TA.transform [ Translate cellSize cellSize ] ]
-        (viewGridCells m.gridSize ++ viewMazeWalls m.mazeG ++ viewPlayer (getPlayerCellXY m))
+        ([ S.lazy viewGridCells m.gridSize, S.lazy viewMazeWalls m.mazeG ] ++ viewPlayer (getPlayerCellXY m))
 
 
 wallThickness =
@@ -549,7 +551,7 @@ viewMazeWalls mg =
                         []
                     ]
     in
-        MG.concatMapCellInfo viewCell mg
+        MG.concatMapCellInfo viewCell mg |> S.g []
 
 
 viewPlayer cord =
@@ -574,7 +576,7 @@ viewPlayer cord =
 
 
 viewGridCells size =
-    gridConcatMap size viewGridCell
+    gridConcatMap size viewGridCell |> S.g []
 
 
 cordToPx =
