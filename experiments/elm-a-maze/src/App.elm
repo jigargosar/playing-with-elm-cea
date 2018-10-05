@@ -184,10 +184,18 @@ update msg m =
 
                         currentX =
                             (animCurrent anim m)
+
+                        diff =
+                            Animation.getFrom anim
+                                - Animation.getTo anim
+                                |> abs
                     in
-                        if notRunning anim m && x /= 0 then
-                            animRetargetTo (currentX + xDir) anim m
-                                |> Debug.log "pxAnim"
+                        if x /= 0 then
+                            if notRunning anim m || diff <= 1 then
+                                animRetargetTo (currentX + xDir) anim m
+                                    |> Debug.log "pxAnim"
+                            else
+                                anim
                         else
                             anim
             in
