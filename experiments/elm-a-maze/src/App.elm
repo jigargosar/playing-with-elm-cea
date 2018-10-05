@@ -413,7 +413,7 @@ viewGameContent m =
 
 
 wallThickness =
-    cellSize // 5
+    cellSize // 10
 
 
 wallThicknessF =
@@ -508,7 +508,7 @@ viewGridCell cord =
         whAttr =
             px cellSize |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
     in
-        S.rect (xyAttr ++ whAttr ++ [ strokeColor Color.black, TP.strokeWidth 1, TA.noFill, opacityFloat 0.1 ]) []
+        S.rect (xyAttr ++ whAttr ++ [ strokeColor Color.black, TP.strokeWidth 1, TA.noFill, opacityFloat 0.05 ]) []
 
 
 gridConcatMap size fn =
