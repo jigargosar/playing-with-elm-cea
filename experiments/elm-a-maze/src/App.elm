@@ -182,7 +182,7 @@ update msg m =
             let
                 computeNewAnim dd anim =
                     let
-                        direction =
+                        newDirection =
                             toFloat dd
 
                         current =
@@ -196,10 +196,16 @@ update msg m =
 
                         diff =
                             from - to |> abs
+
+                        currentDirection =
+                            from - to
+
+                        travelled =
+                            current - to |> abs
                     in
-                        if direction /= 0 then
-                            if notRunning anim m || diff < 1 then
-                                createAnim current (to + direction) m
+                        if newDirection /= 0 then
+                            if notRunning anim m || travelled <= 1 then
+                                createAnim current (to + newDirection) m
                                     |> Debug.log "pxAnim"
                             else
                                 anim
