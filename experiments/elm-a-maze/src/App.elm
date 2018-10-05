@@ -81,6 +81,14 @@ isDone anim m =
     Animation.isDone m.clock anim
 
 
+animCurrent anim m =
+    Animation.animate m.clock anim
+
+
+animRetargetTo to anim m =
+    Animation.retarget m.clock to anim
+
+
 animToGridCellPx clock anim =
     (Animation.animate clock anim) * cellSize
 
@@ -171,14 +179,13 @@ update msg m =
                             toFloat x
 
                         currentX =
-                            (Animation.animate clock anim)
+                            (animCurrent anim m)
 
                         notRunning =
                             isScheduled anim m || isDone anim m
                     in
                         if notRunning && x /= 0 then
-                            anim
-                                |> Animation.retarget clock (currentX + xDir)
+                            animRetargetTo (currentX + xDir) anim m
                                 |> Debug.log "pxAnim"
                         else
                             anim
