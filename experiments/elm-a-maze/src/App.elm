@@ -295,25 +295,25 @@ update msg m =
 
         Player ->
             let
-                connections : Set MG.Connection
-                connections =
-                    MG.mapConnections C2.normalizeConnection m.mazeG
-                        |> Set.fromList
-
-                isConnected cp =
-                    connections |> Set.member (C2.normalizeConnection cp)
-
-                ( dx, dy ) =
-                    getArrows m
-
-                ( xCells, yCells ) =
-                    gridSize
-
                 ( newPxAnim, newPyAnim ) =
                     getFirstArrowKey m
                         |> Maybe.map
                             (\key ->
                                 let
+                                    connections : Set MG.Connection
+                                    connections =
+                                        MG.mapConnections C2.normalizeConnection m.mazeG
+                                            |> Set.fromList
+
+                                    isConnected cp =
+                                        connections |> Set.member (C2.normalizeConnection cp)
+
+                                    ( dx, dy ) =
+                                        getArrows m
+
+                                    ( xCells, yCells ) =
+                                        gridSize
+
                                     newPxAnim_ =
                                         if dx /= 0 && notRunning m.pyAnim m then
                                             computeNewAnim
@@ -360,9 +360,9 @@ update msg m =
                                     xChanged =
                                         A.equals newPxAnim_ m.pxAnim |> not
                                 in
-                                    if xChanged && isXArrowKey key then
+                                    if xChanged && (isXArrowKey key || not yChanged) then
                                         ( newPxAnim_, m.pyAnim )
-                                    else if yChanged && isYArrowKey key then
+                                    else if yChanged && (isYArrowKey key || not xChanged) then
                                         ( m.pxAnim, newPyAnim_ )
                                     else
                                         ( m.pxAnim, m.pyAnim )
