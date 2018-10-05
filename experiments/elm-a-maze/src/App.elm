@@ -185,35 +185,32 @@ update msg m =
 
                 newPxAnim =
                     let
-                        anim =
+                        xAnim =
                             m.pxAnim
-
-                        clock =
-                            m.clock
 
                         xDir =
                             toFloat x
 
                         currentX =
-                            (animCurrent anim m)
+                            (animCurrent xAnim m)
 
                         from =
-                            A.getFrom anim
+                            A.getFrom xAnim
 
                         to =
-                            A.getTo anim
+                            A.getTo xAnim
 
                         diff =
                             from - to |> abs
                     in
                         if x /= 0 then
-                            if notRunning anim m || diff < 1 then
+                            if notRunning xAnim m || diff < 1 then
                                 createAnim currentX (to + xDir) m
                                     |> Debug.log "pxAnim"
                             else
-                                anim
+                                xAnim
                         else
-                            anim
+                            xAnim
             in
                 noCmd { m | pxAnim = newPxAnim }
 
