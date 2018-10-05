@@ -69,6 +69,10 @@ init { now } =
         |> noCmd
 
 
+notRunning anim m =
+    isScheduled anim m || isDone anim m
+
+
 isRunning anim m =
     Animation.isRunning m.clock anim
 
@@ -180,11 +184,8 @@ update msg m =
 
                         currentX =
                             (animCurrent anim m)
-
-                        notRunning =
-                            isScheduled anim m || isDone anim m
                     in
-                        if notRunning && x /= 0 then
+                        if notRunning anim m && x /= 0 then
                             animRetargetTo (currentX + xDir) anim m
                                 |> Debug.log "pxAnim"
                         else
