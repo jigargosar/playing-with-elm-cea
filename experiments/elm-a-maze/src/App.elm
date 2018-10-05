@@ -492,7 +492,7 @@ viewSvg m =
 
 viewGameContent m =
     S.g [ TA.transform [ Translate cellSize cellSize ] ]
-        ([ S.lazy viewGridCells m.gridSize, S.lazy viewMazeWalls m.mazeG ] ++ viewPlayer (getPlayerCellXY m))
+        ([ S.lazy viewGridCells m.gridSize, S.lazy viewMazeWalls m.mazeG, viewPlayer (getPlayerCellXY m) ])
 
 
 wallThickness =
@@ -554,7 +554,11 @@ viewMazeWalls mg =
         MG.concatMapCellInfo viewCell mg |> S.g []
 
 
-viewPlayer cord =
+viewPlayer ( x, y ) =
+    S.lazy2 viewPlayerHelp x y
+
+
+viewPlayerHelp x y =
     let
         offset =
             5
@@ -563,7 +567,7 @@ viewPlayer cord =
             (cellSize - wallThicknessF - offset) / 2
 
         cXYAttrs =
-            cord
+            ( x, y )
                 |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
                 |> Tuple.mapBoth TP.cx TP.cy
                 |> R.tupleToList
@@ -571,8 +575,9 @@ viewPlayer cord =
         rAttr =
             TP.r radius
     in
-        [ S.circle (cXYAttrs ++ [ rAttr, fillColor Color.lightOrange ]) []
-        ]
+        S.g []
+            [ S.circle (cXYAttrs ++ [ rAttr, fillColor Color.lightOrange ]) []
+            ]
 
 
 viewGridCells size =
