@@ -17,7 +17,6 @@ import List.Extra
 import Ramda as R
 import Random
 import Size
-import Step exposing (Step)
 import Svg
 import Svg as S
 import Svg.Attributes as S
@@ -56,6 +55,7 @@ import ISvg
         )
 import Svg.Lazy
 import Svg.Lazy as S
+import Update.Extra
 
 
 ---- PORTS ----
@@ -147,7 +147,7 @@ init { now } =
         , mazeG = MG.init mazeSeed gridSize |> MG.solve
         , monsters = []
         }
-            |> noCmd
+            |> pure
 
 
 notRunning anim m =
@@ -283,11 +283,11 @@ type Msg
     | KeyMsg Keyboard.Msg
     | AnimationFrameDelta Float
     | AnimationFrame Time.Posix
-    | Player
-    | Monsters
+    | UpdatePlayer
+    | UpdateMonsters
 
 
-noCmd model =
+pure model =
     ( model, Cmd.none )
 
 
@@ -296,89 +296,49 @@ addCmd c2 =
 
 
 withCmd c m =
-    noCmd m |> addCmd c
+    pure m |> addCmd c
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg m =
     case msg of
         NoOp ->
-            noCmd m
+            pure m
 
         OnWindowBlur _ ->
-            { m | pressedKeys = [] } |> noCmd
+            { m | pressedKeys = [] } |> pure
 
         KeyMsg keyMsg ->
             let
                 ( updatedPressedKeys, keyChange ) =
                     Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg m.pressedKeys
             in
-                noCmd { m | pressedKeys = updatedPressedKeys }
+                pure { m | pressedKeys = updatedPressedKeys }
 
         AnimationFrameDelta elapsed ->
             let
                 newMonsters =
                     R.ter (R.isListEmpty m.monsters) (createMonsters m) (m.monsters)
             in
-                { m | gridSize = gridSize, monsters = newMonsters } |> noCmd
+                { m | gridSize = gridSize, monsters = newMonsters } |> pure
 
-        Player ->
+        UpdatePlayer ->
             let
                 ( newPxAnim, newPyAnim ) =
                     computeNewXYAnim m
             in
-                noCmd { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
+                pure { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
 
-        Monsters ->
+        UpdateMonsters ->
             let
                 ( newPxAnim, newPyAnim ) =
                     computeNewXYAnim m
             in
-                noCmd { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
+                pure { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
 
         AnimationFrame posix ->
-            update Player { m | clock = getClock posix m }
-
-
-updateStep : Msg -> Model -> Step Model Msg a
-updateStep msg m =
-    case msg of
-        NoOp ->
-            Step.stay
-
-        OnWindowBlur _ ->
-            Step.to { m | pressedKeys = [] }
-
-        KeyMsg keyMsg ->
-            let
-                ( updatedPressedKeys, keyChange ) =
-                    Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg m.pressedKeys
-            in
-                Step.to { m | pressedKeys = updatedPressedKeys }
-
-        AnimationFrameDelta elapsed ->
-            let
-                newMonsters =
-                    R.ter (R.isListEmpty m.monsters) (createMonsters m) (m.monsters)
-            in
-                Step.to { m | gridSize = gridSize, monsters = newMonsters }
-
-        Player ->
-            let
-                ( newPxAnim, newPyAnim ) =
-                    computeNewXYAnim m
-            in
-                Step.to { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
-
-        Monsters ->
-            let
-                ( newPxAnim, newPyAnim ) =
-                    computeNewXYAnim m
-            in
-                Step.to { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
-
-        AnimationFrame posix ->
-            updateStep Player { m | clock = getClock posix m }
+            pure { m | clock = getClock posix m }
+                |> Update.Extra.sequence update [ UpdatePlayer, UpdateMonsters ]
 
 
 createMonsters : Model -> List Monster
@@ -783,6 +743,6 @@ main =
     B.element
         { view = H.lazy view
         , init = init
-        , update = Step.asUpdateFunction updateStep
+        , update = update
         , subscriptions = subscriptions
         }
