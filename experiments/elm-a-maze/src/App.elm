@@ -68,7 +68,7 @@ defaultAnim =
 
 
 gridSize =
-    ( 10, 14 )
+    ( 10, 10 )
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -272,7 +272,7 @@ type alias View =
 
 
 worldSize =
-    Size.fromComponent ( 600, 800 )
+    Size.fromComponent ( 600, 600 )
 
 
 worldSizeIntT =
