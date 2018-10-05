@@ -327,14 +327,18 @@ update msg m =
 
         UpdateMonsters ->
             let
-                ( newPxAnim, newPyAnim ) =
-                    computeNewXYAnim m
+                newMonsters =
+                    m.monsters |> List.map (updateMonster m)
             in
-                pure { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
+                pure { m | monsters = newMonsters }
 
         AnimationFrame posix ->
             pure { m | clock = getClock posix m }
                 |> Update.Extra.sequence update [ UpdatePlayer, UpdateMonsters ]
+
+
+updateMonster m monster =
+    monster
 
 
 createMonsters : Model -> List Monster
