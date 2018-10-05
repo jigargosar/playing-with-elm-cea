@@ -59,8 +59,8 @@ init : Flags -> ( Model, Cmd Msg )
 init { now } =
     { keySet = Set.empty
     , gridSize = ( 10, 5 )
-    , pxAnim = Animation.static 0
-    , pyAnim = Animation.static 0
+    , pxAnim = Animation.static 0 |> Animation.ease identity
+    , pyAnim = Animation.static 0 |> Animation.ease identity
     , pressedKeys = []
     , pageLoadedAt = now
     , clock = 0
