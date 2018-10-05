@@ -296,83 +296,87 @@ update msg m =
         Player ->
             let
                 ( newPxAnim, newPyAnim ) =
-                    getFirstArrowKey m
-                        |> Maybe.map
-                            (\key ->
-                                let
-                                    connections : Set MG.Connection
-                                    connections =
-                                        MG.mapConnections C2.normalizeConnection m.mazeG
-                                            |> Set.fromList
-
-                                    isConnected cp =
-                                        connections |> Set.member (C2.normalizeConnection cp)
-
-                                    ( dx, dy ) =
-                                        getArrows m
-
-                                    ( xCells, yCells ) =
-                                        gridSize
-
-                                    newPxAnim_ =
-                                        if dx /= 0 && notRunning m.pyAnim m then
-                                            computeNewAnim
-                                                (\xx ->
-                                                    let
-                                                        ( x1, x2 ) =
-                                                            xx |> R.mapBothWith round
-
-                                                        y =
-                                                            A.getTo m.pyAnim |> round
-                                                    in
-                                                        isConnected ( ( x1, y ), ( x2, y ) )
-                                                )
-                                                xCells
-                                                dx
-                                                m.pxAnim
-                                                m
-                                        else
-                                            m.pxAnim
-
-                                    newPyAnim_ =
-                                        if dy /= 0 && notRunning m.pxAnim m then
-                                            computeNewAnim
-                                                (\yy ->
-                                                    let
-                                                        ( y1, y2 ) =
-                                                            yy |> R.mapBothWith round
-
-                                                        x =
-                                                            A.getTo m.pxAnim |> round
-                                                    in
-                                                        isConnected ( ( x, y1 ), ( x, y2 ) )
-                                                )
-                                                yCells
-                                                dy
-                                                m.pyAnim
-                                                m
-                                        else
-                                            m.pyAnim
-
-                                    yChanged =
-                                        A.equals newPyAnim_ m.pyAnim |> not
-
-                                    xChanged =
-                                        A.equals newPxAnim_ m.pxAnim |> not
-                                in
-                                    if xChanged && (isXArrowKey key || not yChanged) then
-                                        ( newPxAnim_, m.pyAnim )
-                                    else if yChanged && (isYArrowKey key || not xChanged) then
-                                        ( m.pxAnim, newPyAnim_ )
-                                    else
-                                        ( m.pxAnim, m.pyAnim )
-                            )
-                        |> Maybe.withDefault ( m.pxAnim, m.pyAnim )
+                    computeNewXYAnim m
             in
                 noCmd { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
 
         AnimationFrame posix ->
             update Player { m | clock = getClock posix m }
+
+
+computeNewXYAnim m =
+    getFirstArrowKey m
+        |> Maybe.map
+            (\key ->
+                let
+                    connections : Set MG.Connection
+                    connections =
+                        MG.mapConnections C2.normalizeConnection m.mazeG
+                            |> Set.fromList
+
+                    isConnected cp =
+                        connections |> Set.member (C2.normalizeConnection cp)
+
+                    ( dx, dy ) =
+                        getArrows m
+
+                    ( xCells, yCells ) =
+                        gridSize
+
+                    newPxAnim =
+                        if dx /= 0 && notRunning m.pyAnim m then
+                            computeNewAnim
+                                (\xx ->
+                                    let
+                                        ( x1, x2 ) =
+                                            xx |> R.mapBothWith round
+
+                                        y =
+                                            A.getTo m.pyAnim |> round
+                                    in
+                                        isConnected ( ( x1, y ), ( x2, y ) )
+                                )
+                                xCells
+                                dx
+                                m.pxAnim
+                                m
+                        else
+                            m.pxAnim
+
+                    newPyAnim =
+                        if dy /= 0 && notRunning m.pxAnim m then
+                            computeNewAnim
+                                (\yy ->
+                                    let
+                                        ( y1, y2 ) =
+                                            yy |> R.mapBothWith round
+
+                                        x =
+                                            A.getTo m.pxAnim |> round
+                                    in
+                                        isConnected ( ( x, y1 ), ( x, y2 ) )
+                                )
+                                yCells
+                                dy
+                                m.pyAnim
+                                m
+                        else
+                            m.pyAnim
+
+                    yChanged =
+                        A.equals newPyAnim m.pyAnim |> not
+
+                    xChanged =
+                        A.equals newPxAnim m.pxAnim |> not
+                in
+                    if xChanged && (isXArrowKey key || not yChanged) then
+                        ( newPxAnim, m.pyAnim )
+                    else if yChanged && (isYArrowKey key || not xChanged) then
+                        ( m.pxAnim, newPyAnim )
+                    else
+                        ( m.pxAnim, m.pyAnim )
+            )
+        |> Maybe.withDefault ( m.pxAnim, m.pyAnim )
 
 
 computeNewAnim isConnected cellCount dd anim m =
