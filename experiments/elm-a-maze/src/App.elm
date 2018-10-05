@@ -58,14 +58,21 @@ type alias Flags =
 createAnim from to { clock } =
     A.animation clock
         |> A.from from
+        |> A.to to
+        |> A.ease identity
+        |> A.speed 0.5
+
+
+defaultAnim =
+    createAnim 0 0 { clock = 0 }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
     { keySet = Set.empty
     , gridSize = ( 10, 5 )
-    , pxAnim = A.static 0 |> A.ease identity
-    , pyAnim = A.static 0 |> A.ease identity
+    , pxAnim = defaultAnim
+    , pyAnim = defaultAnim
     , pressedKeys = []
     , pageLoadedAt = now
     , clock = 0
