@@ -152,6 +152,18 @@ getArrows m =
         |> \{ x, y } -> ( x, -y )
 
 
+arrowXKeyList =
+    [ Keyboard.ArrowLeft, Keyboard.ArrowRight ]
+
+
+arrowYKeyList =
+    [ Keyboard.ArrowUp, Keyboard.ArrowDown ]
+
+
+arrowKeyList =
+    arrowXKeyList ++ arrowYKeyList
+
+
 
 ---- UPDATE ----
 
