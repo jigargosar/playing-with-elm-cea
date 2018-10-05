@@ -223,10 +223,11 @@ update msg m =
                         if (notRunning anim m || directionReversed) && to /= newTo then
                             let
                                 _ =
-                                    Debug.log "currentDirection, newDirection" ( currentDirection, newDirection )
+                                    {- Debug.log "currentDirection, newDirection" ( currentDirection, newDirection ) -}
+                                    1
                             in
                                 createAnim current newTo m
-                                    |> Debug.log "pxAnim"
+                            --                                    |> Debug.log "pxAnim"
                         else
                             anim
 
