@@ -149,7 +149,17 @@ getDebugState m =
 
 getArrows m =
     Keyboard.Arrows.arrows m.pressedKeys
-        |> \{ x, y } -> ( x, -y )
+        |> (\{ x, y } -> ( x, -y ))
+        |> \xy ->
+            case xy of
+                ( 0, _ ) ->
+                    xy
+
+                ( _, 0 ) ->
+                    xy
+
+                ( x, y ) ->
+                    xy
 
 
 arrowXKeyList =
