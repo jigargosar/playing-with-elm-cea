@@ -207,10 +207,7 @@ update msg m =
                             from - to |> abs
                     in
                         if x /= 0 then
-                            if isRunning anim m |> not then
-                                createAnim currentX (to + xDir) m
-                                    |> Debug.log "pxAnim"
-                            else if diff < 1 then
+                            if notRunning anim m || diff < 1 then
                                 createAnim currentX (to + xDir) m
                                     |> Debug.log "pxAnim"
                             else
