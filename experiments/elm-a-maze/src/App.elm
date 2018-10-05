@@ -207,7 +207,10 @@ update msg m =
                             from - to |> abs
 
                         currentDirection =
-                            from - to |> R.sign
+                            -from + to |> R.sign
+
+                        directionReversed =
+                            currentDirection /= 0 && newDirection /= 0 && currentDirection == newDirection * -1
 
                         travelled =
                             current - to |> abs
@@ -215,11 +218,15 @@ update msg m =
                         newTo =
                             to
                                 + newDirection
-                                |> clamp 0 ((cellCount - 1) * cellSize)
+                                |> clamp 0 (cellCount - 1)
                     in
-                        if notRunning anim m || diff < 1 then
-                            createAnim current newTo m
-                                |> Debug.log "pxAnim"
+                        if notRunning anim m || directionReversed then
+                            let
+                                _ =
+                                    Debug.log "currentDirection, newDirection" ( currentDirection, newDirection )
+                            in
+                                createAnim current newTo m
+                                    |> Debug.log "pxAnim"
                         else
                             anim
 
