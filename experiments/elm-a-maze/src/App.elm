@@ -79,6 +79,19 @@ multiplyBothPairs ( a1, b1 ) ( a2, b2 ) =
     ( a1 * a2, b1 * b2 )
 
 
+type MovementAxis
+    = Horizontal
+    | Vertical
+
+
+type alias Movement =
+    { axis : MovementAxis, to : Int, current : Float }
+
+
+type alias Monster =
+    { x : Int, y : Int, moving : Maybe Movement }
+
+
 type alias Model =
     { gridSize : IntPair
     , pxAnim : Animation
