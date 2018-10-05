@@ -283,6 +283,7 @@ type Msg
     | AnimationFrameDelta Float
     | AnimationFrame Time.Posix
     | Player
+    | Monsters
 
 
 noCmd model =
@@ -321,6 +322,13 @@ update msg m =
                 { m | gridSize = gridSize, monsters = newMonsters } |> noCmd
 
         Player ->
+            let
+                ( newPxAnim, newPyAnim ) =
+                    computeNewXYAnim m
+            in
+                noCmd { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
+
+        Monsters ->
             let
                 ( newPxAnim, newPyAnim ) =
                     computeNewXYAnim m
