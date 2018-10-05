@@ -100,6 +100,7 @@ type alias Model =
     , pageLoadedAt : Int
     , clock : A.Clock
     , mazeG : MazeGenerator
+    , monsters : List Monster
     }
 
 
@@ -143,6 +144,7 @@ init { now } =
         , pageLoadedAt = now
         , clock = 0
         , mazeG = MG.init mazeSeed gridSize |> MG.solve
+        , monsters = []
         }
             |> noCmd
 
@@ -306,7 +308,11 @@ update msg m =
                 noCmd { m | pressedKeys = updatedPressedKeys }
 
         AnimationFrameDelta elapsed ->
-            { m | gridSize = gridSize } |> noCmd
+            let
+                newMonsters =
+                    R.ter (R.isListEmpty m.monsters) (createMonsters m) (m.monsters)
+            in
+                { m | gridSize = gridSize, monsters = newMonsters } |> noCmd
 
         Player ->
             let
@@ -317,6 +323,11 @@ update msg m =
 
         AnimationFrame posix ->
             update Player { m | clock = getClock posix m }
+
+
+createMonsters : Model -> List Monster
+createMonsters m =
+    [ { x = 5, y = 5, moving = Nothing } ]
 
 
 computeNewXYAnim m =
