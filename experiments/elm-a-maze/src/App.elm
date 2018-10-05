@@ -199,19 +199,24 @@ getDebugState m =
 getArrows m =
     Keyboard.Arrows.arrows m.pressedKeys
         |> (\{ x, y } -> ( x, -y ))
-        |> \xy ->
-            case xy of
-                ( 0, _ ) ->
-                    xy
 
-                ( _, 0 ) ->
-                    xy
 
-                ( x, y ) ->
-                    getFirstArrowKey m
-                        |> Maybe.map (\k -> R.ter (isXArrowKey k) ( x, 0 ) ( 0, y ))
-                        |> Maybe.withDefault ( x, y )
-                        |> Debug.log "getArrows"
+
+{-
+   |> \xy ->
+       case xy of
+           ( 0, _ ) ->
+               xy
+
+           ( _, 0 ) ->
+               xy
+
+           ( x, y ) ->
+               getFirstArrowKey m
+                   |> Maybe.map (\k -> R.ter (isXArrowKey k) ( x, 0 ) ( 0, y ))
+                   |> Maybe.withDefault ( x, y )
+                   |> Debug.log "getArrows"
+-}
 
 
 getFirstArrowKey : Model -> Maybe Keyboard.Key
@@ -290,70 +295,121 @@ update msg m =
 
         Player ->
             let
-                computeNewAnim cellCount dd anim =
-                    let
-                        newDirection =
-                            toFloat dd
+                connections : Set MG.Connection
+                connections =
+                    MG.mapConnections C2.normalizeConnection m.mazeG
+                        |> Set.fromList
 
-                        current =
-                            (animCurrent anim m)
+                isConnected cp =
+                    connections |> Set.member (C2.normalizeConnection cp)
 
-                        from =
-                            A.getFrom anim
-
-                        to =
-                            A.getTo anim
-
-                        diff =
-                            from - to |> abs
-
-                        currentDirection =
-                            -from + to |> R.sign
-
-                        directionReversed =
-                            currentDirection /= 0 && newDirection /= 0 && currentDirection == newDirection * -1
-
-                        travelled =
-                            current - to |> abs
-
-                        newTo =
-                            to
-                                + newDirection
-                                |> clamp 0 (cellCount - 1)
-                    in
-                        if (notRunning anim m || directionReversed) && to /= newTo then
-                            let
-                                _ =
-                                    {- Debug.log "currentDirection, newDirection" ( currentDirection, newDirection ) -}
-                                    1
-                            in
-                                createAnim current newTo m
-                            --                                    |> Debug.log "pxAnim"
-                        else
-                            anim
-
-                ( x, y ) =
+                ( dx, dy ) =
                     getArrows m
 
                 ( xCells, yCells ) =
                     gridSize
 
-                newPxAnim =
-                    if x /= 0 && notRunning m.pyAnim m then
-                        computeNewAnim xCells x m.pxAnim
-                    else
-                        m.pxAnim
+                ( newPxAnim, newPyAnim ) =
+                    getFirstArrowKey m
+                        |> Maybe.map
+                            (\key ->
+                                (if isXArrowKey key then
+                                    let
+                                        newPxAnim_ =
+                                            if dx /= 0 && notRunning m.pyAnim m then
+                                                computeNewAnim
+                                                    (\xx ->
+                                                        let
+                                                            ( x1, x2 ) =
+                                                                xx |> R.mapBothWith round
 
-                newPyAnim =
-                    if y /= 0 && notRunning newPxAnim m then
-                        computeNewAnim yCells y m.pyAnim
-                    else
-                        m.pyAnim
+                                                            y =
+                                                                A.getTo m.pyAnim |> round
+                                                        in
+                                                            isConnected ( ( x1, y ), ( x2, y ) )
+                                                    )
+                                                    xCells
+                                                    dx
+                                                    m.pxAnim
+                                                    m
+                                            else
+                                                m.pxAnim
+                                    in
+                                        ( newPxAnim_, m.pyAnim )
+                                 else
+                                    let
+                                        newPyAnim_ =
+                                            if dy /= 0 && notRunning m.pxAnim m then
+                                                computeNewAnim
+                                                    (\yy ->
+                                                        let
+                                                            ( y1, y2 ) =
+                                                                yy |> R.mapBothWith round
+
+                                                            x =
+                                                                A.getTo m.pxAnim |> round
+                                                        in
+                                                            isConnected ( ( x, y1 ), ( x, y2 ) )
+                                                    )
+                                                    yCells
+                                                    dy
+                                                    m.pyAnim
+                                                    m
+                                            else
+                                                m.pyAnim
+                                    in
+                                        ( m.pxAnim, newPyAnim_ )
+                                )
+                            )
+                        |> Maybe.withDefault ( m.pxAnim, m.pyAnim )
             in
                 noCmd { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
 
         AnimationFrame posix ->
             update Player { m | clock = getClock posix m }
+
+
+computeNewAnim isConnected cellCount dd anim m =
+    let
+        newDirection =
+            toFloat dd
+
+        current =
+            (animCurrent anim m)
+
+        from =
+            A.getFrom anim
+
+        to =
+            A.getTo anim
+
+        diff =
+            from - to |> abs
+
+        currentDirection =
+            -from + to |> R.sign
+
+        directionReversed =
+            currentDirection /= 0 && newDirection /= 0 && currentDirection == newDirection * -1
+
+        travelled =
+            current - to |> abs
+
+        newTo =
+            to
+                + newDirection
+                |> clamp 0 (cellCount - 1)
+    in
+        if (notRunning anim m || directionReversed) && isConnected ( to, newTo ) && to /= newTo then
+            let
+                _ =
+                    {- Debug.log "currentDirection, newDirection" ( currentDirection, newDirection ) -}
+                    1
+            in
+                createAnim current newTo m
+            --                                    |> Debug.log "pxAnim"
+        else
+            anim
 
 
 
