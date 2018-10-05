@@ -14,6 +14,7 @@ import Keyboard
 import Keyboard.Arrows
 import Light
 import List.Extra
+import Maybe.Extra
 import Ramda as R
 import Random
 import Size
@@ -350,6 +351,7 @@ getMonsterYInt { ya } =
     A.getTo ya |> round
 
 
+computeMonsterNewX : Int -> Model -> Monster -> Maybe Float
 computeMonsterNewX offset m monster =
     let
         connections : Set MG.Connection
@@ -369,13 +371,30 @@ computeMonsterNewX offset m monster =
         newX =
             (getMonsterXInt monster + offset)
                 |> clampGridX m
+
+        canMove =
+            oldX /= newX && isConnected ( ( oldX, currentY ), ( newX, currentY ) )
     in
-        (if isConnected ( ( oldX, currentY ), ( newX, currentY ) ) then
-            newX
+        (if canMove then
+            toFloat newX |> Just
          else
-            oldX
+            Nothing
         )
-            |> toFloat
+
+
+computeMonsterNewXa : Model -> Monster -> Animation
+computeMonsterNewXa m monster =
+    let
+        xa =
+            monster.xa
+
+        xDir =
+            A.getTo xa - A.getFrom xa |> R.sign |> R.when (R.equals 0) (always 1) |> round
+    in
+        computeMonsterNewX xDir m monster
+            |> Maybe.Extra.orElseLazy (\_ -> computeMonsterNewX -xDir m monster)
+            |> Maybe.map (\newXTo -> animRetargetTo newXTo m xa)
+            |> Maybe.withDefault xa
 
 
 updateMonster : Model -> F Monster
@@ -387,11 +406,7 @@ updateMonster m monster =
         (if isMoving then
             monster
          else
-            let
-                newXTo =
-                    computeMonsterNewX 1 m monster
-            in
-                { monster | xa = animRetargetTo newXTo m monster.xa }
+            { monster | xa = computeMonsterNewXa m monster }
         )
 
 
