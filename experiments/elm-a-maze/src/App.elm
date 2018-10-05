@@ -72,7 +72,11 @@ defaultAnim =
 
 
 gridSize =
-    ( 10, 8 )
+    ( 18, 12 )
+
+
+cellSize =
+    32
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -372,10 +376,6 @@ viewSvg m =
             []
         , viewGameContent m
         ]
-
-
-cellSize =
-    50.0
 
 
 viewGameContent m =
