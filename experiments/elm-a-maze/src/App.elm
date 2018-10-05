@@ -67,6 +67,10 @@ defaultAnim =
     createAnim 0 0 { clock = 0 }
 
 
+gridSize =
+    ( 10, 14 )
+
+
 init : Flags -> ( Model, Cmd Msg )
 init { now } =
     { keySet = Set.empty
@@ -176,7 +180,7 @@ update msg m =
                 noCmd { m | pressedKeys = updatedPressedKeys }
 
         AnimationFrameDelta elapsed ->
-            noCmd m
+            { m | gridSize = gridSize } |> noCmd
 
         Player ->
             let
@@ -268,7 +272,7 @@ type alias View =
 
 
 worldSize =
-    Size.fromComponent ( 600, 350 )
+    Size.fromComponent ( 600, 800 )
 
 
 worldSizeIntT =
