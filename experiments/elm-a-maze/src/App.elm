@@ -97,7 +97,7 @@ init { now } =
         , pressedKeys = []
         , pageLoadedAt = now
         , clock = 0
-        , mazeG = MG.init mazeSeed gridSize
+        , mazeG = MG.init mazeSeed gridSize |> MG.solve
         }
             |> noCmd
 
