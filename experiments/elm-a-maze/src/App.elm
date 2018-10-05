@@ -60,7 +60,7 @@ createAnim from to { clock } =
         |> A.from from
         |> A.to to
         |> A.ease identity
-        |> A.speed 0.005
+        |> A.speed 0.001
 
 
 defaultAnim =
