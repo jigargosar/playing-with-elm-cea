@@ -22,7 +22,8 @@
             "ianmackenzie/elm-geometry-svg": "1.0.2",
             "mgold/elm-animation": "2.0.0",
             "myrho/elm-round": "1.0.4",
-            "ohanhi/keyboard": "1.0.0"
+            "ohanhi/keyboard": "1.0.0",
+            "xilnocas/step": "4.1.4"
         },
         "indirect": {
             "elm/url": "1.0.0",

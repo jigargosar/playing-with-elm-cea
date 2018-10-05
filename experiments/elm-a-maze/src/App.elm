@@ -17,6 +17,7 @@ import List.Extra
 import Ramda as R
 import Random
 import Size
+import Step exposing (Step)
 import Svg
 import Svg as S
 import Svg.Attributes as S
@@ -337,6 +338,47 @@ update msg m =
 
         AnimationFrame posix ->
             update Player { m | clock = getClock posix m }
+
+
+updateStep : Msg -> Model -> Step Model Msg a
+updateStep msg m =
+    case msg of
+        NoOp ->
+            Step.stay
+
+        OnWindowBlur _ ->
+            Step.to { m | pressedKeys = [] }
+
+        KeyMsg keyMsg ->
+            let
+                ( updatedPressedKeys, keyChange ) =
+                    Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg m.pressedKeys
+            in
+                Step.to { m | pressedKeys = updatedPressedKeys }
+
+        AnimationFrameDelta elapsed ->
+            let
+                newMonsters =
+                    R.ter (R.isListEmpty m.monsters) (createMonsters m) (m.monsters)
+            in
+                Step.to { m | gridSize = gridSize, monsters = newMonsters }
+
+        Player ->
+            let
+                ( newPxAnim, newPyAnim ) =
+                    computeNewXYAnim m
+            in
+                Step.to { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
+
+        Monsters ->
+            let
+                ( newPxAnim, newPyAnim ) =
+                    computeNewXYAnim m
+            in
+                Step.to { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
+
+        AnimationFrame posix ->
+            updateStep Player { m | clock = getClock posix m }
 
 
 createMonsters : Model -> List Monster
@@ -741,6 +783,6 @@ main =
     B.element
         { view = H.lazy view
         , init = init
-        , update = update
+        , update = Step.asUpdateFunction updateStep
         , subscriptions = subscriptions
         }
