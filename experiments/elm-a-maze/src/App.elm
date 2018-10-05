@@ -474,20 +474,24 @@ debugView { pressedKeys } =
 viewSvg : Model -> View
 viewSvg m =
     S.svg ([{- H.style "transform" "scale( 0.9 , 0.9 )" -}] ++ canvasWHStyles)
-        [ S.rect
-            [ S.width "100%"
-            , S.height "100%"
-            , TP.x 0
-            , TP.y 0
-            , TA.strokeWidth (px 0.2)
-            , TA.stroke Color.black
-            , Color.blue
-                |> Light.map (\h -> { h | s = 1, l = 0.7 })
-                |> fillColor
-            ]
-            []
+        [ bkgRect
         , viewGameContent m
         ]
+
+
+bkgRect =
+    S.rect
+        [ S.width "100%"
+        , S.height "100%"
+        , TP.x 0
+        , TP.y 0
+        , TA.strokeWidth (px 0.2)
+        , TA.stroke Color.black
+        , Color.blue
+            |> Light.map (\h -> { h | s = 1, l = 0.7 })
+            |> fillColor
+        ]
+        []
 
 
 viewGameContent m =
