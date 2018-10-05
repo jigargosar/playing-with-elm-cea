@@ -89,7 +89,7 @@ type alias Movement =
 
 
 type alias Monster =
-    { x : Int, y : Int, movement : Maybe Movement }
+    { x : Int, y : Int, xa : Animation, ya : Animation }
 
 
 type alias Model =
@@ -327,7 +327,7 @@ update msg m =
 
 createMonsters : Model -> List Monster
 createMonsters m =
-    [ { x = 5, y = 5, movement = Nothing } ]
+    [ { x = 5, y = 5, xa = createAnim 5 5 m, ya = createAnim 5 5 m } ]
 
 
 computeNewXYAnim m =
@@ -618,7 +618,7 @@ viewMonsters =
 
 
 viewMonster : Monster -> View
-viewMonster { x, y, movement } =
+viewMonster { x, y, xa, ya } =
     let
         offset =
             5
