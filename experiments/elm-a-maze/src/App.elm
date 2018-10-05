@@ -300,7 +300,7 @@ view m =
 
 viewSvg : Model -> View
 viewSvg m =
-    S.svg ([ H.style "transform" "scale( 0.8 , 0.8 )" ] ++ canvasWHStyles)
+    S.svg ([{- H.style "transform" "scale( 0.8 , 0.8 )" -}] ++ canvasWHStyles)
         [ S.rect
             [ S.width "100%"
             , S.height "100%"
