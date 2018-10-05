@@ -433,6 +433,21 @@ computeMonsterNewXa m monster =
             |> Maybe.withDefault xa
 
 
+computeMonsterNewYa : Model -> Monster -> Animation
+computeMonsterNewYa m monster =
+    let
+        ya =
+            monster.ya
+
+        yDir =
+            getAnimDir ya
+    in
+        computeMonsterNewY yDir m monster
+            |> Maybe.Extra.orElseLazy (\_ -> computeMonsterNewY -yDir m monster)
+            |> Maybe.map (\newTo -> animRetargetTo newTo m ya)
+            |> Maybe.withDefault ya
+
+
 updateMonster : Model -> F Monster
 updateMonster m monster =
     let
