@@ -306,7 +306,7 @@ update msg m =
             pure m
 
         OnWindowBlur _ ->
-            { m | pressedKeys = [] } |> pure
+            pure { m | pressedKeys = [] }
 
         KeyMsg keyMsg ->
             let
