@@ -635,12 +635,8 @@ canvasWHStyles =
         |> R.tupleToList
 
 
-viewAttrs =
-    [ H.class "flex flex-column items-center pa2 h-100" ] ++ canvasWHStyles
-
-
 root =
-    H.div viewAttrs
+    divClassA "flex flex-column items-center pa2 h-100" canvasWHStyles
 
 
 divClass class =
