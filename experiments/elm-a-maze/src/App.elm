@@ -649,7 +649,11 @@ debugView { pressedKeys } =
 
 viewSvg : Model -> View
 viewSvg m =
-    S.svg ([{- H.style "transform" "scale( 0.9 , 0.9 )" -}] ++ canvasWHStyles)
+    S.svg
+        ([ SA.viewBox "0 0 400 400"
+         ]
+            ++ canvasWHStyles
+        )
         [ bkgRect
         , viewGameContent m
         ]
@@ -672,11 +676,12 @@ bkgRect =
 
 viewGameContent : Model -> View
 viewGameContent m =
-    S.g [ TA.transform [ Translate cellSize cellSize ] ]
-        ([ S.lazy viewGridCells m.gridSize
-         , S.lazy viewMazeWalls m.maze
-         , viewPlayer (getPlayerCellXY m)
+    S.g [{- TA.transform [ Translate cellSize cellSize ] -}]
+        ([{- S.lazy viewGridCells m.gridSize
+             ,
+          -}
          ]
+            ++ [ viewMazeWalls m.maze, viewPlayer (getPlayerCellXY m) ]
             ++ viewMonsters m.clock m.monsters
         )
 
@@ -712,28 +717,27 @@ viewMazeWalls maze =
                 ( x, y ) =
                     IP.scale size cord
             in
-                Svg.g []
-                    [ Svg.rect
-                        [ iX (x + size - wallThickness)
-                        , iY y
-                        , iWidth wallThickness
-                        , iHeight size
-                        , SA.fill "#000"
-                        , R.ter (isEastConnected cord) "0" "1" |> SA.opacity
-                        ]
-                        []
-                    , Svg.rect
-                        [ iX x
-                        , iY (y + size - wallThickness)
-                        , iWidth size
-                        , iHeight wallThickness
-                        , SA.fill "#000"
-                        , R.ter (isSouthConnected cord) "0" "1" |> SA.opacity
-                        ]
-                        []
+                [ Svg.rect
+                    [ iX (x + size - wallThickness)
+                    , iY y
+                    , iWidth wallThickness
+                    , iHeight size
+                    , SA.fill "#000"
+                    , R.ter (isEastConnected cord) "0" "1" |> SA.opacity
                     ]
+                    []
+                , Svg.rect
+                    [ iX x
+                    , iY (y + size - wallThickness)
+                    , iWidth size
+                    , iHeight wallThickness
+                    , SA.fill "#000"
+                    , R.ter (isSouthConnected cord) "0" "1" |> SA.opacity
+                    ]
+                    []
+                ]
     in
-        Maze.concatMapCells viewCell maze |> S.g []
+        Maze.concatMapCells viewCell maze |> List.concat |> S.g []
 
 
 viewPlayer ( x, y ) =
