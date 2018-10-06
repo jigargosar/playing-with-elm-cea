@@ -858,13 +858,6 @@ viewMonsterHelp x y =
     S.use ([ TP.x x, TP.y y, S.xlinkHref "#monster" ]) []
 
 
-
-{- S.g []
-   [ S.circle (cXYAttrs ++ [ rAttr, Color.darkOrange |> fillColor ]) []
-   ]
--}
-
-
 viewGridCells size =
     gridConcatMap size viewGridCell |> S.g []
 
