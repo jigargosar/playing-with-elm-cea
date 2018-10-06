@@ -1,24 +1,25 @@
-module ISvg exposing
-    ( iCX
-    , iCY
-    , iFontSize
-    , iHeight
-    , iR
-    , iScale
-    , iStrokeWidth
-    , iTranslate
-    , iTranslateCord
-    , iWidth
-    , iX
-    , iX1
-    , iX2
-    , iY
-    , iY1
-    , iY2
-    )
+module ISvg
+    exposing
+        ( iCX
+        , iCY
+        , iFontSize
+        , iHeight
+        , iR
+        , iScale
+        , iStrokeWidth
+        , iTranslate
+        , iTranslateCord
+        , iWidth
+        , iX
+        , iX1
+        , iX2
+        , iY
+        , iY1
+        , iY2
+        , iViewBox
+        )
 
 import Svg.Attributes as SA
-
 
 
 ---- SVG INT HELPERS ----
@@ -98,3 +99,10 @@ iFontSize =
 
 iStrokeWidth =
     String.fromInt >> SA.strokeWidth
+
+
+iViewBox minX minY vWidth vHeight =
+    [ minX, minY, vWidth, vHeight ]
+        |> List.map String.fromInt
+        |> String.join " "
+        |> SA.viewBox

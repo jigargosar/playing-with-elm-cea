@@ -38,24 +38,7 @@ import Json.Decode as D
 import Json.Encode as E
 import TypedSvg.Types exposing (CoordinateSystem(..), Fill(..), Transform(..), percent, px)
 import MazeGenerator as MG exposing (MazeGenerator)
-import ISvg
-    exposing
-        ( iCX
-        , iCY
-        , iFontSize
-        , iHeight
-        , iR
-        , iStrokeWidth
-        , iTranslate
-        , iTranslateCord
-        , iWidth
-        , iX
-        , iX1
-        , iX2
-        , iY
-        , iY1
-        , iY2
-        )
+import ISvg exposing (iCX, iCY, iFontSize, iHeight, iR, iStrokeWidth, iTranslate, iTranslateCord, iViewBox, iWidth, iX, iX1, iX2, iY, iY1, iY2)
 import Svg.Lazy
 import Svg.Lazy as S
 import Update.Extra
@@ -640,16 +623,12 @@ worldSize =
     gridSize |> R.mapBothWith ((+) 2 >> (*) cellSize)
 
 
-worldSizeInt =
-    worldSize
-
-
 concat a b =
     a ++ b
 
 
 canvasWHStyles =
-    worldSizeInt
+    worldSize
         |> R.mapBothWith String.fromInt
         |> R.mapBothWith (R.flip concat "px")
         |> Tuple.mapBoth (H.style "min-width") (H.style "min-height")
@@ -680,13 +659,6 @@ viewBoxAttr =
             worldSize
     in
         iViewBox -cellSize -cellSize w h
-
-
-iViewBox minX minY vWidth vHeight =
-    [ minX, minY, vWidth, vHeight ]
-        |> List.map String.fromInt
-        |> String.join " "
-        |> S.viewBox
 
 
 svgAttrs =
