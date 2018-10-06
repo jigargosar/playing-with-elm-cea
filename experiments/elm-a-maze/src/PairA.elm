@@ -52,8 +52,8 @@ type alias Size number =
     { w : number, h : number }
 
 
-toSize : PairA number -> Size number
-toSize ( w, h ) =
+toWhRec : PairA number -> Size number
+toWhRec ( w, h ) =
     Size w h
 
 

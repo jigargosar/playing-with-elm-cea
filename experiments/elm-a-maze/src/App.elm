@@ -624,8 +624,8 @@ canvasSizePair =
     gridSize |> PairA.add 2 >> PairA.mul cellSize
 
 
-canvasSize =
-    canvasSizePair |> PairA.toSize
+canvasSizeRec =
+    canvasSizePair |> PairA.toWhRec
 
 
 concat a b =
@@ -680,7 +680,7 @@ viewBoxAttr =
         ( w, h ) =
             canvasSizePair
     in
-        iViewBox -cellSize -cellSize canvasSize.w canvasSize.h
+        iViewBox -cellSize -cellSize canvasSizeRec.w canvasSizeRec.h
 
 
 svgAttrs =
