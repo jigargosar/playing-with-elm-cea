@@ -618,8 +618,8 @@ type alias View =
     Html Msg
 
 
-worldSize : IntPair
-worldSize =
+canvasSize : IntPair
+canvasSize =
     gridSize |> R.mapBothWith ((+) 2 >> (*) cellSize)
 
 
@@ -628,7 +628,7 @@ concat a b =
 
 
 canvasWHStyles =
-    worldSize
+    canvasSize
         |> R.mapBothWith String.fromInt
         |> R.mapBothWith (R.flip concat "px")
         |> Tuple.mapBoth (H.style "min-width") (H.style "min-height")
@@ -656,7 +656,7 @@ debugView { pressedKeys } =
 viewBoxAttr =
     let
         ( w, h ) =
-            worldSize
+            canvasSize
     in
         iViewBox -cellSize -cellSize w h
 
