@@ -16,7 +16,7 @@ module MazeGenerator
         , getSize
         )
 
-import Coordinate2D exposing (Coordinate2D)
+import IntPair exposing (IntPair)
 import Ramda exposing (ensureAtLeast, equals)
 import Random
 import Random.Array
@@ -26,7 +26,7 @@ import Set exposing (Set)
 
 
 type alias Connection =
-    ( Coordinate2D, Coordinate2D )
+    ( IntPair, IntPair )
 
 
 type alias ConnectionSet =
@@ -34,11 +34,11 @@ type alias ConnectionSet =
 
 
 type alias VisitedSet =
-    Set Coordinate2D
+    Set IntPair
 
 
 type alias Stack =
-    List Coordinate2D
+    List IntPair
 
 
 type alias Record =
@@ -111,12 +111,12 @@ getConnections (MazeGenerator rec) =
 
 addConnection : Connection -> Record -> ConnectionSet
 addConnection connection rec =
-    rec.connectionSet |> Set.insert (Coordinate2D.normalizeConnection connection)
+    rec.connectionSet |> Set.insert (IntPair.normalizeConnection connection)
 
 
 connected : Connection -> MazeGenerator -> Bool
 connected connection =
-    getConnections >> Set.member (Coordinate2D.normalizeConnection connection)
+    getConnections >> Set.member (IntPair.normalizeConnection connection)
 
 
 step : MazeGeneratorF
@@ -142,10 +142,10 @@ solve mg =
         step mg |> solve
 
 
-stepHelp : Coordinate2D -> Record -> Record
+stepHelp : IntPair -> Record -> Record
 stepHelp stackTop rec =
     let
-        isWithinBounds : Coordinate2D -> Bool
+        isWithinBounds : IntPair -> Bool
         isWithinBounds ( x, y ) =
             x >= 0 && y >= 0 && x < rec.width && y < rec.height
 
@@ -154,7 +154,7 @@ stepHelp stackTop rec =
 
         unVisitedNeighbours =
             stackTop
-                |> Coordinate2D.perpendicularNeighboursOf
+                |> IntPair.perpendicularNeighboursOf
                 |> List.filter isWithinBounds
                 |> List.filter (isVisitedRec >> not)
 
@@ -186,7 +186,7 @@ getDimensions (MazeGenerator { width, height }) =
     { width = width, height = height }
 
 
-isCordOnTopOfStack : Coordinate2D -> MazeGenerator -> Bool
+isCordOnTopOfStack : IntPair -> MazeGenerator -> Bool
 isCordOnTopOfStack cord (MazeGenerator { stack }) =
     stack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
 
@@ -199,7 +199,7 @@ type alias CellInfo =
     { visited : Bool, current : Bool }
 
 
-concatMapCellInfo : (Coordinate2D -> CellInfo -> a) -> MazeGenerator -> List a
+concatMapCellInfo : (IntPair -> CellInfo -> a) -> MazeGenerator -> List a
 concatMapCellInfo fn mg =
     let
         mapper cord =
@@ -208,12 +208,12 @@ concatMapCellInfo fn mg =
                 , current = isCordOnTopOfStack cord mg
                 }
     in
-        (getSize mg) |> Coordinate2D.concatMap mapper
+        (getSize mg) |> IntPair.concatMap mapper
 
 
-concatMapCords : (Coordinate2D -> a) -> MazeGenerator -> List a
+concatMapCords : (IntPair -> a) -> MazeGenerator -> List a
 concatMapCords fn =
-    getSize >> Coordinate2D.concatMap fn
+    getSize >> IntPair.concatMap fn
 
 
 mapConnections : (Connection -> a) -> MazeGenerator -> List a

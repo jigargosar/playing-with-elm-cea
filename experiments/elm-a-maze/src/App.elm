@@ -5,7 +5,7 @@ import Browser.Dom
 import Browser.Dom as BD
 import Browser.Dom as B
 import Color exposing (Color)
-import Coordinate2D as C2
+import IntPair as C2 exposing (IntPair)
 import Html as H exposing (Html)
 import Html.Lazy as H
 import Html.Attributes as H
@@ -68,18 +68,6 @@ port onWindowBlur : (() -> msg) -> Sub msg
 
 
 ---- MODEL ----
-
-
-type alias IntPair =
-    ( Int, Int )
-
-
-addBothPairs ( a1, b1 ) ( a2, b2 ) =
-    ( a1 + a2, b1 + b2 )
-
-
-multiplyBothPairs ( a1, b1 ) ( a2, b2 ) =
-    ( a1 * a2, b1 * b2 )
 
 
 type MovementAxis

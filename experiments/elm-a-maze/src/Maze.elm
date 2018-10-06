@@ -1,6 +1,6 @@
 module Maze exposing (Maze, init, connected, concatMapCells)
 
-import Coordinate2D exposing (Coordinate2D)
+import IntPair exposing (IntPair)
 import MazeGenerator exposing (CellInfo, Connection, MazeGenerator)
 import Ramda exposing (ensureAtLeast, equals)
 import Random
@@ -53,6 +53,6 @@ connected connection =
     getMazeGen >> MazeGenerator.connected connection
 
 
-concatMapCells : (Coordinate2D -> a) -> Maze -> List a
+concatMapCells : (IntPair -> a) -> Maze -> List a
 concatMapCells fn mg =
-    Coordinate2D.concatMap fn (getSize mg)
+    IntPair.concatMap fn (getSize mg)

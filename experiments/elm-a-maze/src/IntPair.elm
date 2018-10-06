@@ -1,6 +1,6 @@
-module Coordinate2D
+module IntPair
     exposing
-        ( Coordinate2D
+        ( IntPair
         , concatMap
         , map
         , normalizeConnection
@@ -8,19 +8,21 @@ module Coordinate2D
         , scale
         , toString
         , translate
+        , addBothPairs
+        , multiplyBothPairs
         )
 
 
-type alias Coordinate2D =
+type alias IntPair =
     ( Int, Int )
 
 
-concatMap : (Coordinate2D -> a) -> Coordinate2D -> List a
+concatMap : (IntPair -> a) -> IntPair -> List a
 concatMap fn cord =
     map fn cord |> List.concat
 
 
-map : (Coordinate2D -> a) -> Coordinate2D -> List (List a)
+map : (IntPair -> a) -> IntPair -> List (List a)
 map fn ( width, height ) =
     let
         xCords =
@@ -37,7 +39,7 @@ map fn ( width, height ) =
                 )
 
 
-perpendicularNeighboursOf : Coordinate2D -> List Coordinate2D
+perpendicularNeighboursOf : IntPair -> List IntPair
 perpendicularNeighboursOf ( x, y ) =
     [ ( x + 1, y )
     , ( x - 1, y )
@@ -76,3 +78,11 @@ normalizeConnection ( c1, c2 ) =
             ( c2, c1 )
         else
             ( c1, c2 )
+
+
+addBothPairs ( a1, b1 ) ( a2, b2 ) =
+    ( a1 + a2, b1 + b2 )
+
+
+multiplyBothPairs ( a1, b1 ) ( a2, b2 ) =
+    ( a1 * a2, b1 * b2 )
