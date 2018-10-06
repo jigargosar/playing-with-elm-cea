@@ -660,15 +660,10 @@ canvasWHStyles =
 view : Model -> View
 view m =
     H.div ([ H.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHStyles)
-        [ H.div [ H.class "flex flex-column vs3" ]
+        [ H.div [ H.class "flex flex-column vs3 h-100" ]
             [ H.div [ H.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
-            , H.div
-                [ H.class "flex-auto overflow-scroll"
-
-                {- , H.style "transform" "scale( 0.8 , 0.8 )" -}
-                ]
-                [ viewSvg m ]
-            , H.div [ H.class "" ]
+            , H.div [ H.class "flex-auto overflow-scroll" ] [ viewSvg m ]
+            , H.div [ H.class "f7" ]
                 [ getDebugState m |> debugView
                 ]
             ]
