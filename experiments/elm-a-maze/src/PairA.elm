@@ -55,3 +55,11 @@ type alias Size number =
 toSize : PairA number -> Size number
 toSize ( w, h ) =
     Size w h
+
+
+add offset ( a1, a2 ) =
+    ( a1 + offset, a2 + offset )
+
+
+mul factor ( a1, a2 ) =
+    ( a1 * factor, a2 * factor )

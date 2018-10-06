@@ -621,7 +621,11 @@ type alias View =
 
 canvasSizePair : IntPair
 canvasSizePair =
-    gridSize |> R.mapBothWith ((+) 2 >> (*) cellSize)
+    gridSize |> PairA.add 2 >> PairA.mul cellSize
+
+
+canvasSize =
+    canvasSizePair |> PairA.toSize
 
 
 concat a b =
@@ -676,7 +680,7 @@ viewBoxAttr =
         ( w, h ) =
             canvasSizePair
     in
-        iViewBox -cellSize -cellSize w h
+        iViewBox -cellSize -cellSize canvasSize.w canvasSize.h
 
 
 svgAttrs =
