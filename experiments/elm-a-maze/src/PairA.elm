@@ -46,3 +46,12 @@ fromIntWithSuffix suf =
 withSuffix : String -> F StringPair
 withSuffix suf =
     R.mapBothWith (R.withSuffix suf)
+
+
+type alias Size number =
+    { w : number, h : number }
+
+
+toSize : PairA number -> Size number
+toSize ( w, h ) =
+    Size w h
