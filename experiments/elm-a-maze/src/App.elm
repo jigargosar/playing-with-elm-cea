@@ -969,15 +969,15 @@ centerOffsetTransform =
 
 viewMonsterHelp x y =
     S.circle
-        ([ monsRad
-         , mC
+        ([ mC
+         , monsRad
+         , iCX (x + centerOffsetX)
+         , iCY (y + centerOffsetY)
 
-         {- , iCX (x + centerOffsetX)
-            , iCY (y + centerOffsetY)
+         {- ,  iCX (x)
+            , iCY (y)
+            , centerOffsetTransform
          -}
-         , iCX (x)
-         , iCY (y)
-         , centerOffsetTransform
          ]
         )
         []
