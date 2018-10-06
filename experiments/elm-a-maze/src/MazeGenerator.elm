@@ -13,6 +13,7 @@ module MazeGenerator
         , solve
         , step
         , connected
+        , getSize
         )
 
 import Coordinate2D exposing (Coordinate2D)
@@ -72,6 +73,10 @@ createRec seed width height =
 init : Random.Seed -> ( Int, Int ) -> MazeGenerator
 init seed ( width, height ) =
     MazeGenerator (createRec seed width height)
+
+
+getSize (MazeGenerator rec) =
+    ( rec.width, rec.height )
 
 
 reset : MazeGeneratorF
@@ -202,20 +207,13 @@ concatMapCellInfo fn mg =
                 { visited = isCordVisited cord mg
                 , current = isCordOnTopOfStack cord mg
                 }
-
-        { width, height } =
-            getDimensions mg
     in
-        Coordinate2D.concatMap width height mapper
+        (getSize mg) |> Coordinate2D.concatMap mapper
 
 
 concatMapCords : (Coordinate2D -> a) -> MazeGenerator -> List a
-concatMapCords fn mg =
-    let
-        { width, height } =
-            getDimensions mg
-    in
-        Coordinate2D.concatMap width height fn
+concatMapCords fn =
+    getSize >> Coordinate2D.concatMap fn
 
 
 mapConnections : (Connection -> a) -> MazeGenerator -> List a

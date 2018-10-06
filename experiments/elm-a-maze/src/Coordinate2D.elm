@@ -1,24 +1,27 @@
-module Coordinate2D exposing
-    ( Coordinate2D
-    , concatMap
-    , map
-    , normalizeConnection
-    , perpendicularNeighboursOf
-    , scale
-    , toString
-    , translate
-    )
+module Coordinate2D
+    exposing
+        ( Coordinate2D
+        , concatMap
+        , map
+        , normalizeConnection
+        , perpendicularNeighboursOf
+        , scale
+        , toString
+        , translate
+        )
 
 
 type alias Coordinate2D =
     ( Int, Int )
 
 
-concatMap width height fn =
-    map width height fn |> List.concat
+concatMap : (Coordinate2D -> a) -> Coordinate2D -> List a
+concatMap fn cord =
+    map fn cord |> List.concat
 
 
-map width height fn =
+map : (Coordinate2D -> a) -> Coordinate2D -> List (List a)
+map fn ( width, height ) =
     let
         xCords =
             List.range 0 (width - 1)
@@ -26,12 +29,12 @@ map width height fn =
         yCords =
             List.range 0 (height - 1)
     in
-    yCords
-        |> List.map
-            (\y ->
-                xCords
-                    |> List.map (\x -> fn ( x, y ))
-            )
+        yCords
+            |> List.map
+                (\y ->
+                    xCords
+                        |> List.map (\x -> fn ( x, y ))
+                )
 
 
 perpendicularNeighboursOf : Coordinate2D -> List Coordinate2D
@@ -69,8 +72,7 @@ normalizeConnection ( c1, c2 ) =
         ( x2, y2 ) =
             c2
     in
-    if x1 > x2 || y1 > y2 then
-        ( c2, c1 )
-
-    else
-        ( c1, c2 )
+        if x1 > x2 || y1 > y2 then
+            ( c2, c1 )
+        else
+            ( c1, c2 )

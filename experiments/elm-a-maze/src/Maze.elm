@@ -1,4 +1,4 @@
-module Maze exposing (Maze, init, connected, concatMapCellInfo)
+module Maze exposing (Maze, init, connected, concatMapCells)
 
 import Coordinate2D exposing (Coordinate2D)
 import MazeGenerator exposing (CellInfo, Connection, MazeGenerator)
@@ -44,11 +44,15 @@ getMazeGen =
     toRec >> .mazeG
 
 
+getSize =
+    getMazeGen >> MazeGenerator.getSize
+
+
 connected : Connection -> Maze -> Bool
 connected connection =
     getMazeGen >> MazeGenerator.connected connection
 
 
-concatMapCellInfo : (Coordinate2D -> CellInfo -> a) -> Maze -> List a
-concatMapCellInfo fn =
-    getMazeGen >> MazeGenerator.concatMapCellInfo fn
+concatMapCells : (Coordinate2D -> a) -> Maze -> List a
+concatMapCells fn mg =
+    Coordinate2D.concatMap fn (getSize mg)

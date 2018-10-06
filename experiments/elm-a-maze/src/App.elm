@@ -719,7 +719,7 @@ viewMazeWalls maze =
         size =
             cellSizePx
 
-        viewCell cord _ =
+        viewCell cord =
             let
                 ( x, y ) =
                     C2.scale size cord
@@ -745,7 +745,7 @@ viewMazeWalls maze =
                         []
                     ]
     in
-        Maze.concatMapCellInfo viewCell maze |> S.g []
+        Maze.concatMapCells viewCell maze |> S.g []
 
 
 viewPlayer ( x, y ) =
