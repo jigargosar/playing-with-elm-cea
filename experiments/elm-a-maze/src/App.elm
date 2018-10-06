@@ -897,7 +897,7 @@ viewPlayerXY x y =
 
 
 viewMonsters clock =
-    List.map (getMonsterCellXY clock >> R.mapBothWith (round >> toFloat) >> viewMonster)
+    List.map (getMonsterCellXY clock >> R.mapBothWith (round) >> viewMonster)
 
 
 viewMonster ( x, y ) =
@@ -905,7 +905,7 @@ viewMonster ( x, y ) =
 
 
 viewMonsterHelp x y =
-    S.use ([ TP.x x, TP.y y, S.xlinkHref "#monster" ]) []
+    S.use ([ iX x, iY y, S.xlinkHref "#monster" ]) []
 
 
 viewGridCells size =
