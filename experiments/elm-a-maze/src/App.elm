@@ -286,7 +286,6 @@ type Msg
     = NoOp
     | OnWindowBlur ()
     | KeyMsg Keyboard.Msg
-    | AnimationFrameDelta Float
     | AnimationFrame Time.Posix
     | AnimationFramePort ()
     | UpdatePlayer Clock
@@ -322,14 +321,6 @@ update msg m =
             {- pure m -}
             pure { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys }
 
-        AnimationFrameDelta elapsed ->
-            let
-                ( newMonsters, newSeed ) =
-                    R.ter (R.isListEmpty m.monsters) (createMonsters m) ( m.monsters, m.seed )
-            in
-                { m | gridSize = gridSize, monsters = newMonsters, seed = newSeed } |> pure
-
-        {- pure m -}
         UpdatePlayer clock ->
             let
                 ( newPxAnim, newPyAnim ) =
@@ -348,6 +339,9 @@ update msg m =
         {- pure m -}
         AnimationFrame posix ->
             let
+                ( newMonsters, newSeed ) =
+                    R.ter (R.isListEmpty m.monsters) (createMonsters m) ( m.monsters, m.seed )
+
                 newClock =
                     getClock posix m
 
@@ -358,7 +352,7 @@ update msg m =
                         m
                     )
             in
-                { m | clock = newClock }
+                { m | clock = newClock, gridSize = gridSize, monsters = newMonsters, seed = newSeed }
                     |> pure
                     |> Update.Extra.sequence update [ UpdatePlayer newClock, UpdateMonsters newClock ]
 
