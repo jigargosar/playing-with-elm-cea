@@ -635,10 +635,6 @@ canvasWHStyles =
         |> R.tupleToList
 
 
-root =
-    divClassA "flex flex-column items-center pa2 h-100" canvasWHStyles
-
-
 divClass class =
     divClassA class []
 
@@ -653,7 +649,8 @@ el attrs child =
 
 view : Model -> View
 view m =
-    root
+    divClassA "flex flex-column items-center pa2 h-100"
+        canvasWHStyles
         [ divClass "flex flex-column vs3 h-100"
             [ divClass "f3 tc" [ H.text "A-Maze-Zing!" ]
             , divClass "flex-auto overflow-scroll" [ viewSvg m ]
