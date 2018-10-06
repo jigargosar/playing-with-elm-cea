@@ -319,34 +319,33 @@ update msg m =
             pure m
 
         KeyMsg keyMsg ->
-            {- pure { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys } -}
-            pure m
+            {- pure m -}
+            pure { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys }
 
         AnimationFrameDelta elapsed ->
-            {- let
-                   ( newMonsters, newSeed ) =
-                       R.ter (R.isListEmpty m.monsters) (createMonsters m) ( m.monsters, m.seed )
-               in
-                   { m | gridSize = gridSize, monsters = newMonsters, seed = newSeed } |> pure
-            -}
-            pure m
+            let
+                ( newMonsters, newSeed ) =
+                    R.ter (R.isListEmpty m.monsters) (createMonsters m) ( m.monsters, m.seed )
+            in
+                { m | gridSize = gridSize, monsters = newMonsters, seed = newSeed } |> pure
 
+        {- pure m -}
         UpdatePlayer clock ->
             let
                 ( newPxAnim, newPyAnim ) =
                     computeNewXYAnim m
             in
-                {- pure { m | pxAnim = newPxAnim, pyAnim = newPyAnim } -}
-                pure m
+                pure { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
 
+        {- pure m -}
         UpdateMonsters clock ->
             let
                 newMonsters =
                     m.monsters |> List.map (updateMonster m)
             in
-                {- pure { m | monsters = newMonsters } -}
-                pure m
+                pure { m | monsters = newMonsters }
 
+        {- pure m -}
         AnimationFrame posix ->
             let
                 newClock =
@@ -359,12 +358,9 @@ update msg m =
                         m
                     )
             in
-                m
+                { m | clock = newClock }
                     |> pure
-
-
-
---                    |> Update.Extra.sequence update [ UpdatePlayer newClock, UpdateMonsters newClock ]
+                    |> Update.Extra.sequence update [ UpdatePlayer newClock, UpdateMonsters newClock ]
 
 
 type alias F a =
@@ -664,24 +660,20 @@ canvasWHStyles =
 
 view : Model -> View
 view m =
-    let
-        _ =
-            Debug.log "view" "asd"
-    in
-        H.div ([ H.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHStyles)
-            [ H.div [ H.class "flex flex-column vs3" ]
-                [ H.div [ H.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
-                , H.div
-                    [ H.class "flex-auto overflow-scroll"
+    H.div ([ H.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHStyles)
+        [ H.div [ H.class "flex flex-column vs3" ]
+            [ H.div [ H.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
+            , H.div
+                [ H.class "flex-auto overflow-scroll"
 
-                    {- , H.style "transform" "scale( 0.8 , 0.8 )" -}
-                    ]
-                    [ viewSvg m ]
-                , H.div [ H.class "" ]
-                    [ getDebugState m |> debugView
-                    ]
+                {- , H.style "transform" "scale( 0.8 , 0.8 )" -}
+                ]
+                [ viewSvg m ]
+            , H.div [ H.class "" ]
+                [ getDebugState m |> debugView
                 ]
             ]
+        ]
 
 
 debugView : DebugModel -> View
