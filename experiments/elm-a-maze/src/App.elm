@@ -659,13 +659,17 @@ view m =
         ]
 
 
-textClass class text =
-    divClass class [ H.text text ]
+textClass class tc =
+    divClass class [ H.text tc ]
+
+
+text =
+    textClass ""
 
 
 viewDebug : DebugModel -> View
 viewDebug { pressedKeys } =
-    textClass "" pressedKeys
+    text pressedKeys
 
 
 svgAttrs =
