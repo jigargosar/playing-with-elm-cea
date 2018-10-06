@@ -613,6 +613,23 @@ computeNewAnim isConnected cellCount dd anim m =
 
 
 ---- VIEW ----
+---- HTML Wrappers----
+
+
+divClass class =
+    divClassA class []
+
+
+divClassA class attrs =
+    H.div ([ H.class class ] ++ attrs)
+
+
+textClass class tc =
+    divClass class [ H.text tc ]
+
+
+text =
+    textClass ""
 
 
 type alias View =
@@ -635,18 +652,6 @@ canvasWHStyles =
         |> R.tupleToList
 
 
-divClass class =
-    divClassA class []
-
-
-divClassA class attrs =
-    H.div ([ H.class class ] ++ attrs)
-
-
-el attrs child =
-    H.div attrs [ child ]
-
-
 view : Model -> View
 view m =
     divClassA "flex flex-column items-center pa2 h-100"
@@ -657,14 +662,6 @@ view m =
             , divClass "f7" [ viewDebug (getDebugState m) ]
             ]
         ]
-
-
-textClass class tc =
-    divClass class [ H.text tc ]
-
-
-text =
-    textClass ""
 
 
 viewDebug : DebugModel -> View
