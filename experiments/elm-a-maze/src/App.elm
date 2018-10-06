@@ -338,7 +338,7 @@ update msg m =
         GenerateMonsters ->
             let
                 ( newMonsters, newSeed ) =
-                    generateMonstersMonsters m
+                    generateMonsters m
             in
                 pure { m | monsters = newMonsters, seed = newSeed }
 
@@ -511,8 +511,8 @@ monsterGenerator m =
         |> Random.map (\( xa, ya ) -> Monster xa ya)
 
 
-generateMonstersMonsters : Model -> ( List Monster, Random.Seed )
-generateMonstersMonsters m =
+generateMonsters : Model -> ( List Monster, Random.Seed )
+generateMonsters m =
     Random.step (monsterGenerator m |> Random.list 2) m.seed
 
 
