@@ -722,14 +722,13 @@ svgDefs =
             (cellSize - wallThicknessF - offset) / 2
 
         x =
-            0
+            (cellSize - wallThicknessF) / 2
 
         y =
-            0
+            (cellSize - wallThicknessF) / 2
 
         cXYAttrs =
             ( x, y )
-                |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
                 |> Tuple.mapBoth TP.cx TP.cy
                 |> R.tupleToList
 
@@ -738,11 +737,12 @@ svgDefs =
     in
         S.defs []
             [ S.circle
-                ([ rAttr
-                 , Color.darkOrange |> fillColor
-                 , S.id "monster"
-                 , TA.primitiveUnits CoordinateSystemUserSpaceOnUse
-                 ]
+                (cXYAttrs
+                    ++ [ rAttr
+                       , Color.darkOrange |> fillColor
+                       , S.id "monster"
+                       , TA.primitiveUnits CoordinateSystemUserSpaceOnUse
+                       ]
                 )
                 []
             ]
@@ -855,23 +855,7 @@ viewMonster ( x, y ) =
 
 
 viewMonsterHelp x y =
-    let
-        offset =
-            5
-
-        radius =
-            (cellSize - wallThicknessF - offset) / 2
-
-        xyAttr =
-            ( x, y )
-                |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
-                |> Tuple.mapBoth TP.x TP.y
-                |> R.tupleToList
-
-        rAttr =
-            TP.r radius
-    in
-        S.use (xyAttr ++ [ S.xlinkHref "#monster" ]) []
+    S.use ([ TP.x x, TP.y y, S.xlinkHref "#monster" ]) []
 
 
 
