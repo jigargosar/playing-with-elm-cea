@@ -103,6 +103,11 @@ getConnections (MazeGenerator rec) =
     rec.connectionSet
 
 
+addConnection : Connection -> Record -> ConnectionSet
+addConnection connection rec =
+    rec.connectionSet |> Set.insert (Coordinate2D.normalizeConnection connection)
+
+
 step : MazeGeneratorF
 step (MazeGenerator rec) =
     (if isSolvedRec rec then
@@ -156,8 +161,7 @@ stepHelp stackTop rec =
                     , visitedSet = rec.visitedSet |> Set.insert cord
                     , stack = cord :: rec.stack
                     , connectionSet =
-                        rec.connectionSet
-                            |> Set.insert ( stackTop, cord )
+                        addConnection ( stackTop, cord ) rec
                 }
 
             Nothing ->
