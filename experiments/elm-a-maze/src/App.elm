@@ -678,9 +678,7 @@ svgWithAttrs =
 viewSvg : Model -> View
 viewSvg m =
     svgWithAttrs
-        [ bkgRect
-        , viewGameContent m
-        ]
+        ([ bkgRect ] ++ viewGameContent m)
 
 
 bkgRect =
@@ -698,16 +696,11 @@ bkgRect =
         []
 
 
-viewGameContent : Model -> View
+viewGameContent : Model -> List View
 viewGameContent m =
-    S.g [{- TA.transform [ Translate cellSize cellSize ] -}]
-        ([{- S.lazy viewGridCells m.gridSize
-             ,
-          -}
-         ]
-            ++ [ viewMazeWalls m.maze, viewPlayer (getPlayerCellXY m) ]
-            ++ viewMonsters m.clock m.monsters
-        )
+    ([ S.lazy viewGridCells m.gridSize, viewMazeWalls m.maze, viewPlayer (getPlayerCellXY m) ]
+        ++ viewMonsters m.clock m.monsters
+    )
 
 
 wallThickness =
