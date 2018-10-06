@@ -513,7 +513,7 @@ monsterGenerator m =
 
 generateMonsters : Model -> ( List Monster, Random.Seed )
 generateMonsters m =
-    Random.step (monsterGenerator m |> Random.list 2) m.seed
+    Random.step (monsterGenerator m |> Random.list 10) m.seed
 
 
 computeNewXYAnim m =
@@ -989,7 +989,7 @@ viewMonsterHelp x y =
 
 
 viewGridCells size =
-    gridConcatMap size viewGridCell |> S.g []
+    gridConcatMap size viewGridCell |> S.g [ opacityFloat 0.05 ]
 
 
 cordToPx =
@@ -1004,7 +1004,7 @@ viewGridCell cord =
         whAttr =
             px cellSize |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
     in
-        S.rect (xyAttr ++ whAttr ++ [ strokeColor Color.black, TP.strokeWidth 1, TA.noFill, opacityFloat 0.05 ]) []
+        S.rect (xyAttr ++ whAttr ++ [ strokeColor Color.black, TP.strokeWidth 1, TA.noFill ]) []
 
 
 gridConcatMap size fn =
