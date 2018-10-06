@@ -628,10 +628,6 @@ canvasSizeRec =
     canvasSizePair |> PairA.toWhRec
 
 
-concat a b =
-    a ++ b
-
-
 canvasWHStyles =
     canvasSizePair
         |> PairA.fromIntWithSuffix "px"
