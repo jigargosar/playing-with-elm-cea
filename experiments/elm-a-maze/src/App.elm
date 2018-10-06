@@ -113,7 +113,7 @@ createMonsterAnim from to { clock } =
         |> A.from from
         |> A.to to
         |> A.ease identity
-        |> A.speed 0.002
+        |> A.speed 0.0001
 
 
 defaultAnim =
@@ -676,8 +676,8 @@ viewGameContent m =
         ([ S.lazy viewGridCells m.gridSize
          , S.lazy viewMazeWalls m.maze
          , viewPlayer (getPlayerCellXY m)
-         , viewMonsters m.clock m.monsters
          ]
+            ++ viewMonsters m.clock m.monsters
         )
 
 
@@ -763,7 +763,7 @@ viewPlayerHelp x y =
 
 
 viewMonsters clock =
-    List.map (getMonsterCellXY clock >> viewMonster) >> S.g []
+    List.map (getMonsterCellXY clock >> R.mapBothWith (round >> toFloat) >> viewMonster)
 
 
 viewMonster ( x, y ) =
