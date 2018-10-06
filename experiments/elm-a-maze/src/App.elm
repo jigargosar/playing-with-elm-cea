@@ -651,15 +651,17 @@ divClassA class attrs =
     H.div ([ H.class class ] ++ attrs)
 
 
+el attrs child =
+    H.div attrs [ child ]
+
+
 view : Model -> View
 view m =
     root
         [ divClass "flex flex-column vs3 h-100"
-            [ H.div [ H.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
-            , H.div [ H.class "flex-auto overflow-scroll" ] [ viewSvg m ]
-            , H.div [ H.class "f7" ]
-                [ getDebugState m |> debugView
-                ]
+            [ divClass "f3 tc" [ H.text "A-Maze-Zing!" ]
+            , divClass "flex-auto overflow-scroll" [ viewSvg m ]
+            , el [ H.class "f7" ] (debugView (getDebugState m))
             ]
         ]
 
