@@ -187,10 +187,10 @@ getPlayerCellXY m =
         |> R.mapBothWith (animToGridCellPx m.clock)
 
 
-getMonsterCellXY : A.Clock -> Monster -> ( Float, Float )
+getMonsterCellXY : A.Clock -> Monster -> IntPair
 getMonsterCellXY clock mon =
     ( mon.xa, mon.ya )
-        |> R.mapBothWith (animToGridCellPx clock)
+        |> R.mapBothWith (animToGridCellPx clock >> round)
 
 
 clampGridX : Model -> F Int
@@ -759,8 +759,8 @@ monsterDef =
                 |> R.mapBothWith round
     in
         S.circle
-            ([ iX x
-             , iY y
+            ([ iCX x
+             , iCY y
              , iR radius
              , Color.darkOrange |> fillColor
              , S.id "monster"
@@ -791,7 +791,7 @@ playerDef =
         S.circle
             (cXYAttrs
                 ++ [ rAttr
-                   , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
+                   , Color.green |> Light.map (\h -> { h | s = 1, l = 0.8 }) |> fillColor
                    , S.id "player"
                    , TA.primitiveUnits CoordinateSystemUserSpaceOnUse
                    ]
@@ -889,11 +889,11 @@ viewPlayerXY x y =
 
 
 viewMonsters clock =
-    List.map (getMonsterCellXY clock >> R.mapBothWith (round) >> viewMonster)
+    List.map (getMonsterCellXY clock >> viewMonster)
 
 
 viewMonster ( x, y ) =
-    S.lazy2 viewMonsterHelp x y
+    viewMonsterHelp x y
 
 
 viewMonsterHelp x y =
