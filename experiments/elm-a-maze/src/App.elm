@@ -5,7 +5,7 @@ import Browser.Dom
 import Browser.Dom as BD
 import Browser.Dom as B
 import Color exposing (Color)
-import IntPair as C2 exposing (IntPair)
+import IntPair as IP exposing (IntPair)
 import Html as H exposing (Html)
 import Html.Lazy as H
 import Html.Attributes as H
@@ -710,7 +710,7 @@ viewMazeWalls maze =
         viewCell cord =
             let
                 ( x, y ) =
-                    C2.scale size cord
+                    IP.scale size cord
             in
                 Svg.g []
                     [ Svg.rect
