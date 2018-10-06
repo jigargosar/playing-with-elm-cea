@@ -90,7 +90,7 @@ getVisitedCellCount { visitedSet } =
 
 isSolvedRec : Record -> Bool
 isSolvedRec rec =
-    getVisitedCellCount rec == getTotalCellCount rec
+    getVisitedCellCount rec >= getTotalCellCount rec
 
 
 isSolved : MazeGenerator -> Bool
