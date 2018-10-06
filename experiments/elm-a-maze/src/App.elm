@@ -635,9 +635,13 @@ canvasWHStyles =
         |> R.tupleToList
 
 
+viewAttrs =
+    [ H.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHStyles
+
+
 view : Model -> View
 view m =
-    H.div ([ H.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHStyles)
+    H.div viewAttrs
         [ H.div [ H.class "flex flex-column vs3 h-100" ]
             [ H.div [ H.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
             , H.div [ H.class "flex-auto overflow-scroll" ] [ viewSvg m ]
