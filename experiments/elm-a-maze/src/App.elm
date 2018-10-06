@@ -657,7 +657,7 @@ view m =
         [ divClass "flex flex-column vs3 h-100"
             [ divClass "f3 tc" [ H.text "A-Maze-Zing!" ]
             , divClass "flex-auto overflow-scroll" [ viewSvg m ]
-            , el [ H.class "f7" ] (viewDebug (getDebugState m))
+            , divClass "f7" [ viewDebug (getDebugState m) ]
             ]
         ]
 
