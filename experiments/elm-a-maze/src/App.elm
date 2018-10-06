@@ -23,6 +23,7 @@ import Svg
 import Svg as S
 import Svg.Attributes as S
 import Svg.Attributes as SA
+import Svg.Keyed
 import Time
 import TypedSvg as T
 import TypedSvg.Attributes as TA
@@ -816,12 +817,11 @@ bkgRect _ =
 
 viewGameContent : Model -> List View
 viewGameContent m =
-    ([ {- S.lazy viewGridCells m.gridSize
-          ,
-       -}
-       S.lazy viewMazeWalls m.maze
-     , viewPlayer (getPlayerCellXY m)
-     , viewMonsters m.clock m.monsters |> S.g []
+    ([ S.lazy viewGridCells m.gridSize
+     , S.lazy viewMazeWalls m.maze
+
+     {- , viewPlayer (getPlayerCellXY m) -}
+     , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
      ]
      {- ++ viewMonsters m.clock m.monsters -}
     )
@@ -904,16 +904,88 @@ viewPlayerXY x y =
 
 
 viewMonsters clock =
-    List.map (getMonsterCellXY clock >> viewMonster)
+    List.indexedMap (\idx mon -> ( String.fromInt idx, mon |> getMonsterCellXY clock >> viewMonster ))
 
 
 viewMonster ( x, y ) =
-    S.lazy2 viewMonsterHelp x y
+    S.lazy2
+        viewMonsterHelp
+        x
+        y
+
+
+centerOffset =
+    let
+        offset =
+            5
+
+        radius =
+            (cellSize - wallThicknessF - offset) / 2 |> round
+    in
+        cellCenterF
+            |> R.toTuple
+            |> R.mapBothWith round
+
+
+centerOffsetF =
+    centerOffset |> R.mapBothWith toFloat
+
+
+monsRad =
+    let
+        offset =
+            5
+    in
+        (cellSize - wallThicknessF - offset) / 2 |> round |> iR
+
+
+mC =
+    Color.darkOrange |> fillColor
+
+
+centerOffsetX =
+    centerOffset |> Tuple.first
+
+
+centerOffsetY =
+    centerOffset |> Tuple.second
+
+
+centerOffsetXF =
+    centerOffsetF |> Tuple.first
+
+
+centerOffsetYF =
+    centerOffsetF |> Tuple.second
+
+
+centerOffsetTransformF =
+    TA.transform [ Translate centerOffsetXF centerOffsetYF ]
+
+
+centerOffsetTransform =
+    S.transform (iTranslate centerOffsetX centerOffsetY)
 
 
 viewMonsterHelp x y =
-    --    S.use ([ iX x, iY y, S.xlinkHref "#monster" ]) []
-    S.use ([ {- iTranslate x y |> S.transform, -} iX x, iY y, S.xlinkHref "#monster" ]) []
+    S.circle
+        ([ monsRad
+         , mC
+
+         {- , iCX (x + centerOffsetX)
+            , iCY (y + centerOffsetY)
+         -}
+         , iCX (x)
+         , iCY (y)
+         , centerOffsetTransform
+         ]
+        )
+        []
+
+
+
+--    S.use ([ iX x, iY y, S.xlinkHref "#monster" ]) []
+--    S.use ([ {- iTranslate x y |> S.transform, -} iX x, iY y, S.xlinkHref "#monster" ]) []
 
 
 viewGridCells size =
