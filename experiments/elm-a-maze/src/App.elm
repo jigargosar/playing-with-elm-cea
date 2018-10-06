@@ -816,7 +816,12 @@ bkgRect =
 
 viewGameContent : Model -> List View
 viewGameContent m =
-    ([ S.lazy viewGridCells m.gridSize, viewMazeWalls m.maze, viewPlayer (getPlayerCellXY m) ] ++ viewMonsters m.clock m.monsters)
+    ([ S.lazy viewGridCells m.gridSize
+     , viewMazeWalls m.maze
+     , viewPlayer (getPlayerCellXY m)
+     , viewMonsters m.clock m.monsters
+     ]
+    )
 
 
 wallThickness =
@@ -889,10 +894,14 @@ viewPlayerXY x y =
 
 
 viewMonsters clock =
-    List.map (getMonsterCellXY clock >> viewMonster)
+    List.map (getMonsterCellXY clock >> viewMonster) >> S.g []
 
 
 viewMonster ( x, y ) =
+    S.lazy2 viewMonsterHelp x y
+
+
+viewMonsterHelp x y =
     --    S.use ([ iX x, iY y, S.xlinkHref "#monster" ]) []
     S.use ([ iTranslate x y |> S.transform, S.xlinkHref "#monster" ]) []
 
