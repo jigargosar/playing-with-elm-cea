@@ -54,5 +54,5 @@ connected connection =
 
 
 concatMapCells : (IntPair -> a) -> Maze -> List a
-concatMapCells fn mg =
-    IntPair.concatMap fn (getSize mg)
+concatMapCells fn =
+    getSize >> IntPair.concatMap fn
