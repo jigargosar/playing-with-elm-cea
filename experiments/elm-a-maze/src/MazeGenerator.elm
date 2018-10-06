@@ -27,6 +27,10 @@ type alias ConnectionRecord =
     ( Coordinate2D, Coordinate2D )
 
 
+type Connection
+    = Connection ( Coordinate2D, Coordinate2D )
+
+
 type alias ConnectionSet =
     Set ConnectionRecord
 
