@@ -676,7 +676,11 @@ svgAttrs =
 viewSvg : Model -> View
 viewSvg m =
     S.svg svgAttrs
-        ([ S.lazy svgDefs (), S.lazy bkgRect (), viewGameContent m |> Svg.g [] ] {- ++ viewGameContent m -})
+        ([ S.lazy svgDefs ()
+         , S.lazy bkgRect ()
+         , viewGameContent m |> Svg.g []
+         ]
+        )
 
 
 cellCenterF =
