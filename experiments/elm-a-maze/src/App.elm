@@ -278,6 +278,10 @@ isYArrowKey key =
     List.member key arrowYKeyList
 
 
+noMonsters =
+    .monsters >> R.isListEmpty
+
+
 
 ---- UPDATE ----
 
@@ -290,6 +294,7 @@ type Msg
     | AnimationFramePort ()
     | UpdatePlayer Clock
     | UpdateMonsters Clock
+    | GenerateMonsters
 
 
 pure model =
@@ -329,6 +334,13 @@ update msg m =
                 pure { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
 
         {- pure m -}
+        GenerateMonsters ->
+            let
+                ( newMonsters, newSeed ) =
+                    generateMonstersMonsters m
+            in
+                pure { m | monsters = newMonsters, seed = newSeed }
+
         UpdateMonsters clock ->
             let
                 newMonsters =
@@ -339,24 +351,13 @@ update msg m =
         {- pure m -}
         AnimationFrame posix ->
             let
-                ( newMonsters, newSeed ) =
-                    R.ifElse (.monsters >> R.isListEmpty)
-                        (createMonsters)
-                        (R.toTuple >> Tuple.mapBoth .monsters .seed)
-                        m
-
                 newClock =
                     getClock posix m
-
-                newModel =
-                    (if newClock - m.clock > 1000 then
-                        { m | clock = newClock }
-                     else
-                        m
-                    )
             in
-                { m | clock = newClock, gridSize = gridSize, monsters = newMonsters, seed = newSeed }
+                { m | clock = newClock, gridSize = gridSize }
                     |> pure
+                    |> Update.Extra.filter (noMonsters m)
+                        (Update.Extra.andThen update GenerateMonsters)
                     |> Update.Extra.sequence update [ UpdatePlayer newClock, UpdateMonsters newClock ]
 
 
@@ -509,9 +510,9 @@ monsterGenerator m =
         |> Random.map (\( xa, ya ) -> Monster xa ya)
 
 
-createMonsters : Model -> ( List Monster, Random.Seed )
-createMonsters m =
-    Random.step (monsterGenerator m |> Random.list 10) m.seed
+generateMonstersMonsters : Model -> ( List Monster, Random.Seed )
+generateMonstersMonsters m =
+    Random.step (monsterGenerator m |> Random.list 2) m.seed
 
 
 computeNewXYAnim m =
@@ -764,9 +765,7 @@ bkgRect =
 
 viewGameContent : Model -> List View
 viewGameContent m =
-    ([ S.lazy viewGridCells m.gridSize, viewMazeWalls m.maze, viewPlayer (getPlayerCellXY m) ]
-        ++ viewMonsters m.clock m.monsters
-    )
+    ([ S.lazy viewGridCells m.gridSize, viewMazeWalls m.maze, viewPlayer (getPlayerCellXY m) ] {- ++ viewMonsters m.clock m.monsters -})
 
 
 wallThickness =
