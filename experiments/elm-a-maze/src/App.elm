@@ -710,14 +710,14 @@ svgWithAttrs =
 viewSvg : Model -> View
 viewSvg m =
     svgWithAttrs
-        ([ svgDefs, bkgRect, viewGameContent m |> Svg.g [] ] {- ++ viewGameContent m -})
+        ([ S.lazy svgDefs (), S.lazy bkgRect (), viewGameContent m |> Svg.g [] ] {- ++ viewGameContent m -})
 
 
 cellCenterF =
     (cellSize - wallThicknessF) / 2
 
 
-svgDefs =
+svgDefs _ =
     let
         offset =
             5
@@ -799,7 +799,7 @@ playerDef =
             []
 
 
-bkgRect =
+bkgRect _ =
     S.rect
         [ S.width "200%"
         , S.height "200%"
@@ -816,8 +816,10 @@ bkgRect =
 
 viewGameContent : Model -> List View
 viewGameContent m =
-    ([ S.lazy viewGridCells m.gridSize
-     , S.lazy viewMazeWalls m.maze
+    ([ {- S.lazy viewGridCells m.gridSize
+          ,
+       -}
+       S.lazy viewMazeWalls m.maze
      , viewPlayer (getPlayerCellXY m)
      , viewMonsters m.clock m.monsters |> S.g []
      ]
