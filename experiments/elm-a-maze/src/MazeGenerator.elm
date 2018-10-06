@@ -108,6 +108,11 @@ addConnection connection rec =
     rec.connectionSet |> Set.insert (Coordinate2D.normalizeConnection connection)
 
 
+connected : Connection -> MazeGenerator -> Bool
+connected connection =
+    getConnections >> Set.member (Coordinate2D.normalizeConnection connection)
+
+
 step : MazeGeneratorF
 step (MazeGenerator rec) =
     (if isSolvedRec rec then
