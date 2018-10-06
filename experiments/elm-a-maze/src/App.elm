@@ -667,18 +667,8 @@ viewDebug { pressedKeys } =
     H.div [] [ H.text pressedKeys ]
 
 
-viewBoxAttr =
-    let
-        ( w, h ) =
-            canvasSizePair
-    in
-        iViewBox -cellSize -cellSize canvasSizeRec.w canvasSizeRec.h
-
-
 svgAttrs =
-    [ viewBoxAttr
-    ]
-        ++ canvasWHStyles
+    [ iViewBox -cellSize -cellSize canvasSizeRec.w canvasSizeRec.h ] ++ canvasWHStyles
 
 
 svgWithAttrs =
