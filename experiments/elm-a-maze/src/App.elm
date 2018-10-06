@@ -855,26 +855,31 @@ viewMazeWalls maze =
             let
                 ( x, y ) =
                     IP.scale size cord
+
+                eastWall =
+                    Svg.rect
+                        [ iX (x + size - wallThickness)
+                        , iY y
+                        , iWidth wallThickness
+                        , iHeight size
+                        , SA.fill "#000"
+                        , R.ter (isEastConnected cord) "0" "1" |> SA.opacity
+                        ]
+                        []
+
+                southWall =
+                    Svg.rect
+                        [ iX x
+                        , iY (y + size - wallThickness)
+                        , iWidth size
+                        , iHeight wallThickness
+                        , SA.fill "#000"
+                        , R.ter (isSouthConnected cord) "0" "1" |> SA.opacity
+                        ]
+                        []
             in
-                [ Svg.rect
-                    [ iX (x + size - wallThickness)
-                    , iY y
-                    , iWidth wallThickness
-                    , iHeight size
-                    , SA.fill "#000"
-                    , R.ter (isEastConnected cord) "0" "1" |> SA.opacity
-                    ]
-                    []
-                , Svg.rect
-                    [ iX x
-                    , iY (y + size - wallThickness)
-                    , iWidth size
-                    , iHeight wallThickness
-                    , SA.fill "#000"
-                    , R.ter (isSouthConnected cord) "0" "1" |> SA.opacity
-                    ]
-                    []
-                ]
+                R.ter (isEastConnected cord) [] [ eastWall ]
+                    ++ R.ter (isSouthConnected cord) [] [ southWall ]
     in
         Maze.concatMapCells viewCell maze |> List.concat |> S.g []
 
