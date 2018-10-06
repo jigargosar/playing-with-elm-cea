@@ -882,11 +882,11 @@ viewMazeWalls maze =
 
 
 viewPlayer ( x, y ) =
-    S.lazy2 viewPlayerXY x y
+    S.lazy2 viewPlayerXY (round x) (round y)
 
 
 viewPlayerXY x y =
-    S.use ([ TP.x x, TP.y y, S.xlinkHref "#player" ]) []
+    S.use ([ iX x, iY y, S.xlinkHref "#player" ]) []
 
 
 
