@@ -17,7 +17,14 @@ function onWindowBlur() {
   app.ports.onWindowBlur.send(null)
 }
 
-window.addEventListener("blur", onWindowBlur)
+window.addEventListener('blur', onWindowBlur)
 
 registerServiceWorker()
 
+// requestAnimationFrame(onAF)
+//
+// function onAF() {
+//   // new Array(1000).fill(1000).map(x=>x)
+//   app.ports.onAnimationFrame.send(null)
+//   requestAnimationFrame(onAF)
+// }

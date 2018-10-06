@@ -1,6 +1,6 @@
 port module App exposing (..)
 
-import Animation as A exposing (Animation)
+import Animation as A exposing (Animation, Clock)
 import Browser.Dom
 import Browser.Dom as BD
 import Browser.Dom as B
@@ -64,6 +64,9 @@ import Update.Extra
 
 
 port onWindowBlur : (() -> msg) -> Sub msg
+
+
+port onAnimationFrame : (() -> msg) -> Sub msg
 
 
 
@@ -285,8 +288,9 @@ type Msg
     | KeyMsg Keyboard.Msg
     | AnimationFrameDelta Float
     | AnimationFrame Time.Posix
-    | UpdatePlayer
-    | UpdateMonsters
+    | AnimationFramePort ()
+    | UpdatePlayer Clock
+    | UpdateMonsters Clock
 
 
 pure model =
@@ -307,36 +311,60 @@ update msg m =
         NoOp ->
             pure m
 
+        AnimationFramePort _ ->
+            pure m
+
         OnWindowBlur _ ->
-            pure { m | pressedKeys = [] }
+            {- pure { m | pressedKeys = [] } -}
+            pure m
 
         KeyMsg keyMsg ->
-            pure { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys }
+            {- pure { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys } -}
+            pure m
 
         AnimationFrameDelta elapsed ->
-            let
-                ( newMonsters, newSeed ) =
-                    R.ter (R.isListEmpty m.monsters) (createMonsters m) ( m.monsters, m.seed )
-            in
-                { m | gridSize = gridSize, monsters = newMonsters, seed = newSeed } |> pure
+            {- let
+                   ( newMonsters, newSeed ) =
+                       R.ter (R.isListEmpty m.monsters) (createMonsters m) ( m.monsters, m.seed )
+               in
+                   { m | gridSize = gridSize, monsters = newMonsters, seed = newSeed } |> pure
+            -}
+            pure m
 
-        UpdatePlayer ->
+        UpdatePlayer clock ->
             let
                 ( newPxAnim, newPyAnim ) =
                     computeNewXYAnim m
             in
-                pure { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
+                {- pure { m | pxAnim = newPxAnim, pyAnim = newPyAnim } -}
+                pure m
 
-        UpdateMonsters ->
+        UpdateMonsters clock ->
             let
                 newMonsters =
                     m.monsters |> List.map (updateMonster m)
             in
-                pure { m | monsters = newMonsters }
+                {- pure { m | monsters = newMonsters } -}
+                pure m
 
         AnimationFrame posix ->
-            pure { m | clock = getClock posix m }
-                |> Update.Extra.sequence update [ UpdatePlayer, UpdateMonsters ]
+            let
+                newClock =
+                    getClock posix m
+
+                newModel =
+                    (if newClock - m.clock > 1000 then
+                        { m | clock = newClock }
+                     else
+                        m
+                    )
+            in
+                m
+                    |> pure
+
+
+
+--                    |> Update.Extra.sequence update [ UpdatePlayer newClock, UpdateMonsters newClock ]
 
 
 type alias F a =
@@ -440,8 +468,14 @@ computeMonsterNewYa m monster =
 updateMonster : Model -> F Monster
 updateMonster m monster =
     let
+        xa =
+            monster.xa
+
+        ya =
+            monster.ya
+
         isMoving =
-            isRunning monster.xa m || isRunning monster.ya m
+            isRunning xa m || isRunning ya m
     in
         (if isMoving then
             monster
@@ -630,20 +664,24 @@ canvasWHStyles =
 
 view : Model -> View
 view m =
-    H.div ([ H.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHStyles)
-        [ H.div [ H.class "flex flex-column vs3" ]
-            [ H.div [ H.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
-            , H.div
-                [ H.class "flex-auto overflow-scroll"
+    let
+        _ =
+            Debug.log "view" "asd"
+    in
+        H.div ([ H.class "flex flex-column items-center pa2 h-100 " ] ++ canvasWHStyles)
+            [ H.div [ H.class "flex flex-column vs3" ]
+                [ H.div [ H.class "f3 tc" ] [ H.text "A-Maze-Zing!" ]
+                , H.div
+                    [ H.class "flex-auto overflow-scroll"
 
-                {- , H.style "transform" "scale( 0.8 , 0.8 )" -}
-                ]
-                [ viewSvg m ]
-            , H.div [ H.class "" ]
-                [ getDebugState m |> debugView
+                    {- , H.style "transform" "scale( 0.8 , 0.8 )" -}
+                    ]
+                    [ viewSvg m ]
+                , H.div [ H.class "" ]
+                    [ getDebugState m |> debugView
+                    ]
                 ]
             ]
-        ]
 
 
 debugView : DebugModel -> View
@@ -936,10 +974,10 @@ type alias Subs =
 subscriptions : Subs
 subscriptions _ =
     Sub.batch
-        [ B.onAnimationFrameDelta AnimationFrameDelta
-        , B.onAnimationFrame AnimationFrame
+        [ B.onAnimationFrame AnimationFrame
         , Sub.map KeyMsg Keyboard.subscriptions
         , onWindowBlur OnWindowBlur
+        , onAnimationFrame AnimationFramePort
         ]
 
 
