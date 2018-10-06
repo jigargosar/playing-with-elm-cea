@@ -819,8 +819,7 @@ viewGameContent m =
     ([ S.lazy viewGridCells m.gridSize
      , S.lazy viewMazeWalls m.maze
      , viewPlayer (getPlayerCellXY m)
-
-     {- , viewMonsters m.clock m.monsters |> S.g [] -}
+     , viewMonsters m.clock m.monsters |> S.g []
      ]
      {- ++ viewMonsters m.clock m.monsters -}
     )
