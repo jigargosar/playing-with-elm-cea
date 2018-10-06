@@ -751,29 +751,21 @@ monsterDef =
             5
 
         radius =
-            (cellSize - wallThicknessF - offset) / 2
+            (cellSize - wallThicknessF - offset) / 2 |> round
 
-        x =
+        ( x, y ) =
             cellCenterF
-
-        y =
-            cellCenterF
-
-        cXYAttrs =
-            ( x, y )
-                |> Tuple.mapBoth TP.cx TP.cy
-                |> R.tupleToList
-
-        rAttr =
-            TP.r radius
+                |> R.toTuple
+                |> R.mapBothWith round
     in
         S.circle
-            (cXYAttrs
-                ++ [ rAttr
-                   , Color.darkOrange |> fillColor
-                   , S.id "monster"
-                   , TA.primitiveUnits CoordinateSystemUserSpaceOnUse
-                   ]
+            ([ iX x
+             , iY y
+             , iR radius
+             , Color.darkOrange |> fillColor
+             , S.id "monster"
+             , TA.primitiveUnits CoordinateSystemUserSpaceOnUse
+             ]
             )
             []
 
