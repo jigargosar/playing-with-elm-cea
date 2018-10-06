@@ -1,11 +1,8 @@
 module NumPair exposing (..)
 
+import PairA exposing (PairA)
 import Ramda
 import Ramda as R
-
-
-type alias PairA a =
-    ( a, a )
 
 
 type alias NumPair =

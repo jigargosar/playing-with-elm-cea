@@ -16,6 +16,7 @@ import Light
 import List.Extra
 import Maybe.Extra
 import Maze exposing (Maze)
+import PairA
 import Ramda as R
 import Random
 import Size
@@ -629,8 +630,10 @@ concat a b =
 
 canvasWHStyles =
     canvasSize
-        |> R.mapBothWith String.fromInt
-        |> R.mapBothWith (R.flip concat "px")
+        |> PairA.fromInt
+        |> PairA.suffix "px"
+        --        |> R.mapBothWith String.fromInt
+        --        |> R.mapBothWith (\s -> s ++ "px")
         |> Tuple.mapBoth (H.style "min-width") (H.style "min-height")
         |> R.tupleToList
 
