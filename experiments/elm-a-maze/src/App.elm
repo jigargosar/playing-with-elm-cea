@@ -765,7 +765,7 @@ bkgRect =
 
 viewGameContent : Model -> List View
 viewGameContent m =
-    ([ S.lazy viewGridCells m.gridSize, viewMazeWalls m.maze, viewPlayer (getPlayerCellXY m) ] {- ++ viewMonsters m.clock m.monsters -})
+    ([ S.lazy viewGridCells m.gridSize, viewMazeWalls m.maze, viewPlayer (getPlayerCellXY m) ] ++ viewMonsters m.clock m.monsters)
 
 
 wallThickness =
@@ -862,7 +862,7 @@ viewMonsterHelp x y =
         radius =
             (cellSize - wallThicknessF - offset) / 2
 
-        cXYAttrs =
+        xyAttr =
             ( x, y )
                 |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
                 |> Tuple.mapBoth TP.x TP.y
@@ -871,12 +871,7 @@ viewMonsterHelp x y =
         rAttr =
             TP.r radius
     in
-        S.use
-            (cXYAttrs
-                ++ [ S.xlinkHref "#monster"
-                   ]
-            )
-            []
+        S.use (xyAttr ++ [ S.xlinkHref "#monster" ]) []
 
 
 
