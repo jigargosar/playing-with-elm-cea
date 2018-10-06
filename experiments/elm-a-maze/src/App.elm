@@ -15,6 +15,7 @@ import Keyboard.Arrows
 import Light
 import List.Extra
 import Maybe.Extra
+import Maze exposing (Maze)
 import Ramda as R
 import Random
 import Size
@@ -102,7 +103,7 @@ type alias Model =
     , pressedKeys : List Keyboard.Key
     , pageLoadedAt : Int
     , clock : A.Clock
-    , mazeG : MazeGenerator
+    , maze : Maze
     , monsters : List Monster
     }
 
@@ -155,7 +156,7 @@ init { now } =
         , pressedKeys = []
         , pageLoadedAt = now
         , clock = 0
-        , mazeG = MG.init mazeSeed gridSize |> MG.solve
+        , maze = Maze.init mazeSeed gridSize
         , monsters = []
         }
             |> pure
@@ -365,13 +366,8 @@ getMonsterYInt { ya } =
 computeMonsterNewX : Int -> Model -> Monster -> Maybe Float
 computeMonsterNewX offset m monster =
     let
-        connections : Set MG.Connection
-        connections =
-            MG.mapConnections C2.normalizeConnection m.mazeG
-                |> Set.fromList
-
         isConnected cp =
-            connections |> Set.member (C2.normalizeConnection cp)
+            Maze.connected cp m.maze
 
         currentY =
             getMonsterYInt monster
@@ -396,13 +392,8 @@ computeMonsterNewX offset m monster =
 computeMonsterNewY : Int -> Model -> Monster -> Maybe Float
 computeMonsterNewY offset m monster =
     let
-        connections : Set MG.Connection
-        connections =
-            MG.mapConnections C2.normalizeConnection m.mazeG
-                |> Set.fromList
-
         isConnected cp =
-            connections |> Set.member (C2.normalizeConnection cp)
+            Maze.connected cp m.maze
 
         currentX =
             getMonsterXInt monster
@@ -514,7 +505,7 @@ computeNewXYAnim m =
             (\key ->
                 let
                     isConnected cp =
-                        MG.connected cp m.mazeG
+                        Maze.connected cp m.maze
 
                     ( dx, dy ) =
                         getArrows m
@@ -691,10 +682,11 @@ bkgRect =
         []
 
 
+viewGameContent : Model -> View
 viewGameContent m =
     S.g [ TA.transform [ Translate cellSize cellSize ] ]
         ([ S.lazy viewGridCells m.gridSize
-         , S.lazy viewMazeWalls m.mazeG
+         , S.lazy viewMazeWalls m.maze
          , viewPlayer (getPlayerCellXY m)
          , viewMonsters m.clock m.monsters
          ]
@@ -709,18 +701,14 @@ wallThicknessF =
     toFloat wallThickness
 
 
-viewMazeWalls mg =
+viewMazeWalls : Maze -> View
+viewMazeWalls maze =
     let
         cellSizePx =
             cellSize
 
-        connections : Set MG.Connection
-        connections =
-            MG.mapConnections C2.normalizeConnection mg
-                |> Set.fromList
-
         isConnected cp =
-            Set.member cp connections
+            Maze.connected cp maze
 
         isSouthConnected ( x, y ) =
             isConnected ( ( x, y ), ( x, y + 1 ) )
@@ -757,7 +745,7 @@ viewMazeWalls mg =
                         []
                     ]
     in
-        MG.concatMapCellInfo viewCell mg |> S.g []
+        Maze.concatMapCellInfo viewCell maze |> S.g []
 
 
 viewPlayer ( x, y ) =
