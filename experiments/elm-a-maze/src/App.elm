@@ -811,7 +811,7 @@ viewPlayerHelp x y =
         cXYAttrs =
             ( x, y )
                 |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2) >> round)
-                |> Tuple.mapBoth iCX iCX
+                |> Tuple.mapBoth iCX iCY
                 |> R.tupleToList
 
         rAttr =
