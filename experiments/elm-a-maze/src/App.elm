@@ -340,7 +340,10 @@ update msg m =
         AnimationFrame posix ->
             let
                 ( newMonsters, newSeed ) =
-                    R.ter (R.isListEmpty m.monsters) (createMonsters m) ( m.monsters, m.seed )
+                    R.ifElse (.monsters >> R.isListEmpty)
+                        (createMonsters)
+                        (R.toTuple >> Tuple.mapBoth .monsters .seed)
+                        m
 
                 newClock =
                     getClock posix m
