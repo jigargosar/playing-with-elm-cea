@@ -124,6 +124,7 @@ defaultAnim =
     createAnim 1 1 { clock = 0 }
 
 
+gridSize : IntPair
 gridSize =
     ( 18, 12 )
 
@@ -612,19 +613,16 @@ computeNewAnim isConnected cellCount dd anim m =
         travelled =
             current - to |> abs
 
+        clampTo =
+            clamp 0 ((toFloat cellCount) - 1)
+
         newTo =
             to
                 + newDirection
-                |> clamp 0 (cellCount - 1)
+                |> clampTo
     in
         if (notRunning anim m || directionReversed) && isConnected ( to, newTo ) && to /= newTo then
-            let
-                _ =
-                    {- Debug.log "currentDirection, newDirection" ( currentDirection, newDirection ) -}
-                    1
-            in
-                createAnim current newTo m
-            --                                    |> Debug.log "pxAnim"
+            createAnim current newTo m
         else
             anim
 
@@ -637,12 +635,13 @@ type alias View =
     Html Msg
 
 
+worldSize : IntPair
 worldSize =
     gridSize |> R.mapBothWith ((+) 2 >> (*) cellSize)
 
 
 worldSizeInt =
-    worldSize |> R.mapBothWith round
+    worldSize
 
 
 concat a b =
@@ -680,23 +679,20 @@ viewBoxAttr =
         ( w, h ) =
             worldSize
     in
-        TA.viewBox -cellSize -cellSize w h
+        iViewBox -cellSize -cellSize w h
 
 
-svgWHAttrs =
-    worldSize
-        |> Tuple.mapBoth (TP.width) (TP.height)
-        |> R.tupleToList
+iViewBox minX minY vWidth vHeight =
+    [ minX, minY, vWidth, vHeight ]
+        |> List.map String.fromInt
+        |> String.join " "
+        |> S.viewBox
 
 
 svgAttrs =
     [ viewBoxAttr
     ]
         ++ canvasWHStyles
-
-
-
-{- ++ svgWHAttrs -}
 
 
 svgWithAttrs =
