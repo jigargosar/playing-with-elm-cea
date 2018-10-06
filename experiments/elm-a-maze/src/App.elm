@@ -630,10 +630,7 @@ concat a b =
 
 canvasWHStyles =
     canvasSize
-        |> PairA.fromInt
-        |> PairA.suffix "px"
-        --        |> R.mapBothWith String.fromInt
-        --        |> R.mapBothWith (\s -> s ++ "px")
+        |> PairA.fromIntWithSuffix "px"
         |> Tuple.mapBoth (H.style "min-width") (H.style "min-height")
         |> R.tupleToList
 

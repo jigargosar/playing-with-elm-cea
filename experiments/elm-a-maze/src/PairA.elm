@@ -38,6 +38,11 @@ fromInt =
     R.mapBothWith String.fromInt
 
 
-suffix : String -> F StringPair
-suffix suf =
-    R.mapBothWith (R.suffix suf)
+fromIntWithSuffix : String -> IntPair -> StringPair
+fromIntWithSuffix suf =
+    fromInt >> withSuffix suf
+
+
+withSuffix : String -> F StringPair
+withSuffix suf =
+    R.mapBothWith (R.withSuffix suf)
