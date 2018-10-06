@@ -12,6 +12,7 @@ module MazeGenerator
         , reset
         , solve
         , step
+        , connected
         )
 
 import Coordinate2D exposing (Coordinate2D)

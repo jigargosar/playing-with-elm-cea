@@ -513,13 +513,8 @@ computeNewXYAnim m =
         |> Maybe.map
             (\key ->
                 let
-                    connections : Set MG.Connection
-                    connections =
-                        MG.mapConnections C2.normalizeConnection m.mazeG
-                            |> Set.fromList
-
                     isConnected cp =
-                        connections |> Set.member (C2.normalizeConnection cp)
+                        MG.connected cp m.mazeG
 
                     ( dx, dy ) =
                         getArrows m
