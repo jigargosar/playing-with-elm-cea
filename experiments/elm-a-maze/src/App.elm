@@ -35,7 +35,7 @@ import Browser.Events as BE
 import Set exposing (Set)
 import Json.Decode as D
 import Json.Encode as E
-import TypedSvg.Types exposing (Fill(..), Transform(..), px, percent)
+import TypedSvg.Types exposing (CoordinateSystem(..), Fill(..), Transform(..), percent, px)
 import MazeGenerator as MG exposing (MazeGenerator)
 import ISvg
     exposing
@@ -668,7 +668,11 @@ svgWHAttrs =
 svgAttrs =
     [ viewBoxAttr
     ]
-        ++ svgWHAttrs
+        ++ canvasWHStyles
+
+
+
+{- ++ svgWHAttrs -}
 
 
 svgWithAttrs =
@@ -678,7 +682,42 @@ svgWithAttrs =
 viewSvg : Model -> View
 viewSvg m =
     svgWithAttrs
-        ([ bkgRect ] ++ viewGameContent m)
+        ([ svgDefs, bkgRect ] ++ viewGameContent m)
+
+
+svgDefs =
+    let
+        offset =
+            5
+
+        radius =
+            (cellSize - wallThicknessF - offset) / 2
+
+        x =
+            0
+
+        y =
+            0
+
+        cXYAttrs =
+            ( x, y )
+                |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
+                |> Tuple.mapBoth TP.cx TP.cy
+                |> R.tupleToList
+
+        rAttr =
+            TP.r radius
+    in
+        S.defs []
+            [ S.circle
+                ([ rAttr
+                 , Color.darkOrange |> fillColor
+                 , S.id "monster"
+                 , TA.primitiveUnits CoordinateSystemUserSpaceOnUse
+                 ]
+                )
+                []
+            ]
 
 
 bkgRect =
@@ -800,15 +839,25 @@ viewMonsterHelp x y =
         cXYAttrs =
             ( x, y )
                 |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
-                |> Tuple.mapBoth TP.cx TP.cy
+                |> Tuple.mapBoth TP.y TP.x
                 |> R.tupleToList
 
         rAttr =
             TP.r radius
     in
-        S.g []
-            [ S.circle (cXYAttrs ++ [ rAttr, Color.darkOrange |> fillColor ]) []
-            ]
+        S.use
+            (cXYAttrs
+                ++ [ S.xlinkHref "#monster"
+                   ]
+            )
+            []
+
+
+
+{- S.g []
+   [ S.circle (cXYAttrs ++ [ rAttr, Color.darkOrange |> fillColor ]) []
+   ]
+-}
 
 
 viewGridCells size =
