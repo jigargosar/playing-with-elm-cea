@@ -710,7 +710,7 @@ svgWithAttrs =
 viewSvg : Model -> View
 viewSvg m =
     svgWithAttrs
-        ([ svgDefs, bkgRect ] ++ viewGameContent m)
+        ([ svgDefs, bkgRect, viewGameContent m |> Svg.g [] ] {- ++ viewGameContent m -})
 
 
 cellCenterF =
@@ -817,10 +817,12 @@ bkgRect =
 viewGameContent : Model -> List View
 viewGameContent m =
     ([ S.lazy viewGridCells m.gridSize
-     , viewMazeWalls m.maze
+     , S.lazy viewMazeWalls m.maze
      , viewPlayer (getPlayerCellXY m)
-     , viewMonsters m.clock m.monsters
+
+     {- , viewMonsters m.clock m.monsters |> S.g [] -}
      ]
+     {- ++ viewMonsters m.clock m.monsters -}
     )
 
 
@@ -894,7 +896,7 @@ viewPlayerXY x y =
 
 
 viewMonsters clock =
-    List.map (getMonsterCellXY clock >> viewMonster) >> S.g []
+    List.map (getMonsterCellXY clock >> viewMonster)
 
 
 viewMonster ( x, y ) =
