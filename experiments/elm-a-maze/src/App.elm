@@ -713,6 +713,10 @@ viewSvg m =
         ([ svgDefs, bkgRect ] ++ viewGameContent m)
 
 
+cellCenterF =
+    (cellSize - wallThicknessF) / 2
+
+
 svgDefs =
     let
         offset =
@@ -722,10 +726,10 @@ svgDefs =
             (cellSize - wallThicknessF - offset) / 2
 
         x =
-            (cellSize - wallThicknessF) / 2
+            cellCenterF
 
         y =
-            (cellSize - wallThicknessF) / 2
+            cellCenterF
 
         cXYAttrs =
             ( x, y )
@@ -736,16 +740,71 @@ svgDefs =
             TP.r radius
     in
         S.defs []
-            [ S.circle
-                (cXYAttrs
-                    ++ [ rAttr
-                       , Color.darkOrange |> fillColor
-                       , S.id "monster"
-                       , TA.primitiveUnits CoordinateSystemUserSpaceOnUse
-                       ]
-                )
-                []
+            [ monsterDef
+            , playerDef
             ]
+
+
+monsterDef =
+    let
+        offset =
+            5
+
+        radius =
+            (cellSize - wallThicknessF - offset) / 2
+
+        x =
+            cellCenterF
+
+        y =
+            cellCenterF
+
+        cXYAttrs =
+            ( x, y )
+                |> Tuple.mapBoth TP.cx TP.cy
+                |> R.tupleToList
+
+        rAttr =
+            TP.r radius
+    in
+        S.circle
+            (cXYAttrs
+                ++ [ rAttr
+                   , Color.darkOrange |> fillColor
+                   , S.id "monster"
+                   , TA.primitiveUnits CoordinateSystemUserSpaceOnUse
+                   ]
+            )
+            []
+
+
+playerDef =
+    let
+        offset =
+            5
+
+        radius =
+            (cellSize - wallThicknessF - offset) / 2 |> round
+
+        cXYAttrs =
+            cellCenterF
+                |> R.toTuple
+                |> R.mapBothWith (round)
+                |> Tuple.mapBoth iCX iCY
+                |> R.tupleToList
+
+        rAttr =
+            iR radius
+    in
+        S.circle
+            (cXYAttrs
+                ++ [ rAttr
+                   , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
+                   , S.id "player"
+                   , TA.primitiveUnits CoordinateSystemUserSpaceOnUse
+                   ]
+            )
+            []
 
 
 bkgRect =
@@ -823,27 +882,18 @@ viewMazeWalls maze =
 
 
 viewPlayer ( x, y ) =
-    S.lazy2 viewPlayerHelp x y
+    S.lazy2 viewPlayerXY x y
 
 
-viewPlayerHelp x y =
-    let
-        offset =
-            5
+viewPlayerXY x y =
+    S.use ([ TP.x x, TP.y y, S.xlinkHref "#player" ]) []
 
-        radius =
-            (cellSize - wallThicknessF - offset) / 2 |> round
 
-        cXYAttrs =
-            ( x, y )
-                |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2) >> round)
-                |> Tuple.mapBoth iCX iCY
-                |> R.tupleToList
 
-        rAttr =
-            iR radius
-    in
-        S.circle (cXYAttrs ++ [ rAttr, Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor ]) []
+{- S.circle
+   (cXYAttrs ++ [ rAttr, Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor ])
+   []
+-}
 
 
 viewMonsters clock =
