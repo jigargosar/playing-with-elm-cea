@@ -839,7 +839,7 @@ viewMonsterHelp x y =
         cXYAttrs =
             ( x, y )
                 |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
-                |> Tuple.mapBoth TP.y TP.x
+                |> Tuple.mapBoth TP.x TP.y
                 |> R.tupleToList
 
         rAttr =
