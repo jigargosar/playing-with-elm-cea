@@ -893,11 +893,8 @@ viewMonsters clock =
 
 
 viewMonster ( x, y ) =
-    viewMonsterHelp x y
-
-
-viewMonsterHelp x y =
-    S.use ([ iX x, iY y, S.xlinkHref "#monster" ]) []
+    --    S.use ([ iX x, iY y, S.xlinkHref "#monster" ]) []
+    S.use ([ iTranslate x y |> S.transform, S.xlinkHref "#monster" ]) []
 
 
 viewGridCells size =
