@@ -113,7 +113,7 @@ createMonsterAnim from to { clock } =
         |> A.from from
         |> A.to to
         |> A.ease identity
-        |> A.speed 0.0001
+        |> A.speed 0.003
 
 
 defaultAnim =
@@ -746,20 +746,18 @@ viewPlayerHelp x y =
             5
 
         radius =
-            (cellSize - wallThicknessF - offset) / 2
+            (cellSize - wallThicknessF - offset) / 2 |> round
 
         cXYAttrs =
             ( x, y )
-                |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2))
-                |> Tuple.mapBoth TP.cx TP.cy
+                |> R.mapBothWith ((+) ((cellSize - wallThicknessF) / 2) >> round)
+                |> Tuple.mapBoth iCX iCX
                 |> R.tupleToList
 
         rAttr =
-            TP.r radius
+            iR radius
     in
-        S.g []
-            [ S.circle (cXYAttrs ++ [ rAttr, Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor ]) []
-            ]
+        S.circle (cXYAttrs ++ [ rAttr, Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor ]) []
 
 
 viewMonsters clock =
