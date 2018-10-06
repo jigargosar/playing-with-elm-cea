@@ -35,7 +35,7 @@ import Browser.Events as BE
 import Set exposing (Set)
 import Json.Decode as D
 import Json.Encode as E
-import TypedSvg.Types exposing (Fill(..), Transform(..), px)
+import TypedSvg.Types exposing (Fill(..), Transform(..), px, percent)
 import MazeGenerator as MG exposing (MazeGenerator)
 import ISvg
     exposing
@@ -132,7 +132,7 @@ init : Flags -> ( Model, Cmd Msg )
 init { now } =
     let
         initialSeed =
-            Random.initialSeed now
+            Random.initialSeed 1
 
         ( mazeSeed, modelSeed ) =
             Random.step Random.independentSeed initialSeed
@@ -608,8 +608,12 @@ type alias View =
     Html Msg
 
 
-worldSizeIntT =
-    gridSize |> R.mapBothWith ((+) 2 >> (*) cellSize >> round)
+worldSize =
+    gridSize |> R.mapBothWith ((+) 2 >> (*) cellSize)
+
+
+worldSizeInt =
+    worldSize |> R.mapBothWith round
 
 
 concat a b =
@@ -617,7 +621,7 @@ concat a b =
 
 
 canvasWHStyles =
-    worldSizeIntT
+    worldSizeInt
         |> R.mapBothWith String.fromInt
         |> R.mapBothWith (R.flip concat "px")
         |> Tuple.mapBoth (H.style "min-width") (H.style "min-height")
@@ -647,13 +651,33 @@ debugView { pressedKeys } =
     H.div [] [ H.text pressedKeys ]
 
 
+viewBoxAttr =
+    let
+        ( w, h ) =
+            worldSize
+    in
+        TA.viewBox -cellSize -cellSize w h
+
+
+svgWHAttrs =
+    worldSize
+        |> Tuple.mapBoth (TP.width) (TP.height)
+        |> R.tupleToList
+
+
+svgAttrs =
+    [ viewBoxAttr
+    ]
+        ++ svgWHAttrs
+
+
+svgWithAttrs =
+    S.svg svgAttrs
+
+
 viewSvg : Model -> View
 viewSvg m =
-    S.svg
-        ([ SA.viewBox "0 0 400 400"
-         ]
-            ++ canvasWHStyles
-        )
+    svgWithAttrs
         [ bkgRect
         , viewGameContent m
         ]
@@ -661,10 +685,10 @@ viewSvg m =
 
 bkgRect =
     S.rect
-        [ S.width "100%"
-        , S.height "100%"
-        , TP.x 0
-        , TP.y 0
+        [ S.width "200%"
+        , S.height "200%"
+        , S.x "-100%"
+        , S.y "-100%"
         , TA.strokeWidth (px 0.2)
         , TA.stroke Color.black
         , Color.blue
