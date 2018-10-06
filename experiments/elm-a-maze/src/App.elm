@@ -767,6 +767,10 @@ viewMonsters clock =
 
 
 viewMonster ( x, y ) =
+    S.lazy2 viewMonsterHelp x y
+
+
+viewMonsterHelp x y =
     let
         offset =
             5
