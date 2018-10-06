@@ -671,13 +671,9 @@ svgAttrs =
     [ iViewBox -cellSize -cellSize canvasSizeRec.w canvasSizeRec.h ] ++ canvasWHStyles
 
 
-svgWithAttrs =
-    S.svg svgAttrs
-
-
 viewSvg : Model -> View
 viewSvg m =
-    svgWithAttrs
+    S.svg svgAttrs
         ([ S.lazy svgDefs (), S.lazy bkgRect (), viewGameContent m |> Svg.g [] ] {- ++ viewGameContent m -})
 
 
