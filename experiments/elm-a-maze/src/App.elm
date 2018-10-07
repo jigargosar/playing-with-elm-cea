@@ -659,19 +659,10 @@ viewMazeWalls maze =
 
 
 viewPlayer ( x, y ) =
-    S.lazy2 viewPlayerXY (round x) (round y)
+    S.lazy2 viewPlayerHelp (round x) (round y)
 
 
-playerConfig =
-    { fillColorA = Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
-    , centerOffsetX = centerOffset
-    , centerOffsetY = centerOffset
-    , radiusA = iR monsterRadius
-    , radius = monsterRadius
-    }
-
-
-viewPlayerXY x y =
+viewPlayerHelp x y =
     S.circle
         [ iCX (x + centerOffset)
         , iCY (y + centerOffset)
@@ -693,24 +684,14 @@ centerOffset =
     (cellSize - wallThickness) // 2
 
 
-monsterConfig =
-    { fillColorA = Color.darkOrange |> fillColor
-    , radiusA = iR monsterRadius
-    }
-
-
 viewMonsterHelp x y =
-    let
-        { fillColorA, radiusA } =
-            monsterConfig
-    in
-        S.circle
-            [ fillColorA
-            , radiusA
-            , iCX (x + centerOffset)
-            , iCY (y + centerOffset)
-            ]
-            []
+    S.circle
+        [ Color.darkOrange |> fillColor
+        , iR monsterRadius
+        , iCX (x + centerOffset)
+        , iCY (y + centerOffset)
+        ]
+        []
 
 
 viewGridCells size =
