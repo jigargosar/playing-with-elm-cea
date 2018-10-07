@@ -343,7 +343,7 @@ update msg m =
                 ( newMonsters, newSeed ) =
                     generateMonsters m
             in
-                noEffect { m | monsters = newMonsters, seed = newSeed }
+                noEffect m |> sequence [ SetMonsters newMonsters, SetSeed newSeed ]
 
         UpdateMonsters clock ->
             let
