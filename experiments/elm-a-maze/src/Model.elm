@@ -223,7 +223,7 @@ getArrows m =
 
 
 getArrowXDir =
-    getArrows >> Tuple.first
+    getArrows >> Tuple.first >> R.ifElse (R.equals 0) (\_ -> Nothing) Just
 
 
 getArrowYDir =

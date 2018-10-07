@@ -315,29 +315,31 @@ areCellsConnected cp =
     .maze >> Maze.connected cp
 
 
+computePlayerNewXa : Model -> Maybe Animation
 computePlayerNewXa m =
-    let
-        dx =
-            getArrowXDir m
-    in
-        if dx /= 0 && notRunning m.pyAnim m then
-            computeNewAnim
-                (\xx ->
-                    let
-                        ( x1, x2 ) =
-                            xx |> R.mapBothWith round
+    (if notRunning m.pyAnim m then
+        getArrowXDir m
+            |> Maybe.map
+                (\dx ->
+                    computeNewAnim
+                        (\xx ->
+                            let
+                                ( x1, x2 ) =
+                                    xx |> R.mapBothWith round
 
-                        y =
-                            A.getTo m.pyAnim |> round
-                    in
-                        areCellsConnected ( ( x1, y ), ( x2, y ) ) m
+                                y =
+                                    A.getTo m.pyAnim |> round
+                            in
+                                areCellsConnected ( ( x1, y ), ( x2, y ) ) m
+                        )
+                        xCells
+                        dx
+                        m.pxAnim
+                        m
                 )
-                xCells
-                dx
-                m.pxAnim
-                m
-        else
-            m.pxAnim
+     else
+        Nothing
+    )
 
 
 computeNewXYAnim m =
@@ -352,24 +354,7 @@ computeNewXYAnim m =
                         getArrows m
 
                     newPxAnim =
-                        if dx /= 0 && notRunning m.pyAnim m then
-                            computeNewAnim
-                                (\xx ->
-                                    let
-                                        ( x1, x2 ) =
-                                            xx |> R.mapBothWith round
-
-                                        y =
-                                            A.getTo m.pyAnim |> round
-                                    in
-                                        isConnected ( ( x1, y ), ( x2, y ) )
-                                )
-                                xCells
-                                dx
-                                m.pxAnim
-                                m
-                        else
-                            m.pxAnim
+                        computePlayerNewXa m
 
                     newPyAnim =
                         if dy /= 0 && notRunning m.pxAnim m then
