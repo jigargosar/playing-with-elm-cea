@@ -724,34 +724,25 @@ monsterConfig =
             in
                 (cellSize - wallThicknessF - offset) / 2 |> round |> iR
     in
-        { fillColor = Color.darkOrange |> fillColor
+        { fillColorA = Color.darkOrange |> fillColor
         , centerOffset = { x = centerOffsetX, y = centerOffsetY }
-        , radius = radiusA
+        , radiusA = radiusA
         }
-
-
-centerOffsetX =
-    centerOffset |> Tuple.first
-
-
-centerOffsetY =
-    centerOffset |> Tuple.second
 
 
 viewMonsterHelp x y =
     let
-        {centerOffsetX, centerOffsetY, fillColorA, radiusA}=
-
+        { centerOffsetX, centerOffsetY, fillColorA, radiusA } =
+            monsterConfig
     in
-
-    S.circle
-        ([ fillColorA
-         , radiusA
-         , iCX (x + centerOffsetX)
-         , iCY (y + centerOffsetY)
-         ]
-        )
-        []
+        S.circle
+            ([ fillColorA
+             , radiusA
+             , iCX (x + centerOffsetX)
+             , iCY (y + centerOffsetY)
+             ]
+            )
+            []
 
 
 viewGridCells size =
