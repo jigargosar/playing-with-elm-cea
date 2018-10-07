@@ -72,12 +72,16 @@ type alias Monster =
     { xa : Animation, ya : Animation }
 
 
+type alias PressedKeys =
+    List Keyboard.Key
+
+
 type alias Model =
     { gridSize : IntPair
     , seed : Random.Seed
     , pxAnim : Animation
     , pyAnim : Animation
-    , pressedKeys : List Keyboard.Key
+    , pressedKeys : PressedKeys
     , pageLoadedAt : Int
     , clock : A.Clock
     , maze : Maze
@@ -276,6 +280,7 @@ noMonsters =
 type Msg
     = NoOp
     | OnWindowBlur ()
+    | SetPressedKeys PressedKeys
     | KeyMsg Keyboard.Msg
     | AnimationFrame Time.Posix
     | AnimationFramePort ()
@@ -306,10 +311,13 @@ update msg m =
             noEffect m
 
         OnWindowBlur _ ->
-            noEffect { m | pressedKeys = [] }
+            SetPressedKeys [] |> updateWithModel m
+
+        SetPressedKeys newPressedKeys ->
+            noEffect { m | pressedKeys = newPressedKeys }
 
         KeyMsg keyMsg ->
-            noEffect { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys }
+            Keyboard.update keyMsg m.pressedKeys |> SetPressedKeys |> updateWithModel m
 
         UpdatePlayer clock ->
             let
@@ -340,6 +348,10 @@ update msg m =
                 noEffect { m | clock = newClock, gridSize = gridSize }
                     |> filter (noMonsters m) (andThen GenerateMonsters)
                     |> sequence [ UpdatePlayer newClock, UpdateMonsters newClock ]
+
+
+updateWithModel =
+    R.flip update
 
 
 andThen =
