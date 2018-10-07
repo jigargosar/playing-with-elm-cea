@@ -315,7 +315,7 @@ areCellsConnected cp =
     .maze >> Maze.connected cp
 
 
-getNewPlayerX m =
+computePlayerNewXa m =
     let
         ( dx, dy ) =
             getArrows m
