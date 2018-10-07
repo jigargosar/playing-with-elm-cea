@@ -342,6 +342,33 @@ computePlayerNewXa m =
     )
 
 
+computePlayerNewYa : Model -> Maybe Animation
+computePlayerNewYa m =
+    (if notRunning m.pxAnim m then
+        getArrowYDir m
+            |> Maybe.map
+                (\dy ->
+                    computeNewAnim
+                        (\yy ->
+                            let
+                                ( y1, y2 ) =
+                                    yy |> R.mapBothWith round
+
+                                x =
+                                    A.getTo m.pxAnim |> round
+                            in
+                                areCellsConnected ( ( y1, x ), ( y2, x ) ) m
+                        )
+                        yCells
+                        dy
+                        m.pyAnim
+                        m
+                )
+     else
+        Nothing
+    )
+
+
 computeNewXYAnim m =
     getFirstArrowKey m
         |> Maybe.map
@@ -357,24 +384,7 @@ computeNewXYAnim m =
                         computePlayerNewXa m
 
                     newPyAnim =
-                        if dy /= 0 && notRunning m.pxAnim m then
-                            computeNewAnim
-                                (\yy ->
-                                    let
-                                        ( y1, y2 ) =
-                                            yy |> R.mapBothWith round
-
-                                        x =
-                                            A.getTo m.pxAnim |> round
-                                    in
-                                        isConnected ( ( x, y1 ), ( x, y2 ) )
-                                )
-                                yCells
-                                dy
-                                m.pyAnim
-                                m
-                        else
-                            m.pyAnim
+                        computePlayerNewYa m
 
                     yChanged =
                         A.equals newPyAnim m.pyAnim |> not
