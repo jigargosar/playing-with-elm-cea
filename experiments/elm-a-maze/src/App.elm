@@ -642,8 +642,6 @@ viewMazeWalls maze =
                         , iWidth wallThickness
                         , iHeight size
                         , SA.fill "#000"
-
-                        --                        , R.ter (isEastConnected cord) "0" "1" |> SA.opacity
                         ]
                         []
 
@@ -654,8 +652,6 @@ viewMazeWalls maze =
                         , iWidth size
                         , iHeight wallThickness
                         , SA.fill "#000"
-
-                        --                        , R.ter (isSouthConnected cord) "0" "1" |> SA.opacity
                         ]
                         []
             in
