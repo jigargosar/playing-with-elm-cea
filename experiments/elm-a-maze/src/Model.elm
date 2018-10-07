@@ -1,15 +1,7 @@
 module Model exposing (..)
 
 import Animation as A exposing (Animation, Clock)
-import Browser.Dom
-import Browser.Dom as BD
-import Browser.Dom as B
-import Color exposing (Color)
 import IntPair as IP exposing (IntPair)
-import Html as H exposing (Html)
-import Html.Lazy as H
-import Html.Attributes as H
-import Html.Attributes as HA
 import Keyboard
 import Keyboard.Arrows
 import List.Extra
