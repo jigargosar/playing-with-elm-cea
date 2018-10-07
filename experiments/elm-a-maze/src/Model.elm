@@ -12,30 +12,12 @@ import Html.Attributes as H
 import Html.Attributes as HA
 import Keyboard
 import Keyboard.Arrows
-import Light
 import List.Extra
 import Maze exposing (Maze)
 import Ramda as R exposing (F)
 import Random
-import Size
-import Svg
-import Svg as S
-import Svg.Attributes as S
-import Svg.Attributes as SA
-import Svg.Keyed
 import Time
-import TypedSvg as T
-import TypedSvg.Attributes as TA
-import TypedSvg.Attributes.InPx as T
-import TypedSvg.Attributes.InPx as TP
-import Browser
-import Browser as B
-import Browser.Events as B
-import Browser.Events as BE
 import Set exposing (Set)
-import Json.Decode as D
-import Json.Encode as E
-import TypedSvg.Types exposing (CoordinateSystem(..), Fill(..), Transform(..), percent, px)
 import MazeGenerator as MG exposing (MazeGenerator)
 
 
