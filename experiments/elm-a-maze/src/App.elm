@@ -516,7 +516,7 @@ view m =
         canvasWHStyles
         [ divClass "flex flex-column vs3 h-100"
             [ divClass "f3 tc" [ H.text "A-Maze-Zing!" ]
-            , divClass "flex-auto overflow-scroll" [ viewSvg m ]
+            , divClass "flex1 overflow-scroll" [ viewSvg m ]
             , divClass "f7" [ viewDebug (getDebugState m) ]
             ]
         ]
