@@ -708,10 +708,6 @@ centerOffsetF =
     centerOffset |> R.mapBothWith toFloat
 
 
-mC =
-    Color.darkOrange |> fillColor
-
-
 monsterConfig =
     let
         ( centerOffsetX, centerOffsetY ) =
