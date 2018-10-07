@@ -696,7 +696,6 @@ centerOffset =
 monsterConfig =
     { fillColorA = Color.darkOrange |> fillColor
     , radiusA = iR monsterRadius
-    , radius = monsterRadius
     }
 
 
