@@ -662,6 +662,15 @@ viewPlayer ( x, y ) =
     S.lazy2 viewPlayerXY (round x) (round y)
 
 
+playerConfig =
+    { fillColorA = Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
+    , centerOffsetX = centerOffset
+    , centerOffsetY = centerOffset
+    , radiusA = iR monsterRadius
+    , radius = monsterRadius
+    }
+
+
 viewPlayerXY x y =
     S.circle
         [ iCX (x + centerOffset)
@@ -686,8 +695,6 @@ centerOffset =
 
 monsterConfig =
     { fillColorA = Color.darkOrange |> fillColor
-    , centerOffsetX = centerOffset
-    , centerOffsetY = centerOffset
     , radiusA = iR monsterRadius
     , radius = monsterRadius
     }
@@ -695,16 +702,15 @@ monsterConfig =
 
 viewMonsterHelp x y =
     let
-        { centerOffsetX, centerOffsetY, fillColorA, radiusA } =
+        { fillColorA, radiusA } =
             monsterConfig
     in
         S.circle
-            ([ fillColorA
-             , radiusA
-             , iCX (x + centerOffsetX)
-             , iCY (y + centerOffsetY)
-             ]
-            )
+            [ fillColorA
+            , radiusA
+            , iCX (x + centerOffset)
+            , iCY (y + centerOffset)
+            ]
             []
 
 
