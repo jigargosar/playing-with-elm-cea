@@ -49,15 +49,6 @@ import Update.Extra as Update exposing (filter)
 ---- MODEL ----
 
 
-type MovementAxis
-    = Horizontal
-    | Vertical
-
-
-type alias Movement =
-    { axis : MovementAxis, to : Int, current : Float }
-
-
 type alias Monster =
     { xa : Animation, ya : Animation }
 
