@@ -67,3 +67,25 @@ mul factor ( a1, a2 ) =
 
 iDiv factor ( a1, a2 ) =
     ( a1 // factor, a2 // factor )
+
+
+concatMap : (IntPair -> a) -> IntPair -> List a
+concatMap fn cord =
+    map fn cord |> List.concat
+
+
+map : (IntPair -> a) -> IntPair -> List (List a)
+map fn ( width, height ) =
+    let
+        xCords =
+            List.range 0 (width - 1)
+
+        yCords =
+            List.range 0 (height - 1)
+    in
+        yCords
+            |> List.map
+                (\y ->
+                    xCords
+                        |> List.map (\x -> fn ( x, y ))
+                )
