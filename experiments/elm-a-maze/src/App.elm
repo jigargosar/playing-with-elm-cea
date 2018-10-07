@@ -634,10 +634,10 @@ viewMazeWalls maze =
 
                 eastWall =
                     Svg.rect
-                        [ iX (x + size - wallThickness)
+                        [ iX (x + cellSize - wallThickness)
                         , iY y
                         , iWidth wallThickness
-                        , iHeight size
+                        , iHeight cellSize
                         , SA.fill "#000"
                         ]
                         []
@@ -645,8 +645,8 @@ viewMazeWalls maze =
                 southWall =
                     Svg.rect
                         [ iX x
-                        , iY (y + size - wallThickness)
-                        , iWidth size
+                        , iY (y + cellSize - wallThickness)
+                        , iWidth cellSize
                         , iHeight wallThickness
                         , SA.fill "#000"
                         ]
