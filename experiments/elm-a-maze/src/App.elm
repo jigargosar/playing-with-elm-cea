@@ -503,8 +503,7 @@ svgAttrs =
 viewSvg : Model -> View
 viewSvg m =
     S.svg svgAttrs
-        ([ S.lazy svgDefs ()
-         , S.lazy bkgRect ()
+        ([ S.lazy bkgRect ()
          , viewGameContent m |> Svg.g []
          ]
         )
@@ -512,88 +511,6 @@ viewSvg m =
 
 cellCenterF =
     (cellSize - wallThicknessF) / 2
-
-
-svgDefs _ =
-    let
-        offset =
-            5
-
-        radius =
-            (cellSize - wallThicknessF - offset) / 2
-
-        x =
-            cellCenterF
-
-        y =
-            cellCenterF
-
-        cXYAttrs =
-            ( x, y )
-                |> Tuple.mapBoth TP.cx TP.cy
-                |> R.tupleToList
-
-        rAttr =
-            TP.r radius
-    in
-        S.defs []
-            [ monsterDef
-            , playerDef
-            ]
-
-
-monsterDef =
-    let
-        offset =
-            5
-
-        radius =
-            (cellSize - wallThicknessF - offset) / 2 |> round
-
-        ( x, y ) =
-            cellCenterF
-                |> R.toTuple
-                |> R.mapBothWith round
-    in
-        S.circle
-            ([ iCX x
-             , iCY y
-             , iR radius
-             , Color.darkOrange |> fillColor
-             , S.id "monster"
-             , TA.primitiveUnits CoordinateSystemUserSpaceOnUse
-             ]
-            )
-            []
-
-
-playerDef =
-    let
-        offset =
-            5
-
-        radius =
-            (cellSize - wallThicknessF - offset) / 2 |> round
-
-        cXYAttrs =
-            cellCenterF
-                |> R.toTuple
-                |> R.mapBothWith (round)
-                |> Tuple.mapBoth iCX iCY
-                |> R.tupleToList
-
-        rAttr =
-            iR radius
-    in
-        S.circle
-            (cXYAttrs
-                ++ [ rAttr
-                   , Color.green |> Light.map (\h -> { h | s = 1, l = 0.8 }) |> fillColor
-                   , S.id "player"
-                   , TA.primitiveUnits CoordinateSystemUserSpaceOnUse
-                   ]
-            )
-            []
 
 
 bkgRect _ =
@@ -619,14 +536,6 @@ viewGameContent m =
      , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
      ]
     )
-
-
-wallThickness =
-    cellSize // 10
-
-
-wallThicknessF =
-    toFloat wallThickness
 
 
 viewMazeWalls : Maze -> View
@@ -684,19 +593,13 @@ viewPlayer ( x, y ) =
 
 viewPlayerXY x y =
     let
-        offset =
-            5
-
-        radius =
-            (cellSize - wallThicknessF - offset) / 2 |> round
-
         ( ox, oy ) =
             centerOffset
     in
         S.circle
             [ iCX (x + ox)
             , iCY (y + oy)
-            , iR radius
+            , iR playerRadius
             , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
             ]
             []
@@ -730,18 +633,12 @@ monsterConfig =
     let
         ( centerOffsetX, centerOffsetY ) =
             centerOffset
-
-        radiusA =
-            let
-                offset =
-                    5
-            in
-                (cellSize - wallThicknessF - offset) / 2 |> round |> iR
     in
         { fillColorA = Color.darkOrange |> fillColor
         , centerOffsetX = centerOffsetX
         , centerOffsetY = centerOffsetY
-        , radiusA = radiusA
+        , radiusA = iR monsterRadius
+        , radius = monsterRadius
         }
 
 

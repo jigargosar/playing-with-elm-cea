@@ -91,6 +91,14 @@ cellSize =
     32
 
 
+wallThickness =
+    cellSize // 10
+
+
+wallThicknessF =
+    toFloat wallThickness
+
+
 init : Flags -> Model
 init { now } =
     let
@@ -242,8 +250,11 @@ extrema =
 
 isGameOver m =
     let
+        ( px, py ) =
+            getPlayerCellXY m
+
         playerBoundingBox =
-            BoundingBox2d.fromExtrema extrema
+            Extrema px py (px + cellSize) (py + cellSize) |> BoundingBox2d.fromExtrema
     in
         m.monsters
             |> List.any (monsterBoundingBox m >> BoundingBox2d.intersects playerBoundingBox)
@@ -251,3 +262,27 @@ isGameOver m =
 
 monsterBoundingBox m mon =
     BoundingBox2d.fromExtrema extrema
+
+
+monsterDiameterF =
+    let
+        offset =
+            5
+    in
+        (cellSize - wallThicknessF - offset)
+
+
+playerDiameterF =
+    let
+        offset =
+            5
+    in
+        (cellSize - wallThicknessF - offset)
+
+
+monsterRadius =
+    monsterDiameterF / 2 |> round
+
+
+playerRadius =
+    playerDiameterF / 2 |> round
