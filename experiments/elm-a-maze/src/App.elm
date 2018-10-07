@@ -18,7 +18,7 @@ import Maybe.Extra
 import Maze exposing (Maze)
 import Model exposing (..)
 import PairA
-import Ramda as R
+import Ramda as R exposing (F)
 import Random
 import Return
 import Size
@@ -150,10 +150,6 @@ andThen =
 
 sequence =
     Update.sequence update
-
-
-type alias F a =
-    a -> a
 
 
 getMonsterXInt { xa } =
