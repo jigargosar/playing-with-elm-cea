@@ -677,10 +677,7 @@ viewMonsters clock =
 
 
 viewMonster ( x, y ) =
-    S.lazy2
-        viewMonsterHelp
-        x
-        y
+    S.lazy2 viewMonsterHelp x y
 
 
 centerOffset =
