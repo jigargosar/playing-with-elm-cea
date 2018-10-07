@@ -1,10 +1,10 @@
 import 'tachyons'
 import './main.css'
-import { Elm } from './Main.elm'
+import { Elm } from './App.elm'
 import registerServiceWorker from './registerServiceWorker'
 
 let documentElement = document.documentElement
-const app = Elm.Main.init({
+const app = Elm.App.init({
   node: document.getElementById('root'),
   flags: {
     now: Date.now(),
