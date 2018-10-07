@@ -85,11 +85,11 @@ xCells =
 
 
 yCells =
-    12
+    16
 
 
 cellSize =
-    32
+    26
 
 
 wallThickness =
