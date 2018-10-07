@@ -17,7 +17,8 @@ import MazeGenerator as MG exposing (MazeGenerator)
 
 
 type Game
-    = Running
+    = Logo
+    | Running
     | Paused
     | Over
 
@@ -44,6 +45,7 @@ type alias Model =
     , clock : A.Clock
     , maze : Maze
     , monsters : Monsters
+    , game : Game
     }
 
 
@@ -106,6 +108,7 @@ init { now } =
         , clock = 0
         , maze = Maze.init mazeSeed gridSize
         , monsters = []
+        , game = Logo
         }
 
 
