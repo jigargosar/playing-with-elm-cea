@@ -8,14 +8,15 @@ import Random
 import Random.Array
 import Random.Extra
 import Random.List
+import Random.Pipeline as RP
 import Random.Set
 import Set exposing (Set)
 
 
 type alias Record =
     { mazeG : MazeGenerator
-    , seed : Random.Seed
     , moreConnections : ConnectionSet
+    , seed : Random.Seed
     }
 
 
@@ -51,15 +52,13 @@ mazeGenerator sizePair =
 
 
 createRec : Random.Seed -> IntPair -> Record
-createRec initialSeed sizePair =
-    let
-        ( mazeG, newSeed ) =
-            Random.step (mazeGenerator sizePair) initialSeed
-    in
-        { mazeG = mazeG
-        , seed = newSeed
-        , moreConnections = Set.empty
-        }
+createRec seed sizePair =
+    Record
+        |> RP.from seed
+        |> RP.with (mazeGenerator sizePair)
+        |> RP.with (connectionSetGenerator sizePair)
+        --        |> RP.always Set.empty
+        |> RP.finish
 
 
 init : Random.Seed -> IntPair -> Maze
@@ -90,7 +89,7 @@ concatMapCells fn =
 
 
 isSouthConnected cord =
-    connected (eastConnection cord)
+    connected (southConnection cord)
 
 
 isEastConnected cord =
