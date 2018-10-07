@@ -306,11 +306,9 @@ update msg m =
             noEffect m
 
         OnWindowBlur _ ->
-            {- pure { m | pressedKeys = [] } -}
             noEffect m
 
         KeyMsg keyMsg ->
-            {- pure m -}
             noEffect { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys }
 
         UpdatePlayer clock ->
@@ -320,7 +318,6 @@ update msg m =
             in
                 noEffect { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
 
-        {- pure m -}
         GenerateMonsters ->
             let
                 ( newMonsters, newSeed ) =
@@ -335,16 +332,14 @@ update msg m =
             in
                 noEffect { m | monsters = newMonsters }
 
-        {- pure m -}
         AnimationFrame posix ->
             let
                 newClock =
                     getClock posix m
             in
-                { m | clock = newClock, gridSize = gridSize }
-                    |> noEffect
-                    >> filter (noMonsters m) (andThen GenerateMonsters)
-                    >> sequence [ UpdatePlayer newClock, UpdateMonsters newClock ]
+                noEffect { m | clock = newClock, gridSize = gridSize }
+                    |> filter (noMonsters m) (andThen GenerateMonsters)
+                    |> sequence [ UpdatePlayer newClock, UpdateMonsters newClock ]
 
 
 andThen =
