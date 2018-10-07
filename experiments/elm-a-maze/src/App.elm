@@ -708,16 +708,26 @@ centerOffsetF =
     centerOffset |> R.mapBothWith toFloat
 
 
-monsRad =
-    let
-        offset =
-            5
-    in
-        (cellSize - wallThicknessF - offset) / 2 |> round |> iR
-
-
 mC =
     Color.darkOrange |> fillColor
+
+
+monsterConfig =
+    let
+        ( centerOffsetX, centerOffsetY ) =
+            centerOffset
+
+        radiusA =
+            let
+                offset =
+                    5
+            in
+                (cellSize - wallThicknessF - offset) / 2 |> round |> iR
+    in
+        { fillColor = Color.darkOrange |> fillColor
+        , centerOffset = { x = centerOffsetX, y = centerOffsetY }
+        , radius = radiusA
+        }
 
 
 centerOffsetX =
@@ -728,33 +738,12 @@ centerOffsetY =
     centerOffset |> Tuple.second
 
 
-centerOffsetXF =
-    centerOffsetF |> Tuple.first
-
-
-centerOffsetYF =
-    centerOffsetF |> Tuple.second
-
-
-centerOffsetTransformF =
-    TA.transform [ Translate centerOffsetXF centerOffsetYF ]
-
-
-centerOffsetTransform =
-    S.transform (iTranslate centerOffsetX centerOffsetY)
-
-
 viewMonsterHelp x y =
     S.circle
-        ([ mC
-         , monsRad
+        ([ monsterConfig.fillColor
+         , monsterConfig.radiusA
          , iCX (x + centerOffsetX)
          , iCY (y + centerOffsetY)
-
-         {- ,  iCX (x)
-            , iCY (y)
-            , centerOffsetTransform
-         -}
          ]
         )
         []
