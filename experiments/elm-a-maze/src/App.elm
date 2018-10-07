@@ -125,7 +125,7 @@ update msg m =
         UpdatePlayer ->
             computeNewPlayerXYa m
                 |> Maybe.Extra.unwrap m
-                    (\( newPxAnim, newPyAnim ) -> { m | pxAnim = newPxAnim, pyAnim = newPyAnim })
+                    (\( xa, ya ) -> { m | pxAnim = xa, pyAnim = ya })
                 |> noCmd
 
         GenerateMonsters ->
