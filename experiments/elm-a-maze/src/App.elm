@@ -225,24 +225,6 @@ getArrows m =
         |> (\{ x, y } -> ( x, -y ))
 
 
-
-{-
-   |> \xy ->
-       case xy of
-           ( 0, _ ) ->
-               xy
-
-           ( _, 0 ) ->
-               xy
-
-           ( x, y ) ->
-               getFirstArrowKey m
-                   |> Maybe.map (\k -> R.ter (isXArrowKey k) ( x, 0 ) ( 0, y ))
-                   |> Maybe.withDefault ( x, y )
-                   |> Debug.log "getArrows"
--}
-
-
 getFirstArrowKey : Model -> Maybe Keyboard.Key
 getFirstArrowKey =
     .pressedKeys >> List.Extra.find isArrowKey
@@ -293,6 +275,7 @@ type Msg
     | UpdatePlayer Clock
     | UpdateMonsters Clock
     | GenerateMonsters
+    | PostInit
 
 
 noEffect model =
@@ -311,6 +294,9 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg m =
     case msg of
         NoOp ->
+            noEffect m
+
+        PostInit ->
             noEffect m
 
         AnimationFramePort _ ->
