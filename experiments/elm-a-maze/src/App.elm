@@ -58,7 +58,7 @@ port onAnimationFrame : (() -> msg) -> Sub msg
 
 init : Flags -> ( Model, Cmd Msg )
 init =
-    Model.init >> update GenerateMonsters
+    Model.init >> noCmd
 
 
 
@@ -71,11 +71,13 @@ type Msg
     | SetPressedKeys PressedKeys
     | SetMonsters Monsters
     | SetSeed Random.Seed
+    | SetGame Game
     | KeyMsg Keyboard.Msg
     | AnimationFrame Time.Posix
     | AnimationFramePort ()
-    | UpdatePlayer Clock
-    | UpdateMonsters Clock
+    | UpdatePlayer
+    | UpdateMonsters
+    | Game
     | GenerateMonsters
     | PostInit
 
@@ -119,7 +121,7 @@ update msg m =
         KeyMsg keyMsg ->
             Keyboard.update keyMsg m.pressedKeys |> SetPressedKeys |> updateWithModel m
 
-        UpdatePlayer clock ->
+        UpdatePlayer ->
             computeNewPlayerXYa m
                 |> Maybe.Extra.unwrap m
                     (\( newPxAnim, newPyAnim ) -> { m | pxAnim = newPxAnim, pyAnim = newPyAnim })
@@ -128,16 +130,27 @@ update msg m =
         GenerateMonsters ->
             ( m, Random.generate SetMonsters (monstersGenerator 10 m) )
 
-        UpdateMonsters clock ->
+        UpdateMonsters ->
             m |> .monsters >> List.map (updateMonster m) >> SetMonsters >> updateWithModel m
+
+        SetGame v ->
+            noCmd { m | game = v }
+
+        Game ->
+            noCmd m
+                |> case m.game of
+                    Model.Init ->
+                        sequence [ GenerateMonsters, SetGame Model.Running ]
+
+                    _ ->
+                        sequence [ UpdatePlayer, UpdateMonsters ]
 
         AnimationFrame posix ->
             let
                 newClock =
                     getClock posix m
             in
-                noCmd { m | clock = newClock }
-                    |> sequence [ UpdatePlayer newClock, UpdateMonsters newClock ]
+                update Game { m | clock = newClock }
 
 
 updateWithModel =

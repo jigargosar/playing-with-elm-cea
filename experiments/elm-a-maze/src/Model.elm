@@ -17,7 +17,7 @@ import MazeGenerator as MG exposing (MazeGenerator)
 
 
 type Game
-    = Logo
+    = Init
     | Running
     | Paused
     | Over
@@ -108,7 +108,7 @@ init { now } =
         , clock = 0
         , maze = Maze.init mazeSeed gridSize
         , monsters = []
-        , game = Logo
+        , game = Init
         }
 
 
