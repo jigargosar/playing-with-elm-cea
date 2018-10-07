@@ -126,11 +126,7 @@ update msg m =
                 |> noEffect
 
         GenerateMonsters ->
-            let
-                ( newMonsters, newSeed ) =
-                    generateMonsters m
-            in
-                noEffect m |> sequence [ SetMonsters newMonsters, SetSeed newSeed ]
+            ( m, Random.generate SetMonsters (monstersGenerator 10 m) )
 
         UpdateMonsters clock ->
             m |> .monsters >> List.map (updateMonster m) >> SetMonsters >> updateWithModel m
@@ -305,9 +301,9 @@ monsterGenerator m =
         |> Random.map (\( xa, ya ) -> Monster xa ya)
 
 
-generateMonsters : Model -> ( List Monster, Random.Seed )
-generateMonsters m =
-    Random.generate (monsterGenerator m |> Random.list 10) m.seed
+monstersGenerator : Int -> Model -> Random.Generator Monsters
+monstersGenerator ct =
+    monsterGenerator >> Random.list ct
 
 
 areCellsConnected cp =
