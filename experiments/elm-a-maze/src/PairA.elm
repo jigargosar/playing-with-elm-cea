@@ -69,13 +69,13 @@ iDiv factor ( a1, a2 ) =
     ( a1 // factor, a2 // factor )
 
 
-concatMap : (IntPair -> a) -> IntPair -> List a
-concatMap fn cord =
-    map fn cord |> List.concat
+concatMapGrid : (IntPair -> a) -> IntPair -> List a
+concatMapGrid fn cord =
+    mapGrid fn cord |> List.concat
 
 
-map : (IntPair -> a) -> IntPair -> List (List a)
-map fn ( width, height ) =
+mapGrid : (IntPair -> a) -> IntPair -> List (List a)
+mapGrid fn ( width, height ) =
     let
         xCords =
             List.range 0 (width - 1)
