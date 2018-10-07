@@ -141,8 +141,7 @@ update msg m =
                 newClock =
                     getClock posix m
             in
-                noEffect { m | clock = newClock, gridSize = gridSize }
-                    |> filter (noMonsters m) (andThen GenerateMonsters)
+                noEffect { m | clock = newClock }
                     |> sequence [ UpdatePlayer newClock, UpdateMonsters newClock ]
 
 
