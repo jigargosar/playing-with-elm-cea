@@ -528,7 +528,7 @@ viewDebug { pressedKeys, game } =
 
 
 svgAttrs =
-    [ iViewBox -cellSize -cellSize canvasSizeRec.w canvasSizeRec.h ] ++ canvasWHStyles
+    [ iViewBox -cellSize -cellSize canvasSizeRec.w canvasSizeRec.h, H.width canvasSizeRec.w, H.height canvasSizeRec.h ]
 
 
 viewSvg : Model -> View
