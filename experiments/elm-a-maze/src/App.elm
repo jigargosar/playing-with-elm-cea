@@ -346,11 +346,7 @@ update msg m =
                 noEffect m |> sequence [ SetMonsters newMonsters, SetSeed newSeed ]
 
         UpdateMonsters clock ->
-            let
-                newMonsters =
-                    m.monsters |> List.map (updateMonster m)
-            in
-                noEffect { m | monsters = newMonsters }
+            m |> .monsters >> List.map (updateMonster m) >> SetMonsters >> updateWithModel m
 
         AnimationFrame posix ->
             let
