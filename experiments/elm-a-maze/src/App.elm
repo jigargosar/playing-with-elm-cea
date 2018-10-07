@@ -120,11 +120,9 @@ update msg m =
             Keyboard.update keyMsg m.pressedKeys |> SetPressedKeys |> updateWithModel m
 
         UpdatePlayer clock ->
-            let
-                ( newPxAnim, newPyAnim ) =
-                    computeNewXYAnim m
-            in
-                noEffect { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
+            computeNewXYAnim m
+                |> Maybe.Extra.unwrap m (\( newPxAnim, newPyAnim ) -> { m | pxAnim = newPxAnim, pyAnim = newPyAnim })
+                |> noEffect
 
         GenerateMonsters ->
             let
@@ -369,7 +367,7 @@ computePlayerNewYa m =
     )
 
 
-computeNewXYAnim : Model -> ( Animation, Animation )
+computeNewXYAnim : Model -> Maybe ( Animation, Animation )
 computeNewXYAnim m =
     getFirstArrowKey m
         |> Maybe.map
@@ -391,7 +389,6 @@ computeNewXYAnim m =
                             ( m.pxAnim, newYa )
                         )
             )
-        |> Maybe.withDefault ( m.pxAnim, m.pyAnim )
 
 
 computeNewAnim isConnected cellCount dd anim m =
