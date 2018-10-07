@@ -3,7 +3,7 @@ module Maze exposing (Maze, init, connected, concatMapCells, isEastConnected, is
 import IntPair exposing (IntPair)
 import MazeGenerator exposing (CellInfo, Connection, ConnectionSet, MazeGenerator)
 import PairA
-import Ramda exposing (ensureAtLeast, equals)
+import Ramda exposing (ensureAtLeast, equals, uncurry)
 import Random
 import Random.Array
 import Random.Extra
@@ -25,7 +25,7 @@ type Maze
 
 connectionGenerator : IntPair -> Random.Generator IntPair
 connectionGenerator whPair =
-    whPair |> PairA.add -1 |> PairA.map (Random.int 0) |> Ramda.uncurry Random.pair
+    whPair |> PairA.add -1 |> PairA.map (Random.int 0) |> uncurry Random.pair
 
 
 createRec : Random.Seed -> Int -> Int -> Record
