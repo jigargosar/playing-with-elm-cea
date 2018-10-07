@@ -222,6 +222,14 @@ getArrows m =
         |> (\{ x, y } -> ( x, -y ))
 
 
+getArrowXDir =
+    getArrows >> Tuple.first
+
+
+getArrowYDir =
+    getArrows >> Tuple.second
+
+
 getFirstArrowKey : Model -> Maybe Keyboard.Key
 getFirstArrowKey =
     .pressedKeys >> List.Extra.find isArrowKey
