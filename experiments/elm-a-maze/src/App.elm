@@ -583,7 +583,7 @@ viewGameOver =
                     , S.x "50%"
                     , S.y "50%"
                     ]
-                    [ S.text "Game Over" ]
+                    [ S.text "Great! You Reached Level 1" ]
                 ]
     in
         R.ifElse (R.equals Model.Over) (S.lazy render >> List.singleton) (always [])
