@@ -611,10 +611,10 @@ viewGameOver =
 
 viewMazeWalls : Maze -> View
 viewMazeWalls maze =
-    Maze.concatMapCells (viewCell maze) maze |> List.concat |> S.g []
+    Maze.concatMapCells (viewWall maze) maze |> List.concat |> S.g []
 
 
-viewCell maze cord =
+viewWall maze cord =
     let
         ( x, y ) =
             PairA.mul cellSize cord
