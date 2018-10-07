@@ -670,14 +670,16 @@ viewPlayer ( x, y ) =
 
 
 viewPlayerXY x y =
-    S.use ([ iX x, iY y, S.xlinkHref "#player" ]) []
+    let
+        offset =
+            5
 
-
-
-{- S.circle
-   (cXYAttrs ++ [ rAttr, Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor ])
-   []
--}
+        radius =
+            (cellSize - wallThicknessF - offset) / 2 |> round
+    in
+        S.circle
+            [ iCX x, iCY y, iR radius, Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor ]
+            []
 
 
 viewMonsters clock =
