@@ -16,6 +16,12 @@ import MazeGenerator as MG exposing (MazeGenerator)
 ---- MODEL ----
 
 
+type Game
+    = Running
+    | Paused
+    | Over
+
+
 type alias Monster =
     { xa : Animation, ya : Animation }
 
