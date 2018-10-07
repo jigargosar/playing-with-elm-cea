@@ -12,6 +12,7 @@ import Random
 import Time
 import Set exposing (Set)
 import MazeGenerator as MG exposing (MazeGenerator)
+import PairA
 
 
 ---- MODEL ----
@@ -248,20 +249,21 @@ extrema =
     Extrema 0 0 0 0
 
 
-isGameOver m =
-    let
-        ( px, py ) =
-            getPlayerCellXY m
+xyDiameterExtrema ( x, y ) diameter =
+    Extrema x y (x + playerDiameterF) (y + playerDiameterF)
 
-        playerBoundingBox =
-            Extrema px py (px + cellSize) (py + cellSize) |> BoundingBox2d.fromExtrema
-    in
-        m.monsters
-            |> List.any (monsterBoundingBox m >> BoundingBox2d.intersects playerBoundingBox)
+
+playerBoundingBox m =
+    xyDiameterExtrema (getPlayerCellXY m) playerDiameterF |> BoundingBox2d.fromExtrema
+
+
+isGameOver m =
+    m.monsters
+        |> List.any (monsterBoundingBox m >> BoundingBox2d.intersects (playerBoundingBox m))
 
 
 monsterBoundingBox m mon =
-    BoundingBox2d.fromExtrema extrema
+    xyDiameterExtrema (getMonsterCellXY m.clock mon |> PairA.toFloat) monsterDiameterF |> BoundingBox2d.fromExtrema
 
 
 monsterDiameterF =
