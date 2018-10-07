@@ -14,12 +14,9 @@ import Keyboard
 import Keyboard.Arrows
 import Light
 import List.Extra
-import Maybe.Extra
 import Maze exposing (Maze)
-import PairA
 import Ramda as R exposing (F)
 import Random
-import Return
 import Size
 import Svg
 import Svg as S
@@ -40,10 +37,6 @@ import Json.Decode as D
 import Json.Encode as E
 import TypedSvg.Types exposing (CoordinateSystem(..), Fill(..), Transform(..), percent, px)
 import MazeGenerator as MG exposing (MazeGenerator)
-import ISvg exposing (iCX, iCY, iFontSize, iHeight, iR, iStrokeWidth, iTranslate, iTranslateCord, iViewBox, iWidth, iX, iX1, iX2, iY, iY1, iY2)
-import Svg.Lazy
-import Svg.Lazy as S
-import Update.Extra as Update exposing (filter)
 
 
 ---- MODEL ----
