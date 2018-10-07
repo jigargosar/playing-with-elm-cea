@@ -612,50 +612,45 @@ viewGameOver =
 viewMazeWalls : Maze -> View
 viewMazeWalls maze =
     let
-        cellSizePx =
-            cellSize
-
-        isConnected cp =
-            Maze.connected cp maze
-
         isSouthConnected ( x, y ) =
-            isConnected ( ( x, y ), ( x, y + 1 ) )
+            maze |> Maze.connected ( ( x, y ), ( x, y + 1 ) )
 
         isEastConnected ( x, y ) =
-            isConnected ( ( x, y ), ( x + 1, y ) )
+            maze |> Maze.connected ( ( x, y ), ( x + 1, y ) )
 
-        size =
-            cellSizePx
-
-        viewCell cord =
-            let
-                ( x, y ) =
-                    PairA.mul size cord
-
-                eastWall =
-                    Svg.rect
-                        [ iX (x + cellSize - wallThickness)
-                        , iY y
-                        , iWidth wallThickness
-                        , iHeight cellSize
-                        , SA.fill "#000"
-                        ]
-                        []
-
-                southWall =
-                    Svg.rect
-                        [ iX x
-                        , iY (y + cellSize - wallThickness)
-                        , iWidth cellSize
-                        , iHeight wallThickness
-                        , SA.fill "#000"
-                        ]
-                        []
-            in
-                R.ter (isEastConnected cord) [] [ eastWall ]
-                    ++ R.ter (isSouthConnected cord) [] [ southWall ]
+        config =
+            { isEastConnected = isEastConnected, isSouthConnected = isSouthConnected }
     in
-        Maze.concatMapCells viewCell maze |> List.concat |> S.g []
+        Maze.concatMapCells (viewCell config) maze |> List.concat |> S.g []
+
+
+viewCell { isEastConnected, isSouthConnected } cord =
+    let
+        ( x, y ) =
+            PairA.mul cellSize cord
+
+        eastWall =
+            Svg.rect
+                [ iX (x + cellSize - wallThickness)
+                , iY y
+                , iWidth wallThickness
+                , iHeight cellSize
+                , SA.fill "#000"
+                ]
+                []
+
+        southWall =
+            Svg.rect
+                [ iX x
+                , iY (y + cellSize - wallThickness)
+                , iWidth cellSize
+                , iHeight wallThickness
+                , SA.fill "#000"
+                ]
+                []
+    in
+        R.ter (isEastConnected cord) [] [ eastWall ]
+            ++ R.ter (isSouthConnected cord) [] [ southWall ]
 
 
 viewPlayer ( x, y ) =
