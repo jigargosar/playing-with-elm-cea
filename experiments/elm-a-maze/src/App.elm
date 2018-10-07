@@ -725,7 +725,8 @@ monsterConfig =
                 (cellSize - wallThicknessF - offset) / 2 |> round |> iR
     in
         { fillColorA = Color.darkOrange |> fillColor
-        , centerOffset = { x = centerOffsetX, y = centerOffsetY }
+        , centerOffsetX = centerOffsetX
+        , centerOffsetY = centerOffsetY
         , radiusA = radiusA
         }
 
