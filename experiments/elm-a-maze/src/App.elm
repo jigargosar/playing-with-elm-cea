@@ -120,7 +120,7 @@ update msg m =
             Keyboard.update keyMsg m.pressedKeys |> SetPressedKeys |> updateWithModel m
 
         UpdatePlayer clock ->
-            computeNewXYAnim m
+            computeNewPlayerXYa m
                 |> Maybe.Extra.unwrap m
                     (\( newPxAnim, newPyAnim ) -> { m | pxAnim = newPxAnim, pyAnim = newPyAnim })
                 |> noEffect
@@ -307,7 +307,7 @@ monsterGenerator m =
 
 generateMonsters : Model -> ( List Monster, Random.Seed )
 generateMonsters m =
-    Random.step (monsterGenerator m |> Random.list 10) m.seed
+    Random.generate (monsterGenerator m |> Random.list 10) m.seed
 
 
 areCellsConnected cp =
@@ -368,8 +368,8 @@ computePlayerNewYa m =
     )
 
 
-computeNewXYAnim : Model -> Maybe ( Animation, Animation )
-computeNewXYAnim m =
+computeNewPlayerXYa : Model -> Maybe ( Animation, Animation )
+computeNewPlayerXYa m =
     getFirstArrowKey m
         |> Maybe.map
             (\key ->
