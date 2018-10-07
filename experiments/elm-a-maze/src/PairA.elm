@@ -65,12 +65,8 @@ mul factor =
     map ((*) factor)
 
 
-iDivBy b a =
-    a // b
-
-
 iDiv factor =
-    map (iDivBy factor)
+    map (R.flip (//) factor)
 
 
 map fn =
