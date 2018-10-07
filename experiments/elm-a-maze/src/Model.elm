@@ -177,12 +177,12 @@ getClock time m =
 
 
 type alias DebugModel =
-    { pressedKeys : String }
+    { pressedKeys : String, game : String }
 
 
 getDebugState : Model -> DebugModel
 getDebugState m =
-    { pressedKeys = m.pressedKeys |> Debug.toString }
+    { pressedKeys = m.pressedKeys |> Debug.toString, game = m.game |> Debug.toString }
 
 
 getArrows m =

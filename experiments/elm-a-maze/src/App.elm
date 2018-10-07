@@ -492,8 +492,8 @@ view m =
 
 
 viewDebug : DebugModel -> View
-viewDebug { pressedKeys } =
-    text pressedKeys
+viewDebug { pressedKeys, game } =
+    divClass "flex hs2" [ text pressedKeys, text game ]
 
 
 svgAttrs =
