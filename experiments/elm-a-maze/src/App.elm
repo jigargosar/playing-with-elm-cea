@@ -550,15 +550,20 @@ viewGameOver game =
         h =
             mh // 4
 
+        y =
+            (mh - h) // 2
+
         rectAttrs =
-            [ (mh - h) // 2 |> iY
-            , mw |> iWidth
+            [ mw |> iWidth
             , h |> iHeight
             , fillColor Color.white
-            , iTranslate -cellSize -cellSize |> S.transform
             ]
     in
-        S.g [] [ S.rect rectAttrs [] ]
+        S.g
+            [ iTranslate -cellSize (y - cellSize) |> S.transform ]
+            [ S.rect rectAttrs []
+            , S.text_ [ fillColor Color.black, strokeColor Color.black, iFontSize 28 ] [ S.text "Game Over" ]
+            ]
 
 
 viewMazeWalls : Maze -> View
