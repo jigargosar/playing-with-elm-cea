@@ -311,6 +311,35 @@ generateMonsters m =
     Random.step (monsterGenerator m |> Random.list 10) m.seed
 
 
+areCellsConnected cp =
+    .maze >> Maze.connected cp
+
+
+getNewPlayerX m =
+    let
+        ( dx, dy ) =
+            getArrows m
+    in
+        if dx /= 0 && notRunning m.pyAnim m then
+            computeNewAnim
+                (\xx ->
+                    let
+                        ( x1, x2 ) =
+                            xx |> R.mapBothWith round
+
+                        y =
+                            A.getTo m.pyAnim |> round
+                    in
+                        areCellsConnected ( ( x1, y ), ( x2, y ) ) m
+                )
+                xCells
+                dx
+                m.pxAnim
+                m
+        else
+            m.pxAnim
+
+
 computeNewXYAnim m =
     getFirstArrowKey m
         |> Maybe.map
@@ -321,9 +350,6 @@ computeNewXYAnim m =
 
                     ( dx, dy ) =
                         getArrows m
-
-                    ( xCells, yCells ) =
-                        gridSize
 
                     newPxAnim =
                         if dx /= 0 && notRunning m.pyAnim m then

@@ -109,7 +109,15 @@ defaultAnim =
 
 gridSize : IntPair
 gridSize =
-    ( 18, 12 )
+    ( xCells, yCells )
+
+
+xCells =
+    18
+
+
+yCells =
+    12
 
 
 cellSize =
