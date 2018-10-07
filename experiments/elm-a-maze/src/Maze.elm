@@ -3,7 +3,7 @@ module Maze exposing (Maze, init, connected, concatMapCells, isEastConnected, is
 import IntPair exposing (IntPair)
 import MazeGenerator exposing (CellInfo, Connection, ConnectionSet, MazeGenerator)
 import PairA
-import Ramda exposing (ensureAtLeast, equals, uncurry)
+import Ramda exposing (..)
 import Random
 import Random.Array
 import Random.Extra
@@ -23,9 +23,22 @@ type Maze
     = Maze Record
 
 
-connectionGenerator : IntPair -> Random.Generator IntPair
-connectionGenerator whPair =
+cordGenerator : IntPair -> Random.Generator IntPair
+cordGenerator whPair =
     whPair |> PairA.add -1 |> PairA.map (Random.int 0) |> uncurry Random.pair
+
+
+eastConnectionGenerator =
+    cordGenerator >> Random.map eastConnection
+
+
+southConnectionGenerator =
+    cordGenerator >> Random.map southConnection
+
+
+connectionGenerator : IntPair -> Random.Generator Connection
+connectionGenerator whPair =
+    Random.Extra.choices (eastConnectionGenerator whPair) [ southConnection whPair ]
 
 
 createRec : Random.Seed -> Int -> Int -> Record
@@ -67,9 +80,17 @@ concatMapCells fn =
     getSize >> IntPair.concatMap fn
 
 
-isSouthConnected ( x, y ) =
-    connected ( ( x, y ), ( x, y + 1 ) )
+isSouthConnected cord =
+    connected (eastConnection cord)
 
 
-isEastConnected ( x, y ) =
-    connected ( ( x, y ), ( x + 1, y ) )
+isEastConnected cord =
+    connected (eastConnection cord)
+
+
+eastConnection ( x, y ) =
+    ( ( x, y ), ( x + 1, y ) )
+
+
+southConnection ( x, y ) =
+    ( ( x, y ), ( x, y + 1 ) )
