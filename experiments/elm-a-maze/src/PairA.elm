@@ -63,3 +63,7 @@ add offset ( a1, a2 ) =
 
 mul factor ( a1, a2 ) =
     ( a1 * factor, a2 * factor )
+
+
+iDiv factor ( a1, a2 ) =
+    ( a1 // factor, a2 // factor )

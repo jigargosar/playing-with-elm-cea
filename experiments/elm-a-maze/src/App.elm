@@ -471,6 +471,10 @@ canvasSizeRec =
     canvasSizePair |> PairA.toWhRec
 
 
+canvasCenter =
+    canvasSizePair |> PairA.iDiv 2
+
+
 canvasWHStyles =
     canvasSizePair
         |> PairA.fromIntWithSuffix "px"
@@ -533,8 +537,28 @@ viewGameContent m =
      , S.lazy viewMazeWalls m.maze
      , viewPlayer (getPlayerCellXY m)
      , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
+     , S.lazy viewGameOver m.game
      ]
     )
+
+
+viewGameOver game =
+    let
+        ( mw, mh ) =
+            canvasSizePair
+
+        h =
+            mh // 4
+
+        rectAttrs =
+            [ (mh - h) // 2 |> iY
+            , mw |> iWidth
+            , h |> iHeight
+            , fillColor Color.white
+            , iTranslate -cellSize -cellSize |> S.transform
+            ]
+    in
+        S.g [] [ S.rect rectAttrs [] ]
 
 
 viewMazeWalls : Maze -> View
