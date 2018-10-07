@@ -25,17 +25,17 @@ type alias StringPair =
 
 toFloat : IntPair -> FloatPair
 toFloat =
-    R.mapBothWith Basics.toFloat
+    map Basics.toFloat
 
 
 round : FloatPair -> IntPair
 round =
-    R.mapBothWith Basics.round
+    map Basics.round
 
 
 fromInt : IntPair -> StringPair
 fromInt =
-    R.mapBothWith String.fromInt
+    map String.fromInt
 
 
 fromIntWithSuffix : String -> IntPair -> StringPair
@@ -45,28 +45,36 @@ fromIntWithSuffix suf =
 
 withSuffix : String -> F StringPair
 withSuffix suf =
-    R.mapBothWith (R.withSuffix suf)
+    map (R.withSuffix suf)
 
 
-type alias Size number =
+type alias WH number =
     { w : number, h : number }
 
 
-toWhRec : PairA number -> Size number
+toWhRec : PairA number -> WH number
 toWhRec ( w, h ) =
-    Size w h
+    WH w h
 
 
-add offset ( a1, a2 ) =
-    ( a1 + offset, a2 + offset )
+add offset =
+    map ((+) offset)
 
 
-mul factor ( a1, a2 ) =
-    ( a1 * factor, a2 * factor )
+mul factor =
+    map ((*) factor)
 
 
-iDiv factor ( a1, a2 ) =
-    ( a1 // factor, a2 // factor )
+iDivBy b a =
+    a // b
+
+
+iDiv factor =
+    map (iDivBy factor)
+
+
+map fn =
+    Tuple.mapBoth fn fn
 
 
 concatMapGrid : (IntPair -> a) -> IntPair -> List a
