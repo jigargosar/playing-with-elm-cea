@@ -611,20 +611,10 @@ viewGameOver =
 
 viewMazeWalls : Maze -> View
 viewMazeWalls maze =
-    let
-        isSouthConnected ( x, y ) =
-            maze |> Maze.connected ( ( x, y ), ( x, y + 1 ) )
-
-        isEastConnected ( x, y ) =
-            maze |> Maze.connected ( ( x, y ), ( x + 1, y ) )
-
-        config =
-            { isEastConnected = isEastConnected, isSouthConnected = isSouthConnected }
-    in
-        Maze.concatMapCells (viewCell config) maze |> List.concat |> S.g []
+    Maze.concatMapCells (viewCell maze) maze |> List.concat |> S.g []
 
 
-viewCell { isEastConnected, isSouthConnected } cord =
+viewCell maze cord =
     let
         ( x, y ) =
             PairA.mul cellSize cord
@@ -649,8 +639,8 @@ viewCell { isEastConnected, isSouthConnected } cord =
                 ]
                 []
     in
-        R.ter (isEastConnected cord) [] [ eastWall ]
-            ++ R.ter (isSouthConnected cord) [] [ southWall ]
+        R.ter (Maze.isEastConnected cord maze) [] [ eastWall ]
+            ++ R.ter (Maze.isSouthConnected cord maze) [] [ southWall ]
 
 
 viewPlayer ( x, y ) =

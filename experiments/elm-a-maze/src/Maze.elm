@@ -1,4 +1,4 @@
-module Maze exposing (Maze, init, connected, concatMapCells)
+module Maze exposing (Maze, init, connected, concatMapCells, isEastConnected, isSouthConnected)
 
 import IntPair exposing (IntPair)
 import MazeGenerator exposing (CellInfo, Connection, ConnectionSet, MazeGenerator)
@@ -58,3 +58,11 @@ connected connection =
 concatMapCells : (IntPair -> a) -> Maze -> List a
 concatMapCells fn =
     getSize >> IntPair.concatMap fn
+
+
+isSouthConnected ( x, y ) =
+    connected ( ( x, y ), ( x, y + 1 ) )
+
+
+isEastConnected ( x, y ) =
+    connected ( ( x, y ), ( x + 1, y ) )
