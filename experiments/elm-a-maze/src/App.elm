@@ -317,8 +317,8 @@ areCellsConnected cp =
 
 computePlayerNewXa m =
     let
-        ( dx, dy ) =
-            getArrows m
+        dx =
+            getArrowXDir m
     in
         if dx /= 0 && notRunning m.pyAnim m then
             computeNewAnim
@@ -621,11 +621,9 @@ viewGameContent : Model -> List View
 viewGameContent m =
     ([ S.lazy viewGridCells m.gridSize
      , S.lazy viewMazeWalls m.maze
-
-     {- , viewPlayer (getPlayerCellXY m) -}
+     , viewPlayer (getPlayerCellXY m)
      , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
      ]
-     {- ++ viewMonsters m.clock m.monsters -}
     )
 
 
