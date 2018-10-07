@@ -72,6 +72,10 @@ type alias Monster =
     { xa : Animation, ya : Animation }
 
 
+type alias Monsters =
+    List Monster
+
+
 type alias PressedKeys =
     List Keyboard.Key
 
@@ -85,7 +89,7 @@ type alias Model =
     , pageLoadedAt : Int
     , clock : A.Clock
     , maze : Maze
-    , monsters : List Monster
+    , monsters : Monsters
     }
 
 
@@ -281,6 +285,8 @@ type Msg
     = NoOp
     | OnWindowBlur ()
     | SetPressedKeys PressedKeys
+    | SetMonsters Monsters
+    | SetSeed Random.Seed
     | KeyMsg Keyboard.Msg
     | AnimationFrame Time.Posix
     | AnimationFramePort ()
@@ -315,6 +321,12 @@ update msg m =
 
         SetPressedKeys newPressedKeys ->
             noEffect { m | pressedKeys = newPressedKeys }
+
+        SetMonsters newMonsters ->
+            noEffect { m | monsters = newMonsters }
+
+        SetSeed newSeed ->
+            noEffect { m | seed = newSeed }
 
         KeyMsg keyMsg ->
             Keyboard.update keyMsg m.pressedKeys |> SetPressedKeys |> updateWithModel m
