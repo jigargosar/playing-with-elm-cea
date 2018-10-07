@@ -39,7 +39,16 @@ import Browser.Events as BE
 import Set exposing (Set)
 import Json.Decode as D
 import Json.Encode as E
-import TypedSvg.Types exposing (CoordinateSystem(..), Fill(..), Transform(..), percent, px)
+import TypedSvg.Types
+    exposing
+        ( AlignmentBaseline(..)
+        , AnchorAlignment(..)
+        , CoordinateSystem(..)
+        , Fill(..)
+        , Transform(..)
+        , percent
+        , px
+        )
 import MazeGenerator as MG exposing (MazeGenerator)
 import ISvg exposing (iCX, iCY, iFontSize, iHeight, iR, iStrokeWidth, iTranslate, iTranslateCord, iViewBox, iWidth, iX, iX1, iX2, iY, iY1, iY2)
 import Svg.Lazy
@@ -557,12 +566,23 @@ viewGameOver game =
             [ mw |> iWidth
             , h |> iHeight
             , fillColor Color.white
+            , iY y
             ]
     in
         S.g
-            [ iTranslate -cellSize (y - cellSize) |> S.transform ]
+            [ iTranslate -cellSize (-cellSize) |> S.transform
+            ]
             [ S.rect rectAttrs []
-            , S.text_ [ fillColor Color.black, strokeColor Color.black, iFontSize 28 ] [ S.text "Game Over" ]
+            , S.text_
+                [ fillColor Color.black
+                , strokeColor Color.black
+                , iFontSize 28
+                , TA.textAnchor AnchorMiddle
+                , TA.alignmentBaseline AlignmentMiddle
+                , S.x "50%"
+                , S.y "50%"
+                ]
+                [ S.text "Game Over" ]
             ]
 
 
