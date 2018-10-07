@@ -306,9 +306,10 @@ update msg m =
             noEffect m
 
         OnWindowBlur _ ->
-            noEffect m
+            noEffect { m | pressedKeys = [] }
 
         KeyMsg keyMsg ->
+            {- pure m -}
             noEffect { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys }
 
         UpdatePlayer clock ->
