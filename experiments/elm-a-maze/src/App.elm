@@ -5,7 +5,6 @@ import Browser.Dom
 import Browser.Dom as BD
 import Browser.Dom as B
 import Color exposing (Color)
-import IntPair as IP exposing (IntPair)
 import Html as H exposing (Html)
 import Html.Lazy as H
 import Html.Attributes as H
@@ -17,7 +16,7 @@ import List.Extra
 import Maybe.Extra
 import Maze exposing (Maze)
 import Model exposing (..)
-import PairA
+import PairA exposing (IntPair)
 import Ramda as R exposing (F)
 import Random
 import Return
@@ -632,7 +631,7 @@ viewMazeWalls maze =
         viewCell cord =
             let
                 ( x, y ) =
-                    IP.scale size cord
+                    PairA.mul size cord
 
                 eastWall =
                     Svg.rect
