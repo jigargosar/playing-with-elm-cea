@@ -760,11 +760,6 @@ viewMonsterHelp x y =
         []
 
 
-
---    S.use ([ iX x, iY y, S.xlinkHref "#monster" ]) []
---    S.use ([ {- iTranslate x y |> S.transform, -} iX x, iY y, S.xlinkHref "#monster" ]) []
-
-
 viewGridCells size =
     gridConcatMap size viewGridCell |> S.g [ opacityFloat 0.05 ]
 
