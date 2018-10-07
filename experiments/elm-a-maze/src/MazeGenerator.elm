@@ -14,6 +14,7 @@ module MazeGenerator
         , step
         , connected
         , getSize
+        , ConnectionSet
         )
 
 import IntPair exposing (IntPair)

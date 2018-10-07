@@ -1,7 +1,7 @@
 module Maze exposing (Maze, init, connected, concatMapCells)
 
 import IntPair exposing (IntPair)
-import MazeGenerator exposing (CellInfo, Connection, MazeGenerator)
+import MazeGenerator exposing (CellInfo, Connection, ConnectionSet, MazeGenerator)
 import Ramda exposing (ensureAtLeast, equals)
 import Random
 import Random.Array
@@ -13,6 +13,7 @@ import Set exposing (Set)
 type alias Record =
     { mazeG : MazeGenerator
     , seed : Random.Seed
+    , moreConnections : ConnectionSet
     }
 
 
@@ -28,6 +29,7 @@ createRec initialSeed width height =
     in
         { mazeG = MazeGenerator.init mazeGSeed ( width, height ) |> MazeGenerator.solve
         , seed = newSeed
+        , moreConnections = Set.empty
         }
 
 
