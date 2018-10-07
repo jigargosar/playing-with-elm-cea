@@ -80,7 +80,7 @@ type Msg
     | PostInit
 
 
-noEffect model =
+noCmd model =
     ( model, Cmd.none )
 
 
@@ -89,32 +89,32 @@ addCmd c2 =
 
 
 withCmd c m =
-    noEffect m |> addCmd c
+    noCmd m |> addCmd c
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg m =
     case msg of
         NoOp ->
-            noEffect m
+            noCmd m
 
         PostInit ->
-            noEffect m
+            noCmd m
 
         AnimationFramePort _ ->
-            noEffect m
+            noCmd m
 
         OnWindowBlur _ ->
             SetPressedKeys [] |> updateWithModel m
 
         SetPressedKeys newPressedKeys ->
-            noEffect { m | pressedKeys = newPressedKeys }
+            noCmd { m | pressedKeys = newPressedKeys }
 
         SetMonsters newMonsters ->
-            noEffect { m | monsters = newMonsters }
+            noCmd { m | monsters = newMonsters }
 
         SetSeed newSeed ->
-            noEffect { m | seed = newSeed }
+            noCmd { m | seed = newSeed }
 
         KeyMsg keyMsg ->
             Keyboard.update keyMsg m.pressedKeys |> SetPressedKeys |> updateWithModel m
@@ -123,7 +123,7 @@ update msg m =
             computeNewPlayerXYa m
                 |> Maybe.Extra.unwrap m
                     (\( newPxAnim, newPyAnim ) -> { m | pxAnim = newPxAnim, pyAnim = newPyAnim })
-                |> noEffect
+                |> noCmd
 
         GenerateMonsters ->
             ( m, Random.generate SetMonsters (monstersGenerator 10 m) )
@@ -136,7 +136,7 @@ update msg m =
                 newClock =
                     getClock posix m
             in
-                noEffect { m | clock = newClock }
+                noCmd { m | clock = newClock }
                     |> sequence [ UpdatePlayer newClock, UpdateMonsters newClock ]
 
 
