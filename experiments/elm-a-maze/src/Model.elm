@@ -104,7 +104,7 @@ init : Flags -> Model
 init { now } =
     let
         initialSeed =
-            Random.initialSeed 1
+            Random.initialSeed now
 
         ( mazeSeed, modelSeed ) =
             Random.step Random.independentSeed initialSeed
