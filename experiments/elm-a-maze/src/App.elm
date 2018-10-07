@@ -704,10 +704,6 @@ centerOffset =
             |> R.mapBothWith round
 
 
-centerOffsetF =
-    centerOffset |> R.mapBothWith toFloat
-
-
 monsterConfig =
     let
         ( centerOffsetX, centerOffsetY ) =
