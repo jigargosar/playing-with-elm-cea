@@ -45,12 +45,31 @@ import TypedSvg.Types
         , AnchorAlignment(..)
         , CoordinateSystem(..)
         , Fill(..)
+        , FontWeight(..)
         , Transform(..)
         , percent
         , px
         )
 import MazeGenerator as MG exposing (MazeGenerator)
-import ISvg exposing (iCX, iCY, iFontSize, iHeight, iR, iStrokeWidth, iTranslate, iTranslateCord, iViewBox, iWidth, iX, iX1, iX2, iY, iY1, iY2)
+import ISvg
+    exposing
+        ( iCX
+        , iCY
+        , iFontSize
+        , iHeight
+        , iR
+        , iStrokeWidth
+        , iTranslate
+        , iTranslateCord
+        , iViewBox
+        , iWidth
+        , iX
+        , iX1
+        , iX2
+        , iY
+        , iY1
+        , iY2
+        )
 import Svg.Lazy
 import Svg.Lazy as S
 import Update.Extra as Update exposing (filter)
@@ -577,7 +596,10 @@ viewGameOver =
                 , S.text_
                     [ fillColor Color.black
                     , strokeColor Color.black
-                    , iFontSize 28
+                    , iFontSize 24
+                    , FontWeightLighter |> TA.fontWeight
+
+                    --                    , iStrokeWidth 1
                     , TA.textAnchor AnchorMiddle
                     , TA.alignmentBaseline AlignmentMiddle
                     , S.x "50%"
