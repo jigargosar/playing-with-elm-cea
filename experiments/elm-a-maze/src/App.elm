@@ -542,10 +542,6 @@ viewSvg m =
         )
 
 
-cellCenterF =
-    (cellSize - wallThicknessF) / 2
-
-
 bkgRect _ =
     S.rect
         [ S.width "200%"
@@ -667,17 +663,13 @@ viewPlayer ( x, y ) =
 
 
 viewPlayerXY x y =
-    let
-        ( ox, oy ) =
-            centerOffset
-    in
-        S.circle
-            [ iCX (x + ox)
-            , iCY (y + oy)
-            , iR playerRadius
-            , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
-            ]
-            []
+    S.circle
+        [ iCX (x + centerOffset)
+        , iCY (y + centerOffset)
+        , iR playerRadius
+        , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
+        ]
+        []
 
 
 viewMonsters clock =
@@ -692,29 +684,16 @@ viewMonster ( x, y ) =
 
 
 centerOffset =
-    let
-        offset =
-            5
-
-        radius =
-            (cellSize - wallThicknessF - offset) / 2 |> round
-    in
-        cellCenterF
-            |> R.toTuple
-            |> R.mapBothWith round
+    (cellSize - wallThickness) // 2
 
 
 monsterConfig =
-    let
-        ( centerOffsetX, centerOffsetY ) =
-            centerOffset
-    in
-        { fillColorA = Color.darkOrange |> fillColor
-        , centerOffsetX = centerOffsetX
-        , centerOffsetY = centerOffsetY
-        , radiusA = iR monsterRadius
-        , radius = monsterRadius
-        }
+    { fillColorA = Color.darkOrange |> fillColor
+    , centerOffsetX = centerOffset
+    , centerOffsetY = centerOffset
+    , radiusA = iR monsterRadius
+    , radius = monsterRadius
+    }
 
 
 viewMonsterHelp x y =
