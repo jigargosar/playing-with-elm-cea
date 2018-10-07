@@ -44,7 +44,7 @@ connectionGenerator whPair =
 
 connectionSetGenerator : IntPair -> Random.Generator ConnectionSet
 connectionSetGenerator =
-    connectionGenerator >> Random.Set.set 20
+    connectionGenerator >> Random.Set.set 200
 
 
 mazeGenerator sizePair =
@@ -70,17 +70,31 @@ toRec (Maze r) =
     r
 
 
-getMazeGen =
+getMazeG =
     toRec >> .mazeG
 
 
+getMoreConnection =
+    toRec >> .moreConnections
+
+
 getSize =
-    getMazeGen >> MazeGenerator.getSize
+    getMazeG >> MazeGenerator.getSize
+
+
+mazeGConnected : Connection -> Maze -> Bool
+mazeGConnected connection =
+    getMazeG >> MazeGenerator.connected connection
+
+
+moreConnected : Connection -> Maze -> Bool
+moreConnected connection =
+    getMoreConnection >> Set.member connection
 
 
 connected : Connection -> Maze -> Bool
-connected connection =
-    getMazeGen >> MazeGenerator.connected connection
+connected connection maze =
+    moreConnected connection maze || mazeGConnected connection maze
 
 
 concatMapCells : (IntPair -> a) -> Maze -> List a
