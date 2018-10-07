@@ -57,25 +57,8 @@ port onAnimationFrame : (() -> msg) -> Sub msg
 
 
 init : Flags -> ( Model, Cmd Msg )
-init { now } =
-    let
-        initialSeed =
-            Random.initialSeed 1
-
-        ( mazeSeed, modelSeed ) =
-            Random.step Random.independentSeed initialSeed
-    in
-        { gridSize = gridSize
-        , seed = modelSeed
-        , pxAnim = defaultAnim
-        , pyAnim = defaultAnim
-        , pressedKeys = []
-        , pageLoadedAt = now
-        , clock = 0
-        , maze = Maze.init mazeSeed gridSize
-        , monsters = []
-        }
-            |> noEffect
+init =
+    Model.init >> update GenerateMonsters
 
 
 
