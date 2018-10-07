@@ -676,9 +676,16 @@ viewPlayerXY x y =
 
         radius =
             (cellSize - wallThicknessF - offset) / 2 |> round
+
+        ( ox, oy ) =
+            centerOffset
     in
         S.circle
-            [ iCX x, iCY y, iR radius, Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor ]
+            [ iCX (x + ox)
+            , iCY (y + oy)
+            , iR radius
+            , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
+            ]
             []
 
 
