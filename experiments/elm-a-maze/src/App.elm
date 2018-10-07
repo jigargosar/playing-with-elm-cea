@@ -146,6 +146,9 @@ update msg m =
                     Model.Init ->
                         sequence [ GenerateMonsters, SetGame Model.Running ]
 
+                    Model.Over ->
+                        sequence [ UpdateMonsters ]
+
                     _ ->
                         sequence [ UpdatePlayer, UpdateMonsters, UpdateGameOver ]
 
@@ -159,10 +162,6 @@ update msg m =
 
 updateWithModel =
     R.flip update
-
-
-andThen =
-    Update.andThen update
 
 
 sequence =
