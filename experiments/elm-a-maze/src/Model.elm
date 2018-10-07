@@ -227,7 +227,7 @@ getArrowXDir =
 
 
 getArrowYDir =
-    getArrows >> Tuple.second
+    getArrows >> Tuple.second >> R.ifElse (R.equals 0) (\_ -> Nothing) Just
 
 
 getFirstArrowKey : Model -> Maybe Keyboard.Key

@@ -357,7 +357,7 @@ computePlayerNewYa m =
                                 x =
                                     A.getTo m.pxAnim |> round
                             in
-                                areCellsConnected ( ( y1, x ), ( y2, x ) ) m
+                                areCellsConnected ( ( x, y1 ), ( x, y2 ) ) m
                         )
                         yCells
                         dy
@@ -369,35 +369,27 @@ computePlayerNewYa m =
     )
 
 
+computeNewXYAnim : Model -> ( Animation, Animation )
 computeNewXYAnim m =
     getFirstArrowKey m
         |> Maybe.map
             (\key ->
-                let
-                    isConnected cp =
-                        Maze.connected cp m.maze
+                case ( computePlayerNewXa m, computePlayerNewYa m ) of
+                    ( Just newXa, Nothing ) ->
+                        ( newXa, m.pyAnim )
 
-                    ( dx, dy ) =
-                        getArrows m
+                    ( Nothing, Just newYa ) ->
+                        ( m.pxAnim, newYa )
 
-                    newPxAnim =
-                        computePlayerNewXa m
-
-                    newPyAnim =
-                        computePlayerNewYa m
-
-                    yChanged =
-                        A.equals newPyAnim m.pyAnim |> not
-
-                    xChanged =
-                        A.equals newPxAnim m.pxAnim |> not
-                in
-                    if xChanged && (isXArrowKey key || not yChanged) then
-                        ( newPxAnim, m.pyAnim )
-                    else if yChanged && (isYArrowKey key || not xChanged) then
-                        ( m.pxAnim, newPyAnim )
-                    else
+                    ( Nothing, Nothing ) ->
                         ( m.pxAnim, m.pyAnim )
+
+                    ( Just newXa, Just newYa ) ->
+                        (if isXArrowKey key then
+                            ( newXa, m.pyAnim )
+                         else
+                            ( m.pxAnim, newYa )
+                        )
             )
         |> Maybe.withDefault ( m.pxAnim, m.pyAnim )
 
