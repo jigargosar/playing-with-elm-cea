@@ -89,3 +89,11 @@ map fn ( width, height ) =
                     xCords
                         |> List.map (\x -> fn ( x, y ))
                 )
+
+
+addBoth ( a1, b1 ) ( a2, b2 ) =
+    ( a1 + a2, b1 + b2 )
+
+
+multiplyBoth ( a1, b1 ) ( a2, b2 ) =
+    ( a1 * a2, b1 * b2 )
