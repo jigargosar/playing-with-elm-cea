@@ -546,12 +546,12 @@ viewGameContent m =
      , S.lazy viewMazeWalls m.maze
      , viewPlayer (getPlayerCellXY m)
      , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
-     , S.lazy viewGameOver m.game
      ]
+        ++ viewGameOver m.game
     )
 
 
-viewGameOver game =
+viewGameOver =
     let
         ( mw, mh ) =
             canvasSizePair
@@ -568,22 +568,25 @@ viewGameOver game =
             , fillColor Color.white
             , iY y
             ]
-    in
-        S.g
-            [ iTranslate -cellSize (-cellSize) |> S.transform
-            ]
-            [ S.rect rectAttrs []
-            , S.text_
-                [ fillColor Color.black
-                , strokeColor Color.black
-                , iFontSize 28
-                , TA.textAnchor AnchorMiddle
-                , TA.alignmentBaseline AlignmentMiddle
-                , S.x "50%"
-                , S.y "50%"
+
+        render game =
+            S.g
+                [ iTranslate -cellSize (-cellSize) |> S.transform
                 ]
-                [ S.text "Game Over" ]
-            ]
+                [ S.rect rectAttrs []
+                , S.text_
+                    [ fillColor Color.black
+                    , strokeColor Color.black
+                    , iFontSize 28
+                    , TA.textAnchor AnchorMiddle
+                    , TA.alignmentBaseline AlignmentMiddle
+                    , S.x "50%"
+                    , S.y "50%"
+                    ]
+                    [ S.text "Game Over" ]
+                ]
+    in
+        R.ifElse (R.equals Model.Over) (S.lazy render >> List.singleton) (always [])
 
 
 viewMazeWalls : Maze -> View
