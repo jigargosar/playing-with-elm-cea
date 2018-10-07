@@ -739,9 +739,14 @@ centerOffsetY =
 
 
 viewMonsterHelp x y =
+    let
+        {centerOffsetX, centerOffsetY, fillColorA, radiusA}=
+
+    in
+
     S.circle
-        ([ monsterConfig.fillColor
-         , monsterConfig.radiusA
+        ([ fillColorA
+         , radiusA
          , iCX (x + centerOffsetX)
          , iCY (y + centerOffsetY)
          ]
