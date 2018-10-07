@@ -38,7 +38,7 @@ southConnectionGenerator =
 
 connectionGenerator : IntPair -> Random.Generator Connection
 connectionGenerator whPair =
-    Random.Extra.choices (eastConnectionGenerator whPair) [ southConnection whPair ]
+    Random.Extra.choices (eastConnectionGenerator whPair) [ southConnectionGenerator whPair ]
 
 
 connectionSetGenerator : IntPair -> Random.Generator ConnectionSet
@@ -46,21 +46,25 @@ connectionSetGenerator =
     connectionGenerator >> Random.Set.set 20
 
 
-createRec : Random.Seed -> Int -> Int -> Record
-createRec initialSeed width height =
+mazeGenerator sizePair =
+    Random.independentSeed |> Random.map (\seed -> MazeGenerator.init seed sizePair |> MazeGenerator.solve)
+
+
+createRec : Random.Seed -> IntPair -> Record
+createRec initialSeed sizePair =
     let
-        ( mazeGSeed, newSeed ) =
-            Random.step Random.independentSeed initialSeed
+        ( mazeG, newSeed ) =
+            Random.step (mazeGenerator sizePair) initialSeed
     in
-        { mazeG = MazeGenerator.init mazeGSeed ( width, height ) |> MazeGenerator.solve
+        { mazeG = mazeG
         , seed = newSeed
         , moreConnections = Set.empty
         }
 
 
-init : Random.Seed -> ( Int, Int ) -> Maze
-init seed ( width, height ) =
-    Maze (createRec seed width height)
+init : Random.Seed -> IntPair -> Maze
+init seed sizePair =
+    Maze (createRec seed sizePair)
 
 
 toRec (Maze r) =
