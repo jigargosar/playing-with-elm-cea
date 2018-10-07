@@ -41,6 +41,11 @@ connectionGenerator whPair =
     Random.Extra.choices (eastConnectionGenerator whPair) [ southConnection whPair ]
 
 
+connectionSetGenerator : IntPair -> Random.Generator ConnectionSet
+connectionSetGenerator =
+    connectionGenerator >> Random.Set.set 20
+
+
 createRec : Random.Seed -> Int -> Int -> Record
 createRec initialSeed width height =
     let
