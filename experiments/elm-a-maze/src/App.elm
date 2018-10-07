@@ -78,6 +78,7 @@ type Msg
     | UpdatePlayer
     | UpdateMonsters
     | UpdateGame
+    | UpdateGameOver
     | GenerateMonsters
     | PostInit
 
@@ -136,6 +137,9 @@ update msg m =
         SetGame v ->
             noCmd { m | game = v }
 
+        UpdateGameOver ->
+            noCmd m |> filter (isGameOver m) (sequence [ SetGame Model.Over ])
+
         UpdateGame ->
             noCmd m
                 |> case m.game of
@@ -143,7 +147,7 @@ update msg m =
                         sequence [ GenerateMonsters, SetGame Model.Running ]
 
                     _ ->
-                        sequence [ UpdatePlayer, UpdateMonsters ]
+                        sequence [ UpdatePlayer, UpdateMonsters, UpdateGameOver ]
 
         AnimationFrame posix ->
             let

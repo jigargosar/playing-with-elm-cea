@@ -1,6 +1,7 @@
 module Model exposing (..)
 
 import Animation as A exposing (Animation, Clock)
+import BoundingBox2d
 import IntPair as IP exposing (IntPair)
 import Keyboard
 import Keyboard.Arrows
@@ -229,3 +230,24 @@ isYArrowKey key =
 
 noMonsters =
     .monsters >> R.isListEmpty
+
+
+type alias Extrema =
+    { minX : Float, maxX : Float, minY : Float, maxY : Float }
+
+
+extrema =
+    Extrema 0 0 0 0
+
+
+isGameOver m =
+    let
+        playerBoundingBox =
+            BoundingBox2d.fromExtrema extrema
+    in
+        m.monsters
+            |> List.any (monsterBoundingBox m >> BoundingBox2d.intersects playerBoundingBox)
+
+
+monsterBoundingBox m mon =
+    BoundingBox2d.fromExtrema extrema
