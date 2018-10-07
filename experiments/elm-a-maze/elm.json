@@ -6,6 +6,7 @@
     "elm-version": "0.19.0",
     "dependencies": {
         "direct": {
+            "Chadtech/random-pipeline": "1.0.2",
             "Fresheyeball/elm-return": "7.0.0",
             "alexkorban/uicards": "1.0.1",
             "avh4/elm-color": "1.0.0",

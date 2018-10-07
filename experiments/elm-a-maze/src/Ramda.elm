@@ -18,6 +18,7 @@ module Ramda
         , sign
         , withSuffix
         , F
+        , uncurry
         )
 
 
@@ -110,3 +111,7 @@ sign x =
 
 withSuffix suf str =
     str ++ suf
+
+
+uncurry fn ( a, b ) =
+    fn a b
