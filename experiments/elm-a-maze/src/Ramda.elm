@@ -17,7 +17,12 @@ module Ramda
         , toTuple
         , sign
         , withSuffix
+        , F
         )
+
+
+type alias F a =
+    a -> a
 
 
 isListEmpty =
