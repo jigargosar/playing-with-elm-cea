@@ -19,6 +19,7 @@ import Maze exposing (Maze)
 import PairA
 import Ramda as R
 import Random
+import Return
 import Size
 import Svg
 import Svg as S
@@ -42,7 +43,7 @@ import MazeGenerator as MG exposing (MazeGenerator)
 import ISvg exposing (iCX, iCY, iFontSize, iHeight, iR, iStrokeWidth, iTranslate, iTranslateCord, iViewBox, iWidth, iX, iX1, iX2, iY, iY1, iY2)
 import Svg.Lazy
 import Svg.Lazy as S
-import Update.Extra
+import Update.Extra as Update exposing (filter)
 
 
 ---- PORTS ----
@@ -136,7 +137,7 @@ init { now } =
         , maze = Maze.init mazeSeed gridSize
         , monsters = []
         }
-            |> pure
+            |> noEffect
 
 
 notRunning anim m =
@@ -283,7 +284,7 @@ type Msg
     | GenerateMonsters
 
 
-pure model =
+noEffect model =
     ( model, Cmd.none )
 
 
@@ -292,32 +293,32 @@ addCmd c2 =
 
 
 withCmd c m =
-    pure m |> addCmd c
+    noEffect m |> addCmd c
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg m =
     case msg of
         NoOp ->
-            pure m
+            noEffect m
 
         AnimationFramePort _ ->
-            pure m
+            noEffect m
 
         OnWindowBlur _ ->
             {- pure { m | pressedKeys = [] } -}
-            pure m
+            noEffect m
 
         KeyMsg keyMsg ->
             {- pure m -}
-            pure { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys }
+            noEffect { m | pressedKeys = Keyboard.update keyMsg m.pressedKeys }
 
         UpdatePlayer clock ->
             let
                 ( newPxAnim, newPyAnim ) =
                     computeNewXYAnim m
             in
-                pure { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
+                noEffect { m | pxAnim = newPxAnim, pyAnim = newPyAnim }
 
         {- pure m -}
         GenerateMonsters ->
@@ -325,14 +326,14 @@ update msg m =
                 ( newMonsters, newSeed ) =
                     generateMonsters m
             in
-                pure { m | monsters = newMonsters, seed = newSeed }
+                noEffect { m | monsters = newMonsters, seed = newSeed }
 
         UpdateMonsters clock ->
             let
                 newMonsters =
                     m.monsters |> List.map (updateMonster m)
             in
-                pure { m | monsters = newMonsters }
+                noEffect { m | monsters = newMonsters }
 
         {- pure m -}
         AnimationFrame posix ->
@@ -341,10 +342,17 @@ update msg m =
                     getClock posix m
             in
                 { m | clock = newClock, gridSize = gridSize }
-                    |> pure
-                    |> Update.Extra.filter (noMonsters m)
-                        (Update.Extra.andThen update GenerateMonsters)
-                    |> Update.Extra.sequence update [ UpdatePlayer newClock, UpdateMonsters newClock ]
+                    |> noEffect
+                    >> filter (noMonsters m) (andThen GenerateMonsters)
+                    >> sequence [ UpdatePlayer newClock, UpdateMonsters newClock ]
+
+
+andThen =
+    Update.andThen update
+
+
+sequence =
+    Update.sequence update
 
 
 type alias F a =
