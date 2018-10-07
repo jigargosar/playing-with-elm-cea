@@ -421,9 +421,6 @@ computeNewAnim isConnected cellCount dd anim m =
         to =
             A.getTo anim
 
-        diff =
-            from - to |> abs
-
         currentDirection =
             -from + to |> R.sign
 
@@ -441,7 +438,7 @@ computeNewAnim isConnected cellCount dd anim m =
                 + newDirection
                 |> clampTo
     in
-        if (notRunning anim m || directionReversed) && isConnected ( to, newTo ) && to /= newTo then
+        if (notRunning anim m || directionReversed) && to /= newTo && isConnected ( to, newTo ) then
             createAnim current newTo m
         else
             anim
