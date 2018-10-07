@@ -77,7 +77,7 @@ type Msg
     | AnimationFramePort ()
     | UpdatePlayer
     | UpdateMonsters
-    | Game
+    | UpdateGame
     | GenerateMonsters
     | PostInit
 
@@ -136,7 +136,7 @@ update msg m =
         SetGame v ->
             noCmd { m | game = v }
 
-        Game ->
+        UpdateGame ->
             noCmd m
                 |> case m.game of
                     Model.Init ->
@@ -150,7 +150,7 @@ update msg m =
                 newClock =
                     getClock posix m
             in
-                update Game { m | clock = newClock }
+                update UpdateGame { m | clock = newClock }
 
 
 updateWithModel =
