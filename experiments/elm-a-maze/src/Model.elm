@@ -250,7 +250,7 @@ extrema =
 
 
 xyDiameterExtrema ( x, y ) diameter =
-    Extrema x y (x + playerDiameterF) (y + playerDiameterF)
+    Extrema x (x + playerDiameterF) y (y + playerDiameterF)
 
 
 playerBoundingBox m =
