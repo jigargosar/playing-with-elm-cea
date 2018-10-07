@@ -95,9 +95,13 @@ mapGrid fn ( width, height ) =
                 )
 
 
-addBoth ( a1, b1 ) ( a2, b2 ) =
-    ( a1 + a2, b1 + b2 )
+add2 =
+    apply2 (+)
 
 
-multiplyBoth ( a1, b1 ) ( a2, b2 ) =
-    ( a1 * a2, b1 * b2 )
+mul2 =
+    apply2 (*)
+
+
+apply2 fn ( a1, b1 ) ( a2, b2 ) =
+    ( fn a1 a2, fn b1 b2 )
