@@ -121,7 +121,8 @@ update msg m =
 
         UpdatePlayer clock ->
             computeNewXYAnim m
-                |> Maybe.Extra.unwrap m (\( newPxAnim, newPyAnim ) -> { m | pxAnim = newPxAnim, pyAnim = newPyAnim })
+                |> Maybe.Extra.unwrap m
+                    (\( newPxAnim, newPyAnim ) -> { m | pxAnim = newPxAnim, pyAnim = newPyAnim })
                 |> noEffect
 
         GenerateMonsters ->
