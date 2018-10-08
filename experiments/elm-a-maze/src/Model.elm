@@ -273,32 +273,32 @@ xyDiameterExtrema ( x, y ) diameter =
     Extrema x (x + defaultDia) y (y + defaultDia)
 
 
-xyDiaBoundingBox xy =
+xyBB xy =
     xyDiameterExtrema xy defaultDia |> BoundingBox2d.fromExtrema
 
 
-playerBoundingBox m =
-    xyDiaBoundingBox (getPlayerXYpx m)
+playerBB m =
+    xyBB (getPlayerXYpx m)
 
 
-portalBoundingBox m =
-    xyDiaBoundingBox (getPortalXYpx m)
+portalBB m =
+    xyBB (getPortalXYpx m)
 
 
 isGameOver m =
-    m.monsters |> List.any (monsterBoundingBox m >> playerIntersects m)
+    m.monsters |> List.any (monsterBB m >> playerIntersects m)
 
 
 isLevelComplete m =
-    portalBoundingBox m |> playerIntersects m
+    portalBB m |> playerIntersects m
 
 
 playerIntersects m =
-    BoundingBox2d.intersects (playerBoundingBox m)
+    BoundingBox2d.intersects (playerBB m)
 
 
-monsterBoundingBox m mon =
-    xyDiaBoundingBox (getMonsterXYpx m.clock mon)
+monsterBB m mon =
+    xyBB (getMonsterXYpx m.clock mon)
 
 
 defaultDia =
