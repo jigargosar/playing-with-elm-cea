@@ -110,7 +110,6 @@ init { now } =
             Random.step Random.independentSeed initialSeed
     in
         { gridSize = gridSize
-        , seed = modelSeed
         , pxAnim = defaultAnim
         , pyAnim = defaultAnim
         , pressedKeys = []
@@ -119,6 +118,7 @@ init { now } =
         , maze = Maze.init mazeSeed gridSize
         , monsters = []
         , game = Init
+        , seed = modelSeed
         }
 
 
