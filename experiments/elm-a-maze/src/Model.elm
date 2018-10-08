@@ -302,11 +302,7 @@ monsterBoundingBox m mon =
 
 
 defaultDiaF =
-    let
-        offset =
-            5
-    in
-        (cellSize - (wallThickness / 2) - offset)
+    (cellSize - wallThickness) - (cellSize / 40)
 
 
 defaultRadiusF =
