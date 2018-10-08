@@ -304,6 +304,11 @@ monsterUpdateGenerator m mon =
             )
 
 
+monstersUpdateGenerator : Model -> Monsters -> Random.Generator Monsters
+monstersUpdateGenerator m =
+    List.map (monsterUpdateGenerator m) >> Random.Extra.combine
+
+
 updateMonster : Model -> F Monster
 updateMonster m mon =
     if isRunning mon.xa m || isRunning mon.ya m then
