@@ -759,26 +759,6 @@ viewGridCell cord =
         S.rect (xyAttr ++ whAttr ++ [ strokeColor Color.black, TP.strokeWidth 1, TA.noFill ]) []
 
 
-gridConcatMap size fn =
-    gridMap size fn |> List.concat
-
-
-gridMap ( width, height ) fn =
-    let
-        xCords =
-            List.range 0 (width - 1)
-
-        yCords =
-            List.range 0 (height - 1)
-    in
-        yCords
-            |> List.map
-                (\y ->
-                    xCords
-                        |> List.map (\x -> fn ( x, y ))
-                )
-
-
 
 ---- SVG ATTRIBUTES ----
 
