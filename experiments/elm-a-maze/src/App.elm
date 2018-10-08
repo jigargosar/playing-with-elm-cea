@@ -19,6 +19,7 @@ import Model exposing (..)
 import PairA exposing (IntPair)
 import Ramda as R exposing (F)
 import Random
+import Random.Extra
 import Return
 import Size
 import Svg
@@ -289,8 +290,18 @@ computeMonsterNewYa m monster =
             |> Maybe.withDefault ya
 
 
+monsterUpdateGenerator : Model -> Monster -> Random.Generator Monster
 monsterUpdateGenerator m mon =
-    1
+    Random.Extra.bool
+        |> Random.map
+            (\b ->
+                if isRunning mon.xa m || isRunning mon.ya m then
+                    mon
+                else if b then
+                    { mon | xa = computeMonsterNewXa m mon }
+                else
+                    { mon | ya = computeMonsterNewYa m mon }
+            )
 
 
 updateMonster : Model -> F Monster
