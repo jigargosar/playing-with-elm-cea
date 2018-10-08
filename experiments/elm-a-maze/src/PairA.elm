@@ -19,7 +19,7 @@ zero =
     pair 0 0
 
 
-type alias IntPair =
+type alias Int2 =
     PairA Int
 
 
@@ -35,22 +35,22 @@ map fn =
     Tuple.mapBoth fn fn
 
 
-floatFromInt : IntPair -> FloatPair
+floatFromInt : Int2 -> FloatPair
 floatFromInt =
     map Basics.toFloat
 
 
-round : FloatPair -> IntPair
+round : FloatPair -> Int2
 round =
     map Basics.round
 
 
-stringFromInt : IntPair -> StringPair
+stringFromInt : Int2 -> StringPair
 stringFromInt =
     map String.fromInt
 
 
-stringFromIntWithSuffix : String -> IntPair -> StringPair
+stringFromIntWithSuffix : String -> Int2 -> StringPair
 stringFromIntWithSuffix suf =
     stringFromInt >> withSuffix suf
 
@@ -81,12 +81,12 @@ iDiv factor =
     map (R.flip (//) factor)
 
 
-concatMapGrid : (IntPair -> a) -> IntPair -> List a
+concatMapGrid : (Int2 -> a) -> Int2 -> List a
 concatMapGrid fn cord =
     mapGrid fn cord |> List.concat
 
 
-mapGrid : (IntPair -> a) -> IntPair -> List (List a)
+mapGrid : (Int2 -> a) -> Int2 -> List (List a)
 mapGrid fn ( width, height ) =
     let
         xCords =

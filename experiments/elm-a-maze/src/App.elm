@@ -18,7 +18,7 @@ import Maybe.Extra
 import Maybe.Extra as Maybe
 import Maze exposing (Maze)
 import Model exposing (..)
-import PairA exposing (IntPair, PairA)
+import PairA exposing (Int2, PairA)
 import Ramda as R exposing (F)
 import Random
 import Random.Extra
@@ -352,12 +352,12 @@ monstersUpdateGenerator m =
     m.monsters |> List.map (monsterUpdateGenerator m) >> Random.Extra.combine
 
 
-maxGridXY : IntPair
+maxGridXY : Int2
 maxGridXY =
     gridSize |> R.mapBothWith ((+) -1)
 
 
-gridCellXYGenerator : Random.Generator IntPair
+gridCellXYGenerator : Random.Generator Int2
 gridCellXYGenerator =
     maxGridXY
         |> PairA.map (Random.int 0)
@@ -518,7 +518,7 @@ type alias View =
     Html Msg
 
 
-canvasWHIPair : IntPair
+canvasWHIPair : Int2
 canvasWHIPair =
     gridSize |> PairA.add 2 >> PairA.mul cellSize
 
