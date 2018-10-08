@@ -1,6 +1,7 @@
 port module App exposing (..)
 
 import Animation as A exposing (Animation, Clock)
+import Basics.Extra exposing (uncurry)
 import Browser.Dom
 import Browser.Dom as BD
 import Browser.Dom as B
@@ -574,6 +575,7 @@ viewGameContent m =
     ([ S.lazy viewGridCells m.gridSize
      , S.lazy viewMazeWalls m.maze
      , viewPlayer (getPlayerXYpx m)
+     , viewPortal (getPortalXYpx m)
      , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
      , S.lazy viewGameOver m.game
      ]
@@ -676,12 +678,26 @@ viewPlayer ( x, y ) =
     S.lazy2 viewPlayerHelp (round x) (round y)
 
 
+viewPortal =
+    uncurry (S.lazy2 (viewEntity Color.darkPurple))
+
+
 viewPlayerHelp x y =
     S.circle
         [ iCX (x + centerOffset)
         , iCY (y + centerOffset)
         , iR playerRadius
         , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
+        ]
+        []
+
+
+viewEntity color x y =
+    S.circle
+        [ iCX (x + centerOffset)
+        , iCY (y + centerOffset)
+        , iR playerRadius
+        , color |> fillColor
         ]
         []
 
