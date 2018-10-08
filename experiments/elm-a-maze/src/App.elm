@@ -108,7 +108,7 @@ type Msg
     | UpdatePlayer
     | UpdateMonsters
     | UpdateGame
-    | UpdateGameOver
+    | UpdateLevel
     | GenerateMonsters
     | PostInit
 
@@ -168,8 +168,20 @@ update msg m =
         SetGame v ->
             noCmd { m | game = v }
 
-        UpdateGameOver ->
-            noCmd m |> filter (isGameOver m) (sequence [ SetGame Model.Over ])
+        UpdateLevel ->
+            let
+                isLevelComplete =
+                    isGameOver
+
+                newMsg =
+                    if isGameOver m then
+                        SetGame Model.Over
+                    else if isLevelComplete m then
+                        SetGame Model.Over
+                    else
+                        NoOp
+            in
+                update newMsg m
 
         UpdateGame ->
             noCmd m
@@ -181,7 +193,7 @@ update msg m =
                         sequence [ UpdateMonsters ]
 
                     Model.Running ->
-                        sequence [ UpdatePlayer, UpdateMonsters, UpdateGameOver ]
+                        sequence [ UpdatePlayer, UpdateMonsters, UpdateLevel ]
 
         AnimationFrame posix ->
             let
