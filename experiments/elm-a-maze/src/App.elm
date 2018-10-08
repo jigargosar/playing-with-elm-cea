@@ -565,7 +565,7 @@ svgAttrs =
 viewSvg : Model -> View
 viewSvg m =
     S.svg svgAttrs
-        ([ S.lazy bkgRect ()
+        ([ bkgRect
          , S.lazy viewMazeWalls m.maze
          , viewPlayer (getPlayerXYpx m)
          , viewPortal (getPortalXYpx m)
@@ -575,7 +575,7 @@ viewSvg m =
         )
 
 
-bkgRect _ =
+bkgRect =
     S.rect
         [ S.width "200%"
         , S.height "200%"
