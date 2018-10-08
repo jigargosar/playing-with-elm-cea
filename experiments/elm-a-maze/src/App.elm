@@ -523,12 +523,8 @@ canvasSizePair =
     gridSize |> PairA.add 2 >> PairA.mul cellSize
 
 
-canvasSizeRec =
+canvasWHRec =
     canvasSizePair |> PairA.toWhRec
-
-
-canvasCenter =
-    canvasSizePair |> PairA.iDiv 2
 
 
 canvasWHStyles =
@@ -555,16 +551,9 @@ viewDebug { pressedKeys, game } =
     divClass "flex hs2" [ text pressedKeys, text game ]
 
 
-svgAttrs =
-    [ iViewBox -cellSize -cellSize canvasSizeRec.w canvasSizeRec.h
-    , H.width canvasSizeRec.w
-    , H.height canvasSizeRec.h
-    ]
-
-
 viewSvg : Model -> View
 viewSvg m =
-    S.svg svgAttrs
+    S.svg [ H.width canvasWHRec.w, H.height canvasWHRec.h ]
         ([ bkgRect
          , S.lazy viewMazeWalls m.maze
          , viewPlayer (getPlayerXYpx m)
