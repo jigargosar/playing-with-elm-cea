@@ -575,12 +575,12 @@ viewGameContent m =
      , S.lazy viewMazeWalls m.maze
      , viewPlayer (getPlayerCellXY m)
      , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
+     , S.lazy viewGameOver m.game
      ]
-        ++ viewGameOver m.game
     )
 
 
-viewGameOver =
+viewGameOver game =
     let
         ( mw, mh ) =
             canvasSizePair
@@ -615,13 +615,27 @@ viewGameOver =
             , S.y "50%"
             ]
 
-        render game =
+        renderGameOver =
             S.g gAttrs
                 [ S.rect rectAttrs []
                 , S.text_ textAttrs [ S.text "A-Maze-Zing! You Reached Level 1" ]
                 ]
+
+        renderLevelComplete =
+            S.g gAttrs
+                [ S.rect rectAttrs []
+                , S.text_ textAttrs [ S.text "LEVEL 2" ]
+                ]
     in
-        R.ifElse (R.equals Model.Over) (S.lazy render >> List.singleton) (always [])
+        case game of
+            Model.Over ->
+                renderGameOver
+
+            Model.LevelComplete ->
+                renderGameOver
+
+            _ ->
+                S.g [] []
 
 
 viewMazeWalls : Maze -> View
