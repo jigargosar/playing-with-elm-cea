@@ -573,7 +573,7 @@ viewGameContent : Model -> List View
 viewGameContent m =
     ([ S.lazy viewGridCells m.gridSize
      , S.lazy viewMazeWalls m.maze
-     , viewPlayer (getPlayerCellXY m)
+     , viewPlayer (getPlayerXYpx m)
      , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
      , S.lazy viewGameOver m.game
      ]
@@ -687,7 +687,7 @@ viewPlayerHelp x y =
 
 
 viewMonsters clock =
-    List.indexedMap (\idx mon -> ( String.fromInt idx, mon |> getMonsterCellXY clock >> viewMonster ))
+    List.indexedMap (\idx mon -> ( String.fromInt idx, mon |> getMonsterXYpx clock >> viewMonster ))
 
 
 viewMonster ( x, y ) =

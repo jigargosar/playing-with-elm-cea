@@ -163,14 +163,19 @@ animToGridCellPx clock anim =
     (A.animate clock anim) * cellSize
 
 
-getPlayerCellXY : Model -> ( Float, Float )
-getPlayerCellXY m =
+getPlayerXYpx : Model -> ( Float, Float )
+getPlayerXYpx m =
     ( m.pxAnim, m.pyAnim )
         |> R.mapBothWith (animToGridCellPx m.clock)
 
 
-getMonsterCellXY : A.Clock -> Monster -> IntPair
-getMonsterCellXY clock mon =
+getPortalXYpx : Model -> IntPair
+getPortalXYpx m =
+    m.portal |> PairA.mul cellSize
+
+
+getMonsterXYpx : A.Clock -> Monster -> IntPair
+getMonsterXYpx clock mon =
     ( mon.xa, mon.ya )
         |> R.mapBothWith (animToGridCellPx clock >> round)
 
@@ -266,46 +271,48 @@ xyDiameterExtrema ( x, y ) diameter =
     Extrema x (x + playerDiameterF) y (y + playerDiameterF)
 
 
-xyDiameterBoundingBox xy d =
+xyDiaBoundingBox xy d =
     xyDiameterExtrema xy d |> BoundingBox2d.fromExtrema
 
 
 playerBoundingBox m =
-    xyDiameterBoundingBox (getPlayerCellXY m) playerDiameterF
+    xyDiaBoundingBox (getPlayerXYpx m) playerDiameterF
+
+
+portalBoundingBox m =
+    xyDiaBoundingBox (getPortalXYpx m |> PairA.floatFromInt) defaultDiaF
 
 
 isGameOver m =
-    m.monsters
-        |> List.any (monsterBoundingBox m >> BoundingBox2d.intersects (playerBoundingBox m))
+    m.monsters |> List.any (monsterBoundingBox m >> playerIntersects m)
+
+
+isLevelComplete m =
+    portalBoundingBox m |> playerIntersects m
 
 
 playerIntersects m =
     BoundingBox2d.intersects (playerBoundingBox m)
 
 
-isLevelComplete m =
-    m.monsters
-        |> List.any (monsterBoundingBox m >> playerIntersects m)
-
-
 monsterBoundingBox m mon =
-    xyDiameterBoundingBox (getMonsterCellXY m.clock mon |> PairA.floatFromInt) monsterDiameterF
+    xyDiaBoundingBox (getMonsterXYpx m.clock mon |> PairA.floatFromInt) monsterDiameterF
+
+
+defaultDiaF =
+    let
+        offset =
+            5
+    in
+        (cellSize - wallThicknessF - offset)
 
 
 monsterDiameterF =
-    let
-        offset =
-            5
-    in
-        (cellSize - wallThicknessF - offset)
+    defaultDiaF
 
 
 playerDiameterF =
-    let
-        offset =
-            5
-    in
-        (cellSize - wallThicknessF - offset)
+    defaultDiaF
 
 
 monsterRadius =
