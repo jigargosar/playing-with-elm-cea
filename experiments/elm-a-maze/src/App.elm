@@ -14,6 +14,7 @@ import Keyboard.Arrows
 import Light
 import List.Extra
 import Maybe.Extra
+import Maybe.Extra as Maybe
 import Maze exposing (Maze)
 import Model exposing (..)
 import PairA exposing (IntPair, PairA)
@@ -156,7 +157,7 @@ update msg m =
 
         UpdatePlayer ->
             computeNewPlayerXYa m
-                |> Maybe.Extra.unwrap (noCmd m) (SetPlayer >> updateIn m)
+                |> Maybe.unwrap (noCmd m) (SetPlayer >> updateIn m)
 
         GenerateMonsters ->
             ( m, Random.generate SetMonsters (monstersGenerator 10 m.clock) )
@@ -280,7 +281,7 @@ computeMonsterNewXa m monster =
             getAnimDir xa
     in
         computeMonsterNewX xDir m monster
-            |> Maybe.Extra.orElseLazy (\_ -> computeMonsterNewX -xDir m monster)
+            |> Maybe.orElseLazy (\_ -> computeMonsterNewX -xDir m monster)
             |> Maybe.map (\newTo -> animRetargetTo newTo m xa)
             |> Maybe.withDefault xa
 
@@ -295,7 +296,7 @@ computeMonsterNewYa m monster =
             getAnimDir ya
     in
         computeMonsterNewY yDir m monster
-            |> Maybe.Extra.orElseLazy (\_ -> computeMonsterNewY -yDir m monster)
+            |> Maybe.orElseLazy (\_ -> computeMonsterNewY -yDir m monster)
             |> Maybe.map (\newTo -> animRetargetTo newTo m ya)
             |> Maybe.withDefault ya
 
