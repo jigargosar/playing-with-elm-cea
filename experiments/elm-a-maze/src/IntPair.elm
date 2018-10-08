@@ -1,6 +1,6 @@
 module IntPair
     exposing
-        ( IntPair
+        ( Int2
         , concatMap
         , map
         , normalizeConnection
@@ -13,16 +13,16 @@ module IntPair
         )
 
 
-type alias IntPair =
+type alias Int2 =
     ( Int, Int )
 
 
-concatMap : (IntPair -> a) -> IntPair -> List a
+concatMap : (Int2 -> a) -> Int2 -> List a
 concatMap fn cord =
     map fn cord |> List.concat
 
 
-map : (IntPair -> a) -> IntPair -> List (List a)
+map : (Int2 -> a) -> Int2 -> List (List a)
 map fn ( width, height ) =
     let
         xCords =
@@ -39,7 +39,7 @@ map fn ( width, height ) =
                 )
 
 
-perpendicularNeighboursOf : IntPair -> List IntPair
+perpendicularNeighboursOf : Int2 -> List Int2
 perpendicularNeighboursOf ( x, y ) =
     [ ( x + 1, y )
     , ( x - 1, y )

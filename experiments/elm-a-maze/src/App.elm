@@ -553,15 +553,19 @@ viewDebug { pressedKeys, game } =
 
 viewSvg : Model -> View
 viewSvg m =
-    S.svg [ H.width canvasWHRec.w, H.height canvasWHRec.h ]
-        ([ bkgRect
-         , S.lazy viewMazeWalls m.maze
-         , viewPlayer (getPlayerXYpx m)
-         , viewPortal (getPortalXYpx m)
-         , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
-         , S.lazy viewGameOver m.game
-         ]
-        )
+    let
+        ( cw, ch ) =
+            canvasSizeI2
+    in
+        S.svg [ H.width cw, H.height ch ]
+            ([ bkgRect
+             , S.lazy viewMazeWalls m.maze
+             , viewPlayer (getPlayerXYpx m)
+             , viewPortal (getPortalXYpx m)
+             , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
+             , S.lazy viewGameOver m.game
+             ]
+            )
 
 
 bkgRect =
@@ -645,24 +649,24 @@ viewMazeWalls maze =
 viewWall maze cord =
     let
         ( x, y ) =
-            PairA.mul cellSize cord
+            cord |> PairA.floatFromInt |> PairA.mul cellSize
 
         eastWall =
             Svg.rect
-                [ iX (x + cellSize - wallThickness)
-                , iY y
-                , iWidth wallThickness
-                , iHeight cellSize
+                [ TP.x (x + cellSize - wallThickness)
+                , TP.y y
+                , TP.width wallThickness
+                , TP.height cellSize
                 , SA.fill "#000"
                 ]
                 []
 
         southWall =
             Svg.rect
-                [ iX x
-                , iY (y + cellSize - wallThickness)
-                , iWidth cellSize
-                , iHeight wallThickness
+                [ TP.x x
+                , TP.y (y + cellSize - wallThickness)
+                , TP.width cellSize
+                , TP.height wallThickness
                 , SA.fill "#000"
                 ]
                 []
@@ -671,8 +675,8 @@ viewWall maze cord =
             ++ R.ter (Maze.isSouthConnected cord maze) [] [ southWall ]
 
 
-viewPlayer ( x, y ) =
-    S.lazy2 viewPlayerHelp (round x) (round y)
+viewPlayer =
+    uncurry (S.lazy2 viewPlayerHelp)
 
 
 viewPortal =
@@ -681,8 +685,8 @@ viewPortal =
 
 viewPlayerHelp x y =
     S.circle
-        [ iCX (x + centerOffset)
-        , iCY (y + centerOffset)
+        [ TP.cx (x + centerOffset)
+        , TP.cy (y + centerOffset)
         , iR playerRadius
         , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
         ]
@@ -691,8 +695,8 @@ viewPlayerHelp x y =
 
 viewEntity color x y =
     S.circle
-        [ iCX (x + centerOffset)
-        , iCY (y + centerOffset)
+        [ TP.cx (x + centerOffset)
+        , TP.cy (y + centerOffset)
         , iR playerRadius
         , color |> fillColor
         ]
@@ -708,15 +712,15 @@ viewMonster ( x, y ) =
 
 
 centerOffset =
-    (cellSize - wallThickness) // 2
+    (cellSize - wallThickness) / 2
 
 
 viewMonsterHelp x y =
     S.circle
         [ Color.darkOrange |> fillColor
         , iR monsterRadius
-        , iCX (x + centerOffset)
-        , iCY (y + centerOffset)
+        , TP.cx (x + centerOffset)
+        , TP.cy (y + centerOffset)
         ]
         []
 

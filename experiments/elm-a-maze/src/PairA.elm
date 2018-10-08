@@ -23,7 +23,7 @@ type alias Int2 =
     PairA Int
 
 
-type alias FloatPair =
+type alias Float2 =
     PairA Float
 
 
@@ -35,12 +35,12 @@ map fn =
     Tuple.mapBoth fn fn
 
 
-floatFromInt : Int2 -> FloatPair
+floatFromInt : Int2 -> Float2
 floatFromInt =
     map Basics.toFloat
 
 
-round : FloatPair -> Int2
+round : Float2 -> Int2
 round =
     map Basics.round
 

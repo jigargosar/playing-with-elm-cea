@@ -17,7 +17,7 @@ module MazeGenerator
         , ConnectionSet
         )
 
-import IntPair exposing (IntPair)
+import IntPair exposing (Int2)
 import Ramda exposing (ensureAtLeast, equals)
 import Random
 import Random.Array
@@ -27,7 +27,7 @@ import Set exposing (Set)
 
 
 type alias Connection =
-    ( IntPair, IntPair )
+    ( Int2, Int2 )
 
 
 type alias ConnectionSet =
@@ -35,11 +35,11 @@ type alias ConnectionSet =
 
 
 type alias VisitedSet =
-    Set IntPair
+    Set Int2
 
 
 type alias Stack =
-    List IntPair
+    List Int2
 
 
 type alias Record =
@@ -143,10 +143,10 @@ solve mg =
         step mg |> solve
 
 
-stepHelp : IntPair -> Record -> Record
+stepHelp : Int2 -> Record -> Record
 stepHelp stackTop rec =
     let
-        isWithinBounds : IntPair -> Bool
+        isWithinBounds : Int2 -> Bool
         isWithinBounds ( x, y ) =
             x >= 0 && y >= 0 && x < rec.width && y < rec.height
 
@@ -187,7 +187,7 @@ getDimensions (MazeGenerator { width, height }) =
     { width = width, height = height }
 
 
-isCordOnTopOfStack : IntPair -> MazeGenerator -> Bool
+isCordOnTopOfStack : Int2 -> MazeGenerator -> Bool
 isCordOnTopOfStack cord (MazeGenerator { stack }) =
     stack |> List.head |> Maybe.map (equals cord) |> Maybe.withDefault False
 
@@ -200,7 +200,7 @@ type alias CellInfo =
     { visited : Bool, current : Bool }
 
 
-concatMapCellInfo : (IntPair -> CellInfo -> a) -> MazeGenerator -> List a
+concatMapCellInfo : (Int2 -> CellInfo -> a) -> MazeGenerator -> List a
 concatMapCellInfo fn mg =
     let
         mapper cord =
@@ -212,7 +212,7 @@ concatMapCellInfo fn mg =
         (getSize mg) |> IntPair.concatMap mapper
 
 
-concatMapCords : (IntPair -> a) -> MazeGenerator -> List a
+concatMapCords : (Int2 -> a) -> MazeGenerator -> List a
 concatMapCords fn =
     getSize >> IntPair.concatMap fn
 

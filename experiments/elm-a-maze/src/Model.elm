@@ -2,7 +2,6 @@ module Model exposing (..)
 
 import Animation as A exposing (Animation, Clock)
 import BoundingBox2d
-import IntPair as IP exposing (IntPair)
 import Keyboard
 import Keyboard.Arrows
 import List.Extra
@@ -12,14 +11,14 @@ import Random
 import Time
 import Set exposing (Set)
 import MazeGenerator as MG exposing (MazeGenerator)
-import PairA exposing (PairA)
+import PairA exposing (Float2, Int2, PairA)
 
 
 ---- MODEL ----
 
 
 type alias Portal =
-    IntPair
+    Int2
 
 
 type Game
@@ -33,7 +32,7 @@ type alias Monster =
     { xa : Animation, ya : Animation }
 
 
-initMonster : Clock -> IntPair -> Monster
+initMonster : Clock -> Int2 -> Monster
 initMonster clock cellXY =
     PairA.floatFromInt cellXY
         |> PairA.map (\fromTo -> createMonsterAnim clock fromTo fromTo)
@@ -49,7 +48,7 @@ type alias PressedKeys =
 
 
 type alias Model =
-    { gridSize : IntPair
+    { gridSize : Int2
     , pxAnim : Animation
     , pyAnim : Animation
     , pressedKeys : PressedKeys
@@ -87,7 +86,7 @@ defaultPlayerXYa =
     createAnim 1 1 0
 
 
-gridSize : IntPair
+gridSize : Int2
 gridSize =
     ( xCells, yCells )
 
@@ -105,11 +104,7 @@ cellSize =
 
 
 wallThickness =
-    cellSize // 10
-
-
-wallThicknessF =
-    toFloat wallThickness
+    cellSize / 10
 
 
 init : Flags -> Model
@@ -169,15 +164,15 @@ getPlayerXYpx m =
         |> R.mapBothWith (animToGridCellPx m.clock)
 
 
-getPortalXYpx : Model -> IntPair
+getPortalXYpx : Model -> Float2
 getPortalXYpx m =
-    m.portal |> PairA.mul cellSize
+    m.portal |> PairA.floatFromInt |> PairA.mul cellSize
 
 
-getMonsterXYpx : A.Clock -> Monster -> IntPair
+getMonsterXYpx : A.Clock -> Monster -> Float2
 getMonsterXYpx clock mon =
     ( mon.xa, mon.ya )
-        |> R.mapBothWith (animToGridCellPx clock >> round)
+        |> R.mapBothWith (animToGridCellPx clock)
 
 
 clampGridX : Model -> F Int
@@ -280,7 +275,7 @@ playerBoundingBox m =
 
 
 portalBoundingBox m =
-    xyDiaBoundingBox (getPortalXYpx m |> PairA.floatFromInt) defaultDiaF
+    xyDiaBoundingBox (getPortalXYpx m) defaultDiaF
 
 
 isGameOver m =
@@ -296,7 +291,7 @@ playerIntersects m =
 
 
 monsterBoundingBox m mon =
-    xyDiaBoundingBox (getMonsterXYpx m.clock mon |> PairA.floatFromInt) monsterDiameterF
+    xyDiaBoundingBox (getMonsterXYpx m.clock mon) monsterDiameterF
 
 
 defaultDiaF =
@@ -304,7 +299,7 @@ defaultDiaF =
         offset =
             5
     in
-        (cellSize - wallThicknessF - offset)
+        (cellSize - wallThickness - offset)
 
 
 monsterDiameterF =

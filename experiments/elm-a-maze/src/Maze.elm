@@ -1,6 +1,6 @@
 module Maze exposing (Maze, init, connected, concatMapCells, isEastConnected, isSouthConnected)
 
-import IntPair exposing (IntPair)
+import IntPair exposing (Int2)
 import MazeGenerator exposing (CellInfo, Connection, ConnectionSet, MazeGenerator)
 import PairA
 import Ramda exposing (..)
@@ -24,7 +24,7 @@ type Maze
     = Maze Record
 
 
-cordGenerator : IntPair -> Random.Generator IntPair
+cordGenerator : Int2 -> Random.Generator Int2
 cordGenerator whPair =
     whPair |> PairA.add -1 |> PairA.map (Random.int 0) |> uncurry Random.pair
 
@@ -37,12 +37,12 @@ southConnectionGenerator =
     cordGenerator >> Random.map southConnection
 
 
-connectionGenerator : IntPair -> Random.Generator Connection
+connectionGenerator : Int2 -> Random.Generator Connection
 connectionGenerator whPair =
     Random.Extra.choices (eastConnectionGenerator whPair) [ southConnectionGenerator whPair ]
 
 
-connectionSetGenerator : IntPair -> Random.Generator ConnectionSet
+connectionSetGenerator : Int2 -> Random.Generator ConnectionSet
 connectionSetGenerator =
     connectionGenerator >> Random.Set.set 100
 
@@ -51,7 +51,7 @@ mazeGenerator sizePair =
     Random.independentSeed |> Random.map (\seed -> MazeGenerator.init seed sizePair |> MazeGenerator.solve)
 
 
-createRec : Random.Seed -> IntPair -> Record
+createRec : Random.Seed -> Int2 -> Record
 createRec seed sizePair =
     Record
         |> RP.from seed
@@ -61,7 +61,7 @@ createRec seed sizePair =
         |> RP.finish
 
 
-init : Random.Seed -> IntPair -> Maze
+init : Random.Seed -> Int2 -> Maze
 init seed sizePair =
     Maze (createRec seed sizePair)
 
@@ -97,7 +97,7 @@ connected connection maze =
     moreConnected connection maze || mazeGConnected connection maze
 
 
-concatMapCells : (IntPair -> a) -> Maze -> List a
+concatMapCells : (Int2 -> a) -> Maze -> List a
 concatMapCells fn =
     getSize >> IntPair.concatMap fn
 
