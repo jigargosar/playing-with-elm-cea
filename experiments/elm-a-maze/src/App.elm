@@ -740,8 +740,8 @@ viewMonsterHelp x y =
         []
 
 
-viewGridCells size =
-    gridConcatMap size viewGridCell |> S.g [ opacityFloat 0.05 ]
+viewGridCells int2 =
+    gridConcatMap int2 viewGridCell |> S.g [ opacityFloat 0.05 ]
 
 
 cordToPx =
