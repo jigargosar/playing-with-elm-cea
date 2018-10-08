@@ -589,7 +589,7 @@ viewGameOver =
             (mh - h) // 2
 
         gAttrs =
-            [ iTranslate -cellSize (-cellSize) |> S.transform ]
+            [ iTranslate -cellSize -cellSize |> S.transform ]
 
         rectAttrs =
             [ mw |> iWidth
