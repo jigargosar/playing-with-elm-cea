@@ -270,7 +270,7 @@ extrema =
 
 
 xyDiameterExtrema ( x, y ) diameter =
-    Extrema x (x + playerDiameterF) y (y + playerDiameterF)
+    Extrema x (x + defaultDiaF) y (y + defaultDiaF)
 
 
 xyDiaBoundingBox xy d =
@@ -278,7 +278,7 @@ xyDiaBoundingBox xy d =
 
 
 playerBoundingBox m =
-    xyDiaBoundingBox (getPlayerXYpx m) playerDiameterF
+    xyDiaBoundingBox (getPlayerXYpx m) defaultDiaF
 
 
 portalBoundingBox m =
@@ -298,7 +298,7 @@ playerIntersects m =
 
 
 monsterBoundingBox m mon =
-    xyDiaBoundingBox (getMonsterXYpx m.clock mon) monsterDiameterF
+    xyDiaBoundingBox (getMonsterXYpx m.clock mon) defaultDiaF
 
 
 defaultDiaF =
@@ -306,20 +306,8 @@ defaultDiaF =
         offset =
             5
     in
-        (cellSize - wallThickness - offset)
+        (cellSize - (wallThickness / 2) - offset)
 
 
-monsterDiameterF =
-    defaultDiaF
-
-
-playerDiameterF =
-    defaultDiaF
-
-
-monsterRadius =
-    monsterDiameterF / 2 |> round
-
-
-playerRadius =
-    playerDiameterF / 2 |> round
+defaultRadiusF =
+    defaultDiaF / 2

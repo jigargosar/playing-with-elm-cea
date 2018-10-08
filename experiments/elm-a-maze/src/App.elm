@@ -41,37 +41,9 @@ import Browser.Events as BE
 import Set exposing (Set)
 import Json.Decode as D
 import Json.Encode as E
-import TypedSvg.Types
-    exposing
-        ( AlignmentBaseline(..)
-        , AnchorAlignment(..)
-        , CoordinateSystem(..)
-        , Fill(..)
-        , FontWeight(..)
-        , Transform(..)
-        , percent
-        , px
-        )
+import TypedSvg.Types exposing (..)
 import MazeGenerator as MG exposing (MazeGenerator)
-import ISvg
-    exposing
-        ( iCX
-        , iCY
-        , iFontSize
-        , iHeight
-        , iR
-        , iStrokeWidth
-        , iTranslate
-        , iTranslateCord
-        , iViewBox
-        , iWidth
-        , iX
-        , iX1
-        , iX2
-        , iY
-        , iY1
-        , iY2
-        )
+import ISvg exposing (..)
 import Svg.Lazy
 import Svg.Lazy as S
 import Update.Extra as Update exposing (filter)
@@ -681,7 +653,7 @@ viewPlayerHelp x y =
     S.circle
         [ TP.cx (x + centerOffset)
         , TP.cy (y + centerOffset)
-        , iR playerRadius
+        , TP.r defaultRadiusF
         , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
         ]
         []
@@ -691,7 +663,7 @@ viewEntity color x y =
     S.circle
         [ TP.cx (x + centerOffset)
         , TP.cy (y + centerOffset)
-        , iR playerRadius
+        , TP.r defaultRadiusF
         , color |> fillColor
         ]
         []
@@ -706,13 +678,13 @@ viewMonster ( x, y ) =
 
 
 centerOffset =
-    (cellSize - wallThickness) / 2
+    (cellSize) / 2
 
 
 viewMonsterHelp x y =
     S.circle
         [ Color.darkOrange |> fillColor
-        , iR monsterRadius
+        , TP.r defaultRadiusF
         , TP.cx (x + centerOffset)
         , TP.cy (y + centerOffset)
         ]
