@@ -154,8 +154,26 @@ update msg m =
             noCmd { m | seed = newSeed }
 
         KeyMsg keyMsg ->
-            m
-                |> (Keyboard.update keyMsg m.pressedKeys |> SetPressedKeys |> update)
+            let
+                ( newPressedKeys, keyDowned ) =
+                    m.pressedKeys
+                        |> Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg
+                        |> Tuple.mapSecond
+                            (Maybe.unwrap False
+                                (\kc ->
+                                    case kc of
+                                        Keyboard.KeyDown _ ->
+                                            True
+
+                                        _ ->
+                                            False
+                                )
+                            )
+                        |> Debug.log "keyDowned"
+            in
+                update (SetPressedKeys newPressedKeys) m
+                    |> filter (isLevelComplete m && keyDowned)
+                        (sequence [{- SetGame Model.Init -}])
 
         UpdatePlayer ->
             computeNewPlayerXYa m
