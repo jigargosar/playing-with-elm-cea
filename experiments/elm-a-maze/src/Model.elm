@@ -200,8 +200,8 @@ clampGridY m y =
         clamp 0 (h - 1) y
 
 
-getClock : Time.Posix -> Model -> A.Clock
-getClock time m =
+computeNewClock : Time.Posix -> Model -> A.Clock
+computeNewClock time m =
     Time.posixToMillis time - m.pageLoadedAt |> toFloat
 
 

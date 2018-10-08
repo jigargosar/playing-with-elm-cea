@@ -194,7 +194,7 @@ update msg m =
         AnimationFrame posix ->
             let
                 newClock =
-                    getClock posix m
+                    computeNewClock posix m
             in
                 update UpdateGame { m | clock = newClock }
 
