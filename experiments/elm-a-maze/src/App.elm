@@ -323,8 +323,7 @@ gridCellXYGenerator =
 
 monsterGenerator : Clock -> Random.Generator Monster
 monsterGenerator clock =
-    gridCellXYGenerator
-        |> Random.map (initMonster clock)
+    gridCellXYGenerator |> Random.map (initMonster clock)
 
 
 monstersGenerator : Int -> Clock -> Random.Generator Monsters
