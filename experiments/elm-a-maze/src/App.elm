@@ -546,11 +546,6 @@ view m =
         ]
 
 
-viewDebug : DebugModel -> View
-viewDebug { pressedKeys, game } =
-    divClass "flex hs2" [ text pressedKeys, text game ]
-
-
 viewSvg : Model -> View
 viewSvg m =
     let
@@ -570,12 +565,15 @@ viewSvg m =
             )
 
 
+viewDebug : DebugModel -> View
+viewDebug { pressedKeys, game } =
+    divClass "flex hs2" [ text pressedKeys, text game ]
+
+
 bkgRect =
     S.rect
         [ S.width "200%"
         , S.height "200%"
-        , S.x "-100%"
-        , S.y "-100%"
         , TA.strokeWidth (px 0.2)
         , TA.stroke Color.black
         , Color.blue
