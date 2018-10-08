@@ -158,7 +158,7 @@ update msg m =
 
         UpdatePlayer ->
             computeNewPlayerXYa m
-                |> Maybe.unwrap (noCmd m) (SetPlayer >> updateIn m)
+                |> Maybe.unwrap (noCmd m) (SetPlayer >> updateWithModel m)
 
         GenerateMonsters ->
             ( m, Random.generate SetMonsters (monstersGenerator 10 m.clock) )
@@ -214,10 +214,6 @@ sequence =
 
 andThen =
     Update.andThen update
-
-
-updateIn =
-    R.flip update
 
 
 getMonsterXInt { xa } =
