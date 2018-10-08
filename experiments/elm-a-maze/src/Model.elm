@@ -266,8 +266,12 @@ xyDiameterExtrema ( x, y ) diameter =
     Extrema x (x + playerDiameterF) y (y + playerDiameterF)
 
 
+xyDiameterBoundingBox xy d =
+    xyDiameterExtrema xy d |> BoundingBox2d.fromExtrema
+
+
 playerBoundingBox m =
-    xyDiameterExtrema (getPlayerCellXY m) playerDiameterF |> BoundingBox2d.fromExtrema
+    xyDiameterBoundingBox (getPlayerCellXY m) playerDiameterF
 
 
 isGameOver m =
@@ -275,8 +279,17 @@ isGameOver m =
         |> List.any (monsterBoundingBox m >> BoundingBox2d.intersects (playerBoundingBox m))
 
 
+playerIntersects m =
+    BoundingBox2d.intersects (playerBoundingBox m)
+
+
+isLevelComplete m =
+    m.monsters
+        |> List.any (monsterBoundingBox m >> playerIntersects m)
+
+
 monsterBoundingBox m mon =
-    xyDiameterExtrema (getMonsterCellXY m.clock mon |> PairA.floatFromInt) monsterDiameterF |> BoundingBox2d.fromExtrema
+    xyDiameterBoundingBox (getMonsterCellXY m.clock mon |> PairA.floatFromInt) monsterDiameterF
 
 
 monsterDiameterF =
