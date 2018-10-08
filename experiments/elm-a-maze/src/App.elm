@@ -155,10 +155,9 @@ update msg m =
             Keyboard.update keyMsg m.pressedKeys |> SetPressedKeys |> updateWithModel m
 
         UpdatePlayer ->
-            computeNewPlayerXYa m
-                |> Maybe.Extra.unwrap m
-                    (\( xa, ya ) -> { m | pxAnim = xa, pyAnim = ya })
-                |> noCmd
+            m
+                |> (computeNewPlayerXYa >> Maybe.map (SetPlayer >> updateIn m))
+                |> Maybe.withDefault (noCmd m)
 
         GenerateMonsters ->
             ( m, Random.generate SetMonsters (monstersGenerator 10 m.clock) )
@@ -181,7 +180,7 @@ update msg m =
                     Model.Over ->
                         sequence [ UpdateMonsters ]
 
-                    _ ->
+                    Model.Running ->
                         sequence [ UpdatePlayer, UpdateMonsters, UpdateGameOver ]
 
         AnimationFrame posix ->
@@ -198,6 +197,14 @@ updateWithModel =
 
 sequence =
     Update.sequence update
+
+
+andThen =
+    Update.andThen update
+
+
+updateIn =
+    R.flip update
 
 
 getMonsterXInt { xa } =

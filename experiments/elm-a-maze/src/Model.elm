@@ -25,7 +25,6 @@ type alias Portal =
 type Game
     = Init
     | Running
-    | Paused
     | Over
 
 
