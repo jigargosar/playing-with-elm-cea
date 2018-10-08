@@ -39,7 +39,6 @@ type alias PressedKeys =
 
 type alias Model =
     { gridSize : IntPair
-    , seed : Random.Seed
     , pxAnim : Animation
     , pyAnim : Animation
     , pressedKeys : PressedKeys
@@ -48,6 +47,7 @@ type alias Model =
     , maze : Maze
     , monsters : Monsters
     , game : Game
+    , seed : Random.Seed
     }
 
 
