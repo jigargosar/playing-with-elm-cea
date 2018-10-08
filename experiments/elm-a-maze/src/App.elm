@@ -309,24 +309,22 @@ monstersUpdateGenerator m =
     m.monsters |> List.map (monsterUpdateGenerator m) >> Random.Extra.combine
 
 
-getMaxGridXY : Model -> IntPair
-getMaxGridXY =
-    .gridSize >> R.mapBothWith ((+) -1)
+maxGridXY : IntPair
+maxGridXY =
+    gridSize |> R.mapBothWith ((+) -1)
 
 
 gridCordGenerator : Model -> Random.Generator IntPair
 gridCordGenerator m =
-    let
-        ( maxX, maxY ) =
-            getMaxGridXY m
-    in
-        Random.map2 Tuple.pair (Random.int 0 maxX) (Random.int 0 maxY)
+    maxGridXY
+        |> PairA.map (Random.int 0)
+        |> R.uncurry Random.pair
 
 
 monsterGenerator : Model -> Random.Generator Monster
 monsterGenerator m =
     gridCordGenerator m
-        |> Random.map (R.mapBothWith (toFloat >> \c -> createMonsterAnim c c m))
+        |> Random.map (R.mapBothWith (toFloat >> \c -> createMonsterAnim c c m.clock))
         |> Random.map (\( xa, ya ) -> Monster xa ya)
 
 
@@ -449,7 +447,7 @@ computeNewAnim isConnected cellCount dd anim m =
                 |> clampTo
     in
         if (notRunning anim m || directionReversed) && to /= newTo && isConnected ( to, newTo ) then
-            createAnim current newTo m
+            createAnim current newTo m.clock
         else
             anim
 

@@ -60,7 +60,7 @@ type alias Flags =
     { now : Int }
 
 
-createAnim from to { clock } =
+createAnim from to clock =
     A.animation clock
         |> A.from from
         |> A.to to
@@ -68,7 +68,7 @@ createAnim from to { clock } =
         |> A.speed 0.003
 
 
-createMonsterAnim from to { clock } =
+createMonsterAnim from to clock =
     A.animation clock
         |> A.from from
         |> A.to to
@@ -77,7 +77,7 @@ createMonsterAnim from to { clock } =
 
 
 defaultPlayerXYa =
-    createAnim 1 1 { clock = 0 }
+    createAnim 1 1 0
 
 
 gridSize : IntPair
