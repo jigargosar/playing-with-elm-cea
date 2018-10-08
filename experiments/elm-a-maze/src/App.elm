@@ -588,8 +588,7 @@ bkgRect _ =
 
 viewGameContent : Model -> List View
 viewGameContent m =
-    ([ S.lazy viewGridCells m.gridSize
-     , S.lazy viewMazeWalls m.maze
+    ([ S.lazy viewMazeWalls m.maze
      , viewPlayer (getPlayerXYpx m)
      , viewPortal (getPortalXYpx m)
      , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
@@ -738,25 +737,6 @@ viewMonsterHelp x y =
         , iCY (y + centerOffset)
         ]
         []
-
-
-viewGridCells =
-    PairA.concatMapGrid viewGridCell >> S.g [ opacityFloat 0.05 ]
-
-
-cordToPx =
-    R.mapBothWith (toFloat >> (*) cellSize)
-
-
-viewGridCell cord =
-    let
-        xyAttr =
-            cord |> cordToPx |> R.mapBothWith ((+) (-wallThicknessF / 2)) |> Tuple.mapBoth TP.x TP.y |> R.tupleToList
-
-        whAttr =
-            px cellSize |> \s -> ( s, s ) |> Tuple.mapBoth TA.width TA.height |> R.tupleToList
-    in
-        S.rect (xyAttr ++ whAttr ++ [ strokeColor Color.black, TP.strokeWidth 1, TA.noFill ]) []
 
 
 
