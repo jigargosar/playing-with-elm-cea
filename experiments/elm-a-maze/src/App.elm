@@ -653,7 +653,7 @@ viewPlayerHelp x y =
     S.circle
         [ TP.cx (x + centerOffset)
         , TP.cy (y + centerOffset)
-        , TP.r defaultRadiusF
+        , TP.r defaultRadius
         , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
         ]
         []
@@ -663,7 +663,7 @@ viewEntity color x y =
     S.circle
         [ TP.cx (x + centerOffset)
         , TP.cy (y + centerOffset)
-        , TP.r defaultRadiusF
+        , TP.r defaultRadius
         , color |> fillColor
         ]
         []
@@ -684,7 +684,7 @@ centerOffset =
 viewMonsterHelp x y =
     S.circle
         [ Color.darkOrange |> fillColor
-        , TP.r defaultRadiusF
+        , TP.r defaultRadius
         , TP.cx (x + centerOffset)
         , TP.cy (y + centerOffset)
         ]
