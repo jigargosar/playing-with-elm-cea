@@ -211,51 +211,51 @@ andThen =
     Update.andThen update
 
 
-getMonsterXInt { xa } =
-    A.getTo xa |> round
+getMonsterX { xa } =
+    A.getTo xa
 
 
-getMonsterYInt { ya } =
-    A.getTo ya |> round
+getMonsterY { ya } =
+    A.getTo ya
 
 
-computeMonsterNewX : Int -> Model -> Monster -> Maybe Float
+computeMonsterNewX : Float -> Model -> Monster -> Maybe Float
 computeMonsterNewX offset m monster =
     let
         isConnected cp =
             Maze.connected cp m.maze
 
         currentY =
-            getMonsterYInt monster
+            getMonsterY monster
 
         oldX =
-            getMonsterXInt monster
+            getMonsterX monster
 
         newX =
-            (getMonsterXInt monster + offset)
+            (getMonsterX monster + offset)
                 |> clampGridX m
 
         canMove =
             oldX /= newX && isConnected ( ( oldX, currentY ), ( newX, currentY ) )
     in
         (if canMove then
-            toFloat newX |> Just
+            Just newX
          else
             Nothing
         )
 
 
-computeMonsterNewY : Int -> Model -> Monster -> Maybe Float
+computeMonsterNewY : Float -> Model -> Monster -> Maybe Float
 computeMonsterNewY offset m monster =
     let
         isConnected cp =
             Maze.connected cp m.maze
 
         currentX =
-            getMonsterXInt monster
+            getMonsterX monster
 
         oldY =
-            getMonsterYInt monster
+            getMonsterY monster
 
         newY =
             (oldY + offset)
@@ -265,14 +265,14 @@ computeMonsterNewY offset m monster =
             oldY /= newY && isConnected ( ( currentX, oldY ), ( currentX, newY ) )
     in
         (if canMove then
-            toFloat newY |> Just
+            Just newY
          else
             Nothing
         )
 
 
 getAnimDir anim =
-    A.getTo anim - A.getFrom anim |> R.sign |> R.when (R.equals 0) (always 1) |> round
+    A.getTo anim - A.getFrom anim |> R.sign |> R.when (R.equals 0) (always 1)
 
 
 computeMonsterNewXa : Model -> Monster -> Animation
