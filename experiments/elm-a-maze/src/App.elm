@@ -160,7 +160,7 @@ update msg m =
             ( m, Random.generate SetMonsters (monstersGenerator 10 m) )
 
         UpdateMonsters ->
-            m |> .monsters >> List.map (updateMonster m) >> SetMonsters >> updateWithModel m
+            ( m, Random.generate SetMonsters (monstersUpdateGenerator m) )
 
         SetGame v ->
             noCmd { m | game = v }
@@ -304,19 +304,9 @@ monsterUpdateGenerator m mon =
             )
 
 
-monstersUpdateGenerator : Model -> Monsters -> Random.Generator Monsters
+monstersUpdateGenerator : Model -> Random.Generator Monsters
 monstersUpdateGenerator m =
-    List.map (monsterUpdateGenerator m) >> Random.Extra.combine
-
-
-updateMonster : Model -> F Monster
-updateMonster m mon =
-    if isRunning mon.xa m || isRunning mon.ya m then
-        mon
-    else if Basics.modBy 10 (round m.clock) > 5 then
-        { mon | xa = computeMonsterNewXa m mon }
-    else
-        { mon | ya = computeMonsterNewYa m mon }
+    m.monsters |> List.map (monsterUpdateGenerator m) >> Random.Extra.combine
 
 
 getMaxGridXY : Model -> IntPair
