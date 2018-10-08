@@ -26,7 +26,7 @@ type Maze
 
 cordGenerator : Int2 -> Random.Generator Int2
 cordGenerator whPair =
-    whPair |> PairA.add -1 |> PairA.map (Random.int 0) |> uncurry Random.pair
+    whPair |> PairA.add -2 |> PairA.map (Random.int 0) |> uncurry Random.pair
 
 
 eastConnectionGenerator =
@@ -43,8 +43,22 @@ connectionGenerator whPair =
 
 
 connectionSetGenerator : Int2 -> Random.Generator ConnectionSet
-connectionSetGenerator =
-    connectionGenerator >> Random.Set.set 100
+connectionSetGenerator whI2 =
+    let
+        num =
+            150
+
+        eliminateAndCombine cs =
+            Random.Set.notInSet cs (connectionGenerator whI2)
+                |> Random.Set.set num
+                |> Random.map (Set.union cs)
+    in
+        connectionGenerator whI2
+            |> Random.Set.set num
+
+
+
+--            |> Random.andThen eliminateAndCombine
 
 
 mazeGenerator sizePair =
