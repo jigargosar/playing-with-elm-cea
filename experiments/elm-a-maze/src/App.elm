@@ -588,6 +588,9 @@ viewGameOver =
         y =
             (mh - h) // 2
 
+        gAttrs =
+            [ iTranslate -cellSize (-cellSize) |> S.transform ]
+
         rectAttrs =
             [ mw |> iWidth
             , h |> iHeight
@@ -596,24 +599,23 @@ viewGameOver =
             , S.opacity "0.85"
             ]
 
-        render game =
-            S.g
-                [ iTranslate -cellSize (-cellSize) |> S.transform
-                ]
-                [ S.rect rectAttrs []
-                , S.text_
-                    [ fillColor Color.black
-                    , strokeColor Color.black
-                    , iFontSize 24
+        textAttrs =
+            [ fillColor Color.black
+            , strokeColor Color.black
+            , iFontSize 24
 
-                    --                    , FontWeightLighter |> TA.fontWeight
-                    , SA.strokeWidth "0.01"
-                    , TA.textAnchor AnchorMiddle
-                    , TA.alignmentBaseline AlignmentMiddle
-                    , S.x "50%"
-                    , S.y "50%"
-                    ]
-                    [ S.text "A-Maze-Zing! You Reached Level 1" ]
+            --                    , FontWeightLighter |> TA.fontWeight
+            , SA.strokeWidth "0.01"
+            , TA.textAnchor AnchorMiddle
+            , TA.alignmentBaseline AlignmentMiddle
+            , S.x "50%"
+            , S.y "50%"
+            ]
+
+        render game =
+            S.g gAttrs
+                [ S.rect rectAttrs []
+                , S.text_ textAttrs [ S.text "A-Maze-Zing! You Reached Level 1" ]
                 ]
     in
         R.ifElse (R.equals Model.Over) (S.lazy render >> List.singleton) (always [])
