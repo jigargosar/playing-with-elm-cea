@@ -155,9 +155,8 @@ update msg m =
             Keyboard.update keyMsg m.pressedKeys |> SetPressedKeys |> updateWithModel m
 
         UpdatePlayer ->
-            m
-                |> (computeNewPlayerXYa >> Maybe.map (SetPlayer >> updateIn m))
-                |> Maybe.withDefault (noCmd m)
+            computeNewPlayerXYa m
+                |> Maybe.Extra.unwrap (noCmd m) (SetPlayer >> updateIn m)
 
         GenerateMonsters ->
             ( m, Random.generate SetMonsters (monstersGenerator 10 m.clock) )
