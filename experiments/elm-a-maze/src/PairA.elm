@@ -15,6 +15,10 @@ pair =
     Tuple.pair
 
 
+zero =
+    pair 0 0
+
+
 type alias IntPair =
     PairA Int
 
@@ -31,8 +35,8 @@ map fn =
     Tuple.mapBoth fn fn
 
 
-toFloat : IntPair -> FloatPair
-toFloat =
+floatFromInt : IntPair -> FloatPair
+floatFromInt =
     map Basics.toFloat
 
 

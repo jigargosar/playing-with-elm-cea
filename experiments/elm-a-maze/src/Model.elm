@@ -123,7 +123,7 @@ init { now } =
         , maze = Maze.init mazeSeed gridSize
         , monsters = []
         , game = Init
-        , portal = PairA.pair 0 0
+        , portal = PairA.zero
         , seed = modelSeed
         }
 
@@ -269,7 +269,7 @@ isGameOver m =
 
 
 monsterBoundingBox m mon =
-    xyDiameterExtrema (getMonsterCellXY m.clock mon |> PairA.toFloat) monsterDiameterF |> BoundingBox2d.fromExtrema
+    xyDiameterExtrema (getMonsterCellXY m.clock mon |> PairA.floatFromInt) monsterDiameterF |> BoundingBox2d.fromExtrema
 
 
 monsterDiameterF =
