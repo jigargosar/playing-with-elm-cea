@@ -559,9 +559,11 @@ viewSvg m =
     in
         S.svg [ H.width cw, H.height ch ]
             ([ bkgRect
-             , S.lazy viewMazeWalls m.maze
-             , viewPlayer (getPlayerXYpx m)
-             , viewPortal (getPortalXYpx m)
+             , S.g [ TA.transform [ Translate cellSize cellSize ] ]
+                [ S.lazy viewMazeWalls m.maze
+                , viewPlayer (getPlayerXYpx m)
+                , viewPortal (getPortalXYpx m)
+                ]
              , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
              , S.lazy viewGameOver m.game
              ]
