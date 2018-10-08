@@ -173,13 +173,13 @@ update msg m =
             let
                 newMsg =
                     if isLevelComplete m then
-                        SetGame Model.LevelComplete
+                        [ SetGame Model.LevelComplete, SetPressedKeys [] ]
                     else if isGameOver m then
-                        SetGame Model.Over
+                        [ SetGame Model.Over ]
                     else
-                        NoOp
+                        []
             in
-                update newMsg m
+                noCmd m |> sequence newMsg
 
         UpdateGame ->
             noCmd m
