@@ -290,33 +290,13 @@ computeMonsterNewYa m monster =
 
 
 updateMonster : Model -> F Monster
-updateMonster m monster =
-    let
-        xa =
-            monster.xa
-
-        ya =
-            monster.ya
-
-        isMoving =
-            isRunning xa m || isRunning ya m
-    in
-        (if isMoving then
-            monster
-         else
-            let
-                newXa =
-                    computeMonsterNewXa m monster
-
-                newYa =
-                    computeMonsterNewYa m monster
-            in
-                (if Basics.modBy 10 (round m.clock) > 5 then
-                    { monster | xa = newXa }
-                 else
-                    { monster | ya = newYa }
-                )
-        )
+updateMonster m mon =
+    if isRunning mon.xa m || isRunning mon.ya m then
+        mon
+    else if Basics.modBy 10 (round m.clock) > 5 then
+        { mon | xa = computeMonsterNewXa m mon }
+    else
+        { mon | ya = computeMonsterNewYa m mon }
 
 
 getMaxGridXY : Model -> IntPair
