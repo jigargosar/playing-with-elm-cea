@@ -33,6 +33,13 @@ type alias Monster =
     { xa : Animation, ya : Animation }
 
 
+initMonster : Clock -> IntPair -> Monster
+initMonster clock cellXY =
+    PairA.floatFromInt cellXY
+        |> PairA.map (\fromTo -> createMonsterAnim clock fromTo fromTo)
+        |> R.uncurry Monster
+
+
 type alias Monsters =
     List Monster
 
@@ -68,7 +75,7 @@ createAnim from to clock =
         |> A.speed 0.003
 
 
-createMonsterAnim from to clock =
+createMonsterAnim clock from to =
     A.animation clock
         |> A.from from
         |> A.to to

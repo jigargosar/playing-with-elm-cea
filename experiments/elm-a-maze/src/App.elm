@@ -157,7 +157,7 @@ update msg m =
                 |> noCmd
 
         GenerateMonsters ->
-            ( m, Random.generate SetMonsters (monstersGenerator 10 m) )
+            ( m, Random.generate SetMonsters (monstersGenerator 10 m.clock) )
 
         UpdateMonsters ->
             ( m, Random.generate SetMonsters (monstersUpdateGenerator m) )
@@ -314,21 +314,20 @@ maxGridXY =
     gridSize |> R.mapBothWith ((+) -1)
 
 
-gridCordGenerator : Model -> Random.Generator IntPair
-gridCordGenerator m =
+gridCellXYGenerator : Random.Generator IntPair
+gridCellXYGenerator =
     maxGridXY
         |> PairA.map (Random.int 0)
         |> R.uncurry Random.pair
 
 
-monsterGenerator : Model -> Random.Generator Monster
-monsterGenerator m =
-    gridCordGenerator m
-        |> Random.map (R.mapBothWith (toFloat >> \c -> createMonsterAnim c c m.clock))
-        |> Random.map (\( xa, ya ) -> Monster xa ya)
+monsterGenerator : Clock -> Random.Generator Monster
+monsterGenerator clock =
+    gridCellXYGenerator
+        |> Random.map (initMonster clock)
 
 
-monstersGenerator : Int -> Model -> Random.Generator Monsters
+monstersGenerator : Int -> Clock -> Random.Generator Monsters
 monstersGenerator ct =
     monsterGenerator >> Random.list ct
 
