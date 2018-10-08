@@ -536,9 +536,9 @@ canvasWHStyles =
 
 view : Model -> View
 view m =
-    divClassA "flex flex-column items-center pa2 h-100"
+    divClassA "flex flex-column items-center pa2"
         canvasWHStyles
-        [ divClass "flex flex-column vs3 h-100"
+        [ divClass "flex flex-column vs3"
             [ divClass "f3 tc" [ H.text "A-Maze-Zing!" ]
             , divClass "flex1 overflow-scroll" [ viewSvg m ]
             , divClass "f7" [ viewDebug (getDebugState m) ]
