@@ -306,7 +306,7 @@ monsterBB m mon =
 
 
 defaultDia =
-    (cellSize - wallThickness) - (cellSize / 40)
+    (cellSize - wallThickness) - (cellSize / 5)
 
 
 defaultRadius =
