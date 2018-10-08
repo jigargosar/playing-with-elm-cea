@@ -518,17 +518,17 @@ type alias View =
     Html Msg
 
 
-canvasSizePair : IntPair
-canvasSizePair =
+canvasWHIPair : IntPair
+canvasWHIPair =
     gridSize |> PairA.add 2 >> PairA.mul cellSize
 
 
 canvasWHRec =
-    canvasSizePair |> PairA.toWhRec
+    canvasWHIPair |> PairA.toWhRec
 
 
 canvasWHStyles =
-    canvasSizePair
+    canvasWHIPair
         |> PairA.stringFromIntWithSuffix "px"
         |> PairA.apply2 H.style ( "min-width", "min-height" )
         |> R.tupleToList
@@ -582,7 +582,7 @@ bkgRect =
 viewGameOver game =
     let
         ( mw, mh ) =
-            canvasSizePair
+            canvasWHIPair
 
         h =
             mh // 4
