@@ -44,7 +44,7 @@ connectionGenerator whPair =
 
 connectionSetGenerator : IntPair -> Random.Generator ConnectionSet
 connectionSetGenerator =
-    connectionGenerator >> Random.Set.set 200
+    connectionGenerator >> Random.Set.set 100
 
 
 mazeGenerator sizePair =
@@ -89,7 +89,7 @@ mazeGConnected connection =
 
 moreConnected : Connection -> Maze -> Bool
 moreConnected connection =
-    getMoreConnection >> Set.member connection
+    getMoreConnection >> Set.member (IntPair.normalizeConnection connection)
 
 
 connected : Connection -> Maze -> Bool

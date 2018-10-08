@@ -289,6 +289,10 @@ computeMonsterNewYa m monster =
             |> Maybe.withDefault ya
 
 
+monsterUpdateGenerator m mon =
+    1
+
+
 updateMonster : Model -> F Monster
 updateMonster m mon =
     if isRunning mon.xa m || isRunning mon.ya m then
