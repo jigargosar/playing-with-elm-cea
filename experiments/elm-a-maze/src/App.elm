@@ -171,9 +171,6 @@ update msg m =
 
         UpdateLevel ->
             let
-                isLevelComplete =
-                    isGameOver
-
                 newMsg =
                     if isLevelComplete m then
                         SetGame Model.LevelComplete
