@@ -182,20 +182,20 @@ getMonsterXYpx clock mon =
         |> R.mapBothWith (animToGridCellPx clock)
 
 
-clampGridX : Model -> F Int
+clampGridX : Model -> F Float
 clampGridX m x =
     let
         ( w, _ ) =
-            m.gridSize
+            gridSizeF2
     in
         clamp 0 (w - 1) x
 
 
-clampGridY : Model -> F Int
+clampGridY : Model -> F Float
 clampGridY m y =
     let
         ( _, h ) =
-            m.gridSize
+            gridSizeF2
     in
         clamp 0 (h - 1) y
 
