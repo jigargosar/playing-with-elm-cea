@@ -211,11 +211,11 @@ andThen =
     Update.andThen update
 
 
-getMonsterX { xa } =
+getMonsterXaTo { xa } =
     A.getTo xa
 
 
-getMonsterY { ya } =
+getMonsterYaTo { ya } =
     A.getTo ya
 
 
@@ -226,13 +226,14 @@ computeMonsterNewX offset m monster =
             Maze.connected cp m.maze
 
         currentY =
-            getMonsterY monster
+            getMonsterYaTo monster
 
         oldX =
-            getMonsterX monster
+            getMonsterXaTo monster
 
+        newX : Float
         newX =
-            (getMonsterX monster + offset)
+            (getMonsterXaTo monster + offset)
                 |> clampGridX m
 
         canMove =
@@ -252,10 +253,10 @@ computeMonsterNewY offset m monster =
             Maze.connected cp m.maze
 
         currentX =
-            getMonsterX monster
+            getMonsterXaTo monster
 
         oldY =
-            getMonsterY monster
+            getMonsterYaTo monster
 
         newY =
             (oldY + offset)
