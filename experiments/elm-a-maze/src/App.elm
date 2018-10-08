@@ -678,7 +678,7 @@ viewMonster ( x, y ) =
 
 
 centerOffset =
-    (cellSize) / 2
+    cellSize / 2
 
 
 viewMonsterHelp x y =
