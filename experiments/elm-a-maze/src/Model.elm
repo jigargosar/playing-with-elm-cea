@@ -25,6 +25,7 @@ type alias Portal =
 type Game
     = Init
     | Running
+    | LevelComplete
     | Over
 
 

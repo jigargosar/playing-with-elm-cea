@@ -174,9 +174,9 @@ update msg m =
                     isGameOver
 
                 newMsg =
-                    if isGameOver m then
-                        SetGame Model.Over
-                    else if isLevelComplete m then
+                    if isLevelComplete m then
+                        SetGame Model.LevelComplete
+                    else if isGameOver m then
                         SetGame Model.Over
                     else
                         NoOp
@@ -191,6 +191,9 @@ update msg m =
 
                     Model.Over ->
                         sequence [ UpdateMonsters ]
+
+                    Model.LevelComplete ->
+                        sequence []
 
                     Model.Running ->
                         sequence [ UpdatePlayer, UpdateMonsters, UpdateLevel ]
