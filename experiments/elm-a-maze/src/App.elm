@@ -632,7 +632,7 @@ viewGameOver game =
                 renderGameOver
 
             Model.LevelComplete ->
-                renderGameOver
+                renderLevelComplete
 
             _ ->
                 S.g [] []
