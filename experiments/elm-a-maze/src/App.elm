@@ -653,7 +653,7 @@ viewWall maze cord =
 
         eastWall =
             Svg.rect
-                [ TP.x (x + cellSize - wallThickness)
+                [ TP.x (x + cellSize - (wallThickness / 2))
                 , TP.y y
                 , TP.width wallThickness
                 , TP.height cellSize
@@ -664,7 +664,7 @@ viewWall maze cord =
         southWall =
             Svg.rect
                 [ TP.x x
-                , TP.y (y + cellSize - wallThickness)
+                , TP.y (y + cellSize - (wallThickness / 2))
                 , TP.width cellSize
                 , TP.height wallThickness
                 , SA.fill "#000"
