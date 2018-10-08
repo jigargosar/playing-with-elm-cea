@@ -277,12 +277,12 @@ xyBB xy =
     xyDiameterExtrema xy defaultDia |> BoundingBox2d.fromExtrema
 
 
-playerBB m =
-    xyBB (getPlayerXYpx m)
+playerBB =
+    getPlayerXYpx >> xyBB
 
 
-portalBB m =
-    xyBB (getPortalXYpx m)
+portalBB =
+    getPortalXYpx >> xyBB
 
 
 isGameOver m =
