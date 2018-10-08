@@ -566,7 +566,11 @@ viewSvg : Model -> View
 viewSvg m =
     S.svg svgAttrs
         ([ S.lazy bkgRect ()
-         , viewGameContent m |> Svg.g []
+         , S.lazy viewMazeWalls m.maze
+         , viewPlayer (getPlayerXYpx m)
+         , viewPortal (getPortalXYpx m)
+         , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
+         , S.lazy viewGameOver m.game
          ]
         )
 
@@ -584,17 +588,6 @@ bkgRect _ =
             |> fillColor
         ]
         []
-
-
-viewGameContent : Model -> List View
-viewGameContent m =
-    ([ S.lazy viewMazeWalls m.maze
-     , viewPlayer (getPlayerXYpx m)
-     , viewPortal (getPortalXYpx m)
-     , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
-     , S.lazy viewGameOver m.game
-     ]
-    )
 
 
 viewGameOver game =
