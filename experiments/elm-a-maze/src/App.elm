@@ -594,9 +594,6 @@ viewGameOver game =
         y =
             (mh - h) // 2
 
-        gAttrs =
-            [ iTranslate -cellSize -cellSize |> S.transform ]
-
         rectAttrs =
             [ mw |> iWidth
             , h |> iHeight
@@ -619,13 +616,13 @@ viewGameOver game =
             ]
 
         renderGameOver =
-            S.g gAttrs
+            S.g []
                 [ S.rect rectAttrs []
                 , S.text_ textAttrs [ S.text "A-Maze-Zing! You Reached Level 1" ]
                 ]
 
         renderLevelComplete =
-            S.g gAttrs
+            S.g []
                 [ S.rect rectAttrs []
                 , S.text_ textAttrs [ S.text "LEVEL 2" ]
                 ]
