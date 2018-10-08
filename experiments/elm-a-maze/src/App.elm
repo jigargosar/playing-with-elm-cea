@@ -555,8 +555,8 @@ viewSvg m =
                 [ S.lazy viewMazeWalls m.maze
                 , viewPlayer (getPlayerXYpx m)
                 , viewPortal (getPortalXYpx m)
+                , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
                 ]
-             , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
              , S.lazy viewGameOver m.game
              ]
             )
