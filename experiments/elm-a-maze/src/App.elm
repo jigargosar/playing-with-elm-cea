@@ -173,7 +173,7 @@ update msg m =
             in
                 update (SetPressedKeys newPressedKeys) m
                     |> filter (isLevelComplete m && keyDowned)
-                        (sequence [{- SetGame Model.Init -}])
+                        (sequence [ SetGame Model.Init ])
 
         UpdatePlayer ->
             computeNewPlayerXYa m
@@ -192,7 +192,7 @@ update msg m =
             let
                 newMsg =
                     if isLevelComplete m then
-                        [ SetGame Model.LevelComplete, SetPressedKeys [] ]
+                        [ SetGame Model.LevelComplete ]
                     else if isGameOver m then
                         [ SetGame Model.Over ]
                     else
@@ -204,7 +204,11 @@ update msg m =
             noCmd m
                 |> case m.game of
                     Model.Init ->
-                        sequence [ GenerateMonsters, SetGame Model.Running ]
+                        sequence
+                            [ SetPlayer ( defaultPlayerXYa, defaultPlayerXYa )
+                            , GenerateMonsters
+                            , SetGame Model.Running
+                            ]
 
                     Model.Over ->
                         sequence [ UpdateMonsters ]
