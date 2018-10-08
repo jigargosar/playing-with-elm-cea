@@ -76,7 +76,7 @@ createMonsterAnim from to { clock } =
         |> A.speed 0.003
 
 
-defaultAnim =
+defaultPlayerXYa =
     createAnim 1 1 { clock = 0 }
 
 
@@ -115,8 +115,8 @@ init { now } =
             Random.step Random.independentSeed initialSeed
     in
         { gridSize = gridSize
-        , pxAnim = defaultAnim
-        , pyAnim = defaultAnim
+        , pxAnim = defaultPlayerXYa
+        , pyAnim = defaultPlayerXYa
         , pressedKeys = []
         , pageLoadedAt = now
         , clock = 0
