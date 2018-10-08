@@ -154,7 +154,8 @@ update msg m =
             noCmd { m | seed = newSeed }
 
         KeyMsg keyMsg ->
-            Keyboard.update keyMsg m.pressedKeys |> SetPressedKeys |> updateWithModel m
+            m
+                |> (Keyboard.update keyMsg m.pressedKeys |> SetPressedKeys |> update)
 
         UpdatePlayer ->
             computeNewPlayerXYa m
