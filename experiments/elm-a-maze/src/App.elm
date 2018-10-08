@@ -211,29 +211,28 @@ andThen =
     Update.andThen update
 
 
-getMonsterXaTo { xa } =
-    A.getTo xa
+getMonsterX { xa } =
+    A.getTo xa |> round
 
 
-getMonsterYaTo { ya } =
-    A.getTo ya
+getMonsterY { ya } =
+    A.getTo ya |> round
 
 
-computeMonsterNewX : Float -> Model -> Monster -> Maybe Float
+computeMonsterNewX : Int -> Model -> Monster -> Maybe Int
 computeMonsterNewX offset m monster =
     let
         isConnected cp =
             Maze.connected cp m.maze
 
         currentY =
-            getMonsterYaTo monster
+            getMonsterY monster
 
         oldX =
-            getMonsterXaTo monster
+            getMonsterX monster
 
-        newX : Float
         newX =
-            (getMonsterXaTo monster + offset)
+            (getMonsterX monster + offset)
                 |> clampGridX m
 
         canMove =
@@ -246,17 +245,17 @@ computeMonsterNewX offset m monster =
         )
 
 
-computeMonsterNewY : Float -> Model -> Monster -> Maybe Float
+computeMonsterNewY : Int -> Model -> Monster -> Maybe Int
 computeMonsterNewY offset m monster =
     let
         isConnected cp =
             Maze.connected cp m.maze
 
         currentX =
-            getMonsterXaTo monster
+            getMonsterX monster
 
         oldY =
-            getMonsterYaTo monster
+            getMonsterY monster
 
         newY =
             (oldY + offset)
@@ -273,7 +272,7 @@ computeMonsterNewY offset m monster =
 
 
 getAnimDir anim =
-    A.getTo anim - A.getFrom anim |> R.sign |> R.when (R.equals 0) (always 1)
+    A.getTo anim - A.getFrom anim |> R.sign |> R.when (R.equals 0) (always 1) |> round
 
 
 computeMonsterNewXa : Model -> Monster -> Animation
@@ -287,7 +286,7 @@ computeMonsterNewXa m monster =
     in
         computeMonsterNewX xDir m monster
             |> Maybe.orElseLazy (\_ -> computeMonsterNewX -xDir m monster)
-            |> Maybe.map (\newTo -> animRetargetTo newTo m xa)
+            |> Maybe.map (\newTo -> animRetargetToI newTo m xa)
             |> Maybe.withDefault xa
 
 
@@ -302,7 +301,7 @@ computeMonsterNewYa m monster =
     in
         computeMonsterNewY yDir m monster
             |> Maybe.orElseLazy (\_ -> computeMonsterNewY -yDir m monster)
-            |> Maybe.map (\newTo -> animRetargetTo newTo m ya)
+            |> Maybe.map (\newTo -> animRetargetToI newTo m ya)
             |> Maybe.withDefault ya
 
 

@@ -161,6 +161,10 @@ animRetargetTo to { clock } anim =
     A.retarget clock to anim
 
 
+animRetargetToI =
+    toFloat >> animRetargetTo
+
+
 animToGridCellPx clock anim =
     (A.animate clock anim) * cellSize
 
@@ -182,20 +186,20 @@ getMonsterXYpx clock mon =
         |> R.mapBothWith (animToGridCellPx clock)
 
 
-clampGridX : Model -> F Float
+clampGridX : Model -> F Int
 clampGridX m x =
     let
         ( w, _ ) =
-            gridSizeF2
+            m.gridSize
     in
         clamp 0 (w - 1) x
 
 
-clampGridY : Model -> F Float
+clampGridY : Model -> F Int
 clampGridY m y =
     let
         ( _, h ) =
-            gridSizeF2
+            m.gridSize
     in
         clamp 0 (h - 1) y
 
