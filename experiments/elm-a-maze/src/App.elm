@@ -16,7 +16,7 @@ import List.Extra
 import Maybe.Extra
 import Maze exposing (Maze)
 import Model exposing (..)
-import PairA exposing (IntPair)
+import PairA exposing (IntPair, PairA)
 import Ramda as R exposing (F)
 import Random
 import Random.Extra
@@ -98,6 +98,7 @@ type Msg
     | OnWindowBlur ()
     | SetPressedKeys PressedKeys
     | SetMonsters Monsters
+    | SetPlayer (PairA Animation)
     | SetSeed Random.Seed
     | SetGame Game
     | KeyMsg Keyboard.Msg
@@ -143,6 +144,9 @@ update msg m =
 
         SetMonsters newMonsters ->
             noCmd { m | monsters = newMonsters }
+
+        SetPlayer ( xa, ya ) ->
+            noCmd { m | pxAnim = xa, pyAnim = ya }
 
         SetSeed newSeed ->
             noCmd { m | seed = newSeed }
