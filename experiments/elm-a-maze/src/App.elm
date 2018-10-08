@@ -18,7 +18,7 @@ import Maybe.Extra
 import Maybe.Extra as Maybe
 import Maze exposing (Maze)
 import Model exposing (..)
-import PairA exposing (Int2, PairA)
+import PairA exposing (Float2, Int2, PairA)
 import Ramda as R exposing (F)
 import Random
 import Random.Extra
@@ -354,7 +354,7 @@ monstersUpdateGenerator m =
 
 maxGridXY : Int2
 maxGridXY =
-    gridSize |> R.mapBothWith ((+) -1)
+    gridSizeI2 |> R.mapBothWith ((+) -1)
 
 
 gridCellXYGenerator : Random.Generator Int2
@@ -518,17 +518,14 @@ type alias View =
     Html Msg
 
 
-canvasSizeI2 : Int2
-canvasSizeI2 =
-    gridSize |> PairA.add 2 >> PairA.mul cellSize
-
-
-canvasWHRec =
-    canvasSizeI2 |> PairA.toWhRec
+canvasSizeF2 : Float2
+canvasSizeF2 =
+    gridSizeF2 |> PairA.add 2 >> PairA.mul cellSize
 
 
 canvasWHStyles =
-    canvasSizeI2
+    canvasSizeF2
+        |> PairA.round
         |> PairA.stringFromIntWithSuffix "px"
         |> PairA.apply2 H.style ( "min-width", "min-height" )
         |> R.tupleToList
@@ -550,7 +547,7 @@ viewSvg : Model -> View
 viewSvg m =
     let
         ( cw, ch ) =
-            canvasSizeI2
+            canvasSizeF2 |> PairA.round
     in
         S.svg [ H.width cw, H.height ch ]
             ([ bkgRect
@@ -586,19 +583,19 @@ bkgRect =
 viewGameOver game =
     let
         ( mw, mh ) =
-            canvasSizeI2
+            canvasSizeF2
 
         h =
-            mh // 4
+            mh / 4
 
         y =
-            (mh - h) // 2
+            (mh - h) / 2
 
         rectAttrs =
-            [ mw |> iWidth
-            , h |> iHeight
+            [ TP.width mw
+            , TP.height h
             , fillColor Color.white
-            , iY y
+            , TP.y y
             , S.opacity "0.85"
             ]
 

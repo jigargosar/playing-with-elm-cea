@@ -86,9 +86,14 @@ defaultPlayerXYa =
     createAnim 1 1 0
 
 
-gridSize : Int2
-gridSize =
+gridSizeI2 : Int2
+gridSizeI2 =
     ( xCells, yCells )
+
+
+gridSizeF2 : Float2
+gridSizeF2 =
+    gridSizeI2 |> PairA.floatFromInt
 
 
 xCells =
@@ -99,10 +104,12 @@ yCells =
     16
 
 
+cellSize : Float
 cellSize =
     26
 
 
+wallThickness : Float
 wallThickness =
     cellSize / 10
 
@@ -116,13 +123,13 @@ init { now } =
         ( mazeSeed, modelSeed ) =
             Random.step Random.independentSeed initialSeed
     in
-        { gridSize = gridSize
+        { gridSize = gridSizeI2
         , pxAnim = defaultPlayerXYa
         , pyAnim = defaultPlayerXYa
         , pressedKeys = []
         , pageLoadedAt = now
         , clock = 0
-        , maze = Maze.init mazeSeed gridSize
+        , maze = Maze.init mazeSeed gridSizeI2
         , monsters = []
         , game = Init
         , portal = PairA.zero
