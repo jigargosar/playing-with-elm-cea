@@ -12,10 +12,14 @@ import Random
 import Time
 import Set exposing (Set)
 import MazeGenerator as MG exposing (MazeGenerator)
-import PairA
+import PairA exposing (PairA)
 
 
 ---- MODEL ----
+
+
+type alias Portal =
+    IntPair
 
 
 type Game
@@ -47,6 +51,7 @@ type alias Model =
     , maze : Maze
     , monsters : Monsters
     , game : Game
+    , portal : Portal
     , seed : Random.Seed
     }
 
@@ -118,6 +123,7 @@ init { now } =
         , maze = Maze.init mazeSeed gridSize
         , monsters = []
         , game = Init
+        , portal = PairA.pair 0 0
         , seed = modelSeed
         }
 

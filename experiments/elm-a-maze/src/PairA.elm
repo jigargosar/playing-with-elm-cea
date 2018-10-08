@@ -11,6 +11,10 @@ type alias PairA a =
     ( a, a )
 
 
+pair =
+    Tuple.pair
+
+
 type alias IntPair =
     PairA Int
 
@@ -23,6 +27,10 @@ type alias StringPair =
     PairA String
 
 
+map fn =
+    Tuple.mapBoth fn fn
+
+
 toFloat : IntPair -> FloatPair
 toFloat =
     map Basics.toFloat
@@ -33,14 +41,14 @@ round =
     map Basics.round
 
 
-fromInt : IntPair -> StringPair
-fromInt =
+stringFromInt : IntPair -> StringPair
+stringFromInt =
     map String.fromInt
 
 
-fromIntWithSuffix : String -> IntPair -> StringPair
-fromIntWithSuffix suf =
-    fromInt >> withSuffix suf
+stringFromIntWithSuffix : String -> IntPair -> StringPair
+stringFromIntWithSuffix suf =
+    stringFromInt >> withSuffix suf
 
 
 withSuffix : String -> F StringPair
@@ -67,10 +75,6 @@ mul factor =
 
 iDiv factor =
     map (R.flip (//) factor)
-
-
-map fn =
-    Tuple.mapBoth fn fn
 
 
 concatMapGrid : (IntPair -> a) -> IntPair -> List a

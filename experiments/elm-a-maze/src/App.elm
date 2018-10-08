@@ -494,7 +494,7 @@ canvasCenter =
 
 canvasWHStyles =
     canvasSizePair
-        |> PairA.fromIntWithSuffix "px"
+        |> PairA.stringFromIntWithSuffix "px"
         |> PairA.apply2 H.style ( "min-width", "min-height" )
         |> R.tupleToList
 
