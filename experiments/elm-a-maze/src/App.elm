@@ -593,6 +593,7 @@ viewGameOver =
             , h |> iHeight
             , fillColor Color.white
             , iY y
+            , S.opacity "0.85"
             ]
 
         render game =
@@ -604,9 +605,9 @@ viewGameOver =
                     [ fillColor Color.black
                     , strokeColor Color.black
                     , iFontSize 24
-                    , FontWeightLighter |> TA.fontWeight
 
-                    --                    , iStrokeWidth 1
+                    --                    , FontWeightLighter |> TA.fontWeight
+                    , SA.strokeWidth "0.01"
                     , TA.textAnchor AnchorMiddle
                     , TA.alignmentBaseline AlignmentMiddle
                     , S.x "50%"
