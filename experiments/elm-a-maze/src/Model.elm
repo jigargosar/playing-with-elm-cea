@@ -49,8 +49,8 @@ type alias PressedKeys =
 
 type alias Model =
     { gridSize : Int2
-    , pxAnim : Animation
-    , pyAnim : Animation
+    , playerXa : Animation
+    , playerYa : Animation
     , pressedKeys : PressedKeys
     , pageLoadedAt : Int
     , clock : A.Clock
@@ -82,8 +82,10 @@ createMonsterAnim clock from to =
         |> A.speed 0.003
 
 
-defaultPlayerXYa =
-    createAnim 1 1 0
+initPlayerXYa clock =
+    ( createAnim (xCells / 2) (xCells / 2) clock
+    , createAnim (yCells / 2) (yCells / 2) clock
+    )
 
 
 gridSizeI2 : Int2
@@ -97,11 +99,11 @@ gridSizeF2 =
 
 
 xCells =
-    18
+    2 * 9
 
 
 yCells =
-    16
+    2 * 8
 
 
 cellSize : Float
@@ -122,10 +124,13 @@ init { now } =
 
         ( mazeSeed, modelSeed ) =
             Random.step Random.independentSeed initialSeed
+
+        ( defaultPlayerXa, defaultPlayerYa ) =
+            initPlayerXYa 0
     in
         { gridSize = gridSizeI2
-        , pxAnim = defaultPlayerXYa
-        , pyAnim = defaultPlayerXYa
+        , playerXa = defaultPlayerXa
+        , playerYa = defaultPlayerYa
         , pressedKeys = []
         , pageLoadedAt = now
         , clock = 0
@@ -171,7 +176,7 @@ animToGridCellPx clock anim =
 
 getPlayerXYpx : Model -> ( Float, Float )
 getPlayerXYpx m =
-    ( m.pxAnim, m.pyAnim )
+    ( m.playerXa, m.playerYa )
         |> R.mapBothWith (animToGridCellPx m.clock)
 
 

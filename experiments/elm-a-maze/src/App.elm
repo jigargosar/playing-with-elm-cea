@@ -120,7 +120,7 @@ update msg m =
             noCmd { m | monsters = newMonsters }
 
         SetPlayer ( xa, ya ) ->
-            noCmd { m | pxAnim = xa, pyAnim = ya }
+            noCmd { m | playerXa = xa, playerYa = ya }
 
         SetSeed newSeed ->
             noCmd { m | seed = newSeed }
@@ -177,7 +177,7 @@ update msg m =
                 |> case m.game of
                     Model.Init ->
                         sequence
-                            [ SetPlayer ( defaultPlayerXYa, defaultPlayerXYa )
+                            [ SetPlayer (initPlayerXYa m.clock)
                             , GenerateMonsters
                             , SetGame Model.Running
                             ]
@@ -352,7 +352,7 @@ areCellsConnected cp =
 
 computePlayerNewXa : Model -> Maybe Animation
 computePlayerNewXa m =
-    (if notRunning m.pyAnim m then
+    (if notRunning m.playerYa m then
         getArrowXDir m
             |> Maybe.map
                 (\dx ->
@@ -363,13 +363,13 @@ computePlayerNewXa m =
                                     xx |> R.mapBothWith round
 
                                 y =
-                                    A.getTo m.pyAnim |> round
+                                    A.getTo m.playerYa |> round
                             in
                                 areCellsConnected ( ( x1, y ), ( x2, y ) ) m
                         )
                         xCells
                         dx
-                        m.pxAnim
+                        m.playerXa
                         m
                 )
      else
@@ -379,7 +379,7 @@ computePlayerNewXa m =
 
 computePlayerNewYa : Model -> Maybe Animation
 computePlayerNewYa m =
-    (if notRunning m.pxAnim m then
+    (if notRunning m.playerXa m then
         getArrowYDir m
             |> Maybe.map
                 (\dy ->
@@ -390,13 +390,13 @@ computePlayerNewYa m =
                                     yy |> R.mapBothWith round
 
                                 x =
-                                    A.getTo m.pxAnim |> round
+                                    A.getTo m.playerXa |> round
                             in
                                 areCellsConnected ( ( x, y1 ), ( x, y2 ) ) m
                         )
                         yCells
                         dy
-                        m.pyAnim
+                        m.playerYa
                         m
                 )
      else
@@ -411,19 +411,19 @@ computeNewPlayerXYa m =
             (\key ->
                 case ( computePlayerNewXa m, computePlayerNewYa m ) of
                     ( Just newXa, Nothing ) ->
-                        ( newXa, m.pyAnim )
+                        ( newXa, m.playerYa )
 
                     ( Nothing, Just newYa ) ->
-                        ( m.pxAnim, newYa )
+                        ( m.playerXa, newYa )
 
                     ( Nothing, Nothing ) ->
-                        ( m.pxAnim, m.pyAnim )
+                        ( m.playerXa, m.playerYa )
 
                     ( Just newXa, Just newYa ) ->
                         (if isXArrowKey key then
-                            ( newXa, m.pyAnim )
+                            ( newXa, m.playerYa )
                          else
-                            ( m.pxAnim, newYa )
+                            ( m.playerXa, newYa )
                         )
             )
 
