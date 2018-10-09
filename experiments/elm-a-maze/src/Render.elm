@@ -4,8 +4,8 @@ import Basics.Extra exposing (curry, flip, uncurry)
 import Color exposing (Color)
 import Maze
 import PairA exposing (Float2)
-import Ramda exposing (ter)
-import Svg
+import Ramda exposing (F, ter)
+import Svg exposing (Svg)
 import Svg as S
 import Svg.Attributes as SA
 import Svg.Attributes as S
@@ -145,5 +145,6 @@ viewCircleWithColor =
     flip cellCircle >> svgLazyT
 
 
+svgLazyT : F (( a, b ) -> Svg msg)
 svgLazyT fnT =
     uncurry (Svg.Lazy.lazy2 (curry fnT))
