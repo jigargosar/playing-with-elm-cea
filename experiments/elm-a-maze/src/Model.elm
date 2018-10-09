@@ -26,6 +26,7 @@ type Game
     = NewGame
     | Running
     | LevelComplete
+    | NextLevel
     | Over
 
 

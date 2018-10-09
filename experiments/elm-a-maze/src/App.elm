@@ -85,7 +85,6 @@ type Msg
     | UpdateLevel
     | PostInit
     | KeyDownNow
-    | NextLevel
     | SetFromLevelState Model.Level
 
 
@@ -156,7 +155,7 @@ update msg m =
                             [ SetGame Model.NewGame ]
 
                         Model.LevelComplete ->
-                            [ NextLevel ]
+                            [ SetGame Model.NextLevel ]
 
                         _ ->
                             []
@@ -174,9 +173,6 @@ update msg m =
                     , SetMonsters monsters
                     , SetGame Model.Running
                     ]
-
-        NextLevel ->
-            ( m, Random.generate SetFromLevelState (Model.nextLevelGenerator m) )
 
         UpdateMonsters ->
             ( m, Random.generate SetMonsters (monstersUpdateGenerator m) )
@@ -209,6 +205,11 @@ update msg m =
 
                     Model.LevelComplete ->
                         sequence []
+
+                    Model.NextLevel ->
+                        (Model.nextLevelGenerator m)
+                            |> Random.generate SetFromLevelState
+                            |> Return.command
 
                     Model.Running ->
                         sequence [ UpdatePlayer, UpdateMonsters, UpdateLevel ]
