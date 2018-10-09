@@ -54,6 +54,7 @@ defaultCircle ( x, y ) color =
     Svg.circle [ cxp x, cyp y, rp defaultR, color |> Color.toCssString >> S.fill ] []
 
 
+cellCircle : Float2 -> Color -> Svg msg
 cellCircle xy =
     defaultCircle (PairA.add (1 / 2) xy)
 
@@ -141,6 +142,7 @@ viewKeyXY =
     viewCircleWithColor Color.darkGray
 
 
+viewCircleWithColor : Color -> Float2 -> Svg msg
 viewCircleWithColor =
     flip cellCircle >> svgLazyT
 
