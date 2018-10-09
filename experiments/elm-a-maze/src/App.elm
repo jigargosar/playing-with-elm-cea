@@ -84,7 +84,6 @@ type Msg
     | Tick
     | UpdateLevel
     | GenerateMonsters
-    | ReInitMaze
     | PostInit
     | KeyDownNow
     | NextLevel
@@ -172,12 +171,11 @@ update msg m =
         GenerateMonsters ->
             ( m, Random.generate SetMonsters (Model.monstersGenerator 1 m.clock) )
 
-        SetLevel { level, monsters, portal } ->
-            noCmd { m | level = level, portal = portal }
+        SetLevel { level, monsters, portal, maze } ->
+            noCmd { m | level = level, portal = portal, maze = maze }
                 |> sequence
                     [ SetPlayer (Model.initPlayer m.clock)
                     , SetMonsters monsters
-                    , ReInitMaze
                     , SetGame Model.Running
                     ]
 
@@ -186,9 +184,6 @@ update msg m =
 
         UpdateMonsters ->
             ( m, Random.generate SetMonsters (monstersUpdateGenerator m) )
-
-        ReInitMaze ->
-            noCmd { m | maze = Maze.reInit m.maze }
 
         SetGame v ->
             noCmd { m | game = v }
