@@ -17,7 +17,7 @@ import List.Extra
 import Maybe.Extra
 import Maybe.Extra as Maybe
 import Maze exposing (Maze)
-import Model exposing (..)
+import Model exposing (DebugModel, Flags, Game, Model, Monster, Monsters, PressedKeys)
 import PairA exposing (Float2, Int2, PairA)
 import Ramda as R exposing (F)
 import Random
@@ -144,7 +144,7 @@ update msg m =
                             )
             in
                 update (SetPressedKeys newPressedKeys) m
-                    |> filter (isLevelComplete m && keyDowned)
+                    |> filter (Model.isLevelComplete m && keyDowned)
                         (sequence [ SetGame Model.Init ])
 
         UpdatePlayer ->
@@ -152,7 +152,7 @@ update msg m =
                 |> Maybe.unwrap (noCmd m) (SetPlayer >> updateWithModel m)
 
         GenerateMonsters ->
-            ( m, Random.generate SetMonsters (monstersGenerator 10 m.clock) )
+            ( m, Random.generate SetMonsters (Model.monstersGenerator 10 m.clock) )
 
         UpdateMonsters ->
             ( m, Random.generate SetMonsters (monstersUpdateGenerator m) )
@@ -163,9 +163,9 @@ update msg m =
         UpdateLevel ->
             let
                 newMsg =
-                    if isLevelComplete m then
+                    if Model.isLevelComplete m then
                         [ SetGame Model.LevelComplete ]
-                    else if isGameOver m then
+                    else if Model.isGameOver m then
                         [ SetGame Model.Over ]
                     else
                         []
@@ -177,7 +177,7 @@ update msg m =
                 |> case m.game of
                     Model.Init ->
                         sequence
-                            [ SetPlayer (initPlayerXYa m.clock)
+                            [ SetPlayer (Model.initPlayer m.clock)
                             , GenerateMonsters
                             , SetGame Model.Running
                             ]
@@ -194,7 +194,7 @@ update msg m =
         AnimationFrame posix ->
             let
                 newClock =
-                    computeNewClock posix m
+                    Model.computeNewClock posix m
             in
                 update UpdateGame { m | clock = newClock }
 
@@ -233,7 +233,7 @@ computeMonsterNewX offset m monster =
 
         newX =
             (getMonsterX monster + offset)
-                |> clampGridX m
+                |> Model.clampGridX m
 
         canMove =
             oldX /= newX && isConnected ( ( oldX, currentY ), ( newX, currentY ) )
@@ -259,7 +259,7 @@ computeMonsterNewY offset m monster =
 
         newY =
             (oldY + offset)
-                |> clampGridY m
+                |> Model.clampGridY m
 
         canMove =
             oldY /= newY && isConnected ( ( currentX, oldY ), ( currentX, newY ) )
@@ -286,7 +286,7 @@ computeMonsterNewXa m monster =
     in
         computeMonsterNewX xDir m monster
             |> Maybe.orElseLazy (\_ -> computeMonsterNewX -xDir m monster)
-            |> Maybe.map (\newTo -> animRetargetToI newTo m xa)
+            |> Maybe.map (\newTo -> Model.animRetargetToI newTo m xa)
             |> Maybe.withDefault xa
 
 
@@ -301,7 +301,7 @@ computeMonsterNewYa m monster =
     in
         computeMonsterNewY yDir m monster
             |> Maybe.orElseLazy (\_ -> computeMonsterNewY -yDir m monster)
-            |> Maybe.map (\newTo -> animRetargetToI newTo m ya)
+            |> Maybe.map (\newTo -> Model.animRetargetToI newTo m ya)
             |> Maybe.withDefault ya
 
 
@@ -310,7 +310,7 @@ monsterUpdateGenerator m mon =
     Random.Extra.bool
         |> Random.map
             (\b ->
-                if isRunning mon.xa m || isRunning mon.ya m then
+                if Model.isRunning mon.xa m || Model.isRunning mon.ya m then
                     mon
                 else if b then
                     { mon | xa = computeMonsterNewXa m mon }
@@ -324,36 +324,14 @@ monstersUpdateGenerator m =
     m.monsters |> List.map (monsterUpdateGenerator m) >> Random.Extra.combine
 
 
-maxGridXY : Int2
-maxGridXY =
-    gridSizeI2 |> R.mapBothWith ((+) -1)
-
-
-gridCellXYGenerator : Random.Generator Int2
-gridCellXYGenerator =
-    maxGridXY
-        |> PairA.map (Random.int 0)
-        |> R.uncurry Random.pair
-
-
-monsterGenerator : Clock -> Random.Generator Monster
-monsterGenerator clock =
-    gridCellXYGenerator |> Random.map (initMonster clock)
-
-
-monstersGenerator : Int -> Clock -> Random.Generator Monsters
-monstersGenerator ct =
-    monsterGenerator >> Random.list ct
-
-
 areCellsConnected cp =
     .maze >> Maze.connected cp
 
 
 computePlayerNewXa : Model -> Maybe Animation
 computePlayerNewXa m =
-    (if notRunning m.playerYa m then
-        getArrowXDir m
+    (if Model.notRunning m.playerYa m then
+        Model.getArrowXDir m
             |> Maybe.map
                 (\dx ->
                     computeNewAnim
@@ -367,7 +345,7 @@ computePlayerNewXa m =
                             in
                                 areCellsConnected ( ( x1, y ), ( x2, y ) ) m
                         )
-                        xCells
+                        Model.xCells
                         dx
                         m.playerXa
                         m
@@ -379,8 +357,8 @@ computePlayerNewXa m =
 
 computePlayerNewYa : Model -> Maybe Animation
 computePlayerNewYa m =
-    (if notRunning m.playerXa m then
-        getArrowYDir m
+    (if Model.notRunning m.playerXa m then
+        Model.getArrowYDir m
             |> Maybe.map
                 (\dy ->
                     computeNewAnim
@@ -394,7 +372,7 @@ computePlayerNewYa m =
                             in
                                 areCellsConnected ( ( x, y1 ), ( x, y2 ) ) m
                         )
-                        yCells
+                        Model.yCells
                         dy
                         m.playerYa
                         m
@@ -406,7 +384,7 @@ computePlayerNewYa m =
 
 computeNewPlayerXYa : Model -> Maybe ( Animation, Animation )
 computeNewPlayerXYa m =
-    getFirstArrowKey m
+    Model.getFirstArrowKey m
         |> Maybe.map
             (\key ->
                 case ( computePlayerNewXa m, computePlayerNewYa m ) of
@@ -420,7 +398,7 @@ computeNewPlayerXYa m =
                         ( m.playerXa, m.playerYa )
 
                     ( Just newXa, Just newYa ) ->
-                        (if isXArrowKey key then
+                        (if Model.isXArrowKey key then
                             ( newXa, m.playerYa )
                          else
                             ( m.playerXa, newYa )
@@ -434,7 +412,7 @@ computeNewAnim isConnected cellCount dd anim m =
             toFloat dd
 
         current =
-            (animCurrent anim m)
+            (Model.animCurrent anim m)
 
         from =
             A.getFrom anim
@@ -459,8 +437,8 @@ computeNewAnim isConnected cellCount dd anim m =
                 + newDirection
                 |> clampTo
     in
-        if (notRunning anim m || directionReversed) && to /= newTo && isConnected ( to, newTo ) then
-            createAnim current newTo m.clock
+        if (Model.notRunning anim m || directionReversed) && to /= newTo && isConnected ( to, newTo ) then
+            Model.createAnim current newTo m.clock
         else
             anim
 
@@ -490,9 +468,14 @@ type alias View =
     Html Msg
 
 
+cellSize : Float
+cellSize =
+    26
+
+
 canvasSizeF2 : Float2
 canvasSizeF2 =
-    gridSizeF2 |> PairA.add 2 >> PairA.mul cellSize
+    Model.gridSizeF2 |> PairA.add 2 >> PairA.mul cellSize
 
 
 canvasWHStyles =
@@ -510,7 +493,7 @@ view m =
         [ divClass "flex flex-column vs3"
             [ divClass "f3 tc" [ H.text "A-Maze-Zing!" ]
             , divClass "flex1 overflow-scroll" [ viewSvg m ]
-            , divClass "f7" [ viewDebug (getDebugState m) ]
+            , divClass "f7" [ viewDebug (Model.getDebugState m) ]
             ]
         ]
 
@@ -532,8 +515,8 @@ viewSvg m =
             ([ bkgRect
              , S.g [ TA.transform [ Translate cellSize cellSize, gScale ] ]
                 [ S.lazy viewMazeWalls m.maze
-                , (svgLazyT Render.viewPlayerXY) (getPlayerXYpx m)
-                , (svgLazyT Render.viewPortalXY) (getPortalXYpx m)
+                , (svgLazyT Render.viewPlayerXY) (Model.getPlayerXY m)
+                , (svgLazyT Render.viewPortalXY) (Model.getPortalXY m)
                 , viewMonsters m.clock m.monsters
                 ]
              , S.lazy viewGameOver m.game
@@ -631,7 +614,7 @@ viewMonsters : Clock -> Monsters -> View
 viewMonsters clock =
     let
         viewMonster =
-            getMonsterXYpx clock >> svgLazyT Render.viewMonsterXY
+            Model.getMonsterXY clock >> svgLazyT Render.viewMonsterXY
     in
         {- List.indexedMap
            (Tuple.mapBoth String.fromInt viewMonster |> curry)

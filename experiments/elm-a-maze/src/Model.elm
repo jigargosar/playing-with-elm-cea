@@ -83,7 +83,7 @@ createMonsterAnim clock from to =
         |> A.speed 0.003
 
 
-initPlayerXYa clock =
+initPlayer clock =
     ( createAnim (xCells / 2) (xCells / 2) clock
     , createAnim (yCells / 2) (yCells / 2) clock
     )
@@ -107,14 +107,26 @@ yCells =
     2 * 8
 
 
-cellSize : Float
-cellSize =
-    26
+maxGridXY : Int2
+maxGridXY =
+    gridSizeI2 |> R.mapBothWith ((+) -1)
 
 
-wallThickness : Float
-wallThickness =
-    cellSize / 10
+gridCellXYGenerator : Random.Generator Int2
+gridCellXYGenerator =
+    maxGridXY
+        |> PairA.map (Random.int 0)
+        |> R.uncurry Random.pair
+
+
+monsterGenerator : Clock -> Random.Generator Monster
+monsterGenerator clock =
+    gridCellXYGenerator |> Random.map (initMonster clock)
+
+
+monstersGenerator : Int -> Clock -> Random.Generator Monsters
+monstersGenerator ct =
+    monsterGenerator >> Random.list ct
 
 
 init : Flags -> Model
@@ -127,7 +139,7 @@ init { now } =
             Random.step Random.independentSeed initialSeed
 
         ( defaultPlayerXa, defaultPlayerYa ) =
-            initPlayerXYa 0
+            initPlayer 0
     in
         { gridSize = gridSizeI2
         , playerXa = defaultPlayerXa
@@ -171,25 +183,19 @@ animRetargetToI =
     toFloat >> animRetargetTo
 
 
-
---animToGridCellPx clock anim =
---    (A.animate clock anim) * cellSize
---
-
-
-getPlayerXYpx : Model -> ( Float, Float )
-getPlayerXYpx m =
+getPlayerXY : Model -> ( Float, Float )
+getPlayerXY m =
     ( m.playerXa, m.playerYa )
-        |> R.mapBothWith (A.animate m.clock)
+        |> PairA.map (A.animate m.clock)
 
 
-getPortalXYpx : Model -> Float2
-getPortalXYpx m =
+getPortalXY : Model -> Float2
+getPortalXY m =
     m.portal |> PairA.toFloat
 
 
-getMonsterXYpx : A.Clock -> Monster -> Float2
-getMonsterXYpx clock mon =
+getMonsterXY : A.Clock -> Monster -> Float2
+getMonsterXY clock mon =
     ( mon.xa, mon.ya )
         |> PairA.map (A.animate clock)
 
@@ -290,11 +296,11 @@ xyBB xy =
 
 
 playerBB =
-    getPlayerXYpx >> xyBB
+    getPlayerXY >> xyBB
 
 
 portalBB =
-    getPortalXYpx >> xyBB
+    getPortalXY >> xyBB
 
 
 isGameOver m =
@@ -310,13 +316,4 @@ playerIntersects m =
 
 
 monsterBB m mon =
-    xyBB (getMonsterXYpx m.clock mon)
-
-
-
---defaultDia =
---    (cellSize - wallThickness) - (cellSize / 5)
---
---
---defaultRadius =
---    defaultDia / 2
+    xyBB (getMonsterXY m.clock mon)
