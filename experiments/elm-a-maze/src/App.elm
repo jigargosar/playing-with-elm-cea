@@ -206,7 +206,7 @@ update msg m =
                         sequence [ UpdateMonsters ]
 
                     Model.LevelComplete ->
-                        sequence []
+                        sequence [ UpdateMonsters ]
 
                     Model.NextLevel ->
                         (Model.nextLevelGenerator m)
