@@ -60,6 +60,7 @@ type alias Model =
     , monsters : Monsters
     , game : Game
     , portal : Portal
+    , gameStateChangedAt : Clock
     , seed : Random.Seed
     }
 
@@ -178,6 +179,7 @@ init { now } =
         , maze = maze
         , monsters = monsters
         , game = Running
+        , gameStateChangedAt = 0
         , portal = PairA.zero
         , seed = modelSeed
         }

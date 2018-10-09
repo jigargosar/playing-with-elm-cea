@@ -180,7 +180,7 @@ update msg m =
             ( m, Random.generate SetMonsters (monstersUpdateGenerator m) )
 
         SetGame v ->
-            noCmd { m | game = v }
+            noCmd { m | game = v, gameStateChangedAt = m.clock }
 
         UpdateLevel ->
             let
