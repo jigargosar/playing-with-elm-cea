@@ -681,6 +681,7 @@ viewEntity color x y =
         []
 
 
+viewMonsters : Clock -> Monsters -> View
 viewMonsters clock =
     let
         viewMonster =
