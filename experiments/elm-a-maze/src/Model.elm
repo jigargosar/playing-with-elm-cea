@@ -12,6 +12,7 @@ import Time
 import Set exposing (Set)
 import MazeGenerator as MG exposing (MazeGenerator)
 import PairA exposing (Float2, Int2, PairA)
+import Render
 
 
 ---- MODEL ----
@@ -280,12 +281,12 @@ extrema =
     Extrema 0 0 0 0
 
 
-xyDiameterExtrema ( x, y ) diameter =
-    Extrema x (x + diameter) y (y + diameter)
+xyDiameterExtrema ( x, y ) dia =
+    Extrema x (x + dia) y (y + dia)
 
 
 xyBB xy =
-    xyDiameterExtrema xy 1 |> BoundingBox2d.fromExtrema
+    xyDiameterExtrema xy (Render.defaultR * 2) |> BoundingBox2d.fromExtrema
 
 
 playerBB =
@@ -312,9 +313,10 @@ monsterBB m mon =
     xyBB (getMonsterXYpx m.clock mon)
 
 
-defaultDia =
-    (cellSize - wallThickness) - (cellSize / 5)
 
-
-defaultRadius =
-    defaultDia / 2
+--defaultDia =
+--    (cellSize - wallThickness) - (cellSize / 5)
+--
+--
+--defaultRadius =
+--    defaultDia / 2
