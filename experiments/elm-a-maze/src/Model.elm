@@ -81,7 +81,7 @@ createAnim clock from to =
         |> A.from from
         |> A.to to
         |> A.ease identity
-        |> A.speed 0.003
+        |> A.speed 0.005
 
 
 createMonsterAnim clock from to =

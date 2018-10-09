@@ -369,6 +369,7 @@ computePlayerNewXa m =
                                     A.getTo m.playerYa |> round
                             in
                                 areCellsConnected ( ( x1, y ), ( x2, y ) ) m
+                                    || isSpaceBarDown m
                         )
                         Model.xCells
                         dx
@@ -378,6 +379,10 @@ computePlayerNewXa m =
      else
         Nothing
     )
+
+
+isSpaceBarDown =
+    .pressedKeys >> List.member (Keyboard.Character " ")
 
 
 computePlayerNewYa : Model -> Maybe Animation
@@ -396,6 +401,7 @@ computePlayerNewYa m =
                                     A.getTo m.playerXa |> round
                             in
                                 areCellsConnected ( ( x, y1 ), ( x, y2 ) ) m
+                                    || isSpaceBarDown m
                         )
                         Model.yCells
                         dy
@@ -532,10 +538,12 @@ viewSvg m =
         S.svg
             [ H.width cw
             , H.height ch
-            {-, TA.shapeRendering RenderOptimizeSpeed
-            , TA.colorRendering RenderingOptimizeSpeed
-            , TA.textRendering TextRenderingOptimizeSpeed
-            , TA.imageRendering RenderingOptimizeSpeed-}
+
+            {- , TA.shapeRendering RenderOptimizeSpeed
+               , TA.colorRendering RenderingOptimizeSpeed
+               , TA.textRendering TextRenderingOptimizeSpeed
+               , TA.imageRendering RenderingOptimizeSpeed
+            -}
             ]
             ([ bkgRect
              , S.g [ TA.transform [ Translate cellSize cellSize, gScale ] ]
