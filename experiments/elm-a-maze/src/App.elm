@@ -128,25 +128,27 @@ update msg m =
             noCmd { m | seed = newSeed }
 
         KeyMsg keyMsg ->
-            let
-                ( newPressedKeys, keyDowned ) =
-                    m.pressedKeys
-                        |> Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg
-                        |> Tuple.mapSecond
-                            (Maybe.unwrap False
-                                (\kc ->
-                                    case kc of
-                                        Keyboard.KeyDown _ ->
-                                            True
+            update (SetPressedKeys (Keyboard.update keyMsg m.pressedKeys)) m
 
-                                        _ ->
-                                            False
-                                )
-                            )
-            in
-                update (SetPressedKeys newPressedKeys) m
-                    |> filter keyDowned (andThen KeyDownNow)
-
+        --        KeyMsg keyMsg ->
+        --            let
+        --                ( newPressedKeys, keyDowned ) =
+        --                    m.pressedKeys
+        --                        |> Keyboard.updateWithKeyChange Keyboard.anyKey keyMsg
+        --                        |> Tuple.mapSecond
+        --                            (Maybe.unwrap False
+        --                                (\kc ->
+        --                                    case kc of
+        --                                        Keyboard.KeyDown _ ->
+        --                                            True
+        --
+        --                                        _ ->
+        --                                            False
+        --                                )
+        --                            )
+        --            in
+        --                update (SetPressedKeys newPressedKeys) m
+        --                    |> filter keyDowned (andThen KeyDownNow)
         KeyDownNow ->
             let
                 newMessages =
@@ -669,12 +671,23 @@ type alias Subs =
 
 
 subscriptions : Subs
-subscriptions _ =
+subscriptions m =
     Sub.batch
         [ B.onAnimationFrame AnimationFrame
         , Sub.map KeyMsg Keyboard.subscriptions
         , onWindowBlur OnWindowBlur
         , onAnimationFrame AnimationFramePort
+        , (case m.game of
+            Model.LevelComplete ->
+                SetGame Model.NextLevel |> Just
+
+            Model.Over ->
+                SetGame Model.NextLevel |> Just
+
+            _ ->
+                Nothing
+          )
+            |> Maybe.unwrap Sub.none (D.succeed >> B.onKeyPress)
         ]
 
 
