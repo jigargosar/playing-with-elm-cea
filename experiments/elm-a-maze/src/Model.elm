@@ -176,7 +176,7 @@ init { now } =
         , level = level
         , maze = maze
         , monsters = monsters
-        , game = Init
+        , game = Running
         , portal = PairA.zero
         , seed = modelSeed
         }
