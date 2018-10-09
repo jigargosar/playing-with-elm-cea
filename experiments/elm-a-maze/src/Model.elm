@@ -49,8 +49,7 @@ type alias PressedKeys =
 
 
 type alias Model =
-    { gridSize : Int2
-    , playerXa : Animation
+    { playerXa : Animation
     , playerYa : Animation
     , pressedKeys : PressedKeys
     , pageLoadedAt : Int
@@ -168,8 +167,7 @@ init { now } =
         ( defaultPlayerXa, defaultPlayerYa ) =
             initPlayer 0
     in
-        { gridSize = gridSizeI2
-        , playerXa = defaultPlayerXa
+        { playerXa = defaultPlayerXa
         , playerYa = defaultPlayerYa
         , pressedKeys = []
         , pageLoadedAt = now
@@ -232,7 +230,7 @@ clampGridX : Model -> F Int
 clampGridX m x =
     let
         ( w, _ ) =
-            m.gridSize
+            gridSizeI2
     in
         clamp 0 (w - 1) x
 
@@ -241,7 +239,7 @@ clampGridY : Model -> F Int
 clampGridY m y =
     let
         ( _, h ) =
-            m.gridSize
+            gridSizeI2
     in
         clamp 0 (h - 1) y
 

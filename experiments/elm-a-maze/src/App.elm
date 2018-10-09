@@ -83,11 +83,10 @@ type Msg
     | UpdateMonsters
     | Tick
     | UpdateLevel
-    | GenerateMonsters
     | PostInit
     | KeyDownNow
     | NextLevel
-    | SetLevel Model.Level
+    | SetFromLevelState Model.Level
 
 
 noCmd model =
@@ -168,10 +167,7 @@ update msg m =
             computeNewPlayerXYa m
                 |> Maybe.unwrap (noCmd m) (SetPlayer >> updateWithModel m)
 
-        GenerateMonsters ->
-            ( m, Random.generate SetMonsters (Model.monstersGenerator 1 m.clock) )
-
-        SetLevel { level, monsters, portal, maze } ->
+        SetFromLevelState { level, monsters, portal, maze } ->
             noCmd { m | level = level, portal = portal, maze = maze }
                 |> sequence
                     [ SetPlayer (Model.initPlayer m.clock)
@@ -180,7 +176,7 @@ update msg m =
                     ]
 
         NextLevel ->
-            ( m, Random.generate SetLevel (Model.nextLevelGenerator m) )
+            ( m, Random.generate SetFromLevelState (Model.nextLevelGenerator m) )
 
         UpdateMonsters ->
             ( m, Random.generate SetMonsters (monstersUpdateGenerator m) )
@@ -205,7 +201,7 @@ update msg m =
                 |> case m.game of
                     Model.Init ->
                         Model.levelGenerator 1 m.clock
-                            |> Random.generate SetLevel
+                            |> Random.generate SetFromLevelState
                             |> Return.command
 
                     Model.Over ->
