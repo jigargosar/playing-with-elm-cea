@@ -203,7 +203,7 @@ init { now } =
         initialSeed =
             Random.initialSeed now
 
-        ( { maze, level, monsters, player }, modelSeed ) =
+        ( { maze, level, monsters, player, portal }, modelSeed ) =
             Random.step (levelGenerator 1 0) initialSeed
     in
         { playerXa = player.xa
@@ -216,7 +216,7 @@ init { now } =
         , monsters = monsters
         , game = Running
         , gameStateChangedAt = 0
-        , portal = PairA.zero
+        , portal = portal
         , seed = modelSeed
         }
 
