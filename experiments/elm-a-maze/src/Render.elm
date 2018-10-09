@@ -1,6 +1,6 @@
 module Render exposing (..)
 
-import PairA
+import PairA exposing (Float2)
 import Svg
 import TypedSvg.Attributes.InPx as TP
 
@@ -19,6 +19,10 @@ cxp =
 
 cyp =
     TP.cy
+
+
+rp =
+    TP.r
 
 
 wp =
@@ -53,5 +57,22 @@ defaultR =
     defaultDia / 2
 
 
-circle ( x, y ) =
-    Svg.circle [ cxp x, cyp y ] []
+defaultCircle ( x, y ) =
+    Svg.circle [ cxp x, cyp y, rp defaultR ] []
+
+
+type Radius
+    = Radius Float
+
+
+type Size
+    = Size Float
+
+
+type Position
+    = XY Float2
+
+
+type Shape
+    = Circle Radius
+    | Square Size

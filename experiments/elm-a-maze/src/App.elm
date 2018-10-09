@@ -47,6 +47,7 @@ import ISvg exposing (..)
 import Svg.Lazy
 import Svg.Lazy as S
 import Update.Extra as Update exposing (filter)
+import Render
 
 
 ---- PORTS ----
