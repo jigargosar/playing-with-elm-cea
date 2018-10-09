@@ -682,13 +682,13 @@ viewEntity color x y =
 
 
 viewMonsters clock =
-    List.indexedMap
-        (\idx mon ->
-            ( String.fromInt idx
-            , mon |> getMonsterXYpx clock >> svgLazyT Render.viewMonsterHelp
-            )
-        )
-        >> Svg.Keyed.node "g" [ gScale ]
+    let
+        viewMonster =
+            getMonsterXYpx clock >> svgLazyT Render.viewMonsterXY
+    in
+        List.indexedMap
+            (Tuple.mapBoth String.fromInt viewMonster |> curry)
+            >> Svg.Keyed.node "g" [ gScale ]
 
 
 svgLazyT fnT =

@@ -123,5 +123,5 @@ viewWall maze cord =
             ++ ter (Maze.isSouthConnected cord maze) [] [ southWall ]
 
 
-viewMonsterHelp =
+viewMonsterXY =
     defaultCellCircle
