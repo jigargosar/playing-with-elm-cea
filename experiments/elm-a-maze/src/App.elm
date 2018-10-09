@@ -84,6 +84,7 @@ type Msg
     | UpdateGame
     | UpdateLevel
     | GenerateMonsters
+    | ReInitMaze
     | PostInit
     | KeyDownNow
 
@@ -167,10 +168,13 @@ update msg m =
                 |> Maybe.unwrap (noCmd m) (SetPlayer >> updateWithModel m)
 
         GenerateMonsters ->
-            ( m, Random.generate SetMonsters (Model.monstersGenerator 10 m.clock) )
+            ( m, Random.generate SetMonsters (Model.monstersGenerator 1 m.clock) )
 
         UpdateMonsters ->
             ( m, Random.generate SetMonsters (monstersUpdateGenerator m) )
+
+        ReInitMaze ->
+            noCmd { m | maze = Maze.reInit m.maze }
 
         SetGame v ->
             noCmd { m | game = v }
@@ -194,6 +198,7 @@ update msg m =
                         sequence
                             [ SetPlayer (Model.initPlayer m.clock)
                             , GenerateMonsters
+                            , ReInitMaze
                             , SetGame Model.Running
                             ]
 
