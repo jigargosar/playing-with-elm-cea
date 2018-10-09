@@ -10,6 +10,7 @@ import Svg as S
 import Svg.Attributes as SA
 import Svg.Attributes as S
 import TypedSvg.Attributes.InPx as TP
+import TypedSvg.Attributes as T
 
 
 xp =
@@ -48,12 +49,12 @@ defaultR =
     0.5 - (wallThickness)
 
 
-defaultCircle ( x, y ) =
-    Svg.circle [ cxp x, cyp y, rp defaultR ] []
+defaultCircle ( x, y ) color =
+    Svg.circle [ cxp x, cyp y, rp defaultR, color |> Color.toCssString >> S.fill ] []
 
 
-defaultCellCircle =
-    PairA.add (1 / 2) >> defaultCircle
+cellCircle xy =
+    defaultCircle (PairA.add (1 / 2) xy)
 
 
 type Radius
@@ -123,5 +124,5 @@ viewWall maze cord =
             ++ ter (Maze.isSouthConnected cord maze) [] [ southWall ]
 
 
-viewMonsterXY =
-    defaultCellCircle
+viewMonsterXY xy =
+    cellCircle xy Color.darkOrange

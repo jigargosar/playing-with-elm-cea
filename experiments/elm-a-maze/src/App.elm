@@ -687,9 +687,11 @@ viewMonsters clock =
         viewMonster =
             getMonsterXYpx clock >> svgLazyT Render.viewMonsterXY
     in
-        List.indexedMap
-            (Tuple.mapBoth String.fromInt viewMonster |> curry)
-            >> Svg.Keyed.node "g" [ gScale ]
+        {- List.indexedMap
+           (Tuple.mapBoth String.fromInt viewMonster |> curry)
+           >> Svg.Keyed.node "g" [ gScale ]
+        -}
+        List.map viewMonster >> S.g [ gScale ]
 
 
 svgLazyT fnT =
