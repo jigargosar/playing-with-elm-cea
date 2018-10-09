@@ -682,12 +682,12 @@ subscriptions m =
                 SetGame Model.NextLevel |> Just
 
             Model.Over ->
-                SetGame Model.NextLevel |> Just
+                SetGame Model.NewGame |> Just
 
             _ ->
                 Nothing
           )
-            |> Maybe.unwrap Sub.none (D.succeed >> B.onKeyPress)
+            |> Maybe.unwrap Sub.none (D.succeed >> B.onKeyDown)
         ]
 
 
