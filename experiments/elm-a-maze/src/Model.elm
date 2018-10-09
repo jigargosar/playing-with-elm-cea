@@ -177,12 +177,12 @@ animToGridCellPx clock anim =
 getPlayerXYpx : Model -> ( Float, Float )
 getPlayerXYpx m =
     ( m.playerXa, m.playerYa )
-        |> R.mapBothWith (animToGridCellPx m.clock)
+        |> R.mapBothWith (A.animate m.clock)
 
 
 getPortalXYpx : Model -> Float2
 getPortalXYpx m =
-    m.portal |> PairA.toFloat |> PairA.mul cellSize
+    m.portal |> PairA.toFloat
 
 
 getMonsterXYpx : A.Clock -> Monster -> Float2

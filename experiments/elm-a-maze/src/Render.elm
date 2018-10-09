@@ -1,6 +1,6 @@
 module Render exposing (..)
 
-import Basics.Extra
+import Basics.Extra exposing (flip)
 import Color exposing (Color)
 import Maze
 import PairA exposing (Float2)
@@ -55,6 +55,10 @@ defaultCircle ( x, y ) color =
 
 cellCircle xy =
     defaultCircle (PairA.add (1 / 2) xy)
+
+
+cellCircleWithColor =
+    flip cellCircle
 
 
 type Radius
@@ -124,5 +128,17 @@ viewWall maze cord =
             ++ ter (Maze.isSouthConnected cord maze) [] [ southWall ]
 
 
-viewMonsterXY xy =
-    cellCircle xy Color.darkOrange
+viewMonsterXY =
+    cellCircleWithColor Color.darkOrange
+
+
+viewPlayerXY =
+    cellCircleWithColor Color.white
+
+
+viewPortalXY =
+    cellCircleWithColor Color.darkPurple
+
+
+viewKeyXY =
+    cellCircleWithColor Color.darkGray

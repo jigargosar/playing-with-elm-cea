@@ -531,10 +531,10 @@ viewSvg m =
             , TA.imageRendering RenderingOptimizeSpeed
             ]
             ([ bkgRect
-             , S.g [ TA.transform [ Translate cellSize cellSize ] ]
+             , S.g [ TA.transform [ Translate cellSize cellSize, gScale ] ]
                 [ S.lazy viewMazeWalls m.maze
-                , viewPlayer (getPlayerXYpx m)
-                , viewPortal (getPortalXYpx m)
+                , Render.viewPlayerXY (getPlayerXYpx m)
+                , Render.viewPortalXY (getPortalXYpx m)
                 , viewMonsters m.clock m.monsters
                 ]
              , S.lazy viewGameOver m.game
@@ -615,13 +615,17 @@ viewGameOver game =
                 S.g [] []
 
 
-gScale =
+transformGScale =
     TA.transform [ Scale cellSize cellSize ]
+
+
+gScale =
+    Scale cellSize cellSize
 
 
 viewMazeWalls : Maze -> View
 viewMazeWalls maze =
-    Maze.concatMapCells (Render.viewWall maze) maze |> List.concat |> S.g [ gScale ]
+    Maze.concatMapCells (Render.viewWall maze) maze |> List.concat |> S.g []
 
 
 viewWall maze cord =
@@ -691,7 +695,7 @@ viewMonsters clock =
            (Tuple.mapBoth String.fromInt viewMonster |> curry)
            >> Svg.Keyed.node "g" [ gScale ]
         -}
-        List.map viewMonster >> S.g [ gScale ]
+        List.map viewMonster >> S.g []
 
 
 svgLazyT fnT =
