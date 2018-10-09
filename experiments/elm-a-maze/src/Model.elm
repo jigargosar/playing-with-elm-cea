@@ -83,10 +83,14 @@ createMonsterAnim clock from to =
         |> A.speed 0.003
 
 
+type alias Player =
+    { xa : Animation, ya : Animation }
+
+
+initPlayer : Clock -> Player
 initPlayer clock =
-    ( createAnim (xCells / 2) (xCells / 2) clock
-    , createAnim (yCells / 2) (yCells / 2) clock
-    )
+    Player (createAnim (xCells / 2) (xCells / 2) clock)
+        (createAnim (yCells / 2) (yCells / 2) clock)
 
 
 gridSizeI2 : Int2
@@ -130,7 +134,7 @@ monstersGenerator ct =
 
 
 type alias Level =
-    { level : Int, maze : Maze, monsters : Monsters, portal : Portal }
+    { level : Int, player : Player, maze : Maze, monsters : Monsters, portal : Portal }
 
 
 nextLevelGenerator : Model -> Random.Generator Level
@@ -144,7 +148,7 @@ nextLevelGenerator m =
 
 levelGenerator : Int -> Clock -> Random.Generator Level
 levelGenerator level clock =
-    Random.map3 (Level level)
+    Random.map3 (Level level (initPlayer clock))
         (Maze.generator gridSizeI2)
         (monstersGenerator level clock)
         portalGenerator
@@ -161,20 +165,17 @@ init { now } =
         initialSeed =
             Random.initialSeed now
 
-        ( mazeSeed, modelSeed ) =
-            Random.step Random.independentSeed initialSeed
-
-        ( defaultPlayerXa, defaultPlayerYa ) =
-            initPlayer 0
+        ( { maze, level, monsters, player }, modelSeed ) =
+            Random.step (levelGenerator 1 0) initialSeed
     in
-        { playerXa = defaultPlayerXa
-        , playerYa = defaultPlayerYa
+        { playerXa = player.xa
+        , playerYa = player.ya
         , pressedKeys = []
         , pageLoadedAt = now
         , clock = 0
-        , level = 0
-        , maze = Maze.init mazeSeed gridSizeI2
-        , monsters = []
+        , level = level
+        , maze = maze
+        , monsters = monsters
         , game = Init
         , portal = PairA.zero
         , seed = modelSeed

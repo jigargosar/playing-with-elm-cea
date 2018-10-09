@@ -17,7 +17,7 @@ import List.Extra
 import Maybe.Extra
 import Maybe.Extra as Maybe
 import Maze exposing (Maze)
-import Model exposing (DebugModel, Flags, Game, Model, Monster, Monsters, PressedKeys)
+import Model exposing (DebugModel, Flags, Game, Model, Monster, Monsters, Player, PressedKeys)
 import PairA exposing (Float2, Int2, PairA)
 import Ramda as R exposing (F)
 import Random
@@ -73,7 +73,7 @@ type Msg
     | OnWindowBlur ()
     | SetPressedKeys PressedKeys
     | SetMonsters Monsters
-    | SetPlayer (PairA Animation)
+    | SetPlayer Player
     | SetSeed Random.Seed
     | SetGame Game
     | KeyMsg Keyboard.Msg
@@ -122,7 +122,7 @@ update msg m =
         SetMonsters newMonsters ->
             noCmd { m | monsters = newMonsters }
 
-        SetPlayer ( xa, ya ) ->
+        SetPlayer { xa, ya } ->
             noCmd { m | playerXa = xa, playerYa = ya }
 
         SetSeed newSeed ->
@@ -165,7 +165,7 @@ update msg m =
 
         UpdatePlayer ->
             computeNewPlayerXYa m
-                |> Maybe.unwrap (noCmd m) (SetPlayer >> updateWithModel m)
+                |> Maybe.unwrap (noCmd m) (uncurry Model.Player >> SetPlayer >> updateWithModel m)
 
         SetFromLevelState { level, monsters, portal, maze } ->
             noCmd { m | level = level, portal = portal, maze = maze }
