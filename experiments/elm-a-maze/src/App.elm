@@ -522,13 +522,20 @@ viewSvg m =
         ( cw, ch ) =
             canvasSizeF2 |> PairA.round
     in
-        S.svg [ H.width cw, H.height ch ]
+        S.svg
+            [ H.width cw
+            , H.height ch
+            , TA.shapeRendering RenderOptimizeSpeed
+            , TA.colorRendering RenderingOptimizeSpeed
+            , TA.textRendering TextRenderingOptimizeSpeed
+            , TA.imageRendering RenderingOptimizeSpeed
+            ]
             ([ bkgRect
              , S.g [ TA.transform [ Translate cellSize cellSize ] ]
                 [ S.lazy viewMazeWalls m.maze
                 , viewPlayer (getPlayerXYpx m)
                 , viewPortal (getPortalXYpx m)
-                , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" []
+                , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" [ gScale ]
                 ]
              , S.lazy viewGameOver m.game
              ]
@@ -608,9 +615,13 @@ viewGameOver game =
                 S.g [] []
 
 
+gScale =
+    TA.transform [ Scale cellSize cellSize ]
+
+
 viewMazeWalls : Maze -> View
 viewMazeWalls maze =
-    Maze.concatMapCells (viewWall maze) maze |> List.concat |> S.g []
+    Maze.concatMapCells (Render.viewWall maze) maze |> List.concat |> S.g [ gScale ]
 
 
 viewWall maze cord =
@@ -675,7 +686,7 @@ viewMonsters clock =
 
 
 viewMonster ( x, y ) =
-    S.lazy2 viewMonsterHelp x y
+    S.lazy2 Render.viewMonsterHelp x y
 
 
 centerOffset =

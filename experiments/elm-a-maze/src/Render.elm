@@ -1,8 +1,14 @@
 module Render exposing (..)
 
+import Basics.Extra
 import Color exposing (Color)
+import Maze
 import PairA exposing (Float2)
+import Ramda exposing (ter)
 import Svg
+import Svg as S
+import Svg.Attributes as SA
+import Svg.Attributes as S
 import TypedSvg.Attributes.InPx as TP
 
 
@@ -38,28 +44,16 @@ wallThickness =
     1 / 10
 
 
-cellSquareSize =
-    1 - wallThickness
-
-
-cellSquareCenterSize =
-    cellSquareSize / 2
-
-
-cellSqXY =
-    PairA.map
-
-
-defaultDia =
-    cellSquareSize - (cellSquareSize / 10)
-
-
 defaultR =
-    defaultDia / 2
+    0.5 - (wallThickness)
 
 
 defaultCircle ( x, y ) =
     Svg.circle [ cxp x, cyp y, rp defaultR ] []
+
+
+defaultCellCircle =
+    PairA.add (1 / 2) >> defaultCircle
 
 
 type Radius
@@ -95,3 +89,39 @@ type Style
 
 defaultStyle =
     Style (Fill Color.black) (NoStroke)
+
+
+viewWall maze cord =
+    let
+        cellSize =
+            1
+
+        ( x, y ) =
+            cord |> PairA.toFloat |> PairA.mul cellSize
+
+        eastWall =
+            Svg.rect
+                [ TP.x (x + cellSize - (wallThickness / 2))
+                , TP.y y
+                , TP.width wallThickness
+                , TP.height cellSize
+                , SA.fill "#000"
+                ]
+                []
+
+        southWall =
+            Svg.rect
+                [ TP.x x
+                , TP.y (y + cellSize - (wallThickness / 2))
+                , TP.width cellSize
+                , TP.height wallThickness
+                , SA.fill "#000"
+                ]
+                []
+    in
+        ter (Maze.isEastConnected cord maze) [] [ eastWall ]
+            ++ ter (Maze.isSouthConnected cord maze) [] [ southWall ]
+
+
+viewMonsterHelp =
+    Basics.Extra.curry defaultCellCircle

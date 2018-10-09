@@ -188,7 +188,7 @@ getPortalXYpx m =
 getMonsterXYpx : A.Clock -> Monster -> Float2
 getMonsterXYpx clock mon =
     ( mon.xa, mon.ya )
-        |> R.mapBothWith (animToGridCellPx clock)
+        |> PairA.map (A.animate clock)
 
 
 clampGridX : Model -> F Int
