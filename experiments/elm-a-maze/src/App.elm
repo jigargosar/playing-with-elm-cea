@@ -61,7 +61,7 @@ port onAnimationFrame : (() -> msg) -> Sub msg
 
 init : Flags -> ( Model, Cmd Msg )
 init =
-    Model.init >> noCmd
+    Model.init >> update PostInit
 
 
 
@@ -110,7 +110,7 @@ update msg m =
             noCmd m
 
         PostInit ->
-            noCmd m
+            noCmd m |> sequence []
 
         AnimationFramePort _ ->
             noCmd m
@@ -178,6 +178,7 @@ update msg m =
                     [ SetPlayer (Model.initPlayer m.clock)
                     , SetMonsters monsters
                     , ReInitMaze
+                    , SetGame Model.Running
                     ]
 
         NextLevel ->
@@ -208,12 +209,7 @@ update msg m =
             noCmd m
                 |> case m.game of
                     Model.Init ->
-                        sequence
-                            [ SetPlayer (Model.initPlayer m.clock)
-                            , GenerateMonsters
-                            , ReInitMaze
-                            , SetGame Model.Running
-                            ]
+                        Model.levelGenerator 1 m.clock |> Random.generate SetLevel |> Return.command
 
                     Model.Over ->
                         sequence [ UpdateMonsters ]
@@ -552,7 +548,7 @@ viewSvg m =
                 , (Render.viewPortalXY) (Model.getPortalXY m)
                 , viewMonsters m.clock m.monsters
                 ]
-             , S.lazy viewGameOver m.game
+             , S.lazy2 viewGameOver m.game m.level
              ]
             )
 
@@ -575,7 +571,7 @@ bkgRect =
         []
 
 
-viewGameOver game =
+viewGameOver game level =
     let
         ( mw, mh ) =
             canvasSizeF2
@@ -610,13 +606,13 @@ viewGameOver game =
         renderGameOver =
             S.g []
                 [ S.rect rectAttrs []
-                , S.text_ textAttrs [ S.text "A-Maze-Zing! You Reached Level 1" ]
+                , S.text_ textAttrs [ "A-Maze-Zing! You Reached Level " ++ (String.fromInt (level)) |> S.text ]
                 ]
 
         renderLevelComplete =
             S.g []
                 [ S.rect rectAttrs []
-                , S.text_ textAttrs [ S.text "LEVEL 2" ]
+                , S.text_ textAttrs [ "LEVEL " ++ (String.fromInt (level + 1)) |> S.text ]
                 ]
     in
         case game of

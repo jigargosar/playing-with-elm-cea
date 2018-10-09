@@ -140,9 +140,14 @@ nextLevelGenerator m =
         nextLevel =
             m.level + 1
     in
-        Random.map2 (Level nextLevel)
-            (monstersGenerator nextLevel m.clock)
-            portalGenerator
+        levelGenerator (m.level + 1) (m.clock)
+
+
+levelGenerator : Int -> Clock -> Random.Generator Level
+levelGenerator level clock =
+    Random.map2 (Level level)
+        (monstersGenerator level clock)
+        portalGenerator
 
 
 portalGenerator : Random.Generator Portal
