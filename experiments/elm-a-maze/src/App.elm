@@ -142,7 +142,6 @@ update msg m =
                                             False
                                 )
                             )
-                        |> Debug.log "keyDowned"
             in
                 update (SetPressedKeys newPressedKeys) m
                     |> filter (isLevelComplete m && keyDowned)
@@ -533,8 +532,8 @@ viewSvg m =
             ([ bkgRect
              , S.g [ TA.transform [ Translate cellSize cellSize, gScale ] ]
                 [ S.lazy viewMazeWalls m.maze
-                , Render.viewPlayerXY (getPlayerXYpx m)
-                , Render.viewPortalXY (getPortalXYpx m)
+                , (svgLazyT Render.viewPlayerXY) (getPlayerXYpx m)
+                , (svgLazyT Render.viewPortalXY) (getPortalXYpx m)
                 , viewMonsters m.clock m.monsters
                 ]
              , S.lazy viewGameOver m.game
@@ -615,8 +614,8 @@ viewGameOver game =
                 S.g [] []
 
 
-transformGScale =
-    TA.transform [ Scale cellSize cellSize ]
+svgLazyT fnT =
+    uncurry (S.lazy2 (curry fnT))
 
 
 gScale =
@@ -626,63 +625,6 @@ gScale =
 viewMazeWalls : Maze -> View
 viewMazeWalls maze =
     Maze.concatMapCells (Render.viewWall maze) maze |> List.concat |> S.g []
-
-
-viewWall maze cord =
-    let
-        ( x, y ) =
-            cord |> PairA.toFloat |> PairA.mul cellSize
-
-        eastWall =
-            Svg.rect
-                [ TP.x (x + cellSize - (wallThickness / 2))
-                , TP.y y
-                , TP.width wallThickness
-                , TP.height cellSize
-                , SA.fill "#000"
-                ]
-                []
-
-        southWall =
-            Svg.rect
-                [ TP.x x
-                , TP.y (y + cellSize - (wallThickness / 2))
-                , TP.width cellSize
-                , TP.height wallThickness
-                , SA.fill "#000"
-                ]
-                []
-    in
-        R.ter (Maze.isEastConnected cord maze) [] [ eastWall ]
-            ++ R.ter (Maze.isSouthConnected cord maze) [] [ southWall ]
-
-
-viewPlayer =
-    uncurry (S.lazy2 viewPlayerHelp)
-
-
-viewPortal =
-    uncurry (S.lazy2 (viewEntity Color.darkPurple))
-
-
-viewPlayerHelp x y =
-    S.circle
-        [ TP.cx (x + centerOffset)
-        , TP.cy (y + centerOffset)
-        , TP.r defaultRadius
-        , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
-        ]
-        []
-
-
-viewEntity color x y =
-    S.circle
-        [ TP.cx (x + centerOffset)
-        , TP.cy (y + centerOffset)
-        , TP.r defaultRadius
-        , color |> fillColor
-        ]
-        []
 
 
 viewMonsters : Clock -> Monsters -> View
@@ -698,25 +640,79 @@ viewMonsters clock =
         List.map viewMonster >> S.g []
 
 
-svgLazyT fnT =
-    uncurry (S.lazy2 (curry fnT))
 
+--transformGScale =
+--    TA.transform [ Scale gScale ]
+--
+--
+{-
+   viewWall maze cord =
+       let
+           ( x, y ) =
+               cord |> PairA.toFloat |> PairA.mul cellSize
 
-centerOffset =
-    cellSize / 2
+           eastWall =
+               Svg.rect
+                   [ TP.x (x + cellSize - (wallThickness / 2))
+                   , TP.y y
+                   , TP.width wallThickness
+                   , TP.height cellSize
+                   , SA.fill "#000"
+                   ]
+                   []
 
-
-viewMonsterHelp x y =
-    S.circle
-        [ Color.darkOrange |> fillColor
-        , TP.r defaultRadius
-        , TP.cx (x + centerOffset)
-        , TP.cy (y + centerOffset)
-        ]
-        []
-
-
-
+           southWall =
+               Svg.rect
+                   [ TP.x x
+                   , TP.y (y + cellSize - (wallThickness / 2))
+                   , TP.width cellSize
+                   , TP.height wallThickness
+                   , SA.fill "#000"
+                   ]
+                   []
+       in
+           R.ter (Maze.isEastConnected cord maze) [] [ eastWall ]
+               ++ R.ter (Maze.isSouthConnected cord maze) [] [ southWall ]
+-}
+--
+--viewPlayer =
+--    uncurry (S.lazy2 viewPlayerHelp)
+--
+--
+--viewPortal =
+--    uncurry (S.lazy2 (viewEntity Color.darkPurple))
+--
+--
+--viewPlayerHelp x y =
+--    S.circle
+--        [ TP.cx (x + centerOffset)
+--        , TP.cy (y + centerOffset)
+--        , TP.r defaultRadius
+--        , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
+--        ]
+--        []
+--
+--
+--viewEntity color x y =
+--    S.circle
+--        [ TP.cx (x + centerOffset)
+--        , TP.cy (y + centerOffset)
+--        , TP.r defaultRadius
+--        , color |> fillColor
+--        ]
+--        []
+--centerOffset =
+--    cellSize / 2
+--
+--
+--viewMonsterHelp x y =
+--    S.circle
+--        [ Color.darkOrange |> fillColor
+--        , TP.r defaultRadius
+--        , TP.cx (x + centerOffset)
+--        , TP.cy (y + centerOffset)
+--        ]
+--        []
 ---- SVG ATTRIBUTES ----
 
 

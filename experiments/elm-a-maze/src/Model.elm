@@ -170,8 +170,10 @@ animRetargetToI =
     toFloat >> animRetargetTo
 
 
-animToGridCellPx clock anim =
-    (A.animate clock anim) * cellSize
+
+--animToGridCellPx clock anim =
+--    (A.animate clock anim) * cellSize
+--
 
 
 getPlayerXYpx : Model -> ( Float, Float )
@@ -279,11 +281,11 @@ extrema =
 
 
 xyDiameterExtrema ( x, y ) diameter =
-    Extrema x (x + defaultDia) y (y + defaultDia)
+    Extrema x (x + diameter) y (y + diameter)
 
 
 xyBB xy =
-    xyDiameterExtrema xy defaultDia |> BoundingBox2d.fromExtrema
+    xyDiameterExtrema xy 1 |> BoundingBox2d.fromExtrema
 
 
 playerBB =
