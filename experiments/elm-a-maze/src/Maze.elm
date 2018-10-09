@@ -46,7 +46,7 @@ connectionSetGenerator : Int2 -> Random.Generator ConnectionSet
 connectionSetGenerator whI2 =
     let
         num =
-            150
+            100
 
         eliminateAndCombine cs =
             Random.Set.notInSet cs (connectionGenerator whI2)
