@@ -50,13 +50,13 @@ defaultR =
     0.5 - (wallThickness)
 
 
-defaultCircle ( x, y ) color =
+defaultCircle color ( x, y ) =
     Svg.circle [ cxp x, cyp y, rp defaultR, color |> Color.toCssString >> S.fill ] []
 
 
-cellCircle : Float2 -> Color -> Svg msg
-cellCircle xy =
-    defaultCircle (PairA.add (1 / 2) xy)
+cellCircle : Color -> Float2 -> Svg msg
+cellCircle color =
+    PairA.add (1 / 2) >> defaultCircle color
 
 
 type Radius
@@ -127,24 +127,24 @@ viewWall maze cord =
 
 
 viewMonsterXY =
-    viewCircleWithColor Color.darkOrange
+    lazyCellCircle Color.darkOrange
 
 
 viewPlayerXY =
-    viewCircleWithColor Color.white
+    lazyCellCircle Color.white
 
 
 viewPortalXY =
-    viewCircleWithColor Color.darkPurple
+    lazyCellCircle Color.darkPurple
 
 
-viewKeyXY =
-    viewCircleWithColor Color.darkGray
+viewPortalKeyXY =
+    lazyCellCircle Color.darkGray
 
 
-viewCircleWithColor : Color -> Float2 -> Svg msg
-viewCircleWithColor =
-    flip cellCircle >> svgLazyT
+lazyCellCircle : Color -> Float2 -> Svg msg
+lazyCellCircle color =
+    svgLazyT (cellCircle color)
 
 
 svgLazyT : F (( a, b ) -> Svg msg)
