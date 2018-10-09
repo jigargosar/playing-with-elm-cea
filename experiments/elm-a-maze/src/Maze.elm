@@ -1,4 +1,4 @@
-module Maze exposing (Maze, init, connected, concatMapCells, isEastConnected, isSouthConnected)
+module Maze exposing (Maze, init, connected, concatMapCells, isEastConnected, isSouthConnected, reInit)
 
 import IntPair exposing (Int2)
 import MazeGenerator exposing (CellInfo, Connection, ConnectionSet, MazeGenerator)
@@ -71,7 +71,6 @@ createRec seed sizePair =
         |> RP.from seed
         |> RP.with (mazeGenerator sizePair)
         |> RP.with (connectionSetGenerator sizePair)
-        --        |> RP.always Set.empty
         |> RP.finish
 
 
@@ -80,8 +79,16 @@ init seed sizePair =
     Maze (createRec seed sizePair)
 
 
+reInit m =
+    init (getSeed m) (getSize m)
+
+
 toRec (Maze r) =
     r
+
+
+getSeed =
+    toRec >> .seed
 
 
 getMazeG =
