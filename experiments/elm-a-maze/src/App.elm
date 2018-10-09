@@ -687,6 +687,14 @@ subscriptions m =
             _ ->
                 Nothing
           )
+            |> Maybe.andThen
+                (\msg ->
+                    (if m.clock - m.gameStateChangedAt > 1000 then
+                        Just msg
+                     else
+                        Nothing
+                    )
+                )
             |> Maybe.unwrap Sub.none (D.succeed >> B.onKeyDown)
         ]
 
