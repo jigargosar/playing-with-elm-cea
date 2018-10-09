@@ -498,8 +498,8 @@ canvasSizeF2 =
 canvasWHStyles =
     canvasSizeF2
         |> PairA.round
-        |> PairA.stringFromIntWithSuffix "px"
-        |> PairA.apply2 H.style ( "min-width", "min-height" )
+        |> PairA.fromIntThenSuffix "px"
+        |> PairA.map2 H.style ( "min-width", "min-height" )
         |> R.tupleToList
 
 
@@ -615,7 +615,7 @@ viewMazeWalls maze =
 viewWall maze cord =
     let
         ( x, y ) =
-            cord |> PairA.floatFromInt |> PairA.mul cellSize
+            cord |> PairA.toFloat |> PairA.mul cellSize
 
         eastWall =
             Svg.rect

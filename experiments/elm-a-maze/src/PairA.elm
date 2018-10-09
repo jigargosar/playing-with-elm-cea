@@ -1,5 +1,6 @@
 module PairA exposing (..)
 
+import Basics.Extra
 import Ramda as R
 
 
@@ -35,8 +36,16 @@ map fn =
     Tuple.mapBoth fn fn
 
 
-floatFromInt : Int2 -> Float2
-floatFromInt =
+map2 fn ( a1, b1 ) ( a2, b2 ) =
+    ( fn a1 a2, fn b1 b2 )
+
+
+apply =
+    Basics.Extra.uncurry
+
+
+toFloat : Int2 -> Float2
+toFloat =
     map Basics.toFloat
 
 
@@ -45,19 +54,19 @@ round =
     map Basics.round
 
 
-stringFromInt : Int2 -> StringPair
-stringFromInt =
+fromInt : Int2 -> StringPair
+fromInt =
     map String.fromInt
 
 
-stringFromIntWithSuffix : String -> Int2 -> StringPair
-stringFromIntWithSuffix suf =
-    stringFromInt >> withSuffix suf
+fromIntThenSuffix : String -> Int2 -> StringPair
+fromIntThenSuffix suf =
+    fromInt >> suffix suf
 
 
-withSuffix : String -> F StringPair
-withSuffix suf =
-    map (R.withSuffix suf)
+suffix : String -> F StringPair
+suffix suf =
+    map (R.suffix suf)
 
 
 type alias WH number =
@@ -103,13 +112,9 @@ mapGrid fn ( width, height ) =
                 )
 
 
-add2 =
-    apply2 (+)
+sum =
+    map2 (+)
 
 
-mul2 =
-    apply2 (*)
-
-
-apply2 fn ( a1, b1 ) ( a2, b2 ) =
-    ( fn a1 a2, fn b1 b2 )
+product =
+    map2 (*)

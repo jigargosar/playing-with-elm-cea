@@ -34,7 +34,7 @@ type alias Monster =
 
 initMonster : Clock -> Int2 -> Monster
 initMonster clock cellXY =
-    PairA.floatFromInt cellXY
+    PairA.toFloat cellXY
         |> PairA.map (\fromTo -> createMonsterAnim clock fromTo fromTo)
         |> R.uncurry Monster
 
@@ -95,7 +95,7 @@ gridSizeI2 =
 
 gridSizeF2 : Float2
 gridSizeF2 =
-    gridSizeI2 |> PairA.floatFromInt
+    gridSizeI2 |> PairA.toFloat
 
 
 xCells =
@@ -182,7 +182,7 @@ getPlayerXYpx m =
 
 getPortalXYpx : Model -> Float2
 getPortalXYpx m =
-    m.portal |> PairA.floatFromInt |> PairA.mul cellSize
+    m.portal |> PairA.toFloat |> PairA.mul cellSize
 
 
 getMonsterXYpx : A.Clock -> Monster -> Float2

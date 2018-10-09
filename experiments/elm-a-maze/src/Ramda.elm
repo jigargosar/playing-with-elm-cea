@@ -16,7 +16,7 @@ module Ramda
         , tupleToList
         , toTuple
         , sign
-        , withSuffix
+        , suffix
         , F
         , uncurry
         )
@@ -109,7 +109,7 @@ sign x =
     ter (x == 0) 0 (x / abs x)
 
 
-withSuffix suf str =
+suffix suf str =
     str ++ suf
 
 
