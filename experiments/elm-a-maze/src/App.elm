@@ -81,7 +81,7 @@ type Msg
     | AnimationFramePort ()
     | UpdatePlayer
     | UpdateMonsters
-    | UpdateGame
+    | Tick
     | UpdateLevelComplete
     | GenerateMonsters
     | ReInitMaze
@@ -205,7 +205,7 @@ update msg m =
             in
                 noCmd m |> sequence newMsg
 
-        UpdateGame ->
+        Tick ->
             noCmd m
                 |> case m.game of
                     Model.Init ->
@@ -225,7 +225,7 @@ update msg m =
                 newClock =
                     Model.computeNewClock posix m
             in
-                update UpdateGame { m | clock = newClock }
+                update Tick { m | clock = newClock }
 
 
 updateWithModel =
