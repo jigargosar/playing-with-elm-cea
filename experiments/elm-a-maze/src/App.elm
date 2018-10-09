@@ -85,6 +85,7 @@ type Msg
     | UpdateLevel
     | GenerateMonsters
     | PostInit
+    | KeyDownNow
 
 
 noCmd model =
@@ -144,8 +145,22 @@ update msg m =
                             )
             in
                 update (SetPressedKeys newPressedKeys) m
-                    |> filter (Model.isLevelComplete m && keyDowned)
-                        (sequence [ SetGame Model.Init ])
+                    |> filter keyDowned (andThen KeyDownNow)
+
+        KeyDownNow ->
+            let
+                newMessages =
+                    case m.game of
+                        Model.Over ->
+                            [ SetGame Model.Init ]
+
+                        Model.LevelComplete ->
+                            [ SetGame Model.Init ]
+
+                        _ ->
+                            []
+            in
+                noCmd m |> sequence newMessages
 
         UpdatePlayer ->
             computeNewPlayerXYa m
