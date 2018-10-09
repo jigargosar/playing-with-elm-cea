@@ -1,7 +1,7 @@
 port module App exposing (..)
 
 import Animation as A exposing (Animation, Clock)
-import Basics.Extra exposing (uncurry)
+import Basics.Extra exposing (curry, uncurry)
 import Browser.Dom
 import Browser.Dom as BD
 import Browser.Dom as B
@@ -535,7 +535,7 @@ viewSvg m =
                 [ S.lazy viewMazeWalls m.maze
                 , viewPlayer (getPlayerXYpx m)
                 , viewPortal (getPortalXYpx m)
-                , viewMonsters m.clock m.monsters |> Svg.Keyed.node "g" [ gScale ]
+                , viewMonsters m.clock m.monsters
                 ]
              , S.lazy viewGameOver m.game
              ]
@@ -682,11 +682,17 @@ viewEntity color x y =
 
 
 viewMonsters clock =
-    List.indexedMap (\idx mon -> ( String.fromInt idx, mon |> getMonsterXYpx clock >> viewMonster ))
+    List.indexedMap
+        (\idx mon ->
+            ( String.fromInt idx
+            , mon |> getMonsterXYpx clock >> svgLazyT Render.viewMonsterHelp
+            )
+        )
+        >> Svg.Keyed.node "g" [ gScale ]
 
 
-viewMonster ( x, y ) =
-    S.lazy2 Render.viewMonsterHelp x y
+svgLazyT fnT =
+    uncurry (S.lazy2 (curry fnT))
 
 
 centerOffset =

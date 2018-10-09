@@ -124,4 +124,4 @@ viewWall maze cord =
 
 
 viewMonsterHelp =
-    Basics.Extra.curry defaultCellCircle
+    defaultCellCircle
