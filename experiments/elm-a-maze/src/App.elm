@@ -153,7 +153,7 @@ update msg m =
                 newMessages =
                     case m.game of
                         Model.Over ->
-                            [ SetGame Model.Init ]
+                            [ SetGame Model.NewGame ]
 
                         Model.LevelComplete ->
                             [ NextLevel ]
@@ -199,7 +199,7 @@ update msg m =
         Tick ->
             noCmd m
                 |> case m.game of
-                    Model.Init ->
+                    Model.NewGame ->
                         Model.levelGenerator 1 m.clock
                             |> Random.generate SetFromLevelState
                             |> Return.command
