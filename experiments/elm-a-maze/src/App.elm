@@ -532,10 +532,10 @@ viewSvg m =
         S.svg
             [ H.width cw
             , H.height ch
-            , TA.shapeRendering RenderOptimizeSpeed
+            {-, TA.shapeRendering RenderOptimizeSpeed
             , TA.colorRendering RenderingOptimizeSpeed
             , TA.textRendering TextRenderingOptimizeSpeed
-            , TA.imageRendering RenderingOptimizeSpeed
+            , TA.imageRendering RenderingOptimizeSpeed-}
             ]
             ([ bkgRect
              , S.g [ TA.transform [ Translate cellSize cellSize, gScale ] ]
