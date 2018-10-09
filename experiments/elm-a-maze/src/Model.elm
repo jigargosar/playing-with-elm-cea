@@ -55,6 +55,7 @@ type alias Model =
     , pressedKeys : PressedKeys
     , pageLoadedAt : Int
     , clock : A.Clock
+    , level : Int
     , maze : Maze
     , monsters : Monsters
     , game : Game
@@ -129,6 +130,26 @@ monstersGenerator ct =
     monsterGenerator >> Random.list ct
 
 
+type alias Level =
+    { level : Int, monsters : Monsters, portal : Portal }
+
+
+nextLevelGenerator : Model -> Random.Generator Level
+nextLevelGenerator m =
+    let
+        nextLevel =
+            m.level + 1
+    in
+        Random.map2 (Level nextLevel)
+            (monstersGenerator nextLevel m.clock)
+            portalGenerator
+
+
+portalGenerator : Random.Generator Portal
+portalGenerator =
+    gridCellXYGenerator
+
+
 init : Flags -> Model
 init { now } =
     let
@@ -147,6 +168,7 @@ init { now } =
         , pressedKeys = []
         , pageLoadedAt = now
         , clock = 0
+        , level = 0
         , maze = Maze.init mazeSeed gridSizeI2
         , monsters = []
         , game = Init

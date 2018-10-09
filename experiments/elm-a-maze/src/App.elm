@@ -82,11 +82,13 @@ type Msg
     | UpdatePlayer
     | UpdateMonsters
     | UpdateGame
-    | UpdateLevel
+    | UpdateLevelComplete
     | GenerateMonsters
     | ReInitMaze
     | PostInit
     | KeyDownNow
+    | NextLevel
+    | SetLevel Model.Level
 
 
 noCmd model =
@@ -156,7 +158,7 @@ update msg m =
                             [ SetGame Model.Init ]
 
                         Model.LevelComplete ->
-                            [ SetGame Model.Init ]
+                            [ NextLevel ]
 
                         _ ->
                             []
@@ -170,6 +172,17 @@ update msg m =
         GenerateMonsters ->
             ( m, Random.generate SetMonsters (Model.monstersGenerator 1 m.clock) )
 
+        SetLevel { level, monsters, portal } ->
+            noCmd { m | level = level, portal = portal }
+                |> sequence
+                    [ SetPlayer (Model.initPlayer m.clock)
+                    , SetMonsters monsters
+                    , ReInitMaze
+                    ]
+
+        NextLevel ->
+            ( m, Random.generate SetLevel (Model.nextLevelGenerator m) )
+
         UpdateMonsters ->
             ( m, Random.generate SetMonsters (monstersUpdateGenerator m) )
 
@@ -179,7 +192,7 @@ update msg m =
         SetGame v ->
             noCmd { m | game = v }
 
-        UpdateLevel ->
+        UpdateLevelComplete ->
             let
                 newMsg =
                     if Model.isLevelComplete m then
@@ -209,7 +222,7 @@ update msg m =
                         sequence []
 
                     Model.Running ->
-                        sequence [ UpdatePlayer, UpdateMonsters, UpdateLevel ]
+                        sequence [ UpdatePlayer, UpdateMonsters, UpdateLevelComplete ]
 
         AnimationFrame posix ->
             let
