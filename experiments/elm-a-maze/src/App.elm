@@ -515,8 +515,8 @@ viewSvg m =
             ([ bkgRect
              , S.g [ TA.transform [ Translate cellSize cellSize, gScale ] ]
                 [ S.lazy viewMazeWalls m.maze
-                , (svgLazyT Render.viewPlayerXY) (Model.getPlayerXY m)
-                , (svgLazyT Render.viewPortalXY) (Model.getPortalXY m)
+                , (Render.viewPlayerXY) (Model.getPlayerXY m)
+                , (Render.viewPortalXY) (Model.getPortalXY m)
                 , viewMonsters m.clock m.monsters
                 ]
              , S.lazy viewGameOver m.game
@@ -597,10 +597,6 @@ viewGameOver game =
                 S.g [] []
 
 
-svgLazyT fnT =
-    uncurry (S.lazy2 (curry fnT))
-
-
 gScale =
     Scale cellSize cellSize
 
@@ -614,7 +610,7 @@ viewMonsters : Clock -> Monsters -> View
 viewMonsters clock =
     let
         viewMonster =
-            Model.getMonsterXY clock >> svgLazyT Render.viewMonsterXY
+            Model.getMonsterXY clock >> Render.viewMonsterXY
     in
         {- List.indexedMap
            (Tuple.mapBoth String.fromInt viewMonster |> curry)

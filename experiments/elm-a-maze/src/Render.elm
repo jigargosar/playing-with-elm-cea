@@ -1,6 +1,6 @@
 module Render exposing (..)
 
-import Basics.Extra exposing (flip)
+import Basics.Extra exposing (curry, flip, uncurry)
 import Color exposing (Color)
 import Maze
 import PairA exposing (Float2)
@@ -9,6 +9,7 @@ import Svg
 import Svg as S
 import Svg.Attributes as SA
 import Svg.Attributes as S
+import Svg.Lazy
 import TypedSvg.Attributes.InPx as TP
 import TypedSvg.Attributes as T
 
@@ -55,10 +56,6 @@ defaultCircle ( x, y ) color =
 
 cellCircle xy =
     defaultCircle (PairA.add (1 / 2) xy)
-
-
-cellCircleWithColor =
-    flip cellCircle
 
 
 type Radius
@@ -129,16 +126,24 @@ viewWall maze cord =
 
 
 viewMonsterXY =
-    cellCircleWithColor Color.darkOrange
+    viewCircleWithColor Color.darkOrange
 
 
 viewPlayerXY =
-    cellCircleWithColor Color.white
+    viewCircleWithColor Color.white
 
 
 viewPortalXY =
-    cellCircleWithColor Color.darkPurple
+    viewCircleWithColor Color.darkPurple
 
 
 viewKeyXY =
-    cellCircleWithColor Color.darkGray
+    viewCircleWithColor Color.darkGray
+
+
+viewCircleWithColor =
+    flip cellCircle >> svgLazyT
+
+
+svgLazyT fnT =
+    uncurry (Svg.Lazy.lazy2 (curry fnT))
