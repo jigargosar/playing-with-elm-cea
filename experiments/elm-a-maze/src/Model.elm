@@ -155,7 +155,7 @@ gridCellXYGenerator =
                     frame =
                         Frame2d.atCoordinates gridCenterF2
                 in
-                    Rectangle2d.centeredOn frame ( 3, 3 )
+                    Rectangle2d.centeredOn frame ( 4, 4 )
                         |> Rectangle2d.contains (i2 |> PairA.toFloat |> Point2d.fromCoordinates)
                         |> not
             )
