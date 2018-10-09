@@ -82,7 +82,7 @@ type Msg
     | UpdatePlayer
     | UpdateMonsters
     | Tick
-    | UpdateLevelComplete
+    | UpdateLevel
     | GenerateMonsters
     | ReInitMaze
     | PostInit
@@ -193,7 +193,7 @@ update msg m =
         SetGame v ->
             noCmd { m | game = v }
 
-        UpdateLevelComplete ->
+        UpdateLevel ->
             let
                 newMsg =
                     if Model.isLevelComplete m then
@@ -209,7 +209,9 @@ update msg m =
             noCmd m
                 |> case m.game of
                     Model.Init ->
-                        Model.levelGenerator 1 m.clock |> Random.generate SetLevel |> Return.command
+                        Model.levelGenerator 1 m.clock
+                            |> Random.generate SetLevel
+                            |> Return.command
 
                     Model.Over ->
                         sequence [ UpdateMonsters ]
@@ -218,7 +220,7 @@ update msg m =
                         sequence []
 
                     Model.Running ->
-                        sequence [ UpdatePlayer, UpdateMonsters, UpdateLevelComplete ]
+                        sequence [ UpdatePlayer, UpdateMonsters, UpdateLevel ]
 
         AnimationFrame posix ->
             let

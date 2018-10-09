@@ -131,7 +131,7 @@ monstersGenerator ct =
 
 
 type alias Level =
-    { level : Int, monsters : Monsters, portal : Portal }
+    { level : Int, maze : Maze, monsters : Monsters, portal : Portal }
 
 
 nextLevelGenerator : Model -> Random.Generator Level
@@ -145,7 +145,8 @@ nextLevelGenerator m =
 
 levelGenerator : Int -> Clock -> Random.Generator Level
 levelGenerator level clock =
-    Random.map2 (Level level)
+    Random.map3 (Level level)
+        (Maze.generator gridSizeI2)
         (monstersGenerator level clock)
         portalGenerator
 

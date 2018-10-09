@@ -1,4 +1,4 @@
-module Maze exposing (Maze, init, connected, concatMapCells, isEastConnected, isSouthConnected, reInit)
+module Maze exposing (Maze, init, connected, concatMapCells, isEastConnected, isSouthConnected, reInit, generator)
 
 import IntPair exposing (Int2)
 import MazeGenerator exposing (CellInfo, Connection, ConnectionSet, MazeGenerator)
@@ -61,7 +61,7 @@ connectionSetGenerator whI2 =
 --            |> Random.andThen eliminateAndCombine
 
 
-mazeGenerator sizePair =
+mazeGeneratorGenerator sizePair =
     Random.independentSeed |> Random.map (\seed -> MazeGenerator.init seed sizePair |> MazeGenerator.solve)
 
 
@@ -69,7 +69,7 @@ createRec : Random.Seed -> Int2 -> Record
 createRec seed sizePair =
     Record
         |> RP.from seed
-        |> RP.with (mazeGenerator sizePair)
+        |> RP.with (mazeGeneratorGenerator sizePair)
         |> RP.with (connectionSetGenerator sizePair)
         |> RP.finish
 
@@ -77,6 +77,10 @@ createRec seed sizePair =
 init : Random.Seed -> Int2 -> Maze
 init seed sizePair =
     Maze (createRec seed sizePair)
+
+
+generator sizePair =
+    Random.map (\seed -> init seed sizePair) Random.independentSeed
 
 
 reInit m =
