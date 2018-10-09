@@ -1,6 +1,7 @@
 module Model exposing (..)
 
 import Animation as A exposing (Animation, Clock)
+import Basics.Extra exposing (uncurry)
 import BoundingBox2d
 import Keyboard
 import Keyboard.Arrows
@@ -69,7 +70,7 @@ type alias Flags =
     { now : Int }
 
 
-createAnim from to clock =
+createAnim clock from to =
     A.animation clock
         |> A.from from
         |> A.to to
@@ -91,8 +92,17 @@ type alias Player =
 
 initPlayer : Clock -> Player
 initPlayer clock =
-    Player (createAnim (xCells / 2) (xCells / 2) clock)
-        (createAnim (yCells / 2) (yCells / 2) clock)
+    gridSizeI2
+        |> PairA.iDiv 2
+        |> PairA.toFloat
+        |> PairA.map (\v -> createAnim clock v v)
+        |> uncurry Player
+
+
+
+{- Player (createAnim (xCells / 2) (xCells / 2) clock)
+   (createAnim (yCells / 2) (yCells / 2) clock)
+-}
 
 
 gridSizeI2 : Int2
@@ -106,11 +116,11 @@ gridSizeF2 =
 
 
 xCells =
-    2 * 9
+    (2 * 8) + 1
 
 
 yCells =
-    2 * 8
+    (2 * 8) + 1
 
 
 maxGridXY : Int2

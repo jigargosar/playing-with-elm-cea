@@ -463,7 +463,7 @@ computeNewAnim isConnected cellCount dd anim m =
                 |> clampTo
     in
         if (Model.notRunning anim m || directionReversed) && to /= newTo && isConnected ( to, newTo ) then
-            Model.createAnim current newTo m.clock
+            Model.createAnim m.clock current newTo
         else
             anim
 
