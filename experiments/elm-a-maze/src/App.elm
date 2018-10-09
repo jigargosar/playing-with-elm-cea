@@ -167,10 +167,10 @@ update msg m =
             computeNewPlayerXYa m
                 |> Maybe.unwrap (noCmd m) (uncurry Model.Player >> SetPlayer >> updateWithModel m)
 
-        SetFromLevelState { level, monsters, portal, maze } ->
+        SetFromLevelState { level, monsters, portal, maze, player } ->
             noCmd { m | level = level, portal = portal, maze = maze }
                 |> sequence
-                    [ SetPlayer (Model.initPlayer m.clock)
+                    [ SetPlayer player
                     , SetMonsters monsters
                     , SetGame Model.Running
                     ]
