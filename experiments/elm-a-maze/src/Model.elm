@@ -3,17 +3,23 @@ module Model exposing (..)
 import Animation as A exposing (Animation, Clock)
 import Basics.Extra exposing (uncurry)
 import BoundingBox2d
+import Frame2d
 import Keyboard
 import Keyboard.Arrows
+import LineSegment2d
 import List.Extra
 import Maze exposing (Maze)
+import Point2d
 import Ramda as R exposing (F)
 import Random
+import Random.Extra
+import Rectangle2d
 import Time
 import Set exposing (Set)
 import MazeGenerator as MG exposing (MazeGenerator)
 import PairA exposing (Float2, Int2, PairA)
 import Render
+import Vector2d
 
 
 ---- MODEL ----
@@ -110,6 +116,16 @@ gridSizeI2 =
     ( xCells, yCells )
 
 
+gridCenterI2 : Int2
+gridCenterI2 =
+    gridSizeI2 |> PairA.iDiv 2
+
+
+gridCenterF2 : Float2
+gridCenterF2 =
+    gridCenterI2 |> PairA.toFloat
+
+
 gridSizeF2 : Float2
 gridSizeF2 =
     gridSizeI2 |> PairA.toFloat
@@ -133,6 +149,16 @@ gridCellXYGenerator =
     maxGridXY
         |> PairA.map (Random.int 0)
         |> R.uncurry Random.pair
+        |> Random.Extra.filter
+            (\i2 ->
+                let
+                    frame =
+                        Frame2d.atCoordinates gridCenterF2
+                in
+                    Rectangle2d.centeredOn frame ( 3, 3 )
+                        |> Rectangle2d.contains (i2 |> PairA.toFloat |> Point2d.fromCoordinates)
+                        |> not
+            )
 
 
 monsterGenerator : Clock -> Random.Generator Monster
