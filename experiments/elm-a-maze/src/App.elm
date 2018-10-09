@@ -618,84 +618,12 @@ viewMonsters clock =
     in
         {- List.indexedMap
            (Tuple.mapBoth String.fromInt viewMonster |> curry)
-           >> Svg.Keyed.node "g" [ gScale ]
+           >> Svg.Keyed.node "g" [ ]
         -}
         List.map viewMonster >> S.g []
 
 
 
---transformGScale =
---    TA.transform [ Scale gScale ]
---
---
-{-
-   viewWall maze cord =
-       let
-           ( x, y ) =
-               cord |> PairA.toFloat |> PairA.mul cellSize
-
-           eastWall =
-               Svg.rect
-                   [ TP.x (x + cellSize - (wallThickness / 2))
-                   , TP.y y
-                   , TP.width wallThickness
-                   , TP.height cellSize
-                   , SA.fill "#000"
-                   ]
-                   []
-
-           southWall =
-               Svg.rect
-                   [ TP.x x
-                   , TP.y (y + cellSize - (wallThickness / 2))
-                   , TP.width cellSize
-                   , TP.height wallThickness
-                   , SA.fill "#000"
-                   ]
-                   []
-       in
-           R.ter (Maze.isEastConnected cord maze) [] [ eastWall ]
-               ++ R.ter (Maze.isSouthConnected cord maze) [] [ southWall ]
--}
---
---viewPlayer =
---    uncurry (S.lazy2 viewPlayerHelp)
---
---
---viewPortal =
---    uncurry (S.lazy2 (viewEntity Color.darkPurple))
---
---
---viewPlayerHelp x y =
---    S.circle
---        [ TP.cx (x + centerOffset)
---        , TP.cy (y + centerOffset)
---        , TP.r defaultRadius
---        , Color.green |> Light.map (\h -> { h | s = 1, l = 0.89 }) |> fillColor
---        ]
---        []
---
---
---viewEntity color x y =
---    S.circle
---        [ TP.cx (x + centerOffset)
---        , TP.cy (y + centerOffset)
---        , TP.r defaultRadius
---        , color |> fillColor
---        ]
---        []
---centerOffset =
---    cellSize / 2
---
---
---viewMonsterHelp x y =
---    S.circle
---        [ Color.darkOrange |> fillColor
---        , TP.r defaultRadius
---        , TP.cx (x + centerOffset)
---        , TP.cy (y + centerOffset)
---        ]
---        []
 ---- SVG ATTRIBUTES ----
 
 
@@ -711,14 +639,6 @@ fillColor =
 strokeColor : Color -> SvgAttribute msg
 strokeColor =
     TA.stroke
-
-
-fillOpacityFloat =
-    TypedSvg.Types.Opacity >> TA.fillOpacity
-
-
-opacityFloat =
-    TypedSvg.Types.Opacity >> TA.opacity
 
 
 
