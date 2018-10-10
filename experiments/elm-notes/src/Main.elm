@@ -172,7 +172,8 @@ update msg model =
                     )
 
                 ( _, OnCancel ) ->
-                    ( { model | editState = NotEditing }, restoreNoteListItemFocus model )
+                    ( { model | editState = NotEditing }, Cmd.none )
+                        |> addEffect restoreNoteListItemFocus
 
                 _ ->
                     ( model, Cmd.none )
