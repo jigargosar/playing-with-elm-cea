@@ -1,10 +1,11 @@
 module Note exposing (..)
 
+import Id
 import Random
 
 
 type alias Note =
-    { content : String }
+    { content : String, id : String }
 
 
 title =
@@ -16,8 +17,9 @@ init content =
 
 
 setContent content note =
-    Note content
+    { note | content = content }
 
 
+generator : String -> Random.Generator Note
 generator content =
-    Random.constant (Note content)
+    Random.map (Note content) Id.generator
