@@ -18,6 +18,8 @@ import Json.Encode as E
 import Note exposing (Note)
 import NoteCollection exposing (NoteCollection)
 import Random
+import Task
+import Time
 
 
 port persistNoteCollection : E.Value -> Cmd msg
@@ -75,6 +77,7 @@ type Msg
     = NoOp
     | EditMsg EditMsg
     | SetNoteCollection NoteCollection
+    | AddNew String Time.Posix
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -85,6 +88,9 @@ update msg model =
 
         SetNoteCollection nc ->
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
+
+        AddNew content posix ->
+            update (SetNoteCollection <| NoteCollection.addNew content model.noteCollection) model
 
         EditMsg editMsg ->
             case ( model.editState, editMsg ) of
@@ -98,8 +104,7 @@ update msg model =
                     ( { model | editState = EditingNew updatedContent }, Cmd.none )
 
                 ( EditingNew content, OnOk ) ->
-                    update (SetNoteCollection <| NoteCollection.addNew content model.noteCollection)
-                        { model | editState = NotEditing }
+                    ( { model | editState = NotEditing }, Task.perform (AddNew content) Time.now )
 
                 ( Editing note content, OnUpdate updatedContent ) ->
                     ( { model | editState = Editing note updatedContent }, Cmd.none )
