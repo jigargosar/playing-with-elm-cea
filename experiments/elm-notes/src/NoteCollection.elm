@@ -1,57 +1,62 @@
 module NoteCollection exposing (..)
 
+import Basics.Extra exposing (flip)
+import Dict exposing (Dict)
 import Note exposing (Note)
 import Random
 import Json.Decode as D
 import Json.Encode as E
 
 
+type alias NoteDict =
+    Dict String Note
+
+
 type alias NoteCollection =
-    { list : List Note, seed : Random.Seed }
+    { dict : NoteDict, seed : Random.Seed }
 
 
 all =
-    .list
+    .dict >> Dict.values
 
 
-setList list nc =
-    { nc | list = list }
+setDict : NoteDict -> F NoteCollection
+setDict dict nc =
+    { nc | dict = dict }
 
 
 setSeed seed nc =
     { nc | seed = seed }
 
 
+addNew : String -> F NoteCollection
 addNew content nc =
     let
         ( note, newSeed ) =
             Random.step (Note.generator content) nc.seed
 
-        newList =
-            note :: nc.list
+        newDict =
+            Dict.insert note.id note nc.dict
     in
-        nc
-            |> setList newList
-            |> setSeed newSeed
+        setDict newDict nc |> setSeed newSeed
 
 
+type alias F a =
+    a -> a
+
+
+updateNoteContent : String -> Note -> F NoteCollection
 updateNoteContent content note nc =
-    setList
-        (List.map
-            (\n ->
-                if n == note then
-                    Note.setContent content n
-                else
-                    n
-            )
-            nc.list
-        )
-        nc
+    let
+        newDict =
+            Dict.update note.id (Maybe.map (Note.setContent content)) nc.dict
+    in
+        setDict newDict nc
 
 
 generator : Random.Generator NoteCollection
 generator =
-    Random.map (NoteCollection []) Random.independentSeed
+    Random.map (NoteCollection Dict.empty) Random.independentSeed
 
 
 encode : NoteCollection -> E.Value
