@@ -1,15 +1,23 @@
 port module App exposing (..)
 
-import Animation as A exposing (Animation, Clock)
 import Basics.Extra exposing (curry, uncurry)
-import Browser.Dom
-import Browser.Dom as BD
+import Browser as B
+import Browser.Events as B
+import Browser.Events as BE
 import Browser.Dom as B
-import Color exposing (Color)
+import Browser.Dom as BD
 import Html as H exposing (Html)
 import Html.Lazy as H
 import Html.Attributes as H
 import Html.Attributes as HA
+import Json.Decode as D
+import Json.Encode as E
+
+
+--
+
+import Animation as A exposing (Animation, Clock)
+import Color exposing (Color)
 import Keyboard
 import Keyboard.Arrows
 import Light
@@ -34,13 +42,7 @@ import TypedSvg as T
 import TypedSvg.Attributes as TA
 import TypedSvg.Attributes.InPx as T
 import TypedSvg.Attributes.InPx as TP
-import Browser
-import Browser as B
-import Browser.Events as B
-import Browser.Events as BE
 import Set exposing (Set)
-import Json.Decode as D
-import Json.Encode as E
 import TypedSvg.Types exposing (..)
 import MazeGenerator as MG exposing (MazeGenerator)
 import ISvg exposing (..)

@@ -1,0 +1,102 @@
+:root {
+  --sans-serif: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;
+
+  --rem1: .25rem;
+  --rem2: .5rem;
+  --rem3: 1rem;
+  --rem4: 2rem;
+  --rem5: 4rem;
+  --rem6: 8rem;
+  --rem7: 16rem;
+
+}
+
+html, body, #root, [data-elm-hot=true] {
+  font-family: var(--sans-serif);
+  /*font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;*/
+  height: 100%;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+
+/*.a, .span{*/
+/*display: inline-block;*/
+/*}*/
+
+.vs1 > * {
+  margin-bottom: var(--rem1);
+}
+
+.vs1 > *:last-child{
+  margin-bottom:0;
+}
+
+.vs2 > * {
+  margin-bottom: var(--rem2);
+}
+
+.vs2 > *:last-child{
+  margin-bottom:0;
+}
+
+.vs3 > * {
+  margin-bottom: var(--rem3);
+}
+
+.vs3 > *:last-child{
+  margin-bottom:0;
+}
+
+.vs4 > * {
+  margin-bottom: var(--rem4);
+}
+
+.vs4 > *:last-child{
+  margin-bottom:0;
+}
+
+
+.hs1 > * {
+  margin-right: var(--rem1);
+}
+
+.hs1 > *:last-child{
+  margin-right:0;
+}
+
+.hs2 > * {
+  margin-right: var(--rem2);
+}
+
+.hs2 > *:last-child{
+  margin-right:0;
+}
+
+.hs3 > * {
+  margin-right: var(--rem3);
+}
+
+.hs3 > *:last-child{
+  margin-right:0;
+}
+
+.hs4 > * {
+  margin-right: var(--rem4);
+}
+
+.hs4 > *:last-child{
+  margin-right:0;
+}
+
+.no-sel{
+  user-select: none;
+}
+
+
+.pe-none{
+  pointer-events: none;
+}
+.pe-bb{
+  pointer-events: bounding-box;
+}
