@@ -19,17 +19,24 @@ import Json.Encode as E
 ---- MODEL ----
 
 
+type alias Note =
+    String
+
+
 type alias Flags =
     { now : Int }
 
 
 type alias Model =
-    {}
+    { notes : List Note }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( {}, Cmd.none )
+    ( { notes = [ "asd", "asdfasf" ]
+      }
+    , Cmd.none
+    )
 
 
 
@@ -56,9 +63,17 @@ view model =
     div [ class "flex flex-column items-center pa2" ]
         [ div [ class "flex flex-column vs3" ]
             [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
-            , div [ class "flex1 overflow-scroll" ] []
+            , div [ class "flex1 overflow-scroll" ] [ viewNoteList model.notes ]
             ]
         ]
+
+
+viewNoteList notes =
+    let
+        viewNoteListItem note =
+            div [] [ text note ]
+    in
+        div [ class "" ] (List.map viewNoteListItem notes)
 
 
 
