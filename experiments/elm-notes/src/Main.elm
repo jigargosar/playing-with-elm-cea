@@ -70,6 +70,7 @@ type EditMsg
 type Msg
     = NoOp
     | EditMsg EditMsg
+    | SetNoteCollection NoteCollection
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -77,6 +78,9 @@ update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
+
+        SetNoteCollection nc ->
+            ( { model | noteCollection = nc }, Cmd.none )
 
         EditMsg editMsg ->
             case ( model.editState, editMsg ) of
