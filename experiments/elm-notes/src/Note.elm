@@ -19,8 +19,8 @@ init content =
     Note content
 
 
-setContent content note =
-    { note | content = content }
+setContent now content note =
+    { note | content = content, modifiedAt = now }
 
 
 generator : Int -> String -> Random.Generator Note
