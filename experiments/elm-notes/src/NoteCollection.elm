@@ -52,13 +52,18 @@ type alias F a =
     a -> a
 
 
-updateNoteContent : Int -> String -> Note -> F NoteCollection
-updateNoteContent now content note nc =
+updateNote : F Note -> Note -> F NoteCollection
+updateNote fn note nc =
     let
         newDict =
-            Dict.update note.id (Maybe.map <| Note.setContent now content) nc.dict
+            Dict.update note.id (Maybe.map fn) nc.dict
     in
         setDict newDict nc
+
+
+updateNoteContent : Int -> String -> Note -> F NoteCollection
+updateNoteContent now content =
+    updateNote (Note.setContent now content)
 
 
 generator : Int -> E.Value -> Random.Generator NoteCollection
