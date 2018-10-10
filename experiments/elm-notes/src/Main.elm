@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, div, h1, img, text, textarea)
-import Html.Attributes exposing (autofocus, class, src, value)
+import Html.Attributes exposing (attribute, autofocus, class, src, value)
 import Browser as B
 import Browser.Events as B
 import Browser.Events as BE
@@ -181,10 +181,15 @@ viewNoteList edit notes =
                         ]
 
                     _ ->
-                        [ div [ onClick <| EditNote <| OnEdit <| note ] [ text (Note.title note) ] ]
+                        [ div
+                            [ attribute "role" "button"
+                            , onClick <| EditNote <| OnEdit note
+                            ]
+                            [ text <| Note.title note ]
+                        ]
                 )
     in
-        div [ class "vs3" ] <| List.map viewNoteListItem <| notes
+        div [ class "vs3" ] <| List.map viewNoteListItem notes
 
 
 
