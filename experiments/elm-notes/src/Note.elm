@@ -1,5 +1,7 @@
 module Note exposing (..)
 
+import Random
+
 
 type alias Note =
     { content : String }
@@ -15,3 +17,7 @@ init content =
 
 setContent content note =
     Note content
+
+
+generator content =
+    Random.constant (Note content)
