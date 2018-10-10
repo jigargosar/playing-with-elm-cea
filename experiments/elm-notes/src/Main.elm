@@ -90,7 +90,7 @@ type Msg
     | EditMsg EditMsg
     | SetNoteCollection NoteCollection
     | AddNote NoteContent Millis
-    | SetLastFocusedDomId String
+    | PushLastFocusedDomId String
 
 
 addCmd cmd =
@@ -107,8 +107,17 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        SetLastFocusedDomId domId ->
-            ( { model | lastFocusedDomId = domId }, Cmd.none )
+        PushLastFocusedDomId domId ->
+            let
+                _ =
+                    Debug.log "SetLastFocusedDomId" domId
+            in
+                ( if String.isEmpty domId then
+                    model
+                  else
+                    { model | lastFocusedDomId = domId }
+                , Cmd.none
+                )
 
         SetNoteCollection nc ->
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
@@ -187,9 +196,14 @@ focusNoteListItem =
 ---- VIEW ----
 
 
+onFocusInTargetId : (String -> msg) -> Html.Attribute msg
+onFocusInTargetId msg =
+    Html.Events.on "focusin" (D.at [ "target", "id" ] D.string |> D.map msg)
+
+
 view : Model -> Html Msg
 view model =
-    div [ class "pv3 flex flex-column vh-100 vs3" ]
+    div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId PushLastFocusedDomId ]
         [ div [ class "center w-90" ]
             [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
             , viewAddNewNote model.editState
@@ -276,7 +290,7 @@ viewNoteList editState notes =
                     in
                         button
                             [ id nodeDomId
-                            , onFocus (SetLastFocusedDomId nodeDomId)
+                            , onFocus (PushLastFocusedDomId nodeDomId)
                             , onClick <| EditMsg <| OnEdit note
                             , class "input-reset tl bn bg--transparent db pv2 ph2 w-100 pointer "
                             ]
