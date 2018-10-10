@@ -153,7 +153,7 @@ update msg model =
                     )
 
                 ( _, OnCancel ) ->
-                    ( { model | editState = NotEditing }, Cmd.none )
+                    ( { model | editState = NotEditing }, focus model.lastFocusedDomId )
 
                 _ ->
                     ( model, Cmd.none )
