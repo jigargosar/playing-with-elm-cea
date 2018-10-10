@@ -21,9 +21,10 @@ import Note exposing (Note)
 ---- MODEL ----
 
 
-type Edit
+type EditState
     = Closed
     | New String
+    | Edit Note String
 
 
 type alias Flags =
@@ -31,7 +32,7 @@ type alias Flags =
 
 
 type alias Model =
-    { notes : List Note, edit : Edit }
+    { notes : List Note, edit : EditState }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -56,7 +57,7 @@ type EditMsg
 
 type Msg
     = NoOp
-    | Edit EditMsg
+    | EditNote EditMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -65,7 +66,7 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        Edit editMsg ->
+        EditNote editMsg ->
             case ( model.edit, editMsg ) of
                 ( _, OnNew ) ->
                     ( { model | edit = New "" }, Cmd.none )
@@ -93,7 +94,7 @@ view model =
         [ div [ class "vs3 " ]
             [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
             , div [] [ viewAddNewNote model.edit ]
-            , div [] [ viewNoteList model.notes ]
+            , div [] [ viewNoteList model.edit model.notes ]
             ]
         ]
 
@@ -111,23 +112,28 @@ viewAddNewNote edit =
                         [ class "w-100 h5"
                         , autofocus True
                         , value content
-                        , onInput (Edit << OnUpdate)
+                        , onInput (EditNote << OnUpdate)
                         ]
                         []
                     ]
-                , div [ class "flex hs3" ] [ bbtn (Edit OnOk) "Ok", bbtn (Edit OnCancel) "Cancel" ]
+                , div [ class "flex hs3" ] [ bbtn (EditNote OnOk) "Ok", bbtn (EditNote OnCancel) "Cancel" ]
                 ]
 
         _ ->
             div [ class "vs3" ]
-                [ bbtn (Edit OnNew) "New"
+                [ bbtn (EditNote OnNew) "New"
                 ]
 
 
-viewNoteList notes =
+viewNoteList edit notes =
     let
         viewNoteListItem note =
-            div [] [ text (Note.title note) ]
+            case edit of
+                Edit _ _ ->
+                    div [] [ text (Note.title note) ]
+
+                _ ->
+                    div [] [ text (Note.title note) ]
     in
         div [] (List.map viewNoteListItem notes)
 
