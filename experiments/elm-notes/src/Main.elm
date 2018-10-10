@@ -17,6 +17,7 @@ import Json.Decode as D
 import Json.Encode as E
 import Note exposing (Note)
 import NoteCollection exposing (NoteCollection)
+import Random
 
 
 ---- MODEL ----
@@ -36,17 +37,17 @@ type alias Model =
     { noteCollection : NoteCollection, editState : EditState }
 
 
-dummyNotes =
-    [ "Note 1", "Project Notes Brainstorming" ] |> List.map Note.init
-
-
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { noteCollection = NoteCollection.fromList dummyNotes
-      , editState = NotEditing
-      }
-    , Cmd.none
-    )
+    let
+        ( noteCollection, _ ) =
+            Random.step NoteCollection.generator (Random.initialSeed flags.now)
+    in
+        ( { noteCollection = noteCollection
+          , editState = NotEditing
+          }
+        , Cmd.none
+        )
 
 
 currentNoteList : Model -> List Note
@@ -91,7 +92,7 @@ update msg model =
                 ( EditingNew content, OnOk ) ->
                     ( { model
                         | editState = NotEditing
-                        , noteCollection = NoteCollection.add content model.noteCollection
+                        , noteCollection = NoteCollection.addNew content model.noteCollection
                       }
                     , Cmd.none
                     )

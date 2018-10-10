@@ -1,6 +1,7 @@
 module NoteCollection exposing (..)
 
 import Note exposing (Note)
+import Random
 
 
 type alias NoteCollection =
@@ -15,7 +16,7 @@ all =
     identity
 
 
-add content =
+addNew content =
     (::) (Note.init content)
 
 
@@ -28,3 +29,8 @@ updateNoteContent content note =
                 n
             )
         )
+
+
+generator : Random.Generator NoteCollection
+generator =
+    Random.constant []
