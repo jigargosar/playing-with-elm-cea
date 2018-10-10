@@ -64,9 +64,9 @@ encode nc =
     E.list Note.encode <| all nc
 
 
-decode : Decoder (List Note)
-decode =
-    D.succeed []
+decoder : Decoder (List Note)
+decoder =
+    D.list Note.decoder
 
 
 
