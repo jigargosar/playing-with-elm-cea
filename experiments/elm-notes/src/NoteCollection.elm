@@ -6,6 +6,8 @@ import Note exposing (Note)
 import Random
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
+import Result.Extra as Result
+import Result
 
 
 type alias NoteDict =
@@ -54,19 +56,27 @@ updateNoteContent content note nc =
         setDict newDict nc
 
 
-generator : Random.Generator NoteCollection
-generator =
-    Random.map (NoteCollection Dict.empty) Random.independentSeed
+generator : E.Value -> Random.Generator NoteCollection
+generator encodedNoteDict =
+    let
+        dict : NoteDict
+        dict =
+            D.decodeValue decoder encodedNoteDict
+                |> Result.unpack
+                    (Debug.log "Error" >> always (Dict.empty))
+                    (identity)
+    in
+        Random.map (NoteCollection dict) Random.independentSeed
 
 
 encode : NoteCollection -> E.Value
 encode nc =
-    E.list Note.encode <| all nc
+    E.dict identity Note.encode <| nc.dict
 
 
-decoder : Decoder (List Note)
+decoder : Decoder NoteDict
 decoder =
-    D.list Note.decoder
+    D.dict Note.decoder
 
 
 

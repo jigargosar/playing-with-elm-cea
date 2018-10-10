@@ -14,7 +14,8 @@
             "elm/json": "1.0.0",
             "elm/random": "1.0.0",
             "elm-community/basics-extra": "4.0.0",
-            "elm-community/random-extra": "3.0.0"
+            "elm-community/random-extra": "3.0.0",
+            "elm-community/result-extra": "2.2.1"
         },
         "indirect": {
             "elm/time": "1.0.0",

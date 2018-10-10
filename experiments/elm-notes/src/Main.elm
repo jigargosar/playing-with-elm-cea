@@ -34,7 +34,7 @@ type EditState
 
 
 type alias Flags =
-    { now : Int }
+    { now : Int, noteList : E.Value }
 
 
 type alias Model =
@@ -45,7 +45,7 @@ init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
         ( noteCollection, _ ) =
-            Random.step NoteCollection.generator (Random.initialSeed flags.now)
+            Random.step (NoteCollection.generator flags.noteList) (Random.initialSeed flags.now)
     in
         ( { noteCollection = noteCollection
           , editState = NotEditing
