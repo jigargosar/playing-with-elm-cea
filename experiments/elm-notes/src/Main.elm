@@ -50,6 +50,7 @@ init flags =
 
 type EditMsg
     = OnNew
+    | OnEdit Note
     | OnOk
     | OnCancel
     | OnUpdate String
@@ -71,17 +72,37 @@ update msg model =
                 ( _, OnNew ) ->
                     ( { model | edit = New "" }, Cmd.none )
 
-                ( New content, OnOk ) ->
-                    ( { model | edit = Closed, notes = Note.init content :: model.notes }, Cmd.none )
+                ( _, OnEdit note ) ->
+                    ( { model | edit = Edit note note.content }, Cmd.none )
 
                 ( New content, OnUpdate updatedContent ) ->
                     ( { model | edit = New updatedContent }, Cmd.none )
+
+                ( New content, OnOk ) ->
+                    ( { model | edit = Closed, notes = Note.init content :: model.notes }, Cmd.none )
+
+                ( Edit note content, OnUpdate updatedContent ) ->
+                    ( { model | edit = Edit note updatedContent }, Cmd.none )
+
+                ( Edit note content, OnOk ) ->
+                    ( { model | edit = Closed, notes = updateNoteContent content note model.notes }, Cmd.none )
 
                 ( _, OnCancel ) ->
                     ( { model | edit = Closed }, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
+
+
+updateNoteContent content note =
+    List.map
+        (\n ->
+            (if n == note then
+                Note.setContent content n
+             else
+                n
+            )
+        )
 
 
 
@@ -104,9 +125,9 @@ bbtn msg title =
 
 
 viewAddNewNote edit =
-    case edit of
-        New content ->
-            div [ class "vs3" ]
+    div [ class "vs3" ]
+        (case edit of
+            New content ->
                 [ div []
                     [ textarea
                         [ class "w-100 h5"
@@ -119,23 +140,47 @@ viewAddNewNote edit =
                 , div [ class "flex hs3" ] [ bbtn (EditNote OnOk) "Ok", bbtn (EditNote OnCancel) "Cancel" ]
                 ]
 
-        _ ->
-            div [ class "vs3" ]
+            _ ->
                 [ bbtn (EditNote OnNew) "New"
                 ]
+        )
+
+
+isEditingNote note edit =
+    case edit of
+        Edit editingNote content ->
+            note == editingNote
+
+        _ ->
+            False
 
 
 viewNoteList edit notes =
     let
         viewNoteListItem note =
-            case edit of
-                Edit _ _ ->
-                    div [] [ text (Note.title note) ]
+            div [ class "vs3" ]
+                (case ( edit, isEditingNote note edit ) of
+                    ( Edit eNote content, True ) ->
+                        [ div []
+                            [ textarea
+                                [ class "w-100 h5"
+                                , autofocus True
+                                , value content
+                                , onInput (EditNote << OnUpdate)
+                                ]
+                                []
+                            ]
+                        , div [ class "flex hs3" ]
+                            [ bbtn (EditNote OnOk) "Ok"
+                            , bbtn (EditNote OnCancel) "Cancel"
+                            ]
+                        ]
 
-                _ ->
-                    div [] [ text (Note.title note) ]
+                    _ ->
+                        [ div [ onClick << EditNote << OnEdit <| note ] [ text (Note.title note) ] ]
+                )
     in
-        div [] (List.map viewNoteListItem notes)
+        div [ class "vs3" ] (List.map viewNoteListItem notes)
 
 
 

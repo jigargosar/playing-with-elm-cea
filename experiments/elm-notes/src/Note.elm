@@ -11,3 +11,7 @@ title =
 
 init content =
     Note content
+
+
+setContent content note =
+    Note content
