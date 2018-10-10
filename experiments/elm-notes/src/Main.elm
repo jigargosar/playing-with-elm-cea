@@ -65,19 +65,27 @@ currentNoteList =
 ---- UPDATE ----
 
 
+type alias Millis =
+    Int
+
+
+type alias NoteContent =
+    String
+
+
 type EditMsg
     = OnNew
     | OnEdit Note
     | OnOk
     | OnCancel
-    | OnUpdate String
+    | OnUpdate NoteContent
 
 
 type Msg
     = NoOp
     | EditMsg EditMsg
     | SetNoteCollection NoteCollection
-    | AddNew String Int
+    | AddNew NoteContent Millis
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
