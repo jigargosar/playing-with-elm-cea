@@ -16,6 +16,7 @@ import Html.Attributes as HA
 import Json.Decode as D
 import Json.Encode as E
 import Note exposing (Note)
+import NoteCollection exposing (NoteCollection)
 
 
 ---- MODEL ----
@@ -32,12 +33,16 @@ type alias Flags =
 
 
 type alias Model =
-    { notes : List Note, editState : EditState }
+    { notes : NoteCollection, editState : EditState }
+
+
+dummyNotes =
+    [ "Note 1", "Project Notes Brainstorming" ] |> List.map Note.init
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { notes = [ "Note 1", "Project Notes Brainstorming" ] |> List.map Note.init
+    ( { notes = NoteCollection.fromList dummyNotes
       , editState = NotEditing
       }
     , Cmd.none
@@ -45,7 +50,7 @@ init flags =
 
 
 currentNoteList =
-    .notes
+    .notes >> NoteCollection.all
 
 
 
@@ -83,30 +88,29 @@ update msg model =
                     ( { model | editState = EditingNew updatedContent }, Cmd.none )
 
                 ( EditingNew content, OnOk ) ->
-                    ( { model | editState = NotEditing, notes = Note.init content :: model.notes }, Cmd.none )
+                    ( { model
+                        | editState = NotEditing
+                        , notes = NoteCollection.add (Note.init content) model.notes
+                      }
+                    , Cmd.none
+                    )
 
                 ( Editing note content, OnUpdate updatedContent ) ->
                     ( { model | editState = Editing note updatedContent }, Cmd.none )
 
                 ( Editing note content, OnOk ) ->
-                    ( { model | editState = NotEditing, notes = updateNoteContent content note model.notes }, Cmd.none )
+                    ( { model
+                        | editState = NotEditing
+                        , notes = NoteCollection.updateNoteContent content note model.notes
+                      }
+                    , Cmd.none
+                    )
 
                 ( _, OnCancel ) ->
                     ( { model | editState = NotEditing }, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
-
-
-updateNoteContent content note =
-    List.map
-        (\n ->
-            (if n == note then
-                Note.setContent content n
-             else
-                n
-            )
-        )
 
 
 
