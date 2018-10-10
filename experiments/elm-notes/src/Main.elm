@@ -22,9 +22,9 @@ import Note exposing (Note)
 
 
 type EditState
-    = Closed
-    | New String
-    | Edit Note String
+    = NotEditing
+    | EditingNew String
+    | Editing Note String
 
 
 type alias Flags =
@@ -38,7 +38,7 @@ type alias Model =
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( { notes = [ "Note 1", "Project Notes Brainstorming" ] |> List.map Note.init
-      , edit = Closed
+      , edit = NotEditing
       }
     , Cmd.none
     )
@@ -70,25 +70,25 @@ update msg model =
         EditNote editMsg ->
             case ( model.edit, editMsg ) of
                 ( _, OnNew ) ->
-                    ( { model | edit = New "" }, Cmd.none )
+                    ( { model | edit = EditingNew "" }, Cmd.none )
 
                 ( _, OnEdit note ) ->
-                    ( { model | edit = Edit note note.content }, Cmd.none )
+                    ( { model | edit = Editing note note.content }, Cmd.none )
 
-                ( New content, OnUpdate updatedContent ) ->
-                    ( { model | edit = New updatedContent }, Cmd.none )
+                ( EditingNew content, OnUpdate updatedContent ) ->
+                    ( { model | edit = EditingNew updatedContent }, Cmd.none )
 
-                ( New content, OnOk ) ->
-                    ( { model | edit = Closed, notes = Note.init content :: model.notes }, Cmd.none )
+                ( EditingNew content, OnOk ) ->
+                    ( { model | edit = NotEditing, notes = Note.init content :: model.notes }, Cmd.none )
 
-                ( Edit note content, OnUpdate updatedContent ) ->
-                    ( { model | edit = Edit note updatedContent }, Cmd.none )
+                ( Editing note content, OnUpdate updatedContent ) ->
+                    ( { model | edit = Editing note updatedContent }, Cmd.none )
 
-                ( Edit note content, OnOk ) ->
-                    ( { model | edit = Closed, notes = updateNoteContent content note model.notes }, Cmd.none )
+                ( Editing note content, OnOk ) ->
+                    ( { model | edit = NotEditing, notes = updateNoteContent content note model.notes }, Cmd.none )
 
                 ( _, OnCancel ) ->
-                    ( { model | edit = Closed }, Cmd.none )
+                    ( { model | edit = NotEditing }, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
@@ -131,7 +131,7 @@ bbtn msg title =
 viewAddNewNote edit =
     div [ class "vs3" ]
         (case edit of
-            New content ->
+            EditingNew content ->
                 [ div []
                     [ textarea
                         [ class "w-100 h5"
@@ -152,7 +152,7 @@ viewAddNewNote edit =
 
 isEditingNote note edit =
     case edit of
-        Edit editingNote content ->
+        Editing editingNote content ->
             note == editingNote
 
         _ ->
@@ -164,7 +164,7 @@ viewNoteList edit notes =
         viewNoteListItem note =
             div [ class "vs3" ]
                 (case ( edit, isEditingNote note edit ) of
-                    ( Edit eNote content, True ) ->
+                    ( Editing eNote content, True ) ->
                         [ div []
                             [ textarea
                                 [ class "w-100 h5"
