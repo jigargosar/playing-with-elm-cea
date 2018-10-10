@@ -116,7 +116,7 @@ view model =
             [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
             , viewAddNewNote model.edit
             ]
-        , div [ class "flex-auto vs3 overflow-scroll" ]
+        , div [ class "flex-auto overflow-scroll" ]
             [ div [ class "center w-90" ]
                 [ viewNoteList model.edit model.notes
                 ]
