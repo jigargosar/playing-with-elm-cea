@@ -56,12 +56,12 @@ updateNoteContent now content note nc =
         setDict newDict nc
 
 
-generator : E.Value -> Random.Generator NoteCollection
-generator encodedNoteDict =
+generator : Int -> E.Value -> Random.Generator NoteCollection
+generator now encodedNoteDict =
     let
         dict : NoteDict
         dict =
-            D.decodeValue decoder encodedNoteDict
+            D.decodeValue (decoder now) encodedNoteDict
                 |> Result.unpack
                     (Debug.log "Error" >> always (Dict.empty))
                     (identity)
@@ -74,9 +74,9 @@ encode nc =
     E.dict identity Note.encode <| nc.dict
 
 
-decoder : Decoder NoteDict
+decoder : Int -> Decoder NoteDict
 decoder =
-    D.dict Note.decoder
+    D.dict << Note.decoder
 
 
 

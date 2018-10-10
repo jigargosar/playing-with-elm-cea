@@ -37,12 +37,21 @@ encode note =
         ]
 
 
-decoder : Decoder Note
-decoder =
+tsDecoder now =
+    D.int
+        |> D.map
+            (\ts ->
+                if ts == 0 then
+                    now
+                else
+                    ts
+            )
+
+
+decoder : Int -> Decoder Note
+decoder now =
     D.map4 Note
         (D.field "content" D.string)
-        --        (D.succeed 0)
-        --        (D.succeed 0)
-        (D.field "createdAt" D.int)
-        (D.field "modifiedAt" D.int)
+        (D.field "createdAt" (tsDecoder now))
+        (D.field "modifiedAt" (tsDecoder now))
         (D.field "id" D.string)

@@ -47,7 +47,7 @@ init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
         ( noteCollection, _ ) =
-            Random.step (NoteCollection.generator flags.noteList) (Random.initialSeed flags.now)
+            Random.step (NoteCollection.generator flags.now flags.noteList) (Random.initialSeed flags.now)
     in
         ( { noteCollection = noteCollection
           , editState = NotEditing
