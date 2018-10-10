@@ -12,3 +12,11 @@ const app = Elm.Main.init({
 
 registerServiceWorker()
 
+subscribe(
+  'persistNoteCollection',
+  nc => localStorage.setItem('noteCollection', JSON.stringify(nc)),
+  app)
+
+function subscribe(port, fn, app) {
+  app.ports[port].subscribe(fn)
+}
