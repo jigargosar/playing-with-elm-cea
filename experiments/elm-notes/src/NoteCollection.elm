@@ -61,4 +61,4 @@ generator =
 
 encode : NoteCollection -> E.Value
 encode nc =
-    E.object []
+    E.list Note.encode <| all nc
