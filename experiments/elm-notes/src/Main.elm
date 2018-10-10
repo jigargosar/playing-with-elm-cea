@@ -14,13 +14,10 @@ import Html.Attributes as H
 import Html.Attributes as HA
 import Json.Decode as D
 import Json.Encode as E
+import Note exposing (Note)
 
 
 ---- MODEL ----
-
-
-type alias Note =
-    String
 
 
 type alias Flags =
@@ -33,7 +30,7 @@ type alias Model =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { notes = [ "asd", "asdfasf" ]
+    ( { notes = [ "Note 1", "Project Notes Brainstorming" ] |> List.map Note.init
       }
     , Cmd.none
     )
@@ -63,7 +60,7 @@ view model =
     div [ class "flex flex-column items-center pa2" ]
         [ div [ class "flex flex-column vs3" ]
             [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
-            , div [ class "flex1 overflow-scroll" ] [ viewNoteList model.notes ]
+            , div [] [ viewNoteList model.notes ]
             ]
         ]
 
@@ -71,9 +68,9 @@ view model =
 viewNoteList notes =
     let
         viewNoteListItem note =
-            div [] [ text note ]
+            div [] [ text (Note.title note) ]
     in
-        div [ class "" ] (List.map viewNoteListItem notes)
+        div [] (List.map viewNoteListItem notes)
 
 
 
