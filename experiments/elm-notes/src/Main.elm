@@ -2,14 +2,14 @@ module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, div, h1, img, text, textarea)
-import Html.Attributes exposing (class, src)
+import Html.Attributes exposing (class, src, value)
 import Browser as B
 import Browser.Events as B
 import Browser.Events as BE
 import Browser.Dom as B
 import Browser.Dom as BD
 import Html as H exposing (Html)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 import Html.Lazy as H
 import Html.Attributes as H
 import Html.Attributes as HA
@@ -51,6 +51,7 @@ type EditMsg
     = OnNew
     | OnOk
     | OnCancel
+    | OnUpdate String
 
 
 type Msg
@@ -72,6 +73,9 @@ update msg model =
                 ( New content, OnOk ) ->
                     ( { model | edit = Closed, notes = Note.init content :: model.notes }, Cmd.none )
 
+                ( New content, OnUpdate updatedContent ) ->
+                    ( { model | edit = New updatedContent }, Cmd.none )
+
                 ( _, OnCancel ) ->
                     ( { model | edit = Closed }, Cmd.none )
 
@@ -88,23 +92,28 @@ view model =
     div [ class "pa2 center measure" ]
         [ div [ class "vs3 " ]
             [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
-            , div [] [ viewAddNewNote ]
+            , div [] [ viewAddNewNote model.edit ]
             , div [] [ viewNoteList model.notes ]
             ]
         ]
 
 
 bbtn msg title =
-    button [ onClick msg ] [ text title ]
+    button [ class "ttu", onClick msg ] [ text title ]
 
 
-viewAddNewNote =
-    div [ class "vs3" ]
-        [ bbtn (Edit OnNew) "New"
-        , div [] [ textarea [] [] ]
-        , bbtn (Edit OnOk) "ok"
-        , bbtn (Edit OnCancel) "cancel"
-        ]
+viewAddNewNote edit =
+    case edit of
+        New content ->
+            div [ class "vs3" ]
+                [ div [] [ textarea [ class "w-100 h5", value content, onInput (Edit << OnUpdate) ] [] ]
+                , div [ class "flex hs3" ] [ bbtn (Edit OnOk) "Ok", bbtn (Edit OnCancel) "Cancel" ]
+                ]
+
+        _ ->
+            div [ class "vs3" ]
+                [ bbtn (Edit OnNew) "New"
+                ]
 
 
 viewNoteList notes =
