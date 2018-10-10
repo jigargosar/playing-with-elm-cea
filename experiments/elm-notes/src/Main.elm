@@ -32,16 +32,20 @@ type alias Flags =
 
 
 type alias Model =
-    { notes : List Note, edit : EditState }
+    { notes : List Note, editState : EditState }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( { notes = [ "Note 1", "Project Notes Brainstorming" ] |> List.map Note.init
-      , edit = NotEditing
+      , editState = NotEditing
       }
     , Cmd.none
     )
+
+
+getNoteList =
+    .notes
 
 
 
@@ -68,27 +72,27 @@ update msg model =
             ( model, Cmd.none )
 
         EditMsg editMsg ->
-            case ( model.edit, editMsg ) of
+            case ( model.editState, editMsg ) of
                 ( _, OnNew ) ->
-                    ( { model | edit = EditingNew "" }, Cmd.none )
+                    ( { model | editState = EditingNew "" }, Cmd.none )
 
                 ( _, OnEdit note ) ->
-                    ( { model | edit = Editing note note.content }, Cmd.none )
+                    ( { model | editState = Editing note note.content }, Cmd.none )
 
                 ( EditingNew content, OnUpdate updatedContent ) ->
-                    ( { model | edit = EditingNew updatedContent }, Cmd.none )
+                    ( { model | editState = EditingNew updatedContent }, Cmd.none )
 
                 ( EditingNew content, OnOk ) ->
-                    ( { model | edit = NotEditing, notes = Note.init content :: model.notes }, Cmd.none )
+                    ( { model | editState = NotEditing, notes = Note.init content :: model.notes }, Cmd.none )
 
                 ( Editing note content, OnUpdate updatedContent ) ->
-                    ( { model | edit = Editing note updatedContent }, Cmd.none )
+                    ( { model | editState = Editing note updatedContent }, Cmd.none )
 
                 ( Editing note content, OnOk ) ->
-                    ( { model | edit = NotEditing, notes = updateNoteContent content note model.notes }, Cmd.none )
+                    ( { model | editState = NotEditing, notes = updateNoteContent content note model.notes }, Cmd.none )
 
                 ( _, OnCancel ) ->
-                    ( { model | edit = NotEditing }, Cmd.none )
+                    ( { model | editState = NotEditing }, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
@@ -114,11 +118,11 @@ view model =
     div [ class "pv3 flex flex-column vh-100 vs3" ]
         [ div [ class "center w-90" ]
             [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
-            , viewAddNewNote model.edit
+            , viewAddNewNote model.editState
             ]
         , div [ class "flex-auto overflow-scroll" ]
             [ div [ class "center w-90" ]
-                [ viewNoteList model.edit model.notes
+                [ viewNoteList model.editState model.notes
                 ]
             ]
         ]
@@ -128,9 +132,9 @@ bbtn msg title =
     button [ class "ttu", onClick msg ] [ text title ]
 
 
-viewAddNewNote edit =
+viewAddNewNote editState =
     div [ class "vs3" ]
-        (case edit of
+        (case editState of
             EditingNew content ->
                 [ div []
                     [ textarea
@@ -154,8 +158,8 @@ viewAddNewNote edit =
         |> Html.map EditMsg
 
 
-isEditingNote note edit =
-    case edit of
+isEditingNote note editState =
+    case editState of
         Editing editingNote content ->
             note == editingNote
 
@@ -163,11 +167,11 @@ isEditingNote note edit =
             False
 
 
-viewNoteList edit notes =
+viewNoteList editState notes =
     let
         viewNoteListItem note =
             div [ class "vs3" ]
-                (case ( edit, isEditingNote note edit ) of
+                (case ( editState, isEditingNote note editState ) of
                     ( Editing eNote content, True ) ->
                         [ div []
                             [ textarea
