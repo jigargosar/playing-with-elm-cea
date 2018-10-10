@@ -49,7 +49,7 @@ updateNoteContent : String -> Note -> F NoteCollection
 updateNoteContent content note nc =
     let
         newDict =
-            Dict.update note.id (Maybe.map (Note.setContent content)) nc.dict
+            Dict.update note.id (Maybe.map <| Note.setContent content) nc.dict
     in
         setDict newDict nc
 
