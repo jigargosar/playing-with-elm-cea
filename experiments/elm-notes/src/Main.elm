@@ -2,7 +2,7 @@ port module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, div, h1, img, text, textarea)
-import Html.Attributes exposing (attribute, autofocus, class, src, value)
+import Html.Attributes exposing (attribute, autofocus, class, src, tabindex, value)
 import Browser as B
 import Browser.Events as B
 import Browser.Events as BE
@@ -205,7 +205,7 @@ viewNoteList editState notes =
                     ( Editing eNote content, True ) ->
                         [ div []
                             [ textarea
-                                [ class "w-100 h5"
+                                [ class "w-100 h4"
                                 , autofocus True
                                 , value content
                                 , onInput OnUpdate
@@ -219,16 +219,16 @@ viewNoteList editState notes =
                         ]
 
                     _ ->
-                        [ div
-                            [ attribute "role" "button"
-                            , onClick <| OnEdit note
+                        [ button
+                            [ onClick <| OnEdit note
+                            , class "input-reset bn bg--transparent db pa0 w-100"
                             ]
                             [ text <| Note.title note ]
                         ]
                 )
                 |> Html.map EditMsg
     in
-        div [ class "vs3" ] <| List.map viewNoteListItem notes
+        div [ class "vs3 pv1" ] <| List.map viewNoteListItem notes
 
 
 
