@@ -44,7 +44,7 @@ init flags =
     )
 
 
-getNoteList =
+currentNoteList =
     .notes
 
 
@@ -122,7 +122,7 @@ view model =
             ]
         , div [ class "flex-auto overflow-scroll" ]
             [ div [ class "center w-90" ]
-                [ viewNoteList model.editState model.notes
+                [ viewNoteList model.editState (currentNoteList model)
                 ]
             ]
         ]
