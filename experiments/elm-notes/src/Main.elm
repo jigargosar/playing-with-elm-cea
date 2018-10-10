@@ -33,7 +33,7 @@ type alias Flags =
 
 
 type alias Model =
-    { notes : NoteCollection, editState : EditState }
+    { noteCollection : NoteCollection, editState : EditState }
 
 
 dummyNotes =
@@ -42,15 +42,16 @@ dummyNotes =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { notes = NoteCollection.fromList dummyNotes
+    ( { noteCollection = NoteCollection.fromList dummyNotes
       , editState = NotEditing
       }
     , Cmd.none
     )
 
 
+currentNoteList : Model -> List Note
 currentNoteList =
-    .notes >> NoteCollection.all
+    .noteCollection >> NoteCollection.all
 
 
 
@@ -90,7 +91,7 @@ update msg model =
                 ( EditingNew content, OnOk ) ->
                     ( { model
                         | editState = NotEditing
-                        , notes = NoteCollection.add (Note.init content) model.notes
+                        , noteCollection = NoteCollection.add (Note.init content) model.noteCollection
                       }
                     , Cmd.none
                     )
@@ -101,7 +102,7 @@ update msg model =
                 ( Editing note content, OnOk ) ->
                     ( { model
                         | editState = NotEditing
-                        , notes = NoteCollection.updateNoteContent content note model.notes
+                        , noteCollection = NoteCollection.updateNoteContent content note model.noteCollection
                       }
                     , Cmd.none
                     )
