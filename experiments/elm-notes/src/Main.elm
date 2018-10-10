@@ -21,17 +21,23 @@ import Note exposing (Note)
 ---- MODEL ----
 
 
+type Edit
+    = Closed
+    | New String
+
+
 type alias Flags =
     { now : Int }
 
 
 type alias Model =
-    { notes : List Note }
+    { notes : List Note, edit : Edit }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( { notes = [ "Note 1", "Project Notes Brainstorming" ] |> List.map Note.init
+      , edit = Closed
       }
     , Cmd.none
     )
@@ -41,9 +47,13 @@ init flags =
 ---- UPDATE ----
 
 
+type EditMsg
+    = OnNew
+
+
 type Msg
     = NoOp
-    | NewNote
+    | Edit EditMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -52,8 +62,10 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        NewNote ->
-            ( model, Cmd.none )
+        Edit editMsg ->
+            case ( model.edit, editMsg ) of
+                _ ->
+                    ( model, Cmd.none )
 
 
 
@@ -72,7 +84,7 @@ view model =
 
 
 viewAddNote =
-    button [ onClick NewNote ] [ text "New" ]
+    button [ onClick (Edit OnNew) ] [ text "New" ]
 
 
 viewNoteList notes =
