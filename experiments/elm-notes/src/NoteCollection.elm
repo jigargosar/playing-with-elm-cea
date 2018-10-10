@@ -18,8 +18,13 @@ type alias NoteCollection =
     { dict : NoteDict, seed : Random.Seed }
 
 
-all =
-    .dict >> Dict.values
+queryAll =
+    --    .dict >> Dict.values
+    queryAllSortByModifiedAt
+
+
+queryAllSortByModifiedAt =
+    .dict >> Dict.values >> List.sortBy (.modifiedAt >> (*) -1)
 
 
 setDict : NoteDict -> F NoteCollection

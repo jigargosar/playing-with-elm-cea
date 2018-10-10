@@ -58,7 +58,7 @@ init flags =
 
 currentNoteList : Model -> List Note
 currentNoteList =
-    .noteCollection >> NoteCollection.all
+    .noteCollection >> NoteCollection.queryAll
 
 
 
