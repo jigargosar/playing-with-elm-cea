@@ -15,8 +15,8 @@ all =
     identity
 
 
-add =
-    (::)
+add content =
+    (::) (Note.init content)
 
 
 updateNoteContent content note =

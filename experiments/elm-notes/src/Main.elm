@@ -91,7 +91,7 @@ update msg model =
                 ( EditingNew content, OnOk ) ->
                     ( { model
                         | editState = NotEditing
-                        , noteCollection = NoteCollection.add (Note.init content) model.noteCollection
+                        , noteCollection = NoteCollection.add content model.noteCollection
                       }
                     , Cmd.none
                     )
