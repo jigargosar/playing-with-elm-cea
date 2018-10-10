@@ -2,7 +2,8 @@ module Note exposing (..)
 
 import Id
 import Random
-import Json.Decode as D
+import Json.Decode as D exposing (Decoder)
+import Json.Decode.Pipeline as D
 import Json.Encode as E
 
 
@@ -32,3 +33,10 @@ encode note =
         [ ( "id", E.string note.id )
         , ( "content", E.string note.content )
         ]
+
+
+decoder : Decoder Note
+decoder =
+    D.map2 Note
+        (D.field "content" D.string)
+        (D.field "id" D.string)
