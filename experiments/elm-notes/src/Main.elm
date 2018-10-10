@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, div, h1, img, text, textarea)
-import Html.Attributes exposing (class, src, value)
+import Html.Attributes exposing (autofocus, class, src, value)
 import Browser as B
 import Browser.Events as B
 import Browser.Events as BE
@@ -106,7 +106,15 @@ viewAddNewNote edit =
     case edit of
         New content ->
             div [ class "vs3" ]
-                [ div [] [ textarea [ class "w-100 h5", value content, onInput (Edit << OnUpdate) ] [] ]
+                [ div []
+                    [ textarea
+                        [ class "w-100 h5"
+                        , autofocus True
+                        , value content
+                        , onInput (Edit << OnUpdate)
+                        ]
+                        []
+                    ]
                 , div [ class "flex hs3" ] [ bbtn (Edit OnOk) "Ok", bbtn (Edit OnCancel) "Cancel" ]
                 ]
 
