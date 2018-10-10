@@ -2,7 +2,7 @@ port module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, div, h1, img, text, textarea)
-import Html.Attributes exposing (attribute, autofocus, class, src, tabindex, value)
+import Html.Attributes exposing (attribute, autofocus, class, id, src, tabindex, value)
 import Browser as B
 import Browser.Events as B
 import Browser.Events as BE
@@ -99,10 +99,10 @@ update msg model =
         EditMsg editMsg ->
             case ( model.editState, editMsg ) of
                 ( _, OnNew ) ->
-                    ( { model | editState = EditingNew "" }, Cmd.none )
+                    ( { model | editState = EditingNew "" }, focusEditor )
 
                 ( _, OnEdit note ) ->
-                    ( { model | editState = Editing note note.content }, Cmd.none )
+                    ( { model | editState = Editing note note.content }, focusEditor )
 
                 ( EditingNew content, OnUpdate updatedContent ) ->
                     ( { model | editState = EditingNew updatedContent }, Cmd.none )
@@ -139,6 +139,22 @@ nowMillis msg =
     Task.perform (Time.posixToMillis >> msg) Time.now
 
 
+focus id =
+    Task.attempt
+        (\r ->
+            let
+                _ =
+                    r |> Result.mapError (Debug.log "Error")
+            in
+                NoOp
+        )
+        (B.focus id)
+
+
+focusEditor =
+    focus "editor"
+
+
 
 ---- VIEW ----
 
@@ -168,7 +184,8 @@ viewAddNewNote editState =
             EditingNew content ->
                 [ div []
                     [ textarea
-                        [ class "w-100 h5"
+                        [ id "editor"
+                        , class "w-100 h5"
                         , autofocus True
                         , value content
                         , onInput OnUpdate
@@ -205,7 +222,8 @@ viewNoteList editState notes =
                     div [ class "vs2 pv2" ]
                         [ div []
                             [ textarea
-                                [ class "w-100 h4"
+                                [ id "editor"
+                                , class "w-100 h4"
                                 , autofocus True
                                 , value content
                                 , onInput OnUpdate
