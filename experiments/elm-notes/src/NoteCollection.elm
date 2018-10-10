@@ -31,8 +31,8 @@ setSeed seed nc =
     { nc | seed = seed }
 
 
-addNew : String -> F NoteCollection
-addNew content nc =
+addNew : Int -> String -> F NoteCollection
+addNew now content nc =
     let
         ( note, newSeed ) =
             Random.step (Note.generator content) nc.seed
@@ -47,8 +47,8 @@ type alias F a =
     a -> a
 
 
-updateNoteContent : String -> Note -> F NoteCollection
-updateNoteContent content note nc =
+updateNoteContent : Int -> String -> Note -> F NoteCollection
+updateNoteContent now content note nc =
     let
         newDict =
             Dict.update note.id (Maybe.map <| Note.setContent content) nc.dict

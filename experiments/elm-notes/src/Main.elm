@@ -111,7 +111,7 @@ update msg model =
                     ( { model | editState = NotEditing }
                     , nowMillis
                         (\now ->
-                            NoteCollection.addNew content model.noteCollection
+                            NoteCollection.addNew now content model.noteCollection
                                 |> SetNoteCollection
                         )
                     )
@@ -123,7 +123,7 @@ update msg model =
                     ( { model | editState = NotEditing }
                     , nowMillis
                         (\now ->
-                            NoteCollection.updateNoteContent content note model.noteCollection
+                            NoteCollection.updateNoteContent now content note model.noteCollection
                                 |> SetNoteCollection
                         )
                     )
