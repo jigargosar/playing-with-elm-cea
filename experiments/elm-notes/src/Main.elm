@@ -93,12 +93,21 @@ type Msg
     | SetLastFocusedNoteListItemDomId String
 
 
+type alias UpdateReturn msg model =
+    ( model, Cmd msg )
+
+
+type alias F a =
+    a -> a
+
+
+addCmd : Cmd msg -> F (UpdateReturn msg model)
 addCmd cmd =
-    let
-        batch2 oldCmd =
-            Cmd.batch [ oldCmd, cmd ]
-    in
-        Tuple.mapSecond batch2
+    addEffect (always cmd)
+
+
+addEffect fn ( model, oldCmd ) =
+    ( model, Cmd.batch [ oldCmd, fn model ] )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -145,6 +154,7 @@ update msg model =
                     ( { model | editState = NotEditing }
                     , nowMillis <| AddNote content
                     )
+                        |> addEffect restoreNoteListItemFocus
 
                 ( Editing note content, OnUpdate updatedContent ) ->
                     ( { model | editState = Editing note updatedContent }, Cmd.none )
@@ -162,7 +172,7 @@ update msg model =
                     )
 
                 ( _, OnCancel ) ->
-                    ( { model | editState = NotEditing }, focus model.lastFocusedNoteListItemDomId )
+                    ( { model | editState = NotEditing }, restoreNoteListItemFocus model )
 
                 _ ->
                     ( model, Cmd.none )
@@ -190,6 +200,10 @@ focusEditor =
 
 focusNoteListItem =
     noteListItemDomId >> focus
+
+
+restoreNoteListItemFocus =
+    .lastFocusedNoteListItemDomId >> focus
 
 
 
