@@ -181,10 +181,10 @@ viewNoteList edit notes =
                         ]
 
                     _ ->
-                        [ div [ onClick << EditNote << OnEdit <| note ] [ text (Note.title note) ] ]
+                        [ div [ onClick <| EditNote <| OnEdit <| note ] [ text (Note.title note) ] ]
                 )
     in
-        div [ class "vs3" ] (List.map viewNoteListItem notes)
+        div [ class "vs3" ] <| List.map viewNoteListItem <| notes
 
 
 
