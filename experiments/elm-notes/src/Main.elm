@@ -9,6 +9,7 @@ import Browser.Events as BE
 import Browser.Dom as B
 import Browser.Dom as BD
 import Html as H exposing (Html)
+import Html.Events exposing (onClick)
 import Html.Lazy as H
 import Html.Attributes as H
 import Html.Attributes as HA
@@ -42,12 +43,16 @@ init flags =
 
 type Msg
     = NoOp
+    | NewNote
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
+            ( model, Cmd.none )
+
+        NewNote ->
             ( model, Cmd.none )
 
 
@@ -67,7 +72,7 @@ view model =
 
 
 viewAddNote =
-    button [] [ text "New" ]
+    button [ onClick NewNote ] [ text "New" ]
 
 
 viewNoteList notes =
