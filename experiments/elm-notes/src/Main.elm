@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, button, div, h1, img, text)
+import Html exposing (Html, button, div, h1, img, text, textarea)
 import Html.Attributes exposing (class, src)
 import Browser as B
 import Browser.Events as B
@@ -49,6 +49,8 @@ init flags =
 
 type EditMsg
     = OnNew
+    | OnOk
+    | OnCancel
 
 
 type Msg
@@ -64,6 +66,15 @@ update msg model =
 
         Edit editMsg ->
             case ( model.edit, editMsg ) of
+                ( _, OnNew ) ->
+                    ( { model | edit = New "" }, Cmd.none )
+
+                ( New content, OnOk ) ->
+                    ( { model | edit = Closed, notes = Note.init content :: model.notes }, Cmd.none )
+
+                ( _, OnCancel ) ->
+                    ( { model | edit = Closed }, Cmd.none )
+
                 _ ->
                     ( model, Cmd.none )
 
@@ -75,16 +86,25 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "pa2 center measure" ]
-        [ div [ class "flex flex-column vs3 " ]
+        [ div [ class "vs3 " ]
             [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
-            , div [] [ viewAddNote ]
+            , div [] [ viewAddNewNote ]
             , div [] [ viewNoteList model.notes ]
             ]
         ]
 
 
-viewAddNote =
-    button [ onClick (Edit OnNew) ] [ text "New" ]
+bbtn msg title =
+    button [ onClick msg ] [ text title ]
+
+
+viewAddNewNote =
+    div [ class "vs3" ]
+        [ bbtn (Edit OnNew) "New"
+        , div [] [ textarea [] [] ]
+        , bbtn (Edit OnOk) "ok"
+        , bbtn (Edit OnCancel) "cancel"
+        ]
 
 
 viewNoteList notes =
