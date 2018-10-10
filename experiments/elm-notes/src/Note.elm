@@ -2,6 +2,8 @@ module Note exposing (..)
 
 import Id
 import Random
+import Json.Decode as D
+import Json.Encode as E
 
 
 type alias Note =
@@ -23,3 +25,10 @@ setContent content note =
 generator : String -> Random.Generator Note
 generator content =
     Random.map (Note content) Id.generator
+
+
+encode note =
+    E.object
+        [ ( "id", E.string note.id )
+        , ( "content", E.string note.content )
+        ]
