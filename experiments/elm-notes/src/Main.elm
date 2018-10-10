@@ -77,7 +77,7 @@ type Msg
     = NoOp
     | EditMsg EditMsg
     | SetNoteCollection NoteCollection
-    | AddNew String Time.Posix
+    | AddNew String Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -89,7 +89,7 @@ update msg model =
         SetNoteCollection nc ->
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
 
-        AddNew content posix ->
+        AddNew content now ->
             update (SetNoteCollection <| NoteCollection.addNew content model.noteCollection) model
 
         EditMsg editMsg ->
@@ -104,7 +104,7 @@ update msg model =
                     ( { model | editState = EditingNew updatedContent }, Cmd.none )
 
                 ( EditingNew content, OnOk ) ->
-                    ( { model | editState = NotEditing }, Task.perform (AddNew content) Time.now )
+                    ( { model | editState = NotEditing }, nowMillis (AddNew content) )
 
                 ( Editing note content, OnUpdate updatedContent ) ->
                     ( { model | editState = Editing note updatedContent }, Cmd.none )
@@ -118,6 +118,10 @@ update msg model =
 
                 _ ->
                     ( model, Cmd.none )
+
+
+nowMillis msg =
+    Task.perform (Time.posixToMillis >> msg) Time.now
 
 
 
