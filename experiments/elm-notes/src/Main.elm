@@ -9,7 +9,7 @@ import Browser.Events as BE
 import Browser.Dom as B
 import Browser.Dom as BD
 import Html as H exposing (Html)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onClick, onFocus, onInput)
 import Html.Lazy as H
 import Html.Attributes as H
 import Html.Attributes as HA
@@ -40,7 +40,10 @@ type alias Flags =
 
 
 type alias Model =
-    { noteCollection : NoteCollection, editState : EditState }
+    { noteCollection : NoteCollection
+    , editState : EditState
+    , lastFocusedDomId : String
+    }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -51,6 +54,7 @@ init flags =
     in
         ( { noteCollection = noteCollection
           , editState = NotEditing
+          , lastFocusedDomId = ""
           }
         , Cmd.none
         )
@@ -86,6 +90,7 @@ type Msg
     | EditMsg EditMsg
     | SetNoteCollection NoteCollection
     | AddNote NoteContent Millis
+    | SetLastFocusedDomId String
 
 
 addCmd cmd =
@@ -101,6 +106,9 @@ update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
+
+        SetLastFocusedDomId domId ->
+            ( { model | lastFocusedDomId = domId }, Cmd.none )
 
         SetNoteCollection nc ->
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
@@ -259,16 +267,21 @@ viewNoteList editState notes =
                             , bbtn OnCancel "Cancel"
                             ]
                         ]
+                        |> Html.map EditMsg
 
                 _ ->
-                    button
-                        [ id <| noteListItemDomId note
-                        , onClick <| OnEdit note
-                        , class "input-reset tl bn bg--transparent db pv2 ph2 w-100 pointer "
-                        ]
-                        [ text <| Note.title note ]
+                    let
+                        nodeDomId =
+                            noteListItemDomId note
+                    in
+                        button
+                            [ id nodeDomId
+                            , onFocus (SetLastFocusedDomId nodeDomId)
+                            , onClick <| EditMsg <| OnEdit note
+                            , class "input-reset tl bn bg--transparent db pv2 ph2 w-100 pointer "
+                            ]
+                            [ text <| Note.title note ]
             )
-                |> Html.map EditMsg
     in
         div [ class "pv1" ] <| List.map viewNoteListItem notes
 
