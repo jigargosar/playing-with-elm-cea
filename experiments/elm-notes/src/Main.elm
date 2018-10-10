@@ -94,23 +94,15 @@ update msg model =
                     ( { model | editState = EditingNew updatedContent }, Cmd.none )
 
                 ( EditingNew content, OnOk ) ->
-                    ( { model
-                        | editState = NotEditing
-                        , noteCollection = NoteCollection.addNew content model.noteCollection
-                      }
-                    , Cmd.none
-                    )
+                    update (SetNoteCollection <| NoteCollection.addNew content model.noteCollection)
+                        { model | editState = NotEditing }
 
                 ( Editing note content, OnUpdate updatedContent ) ->
                     ( { model | editState = Editing note updatedContent }, Cmd.none )
 
                 ( Editing note content, OnOk ) ->
-                    ( { model
-                        | editState = NotEditing
-                        , noteCollection = NoteCollection.updateNoteContent content note model.noteCollection
-                      }
-                    , Cmd.none
-                    )
+                    update (SetNoteCollection <| NoteCollection.updateNoteContent content note model.noteCollection)
+                        { model | editState = NotEditing }
 
                 ( _, OnCancel ) ->
                     ( { model | editState = NotEditing }, Cmd.none )
