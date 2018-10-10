@@ -58,7 +58,7 @@ type EditMsg
 
 type Msg
     = NoOp
-    | EditNote EditMsg
+    | EditMsg EditMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -67,7 +67,7 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        EditNote editMsg ->
+        EditMsg editMsg ->
             case ( model.edit, editMsg ) of
                 ( _, OnNew ) ->
                     ( { model | edit = EditingNew "" }, Cmd.none )
@@ -137,17 +137,21 @@ viewAddNewNote edit =
                         [ class "w-100 h5"
                         , autofocus True
                         , value content
-                        , onInput (EditNote << OnUpdate)
+                        , onInput OnUpdate
                         ]
                         []
                     ]
-                , div [ class "flex hs3" ] [ bbtn (EditNote OnOk) "Ok", bbtn (EditNote OnCancel) "Cancel" ]
+                , div [ class "flex hs3" ]
+                    [ bbtn OnOk "Ok"
+                    , bbtn OnCancel "Cancel"
+                    ]
                 ]
 
             _ ->
-                [ bbtn (EditNote OnNew) "New"
+                [ bbtn OnNew "New"
                 ]
         )
+        |> Html.map EditMsg
 
 
 isEditingNote note edit =
@@ -188,7 +192,7 @@ viewNoteList edit notes =
                             [ text <| Note.title note ]
                         ]
                 )
-                |> Html.map EditNote
+                |> Html.map EditMsg
     in
         div [ class "vs3" ] <| List.map viewNoteListItem notes
 
