@@ -11,9 +11,9 @@
     </option>
     <option name="inclusions">
       <set>
-        <option value="./*.js" />
-        <option value="./*.json" />
-        <option value="src" />
+        <option value="\.js" />
+        <option value="\.json" />
+        <option value="src/.*" />
       </set>
     </option>
   </component>

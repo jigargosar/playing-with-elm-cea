@@ -28,75 +28,74 @@ html, body, #root, [data-elm-hot=true] {
   margin-bottom: var(--rem1);
 }
 
-.vs1 > *:last-child{
-  margin-bottom:0;
+.vs1 > *:last-child {
+  margin-bottom: 0;
 }
 
 .vs2 > * {
   margin-bottom: var(--rem2);
 }
 
-.vs2 > *:last-child{
-  margin-bottom:0;
+.vs2 > *:last-child {
+  margin-bottom: 0;
 }
 
 .vs3 > * {
   margin-bottom: var(--rem3);
 }
 
-.vs3 > *:last-child{
-  margin-bottom:0;
+.vs3 > *:last-child {
+  margin-bottom: 0;
 }
 
 .vs4 > * {
   margin-bottom: var(--rem4);
 }
 
-.vs4 > *:last-child{
-  margin-bottom:0;
+.vs4 > *:last-child {
+  margin-bottom: 0;
 }
-
 
 .hs1 > * {
   margin-right: var(--rem1);
 }
 
-.hs1 > *:last-child{
-  margin-right:0;
+.hs1 > *:last-child {
+  margin-right: 0;
 }
 
 .hs2 > * {
   margin-right: var(--rem2);
 }
 
-.hs2 > *:last-child{
-  margin-right:0;
+.hs2 > *:last-child {
+  margin-right: 0;
 }
 
 .hs3 > * {
   margin-right: var(--rem3);
 }
 
-.hs3 > *:last-child{
-  margin-right:0;
+.hs3 > *:last-child {
+  margin-right: 0;
 }
 
 .hs4 > * {
   margin-right: var(--rem4);
 }
 
-.hs4 > *:last-child{
-  margin-right:0;
+.hs4 > *:last-child {
+  margin-right: 0;
 }
 
-.no-sel{
+.no-sel {
   user-select: none;
 }
 
-
-.pe-none{
+.pe-none {
   pointer-events: none;
 }
-.pe-bb{
+
+.pe-bb {
   pointer-events: bounding-box;
 }
