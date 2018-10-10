@@ -18,8 +18,21 @@ setList list nc =
     { nc | list = list }
 
 
+setSeed seed nc =
+    { nc | seed = seed }
+
+
 addNew content nc =
-    setList ((::) (Note.init content) nc.list) nc
+    let
+        ( note, newSeed ) =
+            Random.step (Note.generator content) nc.seed
+
+        newList =
+            note :: nc.list
+    in
+        nc
+            |> setList newList
+            |> setSeed newSeed
 
 
 updateNoteContent content note nc =
