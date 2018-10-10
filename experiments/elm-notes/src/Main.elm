@@ -73,7 +73,7 @@ subscriptions m =
 main : Program Flags Model Msg
 main =
     B.element
-        { view = H.lazy view
+        { view = view
         , init = init
         , update = update
         , subscriptions = subscriptions
