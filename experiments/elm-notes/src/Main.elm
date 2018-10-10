@@ -1,4 +1,4 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, div, h1, img, text, textarea)
@@ -18,6 +18,10 @@ import Json.Encode as E
 import Note exposing (Note)
 import NoteCollection exposing (NoteCollection)
 import Random
+
+
+port persistNoteCollection : E.Value -> Cmd msg
+
 
 
 ---- MODEL ----
@@ -80,7 +84,7 @@ update msg model =
             ( model, Cmd.none )
 
         SetNoteCollection nc ->
-            ( { model | noteCollection = nc }, Cmd.none )
+            ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
 
         EditMsg editMsg ->
             case ( model.editState, editMsg ) of
