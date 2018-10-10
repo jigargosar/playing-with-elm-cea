@@ -45,11 +45,16 @@ html, body, #root, [data-elm-hot=true] {
 }
 
 .vs3 > * {
-  margin-bottom: var(--rem3);
+  margin-bottom: calc(var(--rem3) / 2);
+  margin-top: calc(var(--rem3) / 2);
 }
 
 .vs3 > *:last-child {
   margin-bottom: 0;
+}
+
+.vs3 > *:first-child {
+  margin-top: 0;
 }
 
 .vs4 > * {
