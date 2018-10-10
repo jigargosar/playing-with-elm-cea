@@ -57,8 +57,8 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "flex flex-column items-center pa2" ]
-        [ div [ class "flex flex-column vs3" ]
+    div [ class "pa2 center measure" ]
+        [ div [ class "flex flex-column vs3 " ]
             [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
             , div [] [ viewNoteList model.notes ]
             ]
