@@ -200,9 +200,9 @@ isEditingNote note editState =
 viewNoteList editState notes =
     let
         viewNoteListItem note =
-            div [ class "vs3" ]
-                (case ( editState, isEditingNote note editState ) of
-                    ( Editing eNote content, True ) ->
+            (case ( editState, isEditingNote note editState ) of
+                ( Editing eNote content, True ) ->
+                    div [ class "vs2 pv2" ]
                         [ div []
                             [ textarea
                                 [ class "w-100 h4"
@@ -218,17 +218,16 @@ viewNoteList editState notes =
                             ]
                         ]
 
-                    _ ->
-                        [ button
-                            [ onClick <| OnEdit note
-                            , class "input-reset bn bg--transparent db pa0 w-100"
-                            ]
-                            [ text <| Note.title note ]
+                _ ->
+                    button
+                        [ onClick <| OnEdit note
+                        , class "input-reset tl bn bg--transparent db pv2 ph2 w-100 pointer "
                         ]
-                )
+                        [ text <| Note.title note ]
+            )
                 |> Html.map EditMsg
     in
-        div [ class "vs3 pv1" ] <| List.map viewNoteListItem notes
+        div [ class "pv1" ] <| List.map viewNoteListItem notes
 
 
 

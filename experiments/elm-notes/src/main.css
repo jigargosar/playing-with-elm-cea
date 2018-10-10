@@ -45,8 +45,9 @@ html, body, #root, [data-elm-hot=true] {
 }
 
 .vs3 > * {
-  margin-bottom: calc(var(--rem3) / 2);
-  margin-top: calc(var(--rem3) / 2);
+  /*margin-bottom: calc(var(--rem3) / 2);*/
+  /*margin-top: calc(var(--rem3) / 2);*/
+  margin-bottom: var(--rem3);
 }
 
 .vs3 > *:last-child {
