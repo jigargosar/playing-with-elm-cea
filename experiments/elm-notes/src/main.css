@@ -108,3 +108,8 @@ html, body, #root, [data-elm-hot=true] {
 .pe-bb {
   pointer-events: bounding-box;
 }
+
+[data-elm-hot] > div:nth-child(2) {
+  transform: translate(38%, 43%) scale(0.3, 0.4);
+  bottom: 0;
+}
