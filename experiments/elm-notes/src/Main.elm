@@ -42,7 +42,7 @@ type alias Flags =
 type alias Model =
     { noteCollection : NoteCollection
     , editState : EditState
-    , lastFocusedDomId : String
+    , lastFocusedNoteListItemDomId : String
     }
 
 
@@ -54,7 +54,7 @@ init flags =
     in
         ( { noteCollection = noteCollection
           , editState = NotEditing
-          , lastFocusedDomId = ""
+          , lastFocusedNoteListItemDomId = ""
           }
         , Cmd.none
         )
@@ -90,7 +90,7 @@ type Msg
     | EditMsg EditMsg
     | SetNoteCollection NoteCollection
     | AddNote NoteContent Millis
-    | PushLastFocusedDomId String
+    | SetLastFocusedNoteListItemDomId String
 
 
 addCmd cmd =
@@ -107,15 +107,15 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        PushLastFocusedDomId domId ->
+        SetLastFocusedNoteListItemDomId domId ->
             let
                 _ =
                     Debug.log "SetLastFocusedDomId" domId
             in
-                ( if String.isEmpty domId then
-                    model
+                ( if isNoteListItemDomId domId then
+                    { model | lastFocusedNoteListItemDomId = domId }
                   else
-                    { model | lastFocusedDomId = domId }
+                    model
                 , Cmd.none
                 )
 
@@ -162,7 +162,7 @@ update msg model =
                     )
 
                 ( _, OnCancel ) ->
-                    ( { model | editState = NotEditing }, focus model.lastFocusedDomId )
+                    ( { model | editState = NotEditing }, focus model.lastFocusedNoteListItemDomId )
 
                 _ ->
                     ( model, Cmd.none )
@@ -203,7 +203,7 @@ onFocusInTargetId msg =
 
 view : Model -> Html Msg
 view model =
-    div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId PushLastFocusedDomId ]
+    div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
         [ div [ class "center w-90" ]
             [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
             , viewAddNewNote model.editState
@@ -256,8 +256,16 @@ isEditingNote note editState =
             False
 
 
+noteListItemDomIdPrefix =
+    "note-li-"
+
+
 noteListItemDomId note =
-    "note-li-" ++ note.id
+    noteListItemDomIdPrefix ++ note.id
+
+
+isNoteListItemDomId =
+    String.startsWith noteListItemDomIdPrefix
 
 
 viewNoteList editState notes =
@@ -290,7 +298,7 @@ viewNoteList editState notes =
                     in
                         button
                             [ id nodeDomId
-                            , onFocus (PushLastFocusedDomId nodeDomId)
+                            , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
                             , onClick <| EditMsg <| OnEdit note
                             , class "input-reset tl bn bg--transparent db pv2 ph2 w-100 pointer "
                             ]
