@@ -142,6 +142,7 @@ update msg model =
 
         SetNotEditing ->
             ( { model | editState = NotEditing }, Cmd.none )
+                |> addEffect restoreNoteListItemFocus
 
         EditMsg editMsg ->
             case ( model.editState, editMsg ) of
@@ -155,11 +156,13 @@ update msg model =
                     ( { model | editState = EditingNew updatedContent }, Cmd.none )
 
                 ( EditingNew content, OnOk ) ->
-                    ( { model | editState = NotEditing }
-                    , nowMillis <| AddNote content
-                    )
-                        |> addEffect restoreNoteListItemFocus
+                    update SetNotEditing model
+                        |> addCmd (nowMillis <| AddNote content)
 
+                --                    ( { model | editState = NotEditing }
+                --                    , nowMillis <| AddNote content
+                --                    )
+                --                        |> addEffect restoreNoteListItemFocus
                 ( Editing note content, OnUpdate updatedContent ) ->
                     ( { model | editState = Editing note updatedContent }, Cmd.none )
 
@@ -177,7 +180,6 @@ update msg model =
 
                 ( _, OnCancel ) ->
                     update SetNotEditing model
-                        |> addEffect restoreNoteListItemFocus
 
                 _ ->
                     ( model, Cmd.none )
