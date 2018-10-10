@@ -125,7 +125,11 @@ update msg model =
                     ( { model | editState = NotEditing }, Cmd.none )
 
                 _ ->
-                    ( model, Cmd.none )
+                    let
+                        _ =
+                            Debug.log "1" 2
+                    in
+                        ( model, Cmd.none )
 
 
 nowMillis msg =
