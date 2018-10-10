@@ -88,6 +88,14 @@ type Msg
     | AddNote NoteContent Millis
 
 
+addCmd cmd =
+    let
+        batch2 oldCmd =
+            Cmd.batch [ oldCmd, cmd ]
+    in
+        Tuple.mapSecond batch2
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -103,6 +111,7 @@ update msg model =
                     NoteCollection.addNew now content model.noteCollection
             in
                 update (SetNoteCollection nc) model
+                    |> addCmd (focus <| noteListItemDomId note)
 
         EditMsg editMsg ->
             case ( model.editState, editMsg ) of
@@ -218,6 +227,10 @@ isEditingNote note editState =
             False
 
 
+noteListItemDomId note =
+    "note-li-" ++ note.id
+
+
 viewNoteList editState notes =
     let
         viewNoteListItem note =
@@ -242,7 +255,8 @@ viewNoteList editState notes =
 
                 _ ->
                     button
-                        [ onClick <| OnEdit note
+                        [ id <| noteListItemDomId note
+                        , onClick <| OnEdit note
                         , class "input-reset tl bn bg--transparent db pv2 ph2 w-100 pointer "
                         ]
                         [ text <| Note.title note ]
