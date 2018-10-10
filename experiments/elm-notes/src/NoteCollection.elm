@@ -36,7 +36,7 @@ setSeed seed nc =
     { nc | seed = seed }
 
 
-addNew : Int -> String -> F NoteCollection
+addNew : Int -> String -> NoteCollection -> ( Note, NoteCollection )
 addNew now content nc =
     let
         ( note, newSeed ) =
@@ -45,7 +45,7 @@ addNew now content nc =
         newDict =
             Dict.insert note.id note nc.dict
     in
-        setDict newDict nc |> setSeed newSeed
+        ( note, setDict newDict nc |> setSeed newSeed )
 
 
 type alias F a =

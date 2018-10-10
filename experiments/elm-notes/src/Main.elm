@@ -85,6 +85,7 @@ type Msg
     = NoOp
     | EditMsg EditMsg
     | SetNoteCollection NoteCollection
+    | AddNote NoteContent Millis
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -95,6 +96,13 @@ update msg model =
 
         SetNoteCollection nc ->
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
+
+        AddNote content now ->
+            let
+                ( note, nc ) =
+                    NoteCollection.addNew now content model.noteCollection
+            in
+                update (SetNoteCollection nc) model
 
         EditMsg editMsg ->
             case ( model.editState, editMsg ) of
@@ -109,11 +117,7 @@ update msg model =
 
                 ( EditingNew content, OnOk ) ->
                     ( { model | editState = NotEditing }
-                    , nowMillis
-                        (\now ->
-                            NoteCollection.addNew now content model.noteCollection
-                                |> SetNoteCollection
-                        )
+                    , nowMillis <| AddNote content
                     )
 
                 ( Editing note content, OnUpdate updatedContent ) ->
