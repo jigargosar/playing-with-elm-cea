@@ -19,8 +19,11 @@ init content =
     Note content
 
 
-setContent now content note =
-    { note | content = content, modifiedAt = now }
+updateContent now content note =
+    if content == note.content then
+        note
+    else
+        { note | content = content, modifiedAt = now }
 
 
 generator : Int -> String -> Random.Generator Note

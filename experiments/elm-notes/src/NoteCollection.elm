@@ -63,7 +63,7 @@ updateNote fn note nc =
 
 updateNoteContent : Int -> String -> Note -> F NoteCollection
 updateNoteContent now content =
-    updateNote (Note.setContent now content)
+    updateNote (Note.updateContent now content)
 
 
 generator : Int -> E.Value -> Random.Generator NoteCollection
