@@ -5,32 +5,35 @@ import Random
 
 
 type alias NoteCollection =
-    List Note
-
-
-fromList =
-    identity
+    { list : List Note, seed : Random.Seed }
 
 
 all =
-    identity
+    .list
 
 
-addNew content =
-    (::) (Note.init content)
+setList list nc =
+    { nc | list = list }
 
 
-updateNoteContent content note =
-    List.map
-        (\n ->
-            (if n == note then
-                Note.setContent content n
-             else
-                n
+addNew content nc =
+    setList ((::) (Note.init content) nc.list) nc
+
+
+updateNoteContent content note nc =
+    setList
+        (List.map
+            (\n ->
+                if n == note then
+                    Note.setContent content n
+                else
+                    n
             )
+            nc.list
         )
+        nc
 
 
 generator : Random.Generator NoteCollection
 generator =
-    Random.constant []
+    Random.map (NoteCollection []) Random.independentSeed
