@@ -4,7 +4,7 @@ import Basics.Extra exposing (flip)
 import Dict exposing (Dict)
 import Note exposing (Note)
 import Random
-import Json.Decode as D
+import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
 
 
@@ -62,3 +62,14 @@ generator =
 encode : NoteCollection -> E.Value
 encode nc =
     E.list Note.encode <| all nc
+
+
+decode : Decoder (List Note)
+decode =
+    D.succeed []
+
+
+
+--f : a -> E.Value
+--f =
+--    Elm.Kernel.Debugger.unsafeCoerce
