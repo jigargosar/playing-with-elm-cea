@@ -118,16 +118,12 @@ update msg model =
             ( model, Cmd.none )
 
         SetLastFocusedNoteListItemDomId domId ->
-            let
-                _ =
-                    Debug.log "SetLastFocusedDomId" domId
-            in
-                ( if isNoteListItemDomId domId then
-                    { model | lastFocusedNoteListItemDomId = domId }
-                  else
-                    model
-                , Cmd.none
-                )
+            ( if isNoteListItemDomId domId then
+                { model | lastFocusedNoteListItemDomId = domId }
+              else
+                model
+            , Cmd.none
+            )
 
         SetNoteCollection nc ->
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
@@ -159,10 +155,6 @@ update msg model =
                     update SetNotEditing model
                         |> addCmd (nowMillis <| AddNote content)
 
-                --                    ( { model | editState = NotEditing }
-                --                    , nowMillis <| AddNote content
-                --                    )
-                --                        |> addEffect restoreNoteListItemFocus
                 ( Editing note content, OnUpdate updatedContent ) ->
                     ( { model | editState = Editing note updatedContent }, Cmd.none )
 
