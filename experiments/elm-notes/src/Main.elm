@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, text, div, h1, img)
+import Html exposing (Html, button, div, h1, img, text)
 import Html.Attributes exposing (class, src)
 import Browser as B
 import Browser.Events as B
@@ -60,9 +60,14 @@ view model =
     div [ class "pa2 center measure" ]
         [ div [ class "flex flex-column vs3 " ]
             [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
+            , div [] [ viewAddNote ]
             , div [] [ viewNoteList model.notes ]
             ]
         ]
+
+
+viewAddNote =
+    button [] [ text "New" ]
 
 
 viewNoteList notes =
