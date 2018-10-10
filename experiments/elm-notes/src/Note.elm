@@ -8,7 +8,7 @@ import Json.Encode as E
 
 
 type alias Note =
-    { content : String, id : String }
+    { content : String, createdAt : Int, modifiedAt : Int, id : String }
 
 
 title =
@@ -23,20 +23,26 @@ setContent content note =
     { note | content = content }
 
 
-generator : String -> Random.Generator Note
-generator content =
-    Random.map (Note content) Id.generator
+generator : Int -> String -> Random.Generator Note
+generator now content =
+    Random.map (Note content now now) Id.generator
 
 
 encode note =
     E.object
         [ ( "id", E.string note.id )
         , ( "content", E.string note.content )
+        , ( "createdAt", E.int note.createdAt )
+        , ( "modifiedAt", E.int note.modifiedAt )
         ]
 
 
 decoder : Decoder Note
 decoder =
-    D.map2 Note
+    D.map4 Note
         (D.field "content" D.string)
+        --        (D.succeed 0)
+        --        (D.succeed 0)
+        (D.field "createdAt" D.int)
+        (D.field "modifiedAt" D.int)
         (D.field "id" D.string)

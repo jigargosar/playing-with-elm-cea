@@ -35,7 +35,7 @@ addNew : Int -> String -> F NoteCollection
 addNew now content nc =
     let
         ( note, newSeed ) =
-            Random.step (Note.generator content) nc.seed
+            Random.step (Note.generator now content) nc.seed
 
         newDict =
             Dict.insert note.id note nc.dict
