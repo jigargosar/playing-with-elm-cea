@@ -91,6 +91,7 @@ type Msg
     | SetNoteCollection NoteCollection
     | AddNote NoteContent Millis
     | SetLastFocusedNoteListItemDomId String
+    | SetNotEditing
 
 
 type alias UpdateReturn msg model =
@@ -139,6 +140,9 @@ update msg model =
                 update (SetNoteCollection nc) model
                     |> addCmd (focusNoteListItem note)
 
+        SetNotEditing ->
+            ( { model | editState = NotEditing }, Cmd.none )
+
         EditMsg editMsg ->
             case ( model.editState, editMsg ) of
                 ( _, OnNew ) ->
@@ -172,7 +176,7 @@ update msg model =
                     )
 
                 ( _, OnCancel ) ->
-                    ( { model | editState = NotEditing }, Cmd.none )
+                    update SetNotEditing model
                         |> addEffect restoreNoteListItemFocus
 
                 _ ->
