@@ -111,7 +111,7 @@ updateNoteContent content note =
 
 view : Model -> Html Msg
 view model =
-    div [ class "flex flex-column vh-100 vs3" ]
+    div [ class "pv3 flex flex-column vh-100 vs3" ]
         [ div [ class "f3 tc" ] [ H.text "My Elm App" ]
         , div [ class "center w-90" ]
             [ viewAddNewNote model.edit
