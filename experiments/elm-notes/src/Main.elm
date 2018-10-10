@@ -170,24 +170,25 @@ viewNoteList edit notes =
                                 [ class "w-100 h5"
                                 , autofocus True
                                 , value content
-                                , onInput (EditNote << OnUpdate)
+                                , onInput OnUpdate
                                 ]
                                 []
                             ]
                         , div [ class "flex hs3" ]
-                            [ bbtn (EditNote OnOk) "Ok"
-                            , bbtn (EditNote OnCancel) "Cancel"
+                            [ bbtn OnOk "Ok"
+                            , bbtn OnCancel "Cancel"
                             ]
                         ]
 
                     _ ->
                         [ div
                             [ attribute "role" "button"
-                            , onClick <| EditNote <| OnEdit note
+                            , onClick <| OnEdit note
                             ]
                             [ text <| Note.title note ]
                         ]
                 )
+                |> Html.map EditNote
     in
         div [ class "vs3" ] <| List.map viewNoteListItem notes
 
