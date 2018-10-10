@@ -111,7 +111,7 @@ update msg model =
                     NoteCollection.addNew now content model.noteCollection
             in
                 update (SetNoteCollection nc) model
-                    |> addCmd (focus <| noteListItemDomId note)
+                    |> addCmd (focusNoteListItem note)
 
         EditMsg editMsg ->
             case ( model.editState, editMsg ) of
@@ -134,11 +134,14 @@ update msg model =
 
                 ( Editing note content, OnOk ) ->
                     ( { model | editState = NotEditing }
-                    , nowMillis
-                        (\now ->
-                            NoteCollection.updateNoteContent now content note model.noteCollection
-                                |> SetNoteCollection
-                        )
+                    , Cmd.batch
+                        [ nowMillis
+                            (\now ->
+                                NoteCollection.updateNoteContent now content note model.noteCollection
+                                    |> SetNoteCollection
+                            )
+                        , focusNoteListItem note
+                        ]
                     )
 
                 ( _, OnCancel ) ->
@@ -166,6 +169,10 @@ focus id =
 
 focusEditor =
     focus "editor"
+
+
+focusNoteListItem =
+    noteListItemDomId >> focus
 
 
 
