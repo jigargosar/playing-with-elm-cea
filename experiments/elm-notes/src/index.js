@@ -45,13 +45,16 @@ subscribe(
 subscribe('signIn', signIn, app)
 subscribe('signOut', signOut, app)
 let elmNotesListener = identity
-auth().onAuthStateChanged(function (user) {
+auth().onAuthStateChanged(function(user) {
   if (user) {
     elmNotesListener()
     const cRef = userCRef(user.uid, elmNotesCollectionName)
     elmNotesListener = cRef.onSnapshot(qSnap => {
-      let qSnapToAllDocsDict =
-        compose(fromPairs, map(d => [d.id, d.data()]), prop('docs'))
+      let qSnapToAllDocsDict = compose(
+        fromPairs,
+        map(d => [d.id, d.data()]),
+        prop('docs'),
+      )
       let docsDict = qSnapToAllDocsDict(qSnap)
       // console.log(docsDict)
       app.ports.notesCollectionChanged.send(docsDict)
@@ -60,7 +63,6 @@ auth().onAuthStateChanged(function (user) {
   app.ports.sessionChanged.send(
     unless(isNil)(pick(['uid', 'email', 'displayName']))(user),
   )
-
 })
 
 // HELPER FUNCTIONS
@@ -96,5 +98,7 @@ if (module.hot) {
         console.log('HMR Idle')
       }
     })
-  } catch (e) {console.log(e) }
+  } catch (e) {
+    console.log(e)
+  }
 }
