@@ -1,7 +1,7 @@
 module Note exposing (..)
 
 import Id exposing (Id)
-import IdGenerator
+import IdX
 import Random
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Pipeline as D

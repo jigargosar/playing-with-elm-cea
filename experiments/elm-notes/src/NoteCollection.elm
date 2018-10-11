@@ -2,6 +2,7 @@ module NoteCollection exposing (..)
 
 import Basics.Extra exposing (flip)
 import Db exposing (Db)
+import DbX
 import Dict
 import Id exposing (Id)
 import Note exposing (Note)
@@ -100,9 +101,7 @@ encode nc =
 
 decodeDb : Decoder NoteDb
 decodeDb =
-    D.dict Note.decoder
-        |> D.map
-            (Dict.toList >> List.map (Tuple.mapFirst Id.fromString) >> Db.fromList)
+    DbX.decoder Note.decoder
 
 
 
