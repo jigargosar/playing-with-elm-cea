@@ -20,14 +20,6 @@ encode note =
         ]
 
 
-tsDecoder now =
-    D.map (when eq0 now) D.int
-
-
-optionalOr propName propDecoder defaultValue =
-    D.oneOf [ D.field propName propDecoder, D.succeed defaultValue ]
-
-
 decoder : Decoder Note
 decoder =
     D.map5 Note
