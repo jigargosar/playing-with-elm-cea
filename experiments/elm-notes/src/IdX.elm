@@ -1,5 +1,6 @@
 module IdX exposing (..)
 
+import Id
 import Random
 
 
@@ -22,6 +23,10 @@ idCharGenerator =
     Random.uniform '~' idChars
 
 
-generator : Random.Generator String
-generator =
+stringIdGenerator : Random.Generator String
+stringIdGenerator =
     Random.list 21 idCharGenerator |> Random.map String.fromList
+
+
+generator =
+    stringIdGenerator |> Random.map (Id.fromString)

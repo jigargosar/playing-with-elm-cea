@@ -29,7 +29,7 @@ updateContent now content note =
 
 generator : Int -> String -> Random.Generator Note
 generator now content =
-    Random.map (Note content now now) Id.generator
+    Random.map (Note content now now) IdX.generator
 
 
 idStr =
