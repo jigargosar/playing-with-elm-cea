@@ -2,7 +2,7 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { forEachObjIndexed, identity, isNil, pick, unless } from 'ramda'
+import { forEachObjIndexed, identity, isNil, map, pick, unless } from 'ramda'
 import { auth, firestore, signIn, signOut, userCRef } from './fire'
 
 const app = Elm.Main.init({
@@ -26,7 +26,7 @@ subscribe(
       forEachObjIndexed(note => {
         batch.set(cRef.doc(note.id), note)
       })(nc)
-      batch.commit().then(() => console.log('data committed')).catch(console.error)
+      batch.commit().catch(console.error)
     }
   },
   app,
@@ -36,13 +36,11 @@ subscribe('signIn', signIn, app)
 subscribe('signOut', signOut, app)
 let elmNotesListener = identity
 auth().onAuthStateChanged(function (user) {
-  // console.log(user)
-  // console.log(app.ports.sessionChanged)
   if (user) {
     elmNotesListener()
     const cRef = userCRef(user.uid, elmNotesCollectionName)
-    elmNotesListener = cRef.onSnapshot(cSnap => {
-      console.log(cSnap)
+    elmNotesListener = cRef.onSnapshot(qSnap => {
+      console.log(map(d => d.data())(qSnap.docs))
 
     })
   }
