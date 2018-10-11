@@ -1,4 +1,4 @@
-module Id exposing (..)
+module IdGenerator exposing (..)
 
 import Random
 

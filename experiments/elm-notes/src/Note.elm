@@ -1,6 +1,6 @@
 module Note exposing (..)
 
-import Id
+import IdGenerator
 import Random
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Pipeline as D
@@ -28,7 +28,7 @@ updateContent now content note =
 
 generator : Int -> String -> Random.Generator Note
 generator now content =
-    Random.map (Note content now now) Id.generator
+    Random.map (Note content now now) IdGenerator.generator
 
 
 encode note =
