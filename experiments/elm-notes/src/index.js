@@ -45,7 +45,7 @@ function storageSet(key, value) {
 if (module.hot) {
   try {
     module.hot.addStatusHandler(status => {
-      console.log(status)
+      // console.log(status)
       if (status === 'idle') {
         console.clear()
         console.log('HMR Idle')
