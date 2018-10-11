@@ -47,8 +47,8 @@ type alias User =
 
 
 type Session
-    = SignedIn User
-    | SignedOut
+    = Auth User
+    | Anon
     | InitialUnknown
 
 
@@ -172,7 +172,7 @@ update msg model =
 
                 sessionDecoder : Decoder Session
                 sessionDecoder =
-                    D.oneOf [ D.null SignedOut, D.map SignedIn userDecoder ]
+                    D.oneOf [ D.null Anon, D.map Auth userDecoder ]
 
                 newSession =
                     D.decodeValue sessionDecoder encSession
@@ -310,19 +310,19 @@ view model =
 viewHeader session =
     let
         viewSession =
-            div []
+            div [ class "flex items-center hs3" ]
                 (case session of
                     InitialUnknown ->
-                        [ text <| "InitialUnknown" ]
+                        [ div [] [ text <| "InitialUnknown" ] ]
 
-                    SignedOut ->
-                        [ text <| "SignedOut" ]
+                    Anon ->
+                        [ div [] [ text <| "SignedOut" ], bbtn SignIn "SignIn" ]
 
-                    SignedIn user ->
-                        [ text <| "SignedIn" ++ user.displayName ]
+                    Auth user ->
+                        [ div [] [ text <| "SignedIn" ++ user.displayName ], bbtn SignOut "SignIn" ]
                 )
     in
-        div []
+        div [ class "flex items-center hs3" ]
             [ div [ class "f3 tc" ] [ H.text "Elm Notes" ]
             , viewSession
             ]
