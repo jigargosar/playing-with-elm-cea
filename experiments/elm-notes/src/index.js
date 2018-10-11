@@ -2,17 +2,7 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import {
-  compose,
-  forEachObjIndexed,
-  fromPairs,
-  identity,
-  isNil,
-  map,
-  pick,
-  prop,
-  unless,
-} from 'ramda'
+import { compose, forEachObjIndexed, fromPairs, identity, isNil, map, pick, prop, unless } from 'ramda'
 import { auth, firestore, signIn, signOut, userCRef } from './fire'
 
 const app = Elm.Main.init({
@@ -45,7 +35,7 @@ subscribe(
 subscribe('signIn', signIn, app)
 subscribe('signOut', signOut, app)
 let elmNotesListener = identity
-auth().onAuthStateChanged(function(user) {
+auth().onAuthStateChanged(function (user) {
   if (user) {
     elmNotesListener()
     const cRef = userCRef(user.uid, elmNotesCollectionName)
