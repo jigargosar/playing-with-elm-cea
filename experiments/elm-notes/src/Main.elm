@@ -20,6 +20,7 @@ import NoteCollection exposing (NoteCollection)
 import Random
 import Task
 import Time
+import Update.Extra
 
 
 port persistNoteCollection : E.Value -> Cmd msg
@@ -82,6 +83,7 @@ type EditMsg
     | OnEdit Note
     | OnOk
     | OnCancel
+    | OnDelete
     | OnUpdate NoteContent
 
 
@@ -90,6 +92,7 @@ type Msg
     | EditMsg EditMsg
     | SetNoteCollection NoteCollection
     | AddNote NoteContent Millis
+    | DeleteNote Note
     | SetLastFocusedNoteListItemDomId String
     | SetNotEditing
 
@@ -111,6 +114,14 @@ addEffect fn ( model, oldCmd ) =
     ( model, Cmd.batch [ oldCmd, fn model ] )
 
 
+andThen _ =
+    identity
+
+
+sequence =
+    Update.Extra.sequence update
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -127,6 +138,9 @@ update msg model =
 
         SetNoteCollection nc ->
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
+
+        DeleteNote note ->
+            ( model, Cmd.none )
 
         AddNote content now ->
             let
@@ -157,6 +171,9 @@ update msg model =
 
                 ( Editing note content, OnUpdate updatedContent ) ->
                     ( { model | editState = Editing note updatedContent }, Cmd.none )
+
+                ( Editing note content, OnDelete ) ->
+                    ( model, Cmd.none ) |> sequence [ DeleteNote note, SetNotEditing ]
 
                 ( Editing note content, OnOk ) ->
                     ( { model | editState = NotEditing }
@@ -304,6 +321,7 @@ viewNoteList editState notes =
                         , div [ class "flex hs3" ]
                             [ bbtn OnOk "Ok"
                             , bbtn OnCancel "Cancel"
+                            , bbtn OnDelete "Delete"
                             ]
                         ]
                         |> Html.map EditMsg
