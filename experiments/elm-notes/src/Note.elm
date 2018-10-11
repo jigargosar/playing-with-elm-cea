@@ -1,5 +1,7 @@
 module Note exposing (..)
 
+import BasicsX exposing (eq0, when)
+import Exts.Maybe
 import Id exposing (Id)
 import IdX
 import Random
@@ -19,14 +21,7 @@ encode note =
 
 
 tsDecoder now =
-    D.int
-        |> D.map
-            (\ts ->
-                if ts == 0 then
-                    now
-                else
-                    ts
-            )
+    D.map (when eq0 now) D.int
 
 
 optionalOr propName propDecoder defaultValue =
