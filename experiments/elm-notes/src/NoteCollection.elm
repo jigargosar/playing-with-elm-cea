@@ -76,6 +76,7 @@ updateNoteContent now content =
     updateNote (Note.updateContent now content)
 
 
+replace : E.Value -> F NoteCollection
 replace encDb nc =
     let
         newDb : NoteDb

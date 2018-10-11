@@ -53,7 +53,7 @@ auth().onAuthStateChanged(function (user) {
       let qSnapToAllDocsDict = compose(fromPairs, map(d => [d.id, d.data()]), prop('docs'))
       let docsDict = qSnapToAllDocsDict(qSnap)
       console.log(docsDict)
-      // app.ports.notesCollectionChanged.send()
+      app.ports.notesCollectionChanged.send(docsDict)
     })
   }
   app.ports.sessionChanged.send(
