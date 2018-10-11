@@ -282,7 +282,7 @@ view : Model -> Html Msg
 view model =
     div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
         [ div [ class "center w-90" ]
-            [ div [ class "f3 tc" ] [ H.text "Elm Notes" ]
+            [ viewHeader model.session
             , viewAddNewNote model.editState
             ]
         , div [ class "flex-auto overflow-scroll" ]
@@ -291,6 +291,22 @@ view model =
                 ]
             ]
         ]
+
+
+viewHeader session =
+    let
+        viewSession =
+            case session of
+                InitialUnknown ->
+                    [ text <| "InitialUnknown" ]
+
+                SignedOut ->
+                    [ text <| "SignedOut" ]
+
+                SignedIn user ->
+                    [ text <| "SignedIn" ++ user.displayName ]
+    in
+        div [ class "f3 tc" ] [ H.text "Elm Notes" ]
 
 
 bbtn msg title =
