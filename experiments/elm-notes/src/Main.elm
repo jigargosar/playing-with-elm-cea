@@ -35,6 +35,9 @@ port signIn : () -> Cmd msg
 port signOut : () -> Cmd msg
 
 
+port notesCollectionChanged : E.Value -> Cmd msg
+
+
 
 ---- MODEL ----
 
@@ -122,6 +125,7 @@ type Msg
     | Session E.Value
     | SignIn
     | SignOut
+    | NotesCollectionChanged E.Value
 
 
 type alias UpdateReturn msg model =
@@ -153,6 +157,9 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
+            ( model, Cmd.none )
+
+        NotesCollectionChanged encNC ->
             ( model, Cmd.none )
 
         SignIn ->
