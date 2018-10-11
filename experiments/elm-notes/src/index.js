@@ -26,7 +26,9 @@ const auth = getOrCreateFirebaseApp().auth()
 auth.onAuthStateChanged(function (user) {
   console.log(user)
   console.log(app.ports.sessionChanged)
-  app.ports.sessionChanged.send(unless(isNil)(pick(['']))(user))
+  app.ports.sessionChanged.send(
+    unless(isNil)(pick(['uid', 'email', 'displayName']))(user),
+  )
 })
 
 // HELPER FUNCTIONS
