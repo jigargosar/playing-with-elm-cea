@@ -50,9 +50,10 @@ auth().onAuthStateChanged(function (user) {
     elmNotesListener()
     const cRef = userCRef(user.uid, elmNotesCollectionName)
     elmNotesListener = cRef.onSnapshot(qSnap => {
-      let qSnapToAllDocsDict = compose(fromPairs, map(d => [d.id, d.data()]), prop('docs'))
+      let qSnapToAllDocsDict =
+        compose(fromPairs, map(d => [d.id, d.data()]), prop('docs'))
       let docsDict = qSnapToAllDocsDict(qSnap)
-      console.log(docsDict)
+      // console.log(docsDict)
       app.ports.notesCollectionChanged.send(docsDict)
     })
   }
