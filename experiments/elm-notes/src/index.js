@@ -28,6 +28,7 @@ subscribe(
   },
   app,
 )
+
 const auth = getOrCreateFirebaseApp().auth()
 subscribe('signIn', signIn, app)
 subscribe('signOut', signOut, app)
