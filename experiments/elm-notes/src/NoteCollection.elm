@@ -83,7 +83,7 @@ replace encDb nc =
         newDb =
             D.decodeValue (dbDecoder) encDb
                 |> Result.unpack
-                    (Debug.log "Error" >> always (Db.empty))
+                    ({- Debug.log "Error" >> -} always (Db.empty))
                     (identity)
     in
         setDb newDb nc
@@ -96,7 +96,7 @@ generator encodedNoteDb =
         db =
             D.decodeValue (dbDecoder) encodedNoteDb
                 |> Result.unpack
-                    (Debug.log "Error" >> always (Db.empty))
+                    ({- Debug.log "Error" >> -} always (Db.empty))
                     (identity)
     in
         Random.map (NoteCollection db) Random.independentSeed

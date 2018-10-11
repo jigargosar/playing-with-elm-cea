@@ -188,7 +188,7 @@ update msg model =
 
                 newSession =
                     D.decodeValue sessionDecoder encSession
-                        |> Result.mapError (Debug.log "Error: session")
+                        --                        |> Result.mapError (Debug.log "Error: session")
                         |> Result.withDefault model.session
             in
                 ( { model | session = newSession }, Cmd.none )
@@ -279,11 +279,11 @@ nowMillis msg =
 focus id =
     Task.attempt
         (\r ->
-            let
-                _ =
-                    r |> Result.mapError (Debug.log "Error")
-            in
-                NoOp
+            --            let
+            --                _ =
+            --                    r |> Result.mapError (Debug.log "Error")
+            --            in
+            NoOp
         )
         (B.focus id)
 
