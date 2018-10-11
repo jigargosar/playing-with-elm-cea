@@ -205,11 +205,13 @@ update msg model =
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
 
         DeleteNote note ->
-            let
-                nc =
-                    NoteCollection.delete note model.noteCollection
-            in
-                update (SetNoteCollection nc) model
+            ( model
+            , nowMillis
+                (\now ->
+                    NoteCollection.delete now note model.noteCollection
+                        |> SetNoteCollection
+                )
+            )
 
         AddNote content now ->
             let

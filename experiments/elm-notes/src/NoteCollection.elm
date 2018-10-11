@@ -54,12 +54,8 @@ type alias F a =
     a -> a
 
 
-delete note nc =
-    let
-        newDB =
-            Db.remove note.id nc.db
-    in
-        setDb newDB nc
+delete now =
+    updateNote (Note.delete now)
 
 
 updateNote : F Note -> Note -> F NoteCollection

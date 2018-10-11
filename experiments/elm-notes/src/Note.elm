@@ -54,5 +54,9 @@ updateContent now content note =
         { note | content = content, modifiedAt = now }
 
 
+delete now note =
+    { note | deleted = True, modifiedAt = now }
+
+
 idStr =
     .id >> Id.toString
