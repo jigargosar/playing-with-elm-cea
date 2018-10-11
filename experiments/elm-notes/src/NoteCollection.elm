@@ -76,12 +76,16 @@ updateNoteContent now content =
     updateNote (Note.updateContent now content)
 
 
+replace encNC nc =
+    nc
+
+
 generator : E.Value -> Random.Generator NoteCollection
 generator encodedNoteDb =
     let
         db : NoteDb
         db =
-            D.decodeValue (decodeDb) encodedNoteDb
+            D.decodeValue (dbDecoder) encodedNoteDb
                 |> Result.unpack
                     (Debug.log "Error" >> always (Db.empty))
                     (identity)
@@ -94,8 +98,8 @@ encode nc =
     DbX.encode Note.encode nc.db
 
 
-decodeDb : Decoder NoteDb
-decodeDb =
+dbDecoder : Decoder NoteDb
+dbDecoder =
     DbX.decoder Note.decoder
 
 

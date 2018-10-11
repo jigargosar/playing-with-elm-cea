@@ -160,7 +160,11 @@ update msg model =
             ( model, Cmd.none )
 
         NotesCollectionChanged encNC ->
-            ( model, Cmd.none )
+            let
+                newNC =
+                    NoteCollection.replace encNC
+            in
+                ( model, Cmd.none )
 
         SignIn ->
             ( model, signIn () )
