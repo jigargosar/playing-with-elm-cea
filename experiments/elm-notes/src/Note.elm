@@ -29,10 +29,6 @@ tsDecoder now =
             )
 
 
-defaultTo val failDecoder =
-    D.oneOf [ failDecoder, D.succeed val ]
-
-
 optionalOr propName propDecoder defaultValue =
     D.oneOf [ D.field propName propDecoder, D.succeed defaultValue ]
 
@@ -41,7 +37,7 @@ decoder : Decoder Note
 decoder =
     D.map5 Note
         (D.field "content" D.string)
-        (optionalOr "deleted" D.bool False)
+        (D.field "deleted" D.bool)
         (D.field "createdAt" D.int)
         (D.field "modifiedAt" D.int)
         (D.field "id" Id.decoder)
