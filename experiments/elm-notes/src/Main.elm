@@ -299,7 +299,7 @@ noteListItemDomIdPrefix =
 
 
 noteListItemDomId note =
-    noteListItemDomIdPrefix ++ note.id
+    noteListItemDomIdPrefix ++ (Note.idStr note)
 
 
 isNoteListItemDomId =

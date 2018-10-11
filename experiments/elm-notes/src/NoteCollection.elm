@@ -77,11 +77,11 @@ updateNoteContent now content =
 
 
 generator : Int -> E.Value -> Random.Generator NoteCollection
-generator now encodedNoteDict =
+generator now encodedNoteDb =
     let
         dict : NoteDb
         dict =
-            D.decodeValue (decodeDb) encodedNoteDict
+            D.decodeValue (decodeDb) encodedNoteDb
                 |> Result.unpack
                     (Debug.log "Error" >> always (Db.empty))
                     (identity)
@@ -100,12 +100,9 @@ encode nc =
 
 decodeDb : Decoder NoteDb
 decodeDb =
-    let
-        entryDecoder : Decoder ( Id, Note )
-        entryDecoder =
-            D.map2 Tuple.pair Id.decoder Note.decoder
-    in
-        D.list entryDecoder |> D.map Db.fromList
+    D.dict Note.decoder
+        |> D.map
+            (Dict.toList >> List.map (Tuple.mapFirst Id.fromString) >> Db.fromList)
 
 
 
