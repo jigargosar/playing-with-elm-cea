@@ -26,7 +26,11 @@ queryAll =
 
 
 queryAllSortByModifiedAt =
-    .db >> Db.toList >> List.map Tuple.second >> List.sortBy (.modifiedAt >> (*) -1)
+    .db
+        >> Db.toList
+        >> List.map Tuple.second
+        >> List.filter (.deleted >> not)
+        >> List.sortBy (.modifiedAt >> (*) -1)
 
 
 setDb : NoteDb -> F NoteCollection
