@@ -149,9 +149,16 @@ update msg model =
 
         Session encSession ->
             let
+                userDecoder : Decoder User
+                userDecoder =
+                    D.map3 User
+                        (D.field "uid" D.string)
+                        (D.field "email" D.string)
+                        (D.field "displayName" D.string)
+
                 sessionDecoder : Decoder Session
                 sessionDecoder =
-                    D.succeed InitialUnknown
+                    D.oneOf [ D.null SignedOut, D.map SignedIn userDecoder ]
 
                 newSession =
                     D.decodeValue sessionDecoder encSession
