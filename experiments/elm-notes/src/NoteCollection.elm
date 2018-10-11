@@ -76,8 +76,8 @@ updateNoteContent now content =
     updateNote (Note.updateContent now content)
 
 
-generator : Int -> E.Value -> Random.Generator NoteCollection
-generator now encodedNoteDb =
+generator : E.Value -> Random.Generator NoteCollection
+generator encodedNoteDb =
     let
         dict : NoteDb
         dict =
