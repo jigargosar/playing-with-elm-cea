@@ -35,7 +35,7 @@ port signIn : () -> Cmd msg
 port signOut : () -> Cmd msg
 
 
-port notesCollectionChanged : E.Value -> Cmd msg
+port notesCollectionChanged : (E.Value -> msg) -> Sub msg
 
 
 
@@ -436,6 +436,7 @@ subscriptions : Model -> Sub Msg
 subscriptions m =
     Sub.batch
         [ sessionChanged Session
+        , notesCollectionChanged NotesCollectionChanged
         ]
 
 
