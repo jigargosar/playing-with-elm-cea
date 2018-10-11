@@ -12,6 +12,8 @@
     "start": "nodemon -w yarn.lock -w elm.json -x env ELM_DEBUGGER=true elm-app start"
   },
   "devDependencies": {
+    "husky": "^1.1.2",
+    "lint-staged": "^7.3.0",
     "prettier": "^1.14.3"
   },
   "prettier": {
@@ -20,5 +22,17 @@
     "singleQuote": true,
     "semi": false,
     "printWidth": 80
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "post-commit": "git update-index -g"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "prettier --config package.json --write",
+      "git add"
+    ]
   }
 }
