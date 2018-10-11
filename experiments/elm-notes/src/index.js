@@ -3,7 +3,7 @@ import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
 import { forEachObjIndexed, identity, isNil, pick, unless } from 'ramda'
-import { getOrCreateFirebaseApp, signIn, signOut } from './fire'
+import { auth, firestore, signIn, signOut, userCRef } from './fire'
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
@@ -19,12 +19,10 @@ subscribe(
   'persistNoteCollection',
   nc => {
     storageSet('noteCollection', nc)
-    let auth = getOrCreateFirebaseApp().auth()
-    let firestore = getOrCreateFirebaseApp().firestore()
-    let user = auth.currentUser
+    let user = auth().currentUser
     if (user) {
-      const batch = firestore.batch()
-      const cRef = firestore.collection(elmNotesCollectionPath(user.uid))
+      const batch = firestore().batch()
+      const cRef = userCRef(user.uid, elmNotesCollectionName)
       forEachObjIndexed(note => {
         batch.set(cRef.doc(note.id), note)
       })(nc)
@@ -34,13 +32,20 @@ subscribe(
   app,
 )
 
-const auth = getOrCreateFirebaseApp().auth()
 subscribe('signIn', signIn, app)
 subscribe('signOut', signOut, app)
 let elmNotesListener = identity
-auth.onAuthStateChanged(function (user) {
+auth().onAuthStateChanged(function (user) {
   // console.log(user)
   // console.log(app.ports.sessionChanged)
+  if (user) {
+    elmNotesListener()
+    const cRef = userCRef(user.uid, elmNotesCollectionName)
+    elmNotesListener = cRef.onSnapshot(cSnap => {
+      console.log(cSnap)
+
+    })
+  }
   app.ports.sessionChanged.send(
     unless(isNil)(pick(['uid', 'email', 'displayName']))(user),
   )
@@ -49,7 +54,7 @@ auth.onAuthStateChanged(function (user) {
 
 // HELPER FUNCTIONS
 
-const elmNotesCollectionPath = uid => `/users/${uid}/elm-notes`
+const elmNotesCollectionName = `elm-notes`
 
 function subscribe(port, fn, app) {
   app.ports[port].subscribe(fn)

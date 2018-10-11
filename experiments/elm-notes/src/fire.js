@@ -27,6 +27,12 @@ export function getOrCreateFirebaseApp() {
   return fire.apps[0] || createApp()
 }
 
+export const auth = () => getOrCreateFirebaseApp().auth()
+export const firestore = () => getOrCreateFirebaseApp().firestore()
+export const userCRef = (uid, cName) => {
+  return firestore().collection(`/users/${uid}/${cName}`)
+}
+
 export const signOut = () => {
   const promise = getOrCreateFirebaseApp()
     .auth()
