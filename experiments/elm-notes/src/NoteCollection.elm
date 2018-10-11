@@ -18,7 +18,7 @@ type alias NoteDb =
 
 
 type alias NoteCollection =
-    { dict : NoteDb, seed : Random.Seed }
+    { db : NoteDb, seed : Random.Seed }
 
 
 queryAll =
@@ -26,12 +26,12 @@ queryAll =
 
 
 queryAllSortByModifiedAt =
-    .dict >> Db.toList >> List.map Tuple.second >> List.sortBy (.modifiedAt >> (*) -1)
+    .db >> Db.toList >> List.map Tuple.second >> List.sortBy (.modifiedAt >> (*) -1)
 
 
 setDict : NoteDb -> F NoteCollection
-setDict dict nc =
-    { nc | dict = dict }
+setDict db nc =
+    { nc | db = db }
 
 
 setSeed seed nc =
@@ -45,7 +45,7 @@ addNew now content nc =
             Random.step (Note.generator now content) nc.seed
 
         newDict =
-            Db.insert note.id note nc.dict
+            Db.insert note.id note nc.db
     in
         ( note, setDict newDict nc |> setSeed newSeed )
 
@@ -57,7 +57,7 @@ type alias F a =
 delete note nc =
     let
         newDict =
-            Db.remove note.id nc.dict
+            Db.remove note.id nc.db
     in
         setDict newDict nc
 
@@ -66,7 +66,7 @@ updateNote : F Note -> Note -> F NoteCollection
 updateNote fn note nc =
     let
         newDict =
-            Db.update note.id (Maybe.map fn) nc.dict
+            Db.update note.id (Maybe.map fn) nc.db
     in
         setDict newDict nc
 
@@ -79,19 +79,19 @@ updateNoteContent now content =
 generator : E.Value -> Random.Generator NoteCollection
 generator encodedNoteDb =
     let
-        dict : NoteDb
-        dict =
+        db : NoteDb
+        db =
             D.decodeValue (decodeDb) encodedNoteDb
                 |> Result.unpack
                     (Debug.log "Error" >> always (Db.empty))
                     (identity)
     in
-        Random.map (NoteCollection dict) Random.independentSeed
+        Random.map (NoteCollection db) Random.independentSeed
 
 
 encode : NoteCollection -> E.Value
 encode nc =
-    DbX.encode Note.encode nc.dict
+    DbX.encode Note.encode nc.db
 
 
 decodeDb : Decoder NoteDb
