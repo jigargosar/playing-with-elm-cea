@@ -1,7 +1,9 @@
 module NoteCollection exposing (..)
 
 import Basics.Extra exposing (flip)
-import Dict exposing (Dict)
+import Db exposing (Db)
+import Dict
+import Id exposing (Id)
 import Note exposing (Note)
 import Random
 import Json.Decode as D exposing (Decoder)
@@ -10,12 +12,12 @@ import Result.Extra as Result
 import Result
 
 
-type alias NoteDict =
-    Dict String Note
+type alias NoteDb =
+    Db Note
 
 
 type alias NoteCollection =
-    { dict : NoteDict, seed : Random.Seed }
+    { dict : NoteDb, seed : Random.Seed }
 
 
 queryAll =
@@ -24,10 +26,10 @@ queryAll =
 
 
 queryAllSortByModifiedAt =
-    .dict >> Dict.values >> List.sortBy (.modifiedAt >> (*) -1)
+    .dict >> Db.toList >> List.map Tuple.second >> List.sortBy (.modifiedAt >> (*) -1)
 
 
-setDict : NoteDict -> F NoteCollection
+setDict : NoteDb -> F NoteCollection
 setDict dict nc =
     { nc | dict = dict }
 
@@ -43,7 +45,7 @@ addNew now content nc =
             Random.step (Note.generator now content) nc.seed
 
         newDict =
-            Dict.insert note.id note nc.dict
+            Db.insert note.id note nc.dict
     in
         ( note, setDict newDict nc |> setSeed newSeed )
 
@@ -55,7 +57,7 @@ type alias F a =
 delete note nc =
     let
         newDict =
-            Dict.remove note.id nc.dict
+            Db.remove note.id nc.dict
     in
         setDict newDict nc
 
@@ -64,7 +66,7 @@ updateNote : F Note -> Note -> F NoteCollection
 updateNote fn note nc =
     let
         newDict =
-            Dict.update note.id (Maybe.map fn) nc.dict
+            Db.update note.id (Maybe.map fn) nc.dict
     in
         setDict newDict nc
 
@@ -77,11 +79,11 @@ updateNoteContent now content =
 generator : Int -> E.Value -> Random.Generator NoteCollection
 generator now encodedNoteDict =
     let
-        dict : NoteDict
+        dict : NoteDb
         dict =
-            D.decodeValue (decoder now) encodedNoteDict
+            D.decodeValue (decodeDb) encodedNoteDict
                 |> Result.unpack
-                    (Debug.log "Error" >> always (Dict.empty))
+                    (Debug.log "Error" >> always (Db.empty))
                     (identity)
     in
         Random.map (NoteCollection dict) Random.independentSeed
@@ -89,12 +91,21 @@ generator now encodedNoteDict =
 
 encode : NoteCollection -> E.Value
 encode nc =
-    E.dict identity Note.encode <| nc.dict
+    let
+        encodeDb db =
+            db |> Db.toDict |> E.dict identity Note.encode
+    in
+        encodeDb nc.dict
 
 
-decoder : Int -> Decoder NoteDict
-decoder =
-    D.dict << Note.decoder
+decodeDb : Decoder NoteDb
+decodeDb =
+    let
+        entryDecoder : Decoder ( Id, Note )
+        entryDecoder =
+            D.map2 Tuple.pair Id.decoder Note.decoder
+    in
+        D.list entryDecoder |> D.map Db.fromList
 
 
 

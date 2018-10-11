@@ -1,5 +1,6 @@
 module Note exposing (..)
 
+import Id exposing (Id)
 import IdGenerator
 import Random
 import Json.Decode as D exposing (Decoder)
@@ -8,7 +9,7 @@ import Json.Encode as E
 
 
 type alias Note =
-    { content : String, createdAt : Int, modifiedAt : Int, id : String }
+    { content : String, createdAt : Int, modifiedAt : Int, id : Id }
 
 
 title =
@@ -28,12 +29,16 @@ updateContent now content note =
 
 generator : Int -> String -> Random.Generator Note
 generator now content =
-    Random.map (Note content now now) IdGenerator.generator
+    Random.map (Note content now now) Id.generator
+
+
+idStr =
+    .id >> Id.toString
 
 
 encode note =
     E.object
-        [ ( "id", E.string note.id )
+        [ ( "id", Id.encode note.id )
         , ( "content", E.string note.content )
         , ( "createdAt", E.int note.createdAt )
         , ( "modifiedAt", E.int note.modifiedAt )
@@ -51,10 +56,10 @@ tsDecoder now =
             )
 
 
-decoder : Int -> Decoder Note
-decoder now =
+decoder : Decoder Note
+decoder =
     D.map4 Note
         (D.field "content" D.string)
-        (D.field "createdAt" (tsDecoder now))
-        (D.field "modifiedAt" (tsDecoder now))
-        (D.field "id" D.string)
+        (D.field "createdAt" D.int)
+        (D.field "modifiedAt" D.int)
+        (D.field "id" Id.decoder)
