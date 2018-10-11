@@ -22,7 +22,6 @@ type alias NoteCollection =
 
 
 queryAll =
-    --    .dict >> Dict.values
     queryAllSortByModifiedAt
 
 
@@ -92,11 +91,7 @@ generator now encodedNoteDb =
 
 encode : NoteCollection -> E.Value
 encode nc =
-    let
-        encodeDb db =
-            db |> Db.toDict |> E.dict identity Note.encode
-    in
-        encodeDb nc.dict
+    DbX.encode Note.encode nc.dict
 
 
 decodeDb : Decoder NoteDb
