@@ -205,16 +205,20 @@ update msg model =
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
 
         DeleteNote note ->
-            ( model
-              --            , nowMillis
-              --                (\now ->
-              --                    SetNoteCollection <| NoteCollection.delete now note model.noteCollection
-              --                )
-            , Time.now
-                |> Task.map Time.posixToMillis
-                |> Task.map (\now -> NoteCollection.delete now note model.noteCollection)
-                |> Task.perform SetNoteCollection
-            )
+            let
+                nowMillisT =
+                    Time.now
+                        |> Task.map Time.posixToMillis
+            in
+                ( model
+                  --            , nowMillis
+                  --                (\now ->
+                  --                    SetNoteCollection <| NoteCollection.delete now note model.noteCollection
+                  --                )
+                , nowMillisT
+                    |> Task.map (\now -> NoteCollection.delete now note model.noteCollection)
+                    |> Task.perform SetNoteCollection
+                )
 
         AddNote content now ->
             let
