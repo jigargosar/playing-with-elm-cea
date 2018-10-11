@@ -17,17 +17,24 @@ registerServiceWorker()
 
 subscribe(
   'persistNoteCollection',
-  nc => storageSet('noteCollection', nc),
+  nc => {
+    storageSet('noteCollection', nc)
+    let auth = getOrCreateFirebaseApp().auth()
+    let firestore = getOrCreateFirebaseApp().firestore()
+    console.log(auth.currentUser)
+    if (auth.currentUser) {
+
+    }
+  },
   app,
 )
-
 const auth = getOrCreateFirebaseApp().auth()
 subscribe('signIn', signIn, app)
 subscribe('signOut', signOut, app)
 
 auth.onAuthStateChanged(function (user) {
-  console.log(user)
-  console.log(app.ports.sessionChanged)
+  // console.log(user)
+  // console.log(app.ports.sessionChanged)
   app.ports.sessionChanged.send(
     unless(isNil)(pick(['uid', 'email', 'displayName']))(user),
   )
