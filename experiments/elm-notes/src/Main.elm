@@ -30,6 +30,19 @@ port persistNoteCollection : E.Value -> Cmd msg
 ---- MODEL ----
 
 
+type alias User =
+    { uid : String
+    , email : String
+    , displayName : String
+    }
+
+
+type Session
+    = SignedIn User
+    | SignedOut
+    | Loading
+
+
 type EditState
     = NotEditing
     | EditingNew String
@@ -44,6 +57,7 @@ type alias Model =
     { noteCollection : NoteCollection
     , editState : EditState
     , lastFocusedNoteListItemDomId : String
+    , session : Session
     }
 
 
@@ -56,6 +70,7 @@ init flags =
         ( { noteCollection = noteCollection
           , editState = NotEditing
           , lastFocusedNoteListItemDomId = ""
+          , session = Loading
           }
         , Cmd.none
         )
