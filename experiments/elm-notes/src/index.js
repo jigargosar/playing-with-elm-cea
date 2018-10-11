@@ -2,7 +2,7 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { forEachObjIndexed, isNil, pick, unless } from 'ramda'
+import { forEachObjIndexed, identity, isNil, pick, unless } from 'ramda'
 import { getOrCreateFirebaseApp, signIn, signOut } from './fire'
 
 const app = Elm.Main.init({
@@ -24,7 +24,7 @@ subscribe(
     let user = auth.currentUser
     if (user) {
       const batch = firestore.batch()
-      const cRef = firestore.collection(`/users/${user.uid}/elm-notes`)
+      const cRef = firestore.collection(elmNotesCollectionPath(user.uid))
       forEachObjIndexed(note => {
         batch.set(cRef.doc(note.id), note)
       })(nc)
@@ -37,16 +37,19 @@ subscribe(
 const auth = getOrCreateFirebaseApp().auth()
 subscribe('signIn', signIn, app)
 subscribe('signOut', signOut, app)
-
+let elmNotesListener = identity
 auth.onAuthStateChanged(function (user) {
   // console.log(user)
   // console.log(app.ports.sessionChanged)
   app.ports.sessionChanged.send(
     unless(isNil)(pick(['uid', 'email', 'displayName']))(user),
   )
+
 })
 
 // HELPER FUNCTIONS
+
+const elmNotesCollectionPath = uid => `/users/${uid}/elm-notes`
 
 function subscribe(port, fn, app) {
   app.ports[port].subscribe(fn)
