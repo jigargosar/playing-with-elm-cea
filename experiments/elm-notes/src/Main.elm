@@ -206,11 +206,14 @@ update msg model =
 
         DeleteNote note ->
             ( model
-            , nowMillis
-                (\now ->
-                    NoteCollection.delete now note model.noteCollection
-                        |> SetNoteCollection
-                )
+              --            , nowMillis
+              --                (\now ->
+              --                    SetNoteCollection <| NoteCollection.delete now note model.noteCollection
+              --                )
+            , Time.now
+                |> Task.map Time.posixToMillis
+                |> Task.map (\now -> NoteCollection.delete now note model.noteCollection)
+                |> Task.perform SetNoteCollection
             )
 
         AddNote content now ->
