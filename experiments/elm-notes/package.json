@@ -10,5 +10,15 @@
   },
   "scripts": {
     "start": "nodemon -w yarn.lock -w elm.json -x env ELM_DEBUGGER=true elm-app start"
+  },
+  "devDependencies": {
+    "prettier": "^1.14.3"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "arrowParens": "avoid",
+    "singleQuote": true,
+    "semi": false,
+    "printWidth": 80
   }
 }
