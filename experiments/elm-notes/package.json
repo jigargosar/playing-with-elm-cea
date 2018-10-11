@@ -8,8 +8,20 @@
     "ramda": "^0.25.0",
     "tachyons": "^4.11.1"
   },
+  "now": {
+    "alias": "elm-notes",
+    "type": "static",
+    "static": {
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  },
   "scripts": {
-    "start": "nodemon -w yarn.lock -w elm.json -x env ELM_DEBUGGER=true elm-app start",
+    "dev": "nodemon -w yarn.lock -w elm.json -x env ELM_DEBUGGER=true elm-app start",
     "build": "elm-app build"
   },
   "devDependencies": {
