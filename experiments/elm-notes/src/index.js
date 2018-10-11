@@ -2,7 +2,8 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { isNil } from 'ramda'
+import { isNil, pick, unless } from 'ramda'
+import { getOrCreateFirebaseApp } from './fire'
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
@@ -19,6 +20,14 @@ subscribe(
   nc => storageSet('noteCollection', nc),
   app,
 )
+
+const auth = getOrCreateFirebaseApp().auth()
+
+auth.onAuthStateChanged(function (user) {
+  console.log(user)
+  console.log(app.ports.sessionChanged)
+  app.ports.sessionChanged.send(unless(isNil)(pick(['']))(user))
+})
 
 // HELPER FUNCTIONS
 
