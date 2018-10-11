@@ -52,6 +52,14 @@ type alias F a =
     a -> a
 
 
+delete note nc =
+    let
+        newDict =
+            Dict.remove note.id nc.dict
+    in
+        setDict newDict nc
+
+
 updateNote : F Note -> Note -> F NoteCollection
 updateNote fn note nc =
     let
