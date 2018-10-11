@@ -4,18 +4,6 @@ import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
 import { isNil } from 'ramda'
 
-if (module.hot) {
-  try {
-    module.hot.addStatusHandler(status => {
-      console.log(status)
-      if (status === 'idle') {
-        console.clear()
-        console.log('HMR Idle')
-      }
-    })
-  } catch (e) {console.log(e) }
-}
-
 const app = Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
@@ -29,7 +17,10 @@ registerServiceWorker()
 subscribe(
   'persistNoteCollection',
   nc => storageSet('noteCollection', nc),
-  app)
+  app,
+)
+
+// HELPER FUNCTIONS
 
 function subscribe(port, fn, app) {
   app.ports[port].subscribe(fn)
@@ -51,3 +42,14 @@ function storageSet(key, value) {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
+if (module.hot) {
+  try {
+    module.hot.addStatusHandler(status => {
+      console.log(status)
+      if (status === 'idle') {
+        console.clear()
+        console.log('HMR Idle')
+      }
+    })
+  } catch (e) {console.log(e) }
+}
