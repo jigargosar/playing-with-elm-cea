@@ -209,9 +209,13 @@ restoreNoteListItemFocus =
 ---- VIEW ----
 
 
+decodeTargetId =
+    D.at [ "target", "id" ] D.string
+
+
 onFocusInTargetId : (String -> msg) -> Html.Attribute msg
 onFocusInTargetId msg =
-    Html.Events.on "focusin" (D.at [ "target", "id" ] D.string |> D.map msg)
+    Html.Events.on "focusin" (decodeTargetId |> D.map msg)
 
 
 view : Model -> Html Msg
