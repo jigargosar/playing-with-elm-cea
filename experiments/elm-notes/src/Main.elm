@@ -120,6 +120,8 @@ type Msg
     | SetLastFocusedNoteListItemDomId String
     | SetNotEditing
     | Session E.Value
+    | SignIn
+    | SignOut
 
 
 type alias UpdateReturn msg model =
@@ -152,6 +154,12 @@ update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
+
+        SignIn ->
+            ( model, signIn () )
+
+        SignOut ->
+            ( model, signOut () )
 
         Session encSession ->
             let
