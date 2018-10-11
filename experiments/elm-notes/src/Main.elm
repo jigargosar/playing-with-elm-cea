@@ -296,17 +296,22 @@ view model =
 viewHeader session =
     let
         viewSession =
-            case session of
-                InitialUnknown ->
-                    [ text <| "InitialUnknown" ]
+            div []
+                (case session of
+                    InitialUnknown ->
+                        [ text <| "InitialUnknown" ]
 
-                SignedOut ->
-                    [ text <| "SignedOut" ]
+                    SignedOut ->
+                        [ text <| "SignedOut" ]
 
-                SignedIn user ->
-                    [ text <| "SignedIn" ++ user.displayName ]
+                    SignedIn user ->
+                        [ text <| "SignedIn" ++ user.displayName ]
+                )
     in
-        div [ class "f3 tc" ] [ H.text "Elm Notes" ]
+        div []
+            [ div [ class "f3 tc" ] [ H.text "Elm Notes" ]
+            , viewSession
+            ]
 
 
 bbtn msg title =
