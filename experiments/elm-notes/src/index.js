@@ -2,7 +2,7 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { isNil, pick, unless } from 'ramda'
+import { forEach, isNil, pick, unless } from 'ramda'
 import { getOrCreateFirebaseApp, signIn, signOut } from './fire'
 
 const app = Elm.Main.init({
@@ -21,9 +21,12 @@ subscribe(
     storageSet('noteCollection', nc)
     let auth = getOrCreateFirebaseApp().auth()
     let firestore = getOrCreateFirebaseApp().firestore()
-    console.log(auth.currentUser)
-    if (auth.currentUser) {
-
+    let user = auth.currentUser
+    if (user) {
+      const batch = firestore.batch()
+      const cRef = firestore.collection(`/users/${user.uid}/elm-notes`)
+      forEach(note => batch.set(cRef.doc(note.id), note))(nc)
+      batch.commit().catch(console.error)
     }
   },
   app,
