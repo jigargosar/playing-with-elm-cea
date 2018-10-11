@@ -13,7 +13,7 @@ import Html.Events exposing (onClick, onFocus, onInput)
 import Html.Lazy as H
 import Html.Attributes as H
 import Html.Attributes as HA
-import Json.Decode as D
+import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
 import Note exposing (Note)
 import NoteCollection exposing (NoteCollection)
@@ -24,6 +24,9 @@ import Update.Extra
 
 
 port persistNoteCollection : E.Value -> Cmd msg
+
+
+port sessionChanged : (E.Value -> msg) -> Sub msg
 
 
 
@@ -40,7 +43,7 @@ type alias User =
 type Session
     = SignedIn User
     | SignedOut
-    | Loading
+    | InitialUnknown
 
 
 type EditState
@@ -70,7 +73,7 @@ init flags =
         ( { noteCollection = noteCollection
           , editState = NotEditing
           , lastFocusedNoteListItemDomId = ""
-          , session = Loading
+          , session = InitialUnknown
           }
         , Cmd.none
         )
@@ -110,6 +113,7 @@ type Msg
     | DeleteNote Note
     | SetLastFocusedNoteListItemDomId String
     | SetNotEditing
+    | Session E.Value
 
 
 type alias UpdateReturn msg model =
@@ -142,6 +146,19 @@ update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
+
+        Session encSession ->
+            let
+                sessionDecoder : Decoder Session
+                sessionDecoder =
+                    D.succeed InitialUnknown
+
+                newSession =
+                    D.decodeValue sessionDecoder encSession
+                        |> Result.mapError (Debug.log "Error: session")
+                        |> Result.withDefault model.session
+            in
+                ( { model | session = newSession }, Cmd.none )
 
         SetLastFocusedNoteListItemDomId domId ->
             ( if isNoteListItemDomId domId then
@@ -368,7 +385,9 @@ viewNoteList editState notes =
 
 subscriptions : Model -> Sub Msg
 subscriptions m =
-    Sub.batch []
+    Sub.batch
+        [ sessionChanged Session
+        ]
 
 
 main : Program Flags Model Msg
