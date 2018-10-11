@@ -29,8 +29,8 @@ queryAllSortByModifiedAt =
     .db >> Db.toList >> List.map Tuple.second >> List.sortBy (.modifiedAt >> (*) -1)
 
 
-setDict : NoteDb -> F NoteCollection
-setDict db nc =
+setDb : NoteDb -> F NoteCollection
+setDb db nc =
     { nc | db = db }
 
 
@@ -44,10 +44,10 @@ addNew now content nc =
         ( note, newSeed ) =
             Random.step (Note.generator now content) nc.seed
 
-        newDict =
+        newDB =
             Db.insert note.id note nc.db
     in
-        ( note, setDict newDict nc |> setSeed newSeed )
+        ( note, setDb newDB nc |> setSeed newSeed )
 
 
 type alias F a =
@@ -56,19 +56,19 @@ type alias F a =
 
 delete note nc =
     let
-        newDict =
+        newDB =
             Db.remove note.id nc.db
     in
-        setDict newDict nc
+        setDb newDB nc
 
 
 updateNote : F Note -> Note -> F NoteCollection
 updateNote fn note nc =
     let
-        newDict =
+        newDB =
             Db.update note.id (Maybe.map fn) nc.db
     in
-        setDict newDict nc
+        setDb newDB nc
 
 
 updateNoteContent : Int -> String -> Note -> F NoteCollection
@@ -76,8 +76,16 @@ updateNoteContent now content =
     updateNote (Note.updateContent now content)
 
 
-replace encNC nc =
-    nc
+replace encDb nc =
+    let
+        newDb : NoteDb
+        newDb =
+            D.decodeValue (dbDecoder) encDb
+                |> Result.unpack
+                    (Debug.log "Error" >> always (Db.empty))
+                    (identity)
+    in
+        setDb newDb nc
 
 
 generator : E.Value -> Random.Generator NoteCollection
