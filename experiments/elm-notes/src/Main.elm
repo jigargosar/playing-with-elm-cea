@@ -29,6 +29,12 @@ port persistNoteCollection : E.Value -> Cmd msg
 port sessionChanged : (E.Value -> msg) -> Sub msg
 
 
+port signIn : () -> Cmd msg
+
+
+port signOut : () -> Cmd msg
+
+
 
 ---- MODEL ----
 
