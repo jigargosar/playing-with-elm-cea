@@ -3,7 +3,7 @@ import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
 import { isNil, pick, unless } from 'ramda'
-import { getOrCreateFirebaseApp } from './fire'
+import { getOrCreateFirebaseApp, signIn, signOut } from './fire'
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
@@ -22,6 +22,8 @@ subscribe(
 )
 
 const auth = getOrCreateFirebaseApp().auth()
+subscribe('signIn', signIn, app)
+subscribe('signOut', signOut, app)
 
 auth.onAuthStateChanged(function (user) {
   console.log(user)

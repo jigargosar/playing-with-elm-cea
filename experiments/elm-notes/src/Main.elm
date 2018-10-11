@@ -319,7 +319,7 @@ viewHeader session =
                         [ div [] [ text <| "SignedOut" ], bbtn SignIn "SignIn" ]
 
                     Auth user ->
-                        [ div [] [ text <| "SignedIn" ++ user.displayName ], bbtn SignOut "SignIn" ]
+                        [ div [] [ text <| "SignedIn: " ++ user.displayName ], bbtn SignOut "SignOut" ]
                 )
     in
         div [ class "flex items-center hs3" ]
