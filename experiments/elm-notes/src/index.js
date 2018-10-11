@@ -2,7 +2,17 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { forEachObjIndexed, identity, isNil, map, pick, unless } from 'ramda'
+import {
+  compose,
+  forEachObjIndexed,
+  fromPairs,
+  identity,
+  isNil,
+  map,
+  pick,
+  prop,
+  unless,
+} from 'ramda'
 import { auth, firestore, signIn, signOut, userCRef } from './fire'
 
 const app = Elm.Main.init({
@@ -40,8 +50,10 @@ auth().onAuthStateChanged(function (user) {
     elmNotesListener()
     const cRef = userCRef(user.uid, elmNotesCollectionName)
     elmNotesListener = cRef.onSnapshot(qSnap => {
-      console.log(map(d => d.data())(qSnap.docs))
-
+      let qSnapToAllDocsDict = compose(fromPairs, map(d => [d.id, d.data()]), prop('docs'))
+      let docsDict = qSnapToAllDocsDict(qSnap)
+      console.log(docsDict)
+      // app.ports.notesCollectionChanged.send()
     })
   }
   app.ports.sessionChanged.send(
