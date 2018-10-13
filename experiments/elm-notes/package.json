@@ -11,7 +11,7 @@
   "now": {
     "alias": [
       "elm-notes",
-      "elm-notes.functional-programmer.com"
+      "https://elm-notes.functional-programmer.com"
     ],
     "type": "static",
     "static": {
