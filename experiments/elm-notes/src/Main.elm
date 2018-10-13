@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Browser
+import Exts.Html.Events
 import Html exposing (Html, button, div, h1, img, text, textarea)
 import Html.Attributes exposing (attribute, autofocus, class, id, src, tabindex, value)
 import Browser as B
@@ -436,11 +437,15 @@ viewNoteList editState notes =
 
                             content =
                                 Note.title note
+
+                            startEditingMsg =
+                                EditMsg <| OnEdit note
                         in
                             [ div
                                 [ id nodeDomId
                                 , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
-                                , onClick <| EditMsg <| OnEdit note
+                                , onClick startEditingMsg
+                                , Exts.Html.Events.onEnter startEditingMsg
                                 , class " pv2 pointer "
                                 , tabindex 0
                                 ]
