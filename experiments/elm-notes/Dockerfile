@@ -7,7 +7,7 @@ WORKDIR /usr/src
 # Copy package manager files to the working directory and run install
 COPY package.json yarn.lock ./
 
-RUN yarn global add create-elm-app
+RUN yarn add create-elm-app
 RUN yarn install
 
 # Copy all files to the working directory
