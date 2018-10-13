@@ -20,7 +20,9 @@ export function getOrCreateFirebaseApp() {
     firestore.settings({
       timestampsInSnapshots: true,
     })
-    firestore.enablePersistence().catch(console.error)
+    firestore
+      .enablePersistence({ experimentalTabSynchronization: true })
+      .catch(console.error)
     return app
   }
 
