@@ -15,6 +15,7 @@ import Html.Attributes as H
 import Html.Attributes as HA
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
+import Markdown
 import Note exposing (Note)
 import NoteCollection exposing (NoteCollection)
 import Random
@@ -432,15 +433,20 @@ viewNoteList editState notes =
                         let
                             nodeDomId =
                                 noteListItemDomId note
+
+                            content =
+                                Note.title note
                         in
                             [ div
                                 [ id nodeDomId
                                 , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
                                 , onClick <| EditMsg <| OnEdit note
-                                , class " pointer "
+                                , class " pv2 pointer "
                                 , tabindex 0
                                 ]
-                                [ text <| Note.title note ]
+                                {- [ text <| Note.title note ] -}
+                                [ div [] <| Markdown.toHtml Nothing content
+                                ]
                             ]
                 )
     in
