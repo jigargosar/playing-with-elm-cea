@@ -316,7 +316,7 @@ onFocusInTargetId msg =
 view : Model -> Html Msg
 view model =
     div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
-        [ div [ class "center w-90" ]
+        [ div [ class "vs3 center w-90" ]
             [ viewHeader model.session
             , viewAddNewNote model.editState
             ]
@@ -404,42 +404,47 @@ isNoteListItemDomId =
 viewNoteList editState notes =
     let
         viewNoteListItem note =
-            (case ( editState, isEditingNote note editState ) of
-                ( Editing eNote content, True ) ->
-                    div [ class "vs2 pv2" ]
-                        [ div []
-                            [ textarea
-                                [ id "editor"
-                                , class "w-100 h4"
-                                , autofocus True
-                                , value content
-                                , onInput OnUpdate
+            div []
+                (case ( editState, isEditingNote note editState ) of
+                    ( Editing eNote content, True ) ->
+                        [ (div [ class "vs2" ]
+                            [ div []
+                                [ textarea
+                                    [ id "editor"
+                                    , class "w-100 h4"
+                                    , autofocus True
+                                    , value content
+                                    , onInput OnUpdate
+                                    ]
+                                    []
                                 ]
-                                []
+                            , div [ class "flex hs3" ]
+                                [ bbtn OnOk "Ok"
+                                , bbtn OnCancel "Cancel"
+                                , bbtn OnDelete "Delete"
+                                ]
                             ]
-                        , div [ class "flex hs3" ]
-                            [ bbtn OnOk "Ok"
-                            , bbtn OnCancel "Cancel"
-                            , bbtn OnDelete "Delete"
-                            ]
+                          )
+                            |> Html.map EditMsg
                         ]
-                        |> Html.map EditMsg
 
-                _ ->
-                    let
-                        nodeDomId =
-                            noteListItemDomId note
-                    in
-                        button
-                            [ id nodeDomId
-                            , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
-                            , onClick <| EditMsg <| OnEdit note
-                            , class "input-reset tl bn bg--transparent db pv2 ph2 w-100 pointer "
+                    _ ->
+                        let
+                            nodeDomId =
+                                noteListItemDomId note
+                        in
+                            [ div
+                                [ id nodeDomId
+                                , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
+                                , onClick <| EditMsg <| OnEdit note
+                                , class "pre code pointer "
+                                , tabindex 0
+                                ]
+                                [ text <| Note.title note ]
                             ]
-                            [ text <| Note.title note ]
-            )
+                )
     in
-        div [ class "pv1" ] <| List.map viewNoteListItem notes
+        div [ class "pv1 vs3" ] <| List.map viewNoteListItem notes
 
 
 
