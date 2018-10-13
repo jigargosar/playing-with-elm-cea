@@ -404,7 +404,7 @@ isNoteListItemDomId =
 viewNoteList editState notes =
     let
         viewNoteListItem note =
-            div []
+            div [ class "bb b--black-10 pv2" ]
                 (case ( editState, isEditingNote note editState ) of
                     ( Editing eNote content, True ) ->
                         [ (div [ class "vs2" ]
@@ -437,14 +437,14 @@ viewNoteList editState notes =
                                 [ id nodeDomId
                                 , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
                                 , onClick <| EditMsg <| OnEdit note
-                                , class "pre code pointer "
+                                , class " pointer "
                                 , tabindex 0
                                 ]
                                 [ text <| Note.title note ]
                             ]
                 )
     in
-        div [ class "pv1 vs3" ] <| List.map viewNoteListItem notes
+        div [ class "pv1 vs1" ] <| List.map viewNoteListItem notes
 
 
 
