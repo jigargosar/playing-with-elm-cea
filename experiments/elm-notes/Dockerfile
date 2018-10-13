@@ -17,7 +17,7 @@ COPY . .
 # RUN CI=true yarn test
 
 # Build the app and move the resulting build to the `/public` directory
-RUN yarn build
+#RUN yarn build
 #RUN yarn build:ci
-#RUN npx elm-app build
+RUN yarb elm-app build
 RUN mv ./build /public
