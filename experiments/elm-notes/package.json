@@ -9,7 +9,10 @@
     "tachyons": "^4.11.1"
   },
   "now": {
-    "alias": "elm-notes",
+    "alias": [
+      "elm-notes",
+      "elm-notes.functional-programmer.com"
+    ],
     "type": "static",
     "static": {
       "rewrites": [
