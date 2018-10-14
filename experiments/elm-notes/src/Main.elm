@@ -4,6 +4,7 @@ import Browser
 import Exts.Html.Events
 import Exts.List
 import Exts.Maybe exposing (maybe)
+import HotKey exposing (defaultHotKey)
 import Html exposing (Html, button, div, h1, img, text, textarea)
 import Html.Attributes exposing (attribute, autofocus, class, id, src, tabindex, value)
 import Browser as B
@@ -408,47 +409,6 @@ isNoteListItemDomId =
     String.startsWith noteListItemDomIdPrefix
 
 
-anySoftKeyDown : Keyboard.Event.KeyboardEvent -> Bool
-anySoftKeyDown { shiftKey, metaKey, ctrlKey, altKey } =
-    shiftKey || metaKey || ctrlKey || altKey
-
-
-noSoftKeyDown =
-    not << anySoftKeyDown
-
-
-onlyMetaKeyDown { shiftKey, metaKey, ctrlKey, altKey } =
-    metaKey && not (shiftKey || ctrlKey || altKey)
-
-
-type alias HotKey =
-    { shiftKey : Bool
-    , ctrlKey : Bool
-    , altKey : Bool
-    , metaKey : Bool
-    , key : Keyboard.Key.Key
-    }
-
-
-defaultHotKey =
-    HotKey False False False False (Keyboard.Key.Ambiguous [])
-
-
-keToHotKey : Keyboard.Event.KeyboardEvent -> HotKey
-keToHotKey { shiftKey, ctrlKey, altKey, metaKey, keyCode } =
-    HotKey shiftKey ctrlKey altKey metaKey keyCode
-
-
-hotKeyMappingHandler mapping nopMsg ke =
-    mapping
-        |> Exts.List.firstMatch (Tuple.first >> (==) (keToHotKey ke))
-        |> maybe nopMsg (Tuple.second)
-
-
-hotKeyMappingDecoder mapping nopMsg =
-    D.map (hotKeyMappingHandler mapping nopMsg) Keyboard.Event.decodeKeyboardEvent
-
-
 viewNoteListEditItem content =
     let
         esc =
@@ -470,7 +430,7 @@ viewNoteListEditItem content =
                     , autofocus True
                     , value content
                     , onInput OnUpdate
-                    , Html.Events.on "keydown" (hotKeyMappingDecoder mapping EditMsgNoOp)
+                    , Html.Events.on "keydown" (HotKey.mappingDecoder mapping EditMsgNoOp)
                     ]
                     []
                 ]
