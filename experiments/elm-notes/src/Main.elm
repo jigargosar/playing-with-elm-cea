@@ -2,6 +2,8 @@ port module Main exposing (..)
 
 import Browser
 import Exts.Html.Events
+import Exts.List
+import Exts.Maybe exposing (maybe)
 import Html exposing (Html, button, div, h1, img, text, textarea)
 import Html.Attributes exposing (attribute, autofocus, class, id, src, tabindex, value)
 import Browser as B
@@ -422,8 +424,8 @@ onlyMetaKeyDown { shiftKey, metaKey, ctrlKey, altKey } =
 type alias HotKey =
     { shiftKey : Bool
     , ctrlKey : Bool
-    , metaKey : Bool
     , altKey : Bool
+    , metaKey : Bool
     , key : Keyboard.Key.Key
     }
 
@@ -432,29 +434,28 @@ defaultHotKey =
     HotKey False False False False (Keyboard.Key.Ambiguous [])
 
 
+keToHotKey : Keyboard.Event.KeyboardEvent -> HotKey
+keToHotKey { shiftKey, ctrlKey, altKey, metaKey, keyCode } =
+    HotKey shiftKey ctrlKey altKey metaKey keyCode
+
+
 viewNoteListEditItem content =
     let
-        _ =
-            [ ( { defaultHotKey | key = Keyboard.Key.Escape }, OnCancel )
-            , ( { defaultHotKey | key = Keyboard.Key.Enter, metaKey = True }, OnOk )
+        esc =
+            { defaultHotKey | key = Keyboard.Key.Escape }
+
+        metaEnter =
+            { defaultHotKey | key = Keyboard.Key.Enter, metaKey = True }
+
+        mapping =
+            [ ( esc, OnCancel )
+            , ( metaEnter, OnOk )
             ]
 
         handleKeyDown ke =
-            case ( ke.keyCode, anySoftKeyDown ke ) of
-                ( Keyboard.Key.Escape, _ ) ->
-                    if anySoftKeyDown ke then
-                        EditMsgNoOp
-                    else
-                        OnCancel
-
-                ( Keyboard.Key.Enter, _ ) ->
-                    if onlyMetaKeyDown ke then
-                        OnOk
-                    else
-                        EditMsgNoOp
-
-                _ ->
-                    EditMsgNoOp
+            mapping
+                |> Exts.List.firstMatch (Tuple.first >> (==) (keToHotKey ke))
+                |> maybe EditMsgNoOp (always EditMsgNoOp)
     in
         (div [ class "vs2" ]
             [ div []
