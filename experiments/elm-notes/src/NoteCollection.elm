@@ -33,6 +33,10 @@ queryAllSortByModifiedAt =
         >> List.sortBy (.modifiedAt >> (*) -1)
 
 
+getByIdStr idStr { db } =
+    Db.get db (Id.fromString idStr)
+
+
 setDb : NoteDb -> F NoteCollection
 setDb db nc =
     { nc | db = db }

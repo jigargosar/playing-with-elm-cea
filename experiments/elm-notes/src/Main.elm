@@ -130,6 +130,10 @@ currentNoteList =
     .noteCollection >> NoteCollection.queryAll
 
 
+getNoteByIdStr id =
+    .noteCollection >> NoteCollection.getByIdStr id
+
+
 
 ---- UPDATE ----
 
@@ -378,7 +382,7 @@ htmlView model =
             viewNoteListPage model
 
         NoteDetail idStr ->
-            viewNoteListPage model
+            viewNoteDetailPage idStr model
 
         NotFound ->
             viewNoteListPage model
@@ -396,6 +400,57 @@ viewNoteListPage model =
                 ]
             ]
         ]
+
+
+viewNoteDetailPage idStr model =
+    div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
+        [ div [ class "vs3 center w-90" ]
+            [ viewHeader model.session
+            , viewAddNewNote model.editState
+            ]
+        , div [ class "flex-auto overflow-scroll" ]
+            [ div [ class "center w-90" ]
+                [ getNoteByIdStr idStr model
+                    |> Maybe.map viewNoteDetail
+                    |> Maybe.withDefault (text "Note Not Found")
+                ]
+            ]
+        ]
+
+
+viewNoteDetail note =
+    let
+        nodeDomId =
+            noteListItemDomId note
+
+        content =
+            Note.getContent note
+
+        lines =
+            String.trim content |> String.lines
+
+        firstLine =
+            List.head lines |> Maybe.withDefault "<Empty>"
+
+        otherLines =
+            List.tail lines |> Maybe.withDefault [] |> String.join " " |> String.slice 0 100
+
+        startEditingMsg =
+            EditMsg <| OnEdit note
+    in
+        div
+            [ id nodeDomId
+            , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
+            , onClick startEditingMsg
+            , Exts.Html.Events.onEnter startEditingMsg
+            , class " pv2 pointer "
+            , tabindex 0
+            ]
+            [ div [ class "f5" ] [ text firstLine ]
+            , div [ class "f6 truncate black-60" ] [ text otherLines ]
+
+            {- , div [] <| Markdown.toHtml Nothing content -}
+            ]
 
 
 viewHeader session =
