@@ -8,7 +8,7 @@ import HotKey exposing (defaultHotKey)
 import Html exposing (Html, button, div, h1, img, text, textarea)
 import Html.Attributes exposing (attribute, autofocus, class, id, src, tabindex, value)
 import Browser as B
-import Browser.Navigation as Navigation
+import Browser.Navigation as Nav
 import Browser.Events as B
 import Browser.Events as BE
 import Browser.Dom as B
@@ -83,11 +83,13 @@ type alias Model =
     , editState : EditState
     , lastFocusedNoteListItemDomId : String
     , session : Session
+    , key : Nav.Key
+    , url : Url.Url
     }
 
 
-init : Flags -> Url.Url -> Navigation.Key -> ( Model, Cmd Msg )
-init flags url navKey =
+init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key =
     let
         _ =
             Browser.application
@@ -99,6 +101,8 @@ init flags url navKey =
           , editState = NotEditing
           , lastFocusedNoteListItemDomId = ""
           , session = InitialUnknown
+          , key = key
+          , url = url
           }
         , Cmd.none
         )
