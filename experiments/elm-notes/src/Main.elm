@@ -55,6 +55,7 @@ port notesCollectionChanged : (E.Value -> msg) -> Sub msg
 type Route
     = NoteList
     | NoteDetail String
+    | NotFound
 
 
 routeParser : UrlPar.Parser (Route -> a) a
@@ -95,6 +96,7 @@ type alias Model =
     , session : Session
     , key : Nav.Key
     , url : Url.Url
+    , route : Route
     }
 
 
@@ -113,6 +115,7 @@ init flags url key =
           , session = InitialUnknown
           , key = key
           , url = url
+          , route = UrlPar.parse routeParser url |> Maybe.withDefault NotFound
           }
         , Cmd.none
         )
