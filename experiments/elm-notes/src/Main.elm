@@ -603,9 +603,6 @@ viewNoteListDisplayItem note =
         otherLines =
             List.tail lines |> Maybe.withDefault [] |> String.join " " |> String.slice 0 100
 
-        startEditingMsg =
-            EditMsg <| OnEdit note
-
         routeToNoteDetailViewMsg =
             RouteTo <| noteDetailRouteFromNote note
     in
@@ -616,13 +613,9 @@ viewNoteListDisplayItem note =
             , Exts.Html.Events.onEnter routeToNoteDetailViewMsg
             , class "link black pv2 pointer "
             , tabindex 0
-
-            --            , href <| noteDetailUrl note
             ]
             [ div [ class "f5" ] [ text firstLine ]
             , div [ class "f6 truncate black-60" ] [ text otherLines ]
-
-            {- , div [] <| Markdown.toHtml Nothing content -}
             ]
 
 
