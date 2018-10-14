@@ -409,33 +409,37 @@ isNoteListItemDomId =
     String.startsWith noteListItemDomIdPrefix
 
 
-viewNoteListEditItem content =
+noteContentEditor content =
     let
         mapping =
             [ ( HotKey.esc, OnCancel )
             , ( HotKey.metaEnter, OnOk )
             ]
     in
-        (div [ class "vs2" ]
-            [ div []
-                [ textarea
-                    [ id "editor"
-                    , class "w-100 h4"
-                    , autofocus True
-                    , value content
-                    , onInput OnUpdate
-                    , HotKey.onKeyDown mapping EditMsgNoOp
-                    ]
-                    []
+        div []
+            [ textarea
+                [ id "editor"
+                , class "w-100 h4"
+                , autofocus True
+                , value content
+                , onInput OnUpdate
+                , HotKey.onKeyDown mapping EditMsgNoOp
                 ]
-            , div [ class "flex hs3" ]
-                [ bbtn OnOk "Ok"
-                , bbtn OnCancel "Cancel"
-                , bbtn OnDelete "Delete"
-                ]
+                []
             ]
-        )
-            |> Html.map EditMsg
+
+
+viewNoteListEditItem content =
+    (div [ class "vs2" ]
+        [ noteContentEditor content
+        , div [ class "flex hs3" ]
+            [ bbtn OnOk "Ok"
+            , bbtn OnCancel "Cancel"
+            , bbtn OnDelete "Delete"
+            ]
+        ]
+    )
+        |> Html.map EditMsg
 
 
 viewNoteListDisplayItem note =
