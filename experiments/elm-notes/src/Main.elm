@@ -534,6 +534,10 @@ viewNoteListEditItem content =
         |> Html.map EditMsg
 
 
+noteDetailUrl note =
+    Url.Builder.absolute [ "note", Note.idStr note ] []
+
+
 viewNoteListDisplayItem note =
     let
         nodeDomId =
@@ -556,9 +560,6 @@ viewNoteListDisplayItem note =
 
         viewNoteMsg =
             EditMsg <| OnEdit note
-
-        noteDetailUrl =
-            Url.Builder.absolute [ "note", Note.idStr note ] []
     in
         H.a
             [ id nodeDomId
@@ -568,7 +569,7 @@ viewNoteListDisplayItem note =
             , Exts.Html.Events.onEnter startEditingMsg
             , class "link black pv2 pointer "
             , tabindex 0
-            , href noteDetailUrl
+            , href <| noteDetailUrl note
             ]
             [ div [ class "f5" ] [ text firstLine ]
             , div [ class "f6 truncate black-60" ] [ text otherLines ]
