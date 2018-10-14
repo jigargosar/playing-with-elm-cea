@@ -410,7 +410,7 @@ noteContentEditor content =
         div []
             [ textarea
                 [ id "editor"
-                , class "w-100 h4"
+                , class "w-100 h5"
                 , autofocus True
                 , value content
                 , onInput OnUpdate
