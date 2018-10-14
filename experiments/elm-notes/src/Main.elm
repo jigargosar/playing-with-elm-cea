@@ -421,7 +421,7 @@ viewNoteListPage model =
             ]
         , div [ class "flex-auto overflow-scroll" ]
             [ div [ class "center w-90" ]
-                [ viewNoteList model.editState (currentNoteList model)
+                [ viewNoteList (currentNoteList model)
                 ]
             ]
         ]
@@ -626,16 +626,11 @@ viewNoteListDisplayItem note =
             ]
 
 
-viewNoteList editState notes =
+viewNoteList notes =
     let
         viewItem note =
             div [ class "bb b--black-10 pv2" ]
-                [ case ( editState, isEditingNote note editState ) of
-                    ( Editing _ content, True ) ->
-                        viewNoteListEditItem content
-
-                    _ ->
-                        viewNoteListDisplayItem note
+                [ viewNoteListDisplayItem note
                 ]
     in
         div [ class "pv1 vs1" ] <| List.map viewItem notes
