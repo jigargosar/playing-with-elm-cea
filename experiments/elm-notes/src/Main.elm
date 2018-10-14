@@ -582,14 +582,14 @@ viewNoteListDisplayItem note =
         startEditingMsg =
             EditMsg <| OnEdit note
 
-        viewNoteDetailMsg =
+        routeToNoteDetailViewMsg =
             RouteTo <| noteDetailRouteFromNote note
     in
         div
             [ id nodeDomId
             , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
-            , onClick viewNoteDetailMsg
-            , Exts.Html.Events.onEnter viewNoteDetailMsg
+            , onClick routeToNoteDetailViewMsg
+            , Exts.Html.Events.onEnter routeToNoteDetailViewMsg
             , class "link black pv2 pointer "
             , tabindex 0
 
