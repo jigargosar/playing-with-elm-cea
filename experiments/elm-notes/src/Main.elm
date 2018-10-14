@@ -6,7 +6,7 @@ import Exts.List
 import Exts.Maybe exposing (maybe)
 import HotKey exposing (defaultHotKey)
 import Html exposing (Html, button, div, h1, img, text, textarea)
-import Html.Attributes exposing (attribute, autofocus, class, id, src, tabindex, value)
+import Html.Attributes exposing (attribute, autofocus, class, href, id, src, tabindex, value)
 import Browser as B
 import Browser.Navigation as Nav
 import Browser.Events as B
@@ -30,6 +30,7 @@ import Task
 import Time
 import Update.Extra
 import Url
+import Url.Builder
 import Url.Parser as UrlPar exposing ((</>))
 
 
@@ -569,14 +570,22 @@ viewNoteListDisplayItem note =
 
         startEditingMsg =
             EditMsg <| OnEdit note
+
+        viewNoteMsg =
+            EditMsg <| OnEdit note
+
+        noteDetailUrl =
+            Url.Builder.absolute [ "note", Note.idStr note ] []
     in
-        div
+        H.a
             [ id nodeDomId
             , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
-            , onClick startEditingMsg
+
+            {- , onClick startEditingMsg -}
             , Exts.Html.Events.onEnter startEditingMsg
             , class " pv2 pointer "
             , tabindex 0
+            , href noteDetailUrl
             ]
             [ div [ class "f5" ] [ text firstLine ]
             , div [ class "f6 truncate black-60" ] [ text otherLines ]
