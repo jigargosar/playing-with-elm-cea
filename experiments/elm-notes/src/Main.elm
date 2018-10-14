@@ -583,7 +583,7 @@ viewNoteListDisplayItem note =
 
             {- , onClick startEditingMsg -}
             , Exts.Html.Events.onEnter startEditingMsg
-            , class " pv2 pointer "
+            , class "link black pv2 pointer "
             , tabindex 0
             , href noteDetailUrl
             ]
