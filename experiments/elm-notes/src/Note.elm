@@ -43,6 +43,10 @@ title =
     .content
 
 
+getContent =
+    .content
+
+
 init content =
     Note content
 

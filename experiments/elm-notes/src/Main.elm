@@ -439,7 +439,7 @@ viewNoteListDisplayItem note =
             noteListItemDomId note
 
         content =
-            Note.title note
+            Note.getContent note
 
         startEditingMsg =
             EditMsg <| OnEdit note
