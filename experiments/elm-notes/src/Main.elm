@@ -421,64 +421,6 @@ htmlView model =
             viewNoteListPage model
 
 
-viewNoteDetailPage idStr model =
-    div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
-        [ div [ class "vs3 center w-90" ]
-            [ viewHeader model.session
-            , viewAddNewNote model.editState
-            ]
-        , div [ class "flex-auto overflow-scroll" ]
-            [ div [ class "center w-90" ]
-                [ getNoteByIdStr idStr model
-                    |> Maybe.map (viewNoteDetail model.editState)
-                    |> Maybe.withDefault (text "Note Not Found")
-                ]
-            ]
-        ]
-
-
-viewNoteDetail editState note =
-    div [ class "bb b--black-10 pv2" ]
-        [ case ( editState, isEditingNote note editState ) of
-            ( Editing _ content, True ) ->
-                viewNoteDetailEditor content
-
-            _ ->
-                viewNoteDetailMarkdown note
-        ]
-
-
-viewNoteDetailEditor content =
-    (div [ class "vs2" ]
-        [ noteContentEditor content
-        , div [ class "flex hs3" ]
-            [ bbtn OnOk "Ok"
-            , bbtn OnCancel "Cancel"
-            , bbtn OnDelete "Delete"
-            ]
-        ]
-    )
-        |> Html.map EditMsg
-
-
-viewNoteDetailMarkdown note =
-    let
-        content =
-            Note.getContent note
-
-        startEditingMsg =
-            EditMsg <| OnEdit note
-    in
-        div
-            [ onClick startEditingMsg
-            , Exts.Html.Events.onEnter startEditingMsg
-            , class " pv2 pointer "
-            , tabindex 0
-            ]
-            [ div [] <| Markdown.toHtml Nothing content
-            ]
-
-
 viewHeader session =
     let
         viewSession =
@@ -548,6 +490,68 @@ noteContentEditor content =
                 , HotKey.onKeyDown mapping EditMsgNoOp
                 ]
                 []
+            ]
+
+
+
+---- NOTE DETAIL PAGE ----
+
+
+viewNoteDetailPage idStr model =
+    div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
+        [ div [ class "vs3 center w-90" ]
+            [ viewHeader model.session
+            , viewAddNewNote model.editState
+            ]
+        , div [ class "flex-auto overflow-scroll" ]
+            [ div [ class "center w-90" ]
+                [ getNoteByIdStr idStr model
+                    |> Maybe.map (viewNoteDetail model.editState)
+                    |> Maybe.withDefault (text "Note Not Found")
+                ]
+            ]
+        ]
+
+
+viewNoteDetail editState note =
+    div [ class "bb b--black-10 pv2" ]
+        [ case ( editState, isEditingNote note editState ) of
+            ( Editing _ content, True ) ->
+                viewNoteDetailEditor content
+
+            _ ->
+                viewNoteDetailMarkdown note
+        ]
+
+
+viewNoteDetailEditor content =
+    (div [ class "vs2" ]
+        [ noteContentEditor content
+        , div [ class "flex hs3" ]
+            [ bbtn OnOk "Ok"
+            , bbtn OnCancel "Cancel"
+            , bbtn OnDelete "Delete"
+            ]
+        ]
+    )
+        |> Html.map EditMsg
+
+
+viewNoteDetailMarkdown note =
+    let
+        content =
+            Note.getContent note
+
+        startEditingMsg =
+            EditMsg <| OnEdit note
+    in
+        div
+            [ onClick startEditingMsg
+            , Exts.Html.Events.onEnter startEditingMsg
+            , class " pv2 pointer "
+            , tabindex 0
+            ]
+            [ div [] <| Markdown.toHtml Nothing content
             ]
 
 
