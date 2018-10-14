@@ -434,6 +434,11 @@ defaultHotKey =
 
 viewNoteListEditItem content =
     let
+        _ =
+            [ ( { defaultHotKey | key = Keyboard.Key.Escape }, OnCancel )
+            , ( { defaultHotKey | key = Keyboard.Key.Enter, metaKey = True }, OnOk )
+            ]
+
         handleKeyDown ke =
             case ( ke.keyCode, anySoftKeyDown ke ) of
                 ( Keyboard.Key.Escape, _ ) ->
