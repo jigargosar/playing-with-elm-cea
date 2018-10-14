@@ -83,6 +83,10 @@ routeToUrlString route =
                 Url.toString url
 
 
+noteDetailRouteFromNote note =
+    NoteDetail <| Note.idStr note
+
+
 routeFromUrl url =
     UrlPar.parse routeParser url |> Maybe.withDefault (NotFound url)
 
@@ -577,12 +581,15 @@ viewNoteListDisplayItem note =
 
         startEditingMsg =
             EditMsg <| OnEdit note
+
+        viewNoteDetailMsg =
+            RouteTo <| noteDetailRouteFromNote note
     in
         div
             [ id nodeDomId
             , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
-            , onClick startEditingMsg
-            , Exts.Html.Events.onEnter startEditingMsg
+            , onClick viewNoteDetailMsg
+            , Exts.Html.Events.onEnter viewNoteDetailMsg
             , class "link black pv2 pointer "
             , tabindex 0
 
