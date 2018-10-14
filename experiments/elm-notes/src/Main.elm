@@ -439,6 +439,16 @@ keToHotKey { shiftKey, ctrlKey, altKey, metaKey, keyCode } =
     HotKey shiftKey ctrlKey altKey metaKey keyCode
 
 
+hotKeyMappingHandler mapping nopMsg ke =
+    mapping
+        |> Exts.List.firstMatch (Tuple.first >> (==) (keToHotKey ke))
+        |> maybe nopMsg (Tuple.second)
+
+
+hotKeyMappingDecoder mapping nopMsg =
+    D.map (hotKeyMappingHandler mapping nopMsg) Keyboard.Event.decodeKeyboardEvent
+
+
 viewNoteListEditItem content =
     let
         esc =
@@ -451,11 +461,6 @@ viewNoteListEditItem content =
             [ ( esc, OnCancel )
             , ( metaEnter, OnOk )
             ]
-
-        handleKeyDown ke =
-            mapping
-                |> Exts.List.firstMatch (Tuple.first >> (==) (keToHotKey ke))
-                |> maybe EditMsgNoOp (always EditMsgNoOp)
     in
         (div [ class "vs2" ]
             [ div []
@@ -465,7 +470,7 @@ viewNoteListEditItem content =
                     , autofocus True
                     , value content
                     , onInput OnUpdate
-                    , Html.Events.on "keydown" (D.map handleKeyDown Keyboard.Event.decodeKeyboardEvent)
+                    , Html.Events.on "keydown" (hotKeyMappingDecoder mapping EditMsgNoOp)
                     ]
                     []
                 ]
