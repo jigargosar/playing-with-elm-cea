@@ -30,6 +30,7 @@ import Task
 import Time
 import Update.Extra
 import Url
+import Url.Parser as UrlPar exposing ((</>))
 
 
 port persistNoteCollection : E.Value -> Cmd msg
@@ -54,6 +55,14 @@ port notesCollectionChanged : (E.Value -> msg) -> Sub msg
 type Route
     = NoteList
     | NoteDetail String
+
+
+routeParser : UrlPar.Parser (Route -> a) a
+routeParser =
+    UrlPar.oneOf
+        [ UrlPar.map NoteList UrlPar.top
+        , UrlPar.map NoteDetail (UrlPar.s "note" </> UrlPar.string)
+        ]
 
 
 type alias User =
