@@ -447,21 +447,17 @@ viewNoteListDisplayItem note =
             [ div [] <| Markdown.toHtml Nothing content ]
 
 
-viewNoteListItem editState note =
-    div [ class "bb b--black-10 pv2" ]
-        (case ( editState, isEditingNote note editState ) of
-            ( Editing eNote content, True ) ->
-                [ viewNoteListEditItem content ]
-
-            _ ->
-                [ viewNoteListDisplayItem note ]
-        )
-
-
 viewNoteList editState notes =
     let
-        viewItem =
-            viewNoteListItem editState
+        viewItem note =
+            div [ class "bb b--black-10 pv2" ]
+                [ case ( editState, isEditingNote note editState ) of
+                    ( Editing _ content, True ) ->
+                        viewNoteListEditItem content
+
+                    _ ->
+                        viewNoteListDisplayItem note
+                ]
     in
         div [ class "pv1 vs1" ] <| List.map viewItem notes
 
