@@ -56,7 +56,7 @@ port notesCollectionChanged : (E.Value -> msg) -> Sub msg
 type Route
     = NoteList
     | NoteDetail String
-    | NotFound
+    | NotFound Url.Url
 
 
 routeParser : UrlPar.Parser (Route -> a) a
@@ -67,8 +67,24 @@ routeParser =
         ]
 
 
-routeFromUrl =
-    UrlPar.parse routeParser >> Maybe.withDefault NotFound
+routeToUrlString route =
+    let
+        absolute =
+            Url.Builder.absolute
+    in
+        case route of
+            NoteList ->
+                absolute [] []
+
+            NoteDetail idStr ->
+                absolute [ "note", idStr ] []
+
+            NotFound url ->
+                Url.toString url
+
+
+routeFromUrl url =
+    UrlPar.parse routeParser url |> Maybe.withDefault (NotFound url)
 
 
 type alias User =
@@ -206,12 +222,7 @@ update msg model =
             ( model, Cmd.none )
 
         RouteTo route ->
-            case route of
-                NoteList ->
-                    ( model, Cmd.none )
-
-                _ ->
-                    ( model, Cmd.none )
+            ( model, Nav.pushUrl model.key (routeToUrlString route) )
 
         LinkClicked urlReq ->
             case urlReq of
@@ -394,7 +405,7 @@ htmlView model =
         NoteDetail idStr ->
             viewNoteDetailPage idStr model
 
-        NotFound ->
+        NotFound url ->
             viewNoteListPage model
 
 
