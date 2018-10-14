@@ -171,6 +171,7 @@ type Msg
     | NotesCollectionChanged E.Value
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
+    | RouteTo Route
 
 
 type alias UpdateReturn msg model =
@@ -203,6 +204,14 @@ update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
+
+        RouteTo route ->
+            case route of
+                NoteList ->
+                    ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
 
         LinkClicked urlReq ->
             case urlReq of
