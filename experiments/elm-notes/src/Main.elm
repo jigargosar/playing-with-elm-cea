@@ -53,7 +53,6 @@ port notesCollectionChanged : (E.Value -> msg) -> Sub msg
 
 type Route
     = NoteList
-    | Note String
 
 
 type alias User =
