@@ -16,6 +16,8 @@ import Html.Attributes as H
 import Html.Attributes as HA
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
+import Keyboard.Event
+import Keyboard.Key
 import Markdown
 import Note exposing (Note)
 import NoteCollection exposing (NoteCollection)
@@ -114,6 +116,7 @@ type EditMsg
     | OnCancel
     | OnDelete
     | OnUpdate NoteContent
+    | EditMsgNoOp
 
 
 type Msg
@@ -403,27 +406,45 @@ isNoteListItemDomId =
     String.startsWith noteListItemDomIdPrefix
 
 
+anySoftKeyDown : Keyboard.Event.KeyboardEvent -> Bool
+anySoftKeyDown { shiftKey, metaKey, ctrlKey, altKey } =
+    shiftKey && metaKey && ctrlKey && altKey
+
+
 viewNoteListEditItem content =
-    (div [ class "vs2" ]
-        [ div []
-            [ textarea
-                [ id "editor"
-                , class "w-100 h4"
-                , autofocus True
-                , value content
-                , onInput OnUpdate
-                , Html.Events.custom "keydown" (D.fail "Temp fail")
+    let
+        handleKeyDown ke =
+            case ( ke.keyCode, anySoftKeyDown ke ) of
+                ( Keyboard.Key.Escape, False ) ->
+                    let
+                        _ =
+                            Debug.log "k" (ke)
+                    in
+                        EditMsgNoOp
+
+                _ ->
+                    EditMsgNoOp
+    in
+        (div [ class "vs2" ]
+            [ div []
+                [ textarea
+                    [ id "editor"
+                    , class "w-100 h4"
+                    , autofocus True
+                    , value content
+                    , onInput OnUpdate
+                    , Html.Events.on "keydown" (D.map handleKeyDown Keyboard.Event.decodeKeyboardEvent)
+                    ]
+                    []
                 ]
-                []
+            , div [ class "flex hs3" ]
+                [ bbtn OnOk "Ok"
+                , bbtn OnCancel "Cancel"
+                , bbtn OnDelete "Delete"
+                ]
             ]
-        , div [ class "flex hs3" ]
-            [ bbtn OnOk "Ok"
-            , bbtn OnCancel "Cancel"
-            , bbtn OnDelete "Delete"
-            ]
-        ]
-    )
-        |> Html.map EditMsg
+        )
+            |> Html.map EditMsg
 
 
 viewNoteListDisplayItem note =
