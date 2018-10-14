@@ -408,18 +408,27 @@ isNoteListItemDomId =
 
 anySoftKeyDown : Keyboard.Event.KeyboardEvent -> Bool
 anySoftKeyDown { shiftKey, metaKey, ctrlKey, altKey } =
-    shiftKey && metaKey && ctrlKey && altKey
+    shiftKey || metaKey || ctrlKey || altKey
+
+
+onlyMetaKeyDown { shiftKey, metaKey, ctrlKey, altKey } =
+    metaKey && not (shiftKey || ctrlKey || altKey)
 
 
 viewNoteListEditItem content =
     let
         handleKeyDown ke =
             case ( ke.keyCode, anySoftKeyDown ke ) of
-                ( Keyboard.Key.Escape, False ) ->
-                    let
-                        _ =
-                            Debug.log "k" (ke)
-                    in
+                ( Keyboard.Key.Escape, _ ) ->
+                    if anySoftKeyDown ke then
+                        EditMsgNoOp
+                    else
+                        OnCancel
+
+                ( Keyboard.Key.Enter, _ ) ->
+                    if onlyMetaKeyDown ke then
+                        OnOk
+                    else
                         EditMsgNoOp
 
                 _ ->
