@@ -53,6 +53,7 @@ port notesCollectionChanged : (E.Value -> msg) -> Sub msg
 
 type Route
     = NoteList
+    | NoteDetail String
 
 
 type alias User =
@@ -183,10 +184,17 @@ update msg model =
             ( model, Cmd.none )
 
         OnUrlRequest req ->
-            ( model, Cmd.none )
+            case req of
+                Browser.Internal url ->
+                    ( model, Nav.pushUrl model.key (Url.toString url) )
+
+                Browser.External href ->
+                    ( model, Nav.load href )
 
         OnUrlChange url ->
-            ( model, Cmd.none )
+            ( { model | url = url }
+            , Cmd.none
+            )
 
         NotesCollectionChanged encNC ->
             let
