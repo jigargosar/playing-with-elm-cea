@@ -447,41 +447,41 @@ bbtn msg title =
 
 
 viewAddNewNote editState =
-    div [ class "vs3" ]
-        (case editState of
-            EditingNew content ->
-                [ noteContentEditor content
-                , div [ class "flex hs3" ]
-                    [ bbtn OnOk "Ok"
-                    , bbtn OnCancel "Cancel"
-                    ]
-                ]
-
-            _ ->
-                [ bbtn OnNew "New"
-                ]
-        )
-        |> Html.map EditMsg
-
-
-noteContentEditor content =
     let
-        mapping =
-            [ ( HotKey.esc, OnCancel )
-            , ( HotKey.metaEnter, OnOk )
-            ]
+        noteContentEditor content =
+            let
+                mapping =
+                    [ ( HotKey.esc, OnCancel )
+                    , ( HotKey.metaEnter, OnOk )
+                    ]
+            in
+                div []
+                    [ textarea
+                        [ id "editor"
+                        , class "w-100 h5"
+                        , autofocus True
+                        , value content
+                        , onInput OnUpdate
+                        , HotKey.onKeyDown mapping EditMsgNoOp
+                        ]
+                        []
+                    ]
     in
-        div []
-            [ textarea
-                [ id "editor"
-                , class "w-100 h5"
-                , autofocus True
-                , value content
-                , onInput OnUpdate
-                , HotKey.onKeyDown mapping EditMsgNoOp
-                ]
-                []
-            ]
+        div [ class "vs3" ]
+            (case editState of
+                EditingNew content ->
+                    [ noteContentEditor content
+                    , div [ class "flex hs3" ]
+                        [ bbtn OnOk "Ok"
+                        , bbtn OnCancel "Cancel"
+                        ]
+                    ]
+
+                _ ->
+                    [ bbtn OnNew "New"
+                    ]
+            )
+            |> Html.map EditMsg
 
 
 
