@@ -8,6 +8,7 @@ import HotKey exposing (defaultHotKey)
 import Html exposing (Html, button, div, h1, img, text, textarea)
 import Html.Attributes exposing (attribute, autofocus, class, id, src, tabindex, value)
 import Browser as B
+import Browser.Navigation as Navigation
 import Browser.Events as B
 import Browser.Events as BE
 import Browser.Dom as B
@@ -28,6 +29,7 @@ import Random
 import Task
 import Time
 import Update.Extra
+import Url
 
 
 port persistNoteCollection : E.Value -> Cmd msg
@@ -80,9 +82,12 @@ type alias Model =
     }
 
 
-init : Flags -> ( Model, Cmd Msg )
-init flags =
+init : Flags -> Url.Url -> Navigation.Key -> ( Model, Cmd Msg )
+init flags url navKey =
     let
+        _ =
+            Browser.application
+
         ( noteCollection, _ ) =
             Random.step (NoteCollection.generator flags.noteList) (Random.initialSeed flags.now)
     in
@@ -134,6 +139,8 @@ type Msg
     | SignIn
     | SignOut
     | NotesCollectionChanged E.Value
+    | OnUrlRequest Browser.UrlRequest
+    | OnUrlChange Url.Url
 
 
 type alias UpdateReturn msg model =
@@ -165,6 +172,12 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
+            ( model, Cmd.none )
+
+        OnUrlRequest req ->
+            ( model, Cmd.none )
+
+        OnUrlChange url ->
             ( model, Cmd.none )
 
         NotesCollectionChanged encNC ->
@@ -321,8 +334,13 @@ onFocusInTargetId msg =
     Html.Events.on "focusin" (decodeTargetId |> D.map msg)
 
 
-view : Model -> Html Msg
+view : Model -> Browser.Document Msg
 view model =
+    { title = "Elm Notes", body = [ htmlView model ] }
+
+
+htmlView : Model -> Html Msg
+htmlView model =
     div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
         [ div [ class "vs3 center w-90" ]
             [ viewHeader model.session
@@ -497,9 +515,11 @@ subscriptions m =
 
 main : Program Flags Model Msg
 main =
-    B.element
-        { view = view
-        , init = init
+    B.application
+        { init = init
+        , view = view
         , update = update
         , subscriptions = subscriptions
+        , onUrlRequest = OnUrlRequest
+        , onUrlChange = OnUrlChange
         }
