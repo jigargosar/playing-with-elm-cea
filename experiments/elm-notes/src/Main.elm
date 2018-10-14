@@ -425,6 +425,28 @@ viewNoteListEditItem content =
         |> Html.map EditMsg
 
 
+viewNoteListDisplayItem note =
+    let
+        nodeDomId =
+            noteListItemDomId note
+
+        content =
+            Note.title note
+
+        startEditingMsg =
+            EditMsg <| OnEdit note
+    in
+        div
+            [ id nodeDomId
+            , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
+            , onClick startEditingMsg
+            , Exts.Html.Events.onEnter startEditingMsg
+            , class " pv2 pointer "
+            , tabindex 0
+            ]
+            [ div [] <| Markdown.toHtml Nothing content ]
+
+
 viewNoteListItem editState note =
     div [ class "bb b--black-10 pv2" ]
         (case ( editState, isEditingNote note editState ) of
