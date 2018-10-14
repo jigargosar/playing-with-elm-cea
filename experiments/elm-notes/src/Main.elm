@@ -411,15 +411,9 @@ isNoteListItemDomId =
 
 viewNoteListEditItem content =
     let
-        esc =
-            { defaultHotKey | key = Keyboard.Key.Escape }
-
-        metaEnter =
-            { defaultHotKey | key = Keyboard.Key.Enter, metaKey = True }
-
         mapping =
-            [ ( esc, OnCancel )
-            , ( metaEnter, OnOk )
+            [ ( HotKey.esc, OnCancel )
+            , ( HotKey.metaEnter, OnOk )
             ]
     in
         (div [ class "vs2" ]
@@ -430,7 +424,7 @@ viewNoteListEditItem content =
                     , autofocus True
                     , value content
                     , onInput OnUpdate
-                    , Html.Events.on "keydown" (HotKey.mappingDecoder mapping EditMsgNoOp)
+                    , HotKey.onKeyDown mapping EditMsgNoOp
                     ]
                     []
                 ]

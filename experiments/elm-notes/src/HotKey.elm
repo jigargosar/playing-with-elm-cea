@@ -1,6 +1,7 @@
 module HotKey exposing (..)
 
 import Exts.List
+import Html.Events
 import Json.Decode
 import Keyboard.Event
 import Keyboard.Key
@@ -46,3 +47,15 @@ hotKeyMappingHandler mapping nopMsg ke =
 
 mappingDecoder mapping nopMsg =
     Json.Decode.map (hotKeyMappingHandler mapping nopMsg) Keyboard.Event.decodeKeyboardEvent
+
+
+esc =
+    { defaultHotKey | key = Keyboard.Key.Escape }
+
+
+metaEnter =
+    { defaultHotKey | key = Keyboard.Key.Enter, metaKey = True }
+
+
+onKeyDown mapping nopMsg =
+    Html.Events.on "keydown" (mappingDecoder mapping nopMsg)
