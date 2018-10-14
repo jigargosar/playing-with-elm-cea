@@ -558,15 +558,15 @@ viewNoteListDisplayItem note =
         startEditingMsg =
             EditMsg <| OnEdit note
     in
-        H.a
+        div
             [ id nodeDomId
             , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
-
-            {- , onClick startEditingMsg -}
+            , onClick startEditingMsg
             , Exts.Html.Events.onEnter startEditingMsg
             , class "link black pv2 pointer "
             , tabindex 0
-            , href <| noteDetailUrl note
+
+            --            , href <| noteDetailUrl note
             ]
             [ div [ class "f5" ] [ text firstLine ]
             , div [ class "f6 truncate black-60" ] [ text otherLines ]
