@@ -464,15 +464,6 @@ viewAddNewNote editState =
         |> Html.map EditMsg
 
 
-isEditingNote note editState =
-    case editState of
-        Editing editingNote content ->
-            note == editingNote
-
-        _ ->
-            False
-
-
 noteContentEditor content =
     let
         mapping =
@@ -514,14 +505,23 @@ viewNoteDetailPage idStr model =
 
 
 viewNoteDetail editState note =
-    div [ class "bb b--black-10 pv2" ]
-        [ case ( editState, isEditingNote note editState ) of
-            ( Editing _ content, True ) ->
-                viewNoteDetailEditor content
+    let
+        isEditingNote =
+            case editState of
+                Editing editingNote content ->
+                    note == editingNote
 
-            _ ->
-                viewNoteDetailMarkdown note
-        ]
+                _ ->
+                    False
+    in
+        div [ class "bb b--black-10 pv2" ]
+            [ case ( editState, isEditingNote ) of
+                ( Editing _ content, True ) ->
+                    viewNoteDetailEditor content
+
+                _ ->
+                    viewNoteDetailMarkdown note
+            ]
 
 
 viewNoteDetailEditor content =
