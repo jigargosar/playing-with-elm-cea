@@ -56,6 +56,7 @@ port notesCollectionChanged : (E.Value -> msg) -> Sub msg
 type Route
     = NoteList
     | NoteDetail String
+    | NewNote
     | NotFound Url.Url
 
 
@@ -64,6 +65,7 @@ routeParser =
     UrlPar.oneOf
         [ UrlPar.map NoteList UrlPar.top
         , UrlPar.map NoteDetail (UrlPar.s "note" </> UrlPar.string)
+        , UrlPar.map NewNote (UrlPar.s "note" </> UrlPar.s "new")
         ]
 
 
@@ -78,6 +80,9 @@ routeToUrlString route =
 
             NoteDetail idStr ->
                 absolute [ "note", idStr ] []
+
+            NewNote ->
+                absolute [ "note", "new" ] []
 
             NotFound url ->
                 Url.toString url
@@ -408,6 +413,9 @@ htmlView model =
 
         NoteDetail idStr ->
             viewNoteDetailPage idStr model
+
+        NewNote ->
+            viewNoteListPage model
 
         NotFound url ->
             viewNoteListPage model
