@@ -454,28 +454,7 @@ viewNoteListItem editState note =
                 [ viewNoteListEditItem content ]
 
             _ ->
-                let
-                    nodeDomId =
-                        noteListItemDomId note
-
-                    content =
-                        Note.title note
-
-                    startEditingMsg =
-                        EditMsg <| OnEdit note
-                in
-                    [ div
-                        [ id nodeDomId
-                        , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
-                        , onClick startEditingMsg
-                        , Exts.Html.Events.onEnter startEditingMsg
-                        , class " pv2 pointer "
-                        , tabindex 0
-                        ]
-                        {- [ text <| Note.title note ] -}
-                        [ div [] <| Markdown.toHtml Nothing content
-                        ]
-                    ]
+                [ viewNoteListDisplayItem note ]
         )
 
 
