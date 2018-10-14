@@ -436,49 +436,35 @@ viewNoteDetailPage idStr model =
         , div [ class "flex-auto overflow-scroll" ]
             [ div [ class "center w-90" ]
                 [ getNoteByIdStr idStr model
-                    |> Maybe.map viewNoteDetail
+                    |> Maybe.map (viewNoteDetail model.editState)
                     |> Maybe.withDefault (text "Note Not Found")
                 ]
             ]
         ]
 
 
-viewNoteDetail note =
-    let
-        content =
-            Note.getContent note
+viewNoteDetail editState note =
+    div [ class "bb b--black-10 pv2" ]
+        [ case ( editState, isEditingNote note editState ) of
+            ( Editing _ content, True ) ->
+                viewNoteDetailEditor content
 
-        startEditingMsg =
-            EditMsg <| OnEdit note
-    in
-        div
-            [ onClick startEditingMsg
-            , Exts.Html.Events.onEnter startEditingMsg
-            , class " pv2 pointer "
-            , tabindex 0
-            ]
-            [ div [] <| Markdown.toHtml Nothing content
-            ]
+            _ ->
+                viewNoteDetailMarkdown note
+        ]
 
 
 viewNoteDetailEditor content =
-    let
-        mapping =
-            [ ( HotKey.esc, OnCancel )
-            , ( HotKey.metaEnter, OnOk )
+    (div [ class "vs2" ]
+        [ noteContentEditor content
+        , div [ class "flex hs3" ]
+            [ bbtn OnOk "Ok"
+            , bbtn OnCancel "Cancel"
+            , bbtn OnDelete "Delete"
             ]
-    in
-        div []
-            [ textarea
-                [ id "editor"
-                , class "w-100 h5"
-                , autofocus True
-                , value content
-                , onInput OnUpdate
-                , HotKey.onKeyDown mapping EditMsgNoOp
-                ]
-                []
-            ]
+        ]
+    )
+        |> Html.map EditMsg
 
 
 viewNoteDetailMarkdown note =
