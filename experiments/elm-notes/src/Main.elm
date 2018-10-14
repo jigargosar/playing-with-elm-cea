@@ -421,20 +421,6 @@ htmlView model =
             viewNoteListPage model
 
 
-viewNoteListPage model =
-    div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
-        [ div [ class "vs3 center w-90" ]
-            [ viewHeader model.session
-            , viewAddNewNote model.editState
-            ]
-        , div [ class "flex-auto overflow-scroll" ]
-            [ div [ class "center w-90" ]
-                [ viewNoteList (currentNoteList model)
-                ]
-            ]
-        ]
-
-
 viewNoteDetailPage idStr model =
     div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
         [ div [ class "vs3 center w-90" ]
@@ -545,18 +531,6 @@ isEditingNote note editState =
             False
 
 
-noteListItemDomIdPrefix =
-    "note-li-"
-
-
-noteListItemDomId note =
-    noteListItemDomIdPrefix ++ (Note.idStr note)
-
-
-isNoteListItemDomId =
-    String.startsWith noteListItemDomIdPrefix
-
-
 noteContentEditor content =
     let
         mapping =
@@ -577,21 +551,34 @@ noteContentEditor content =
             ]
 
 
-viewNoteListEditItem content =
-    (div [ class "vs2" ]
-        [ noteContentEditor content
-        , div [ class "flex hs3" ]
-            [ bbtn OnOk "Ok"
-            , bbtn OnCancel "Cancel"
-            , bbtn OnDelete "Delete"
+
+---- NOTE LIST PAGE ----
+
+
+viewNoteListPage model =
+    div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
+        [ div [ class "vs3 center w-90" ]
+            [ viewHeader model.session
+            , viewAddNewNote model.editState
+            ]
+        , div [ class "flex-auto overflow-scroll" ]
+            [ div [ class "center w-90" ]
+                [ viewNoteList (currentNoteList model)
+                ]
             ]
         ]
-    )
-        |> Html.map EditMsg
 
 
-noteDetailUrl note =
-    Url.Builder.absolute [ "note", Note.idStr note ] []
+noteListItemDomIdPrefix =
+    "note-li-"
+
+
+noteListItemDomId note =
+    noteListItemDomIdPrefix ++ (Note.idStr note)
+
+
+isNoteListItemDomId =
+    String.startsWith noteListItemDomIdPrefix
 
 
 viewNoteListDisplayItem note =
