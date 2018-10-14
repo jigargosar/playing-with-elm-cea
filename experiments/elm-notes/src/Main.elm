@@ -391,13 +391,14 @@ restoreNoteListItemFocus =
 ---- VIEW ----
 
 
-decodeTargetId =
+targetIdDecoder : Decoder String
+targetIdDecoder =
     D.at [ "target", "id" ] D.string
 
 
 onFocusInTargetId : (String -> msg) -> Html.Attribute msg
 onFocusInTargetId msg =
-    Html.Events.on "focusin" (decodeTargetId |> D.map msg)
+    Html.Events.on "focusin" (targetIdDecoder |> D.map msg)
 
 
 view : Model -> Browser.Document Msg
@@ -421,6 +422,14 @@ htmlView model =
             viewNoteListPage model
 
 
+bbtn msg title =
+    button [ class "ttu", onClick msg ] [ text title ]
+
+
+
+---- HEADER VIEW ----
+
+
 viewHeader session =
     let
         viewSession =
@@ -440,10 +449,6 @@ viewHeader session =
             [ div [ class "f3 tc" ] [ H.text "Elm Notes" ]
             , viewSession
             ]
-
-
-bbtn msg title =
-    button [ class "ttu", onClick msg ] [ text title ]
 
 
 viewAddNewNote editState =
