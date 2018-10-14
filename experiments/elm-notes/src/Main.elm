@@ -461,6 +461,44 @@ viewNoteDetail note =
             ]
 
 
+viewNoteDetailEditor content =
+    let
+        mapping =
+            [ ( HotKey.esc, OnCancel )
+            , ( HotKey.metaEnter, OnOk )
+            ]
+    in
+        div []
+            [ textarea
+                [ id "editor"
+                , class "w-100 h5"
+                , autofocus True
+                , value content
+                , onInput OnUpdate
+                , HotKey.onKeyDown mapping EditMsgNoOp
+                ]
+                []
+            ]
+
+
+viewNoteDetailMarkdown note =
+    let
+        content =
+            Note.getContent note
+
+        startEditingMsg =
+            EditMsg <| OnEdit note
+    in
+        div
+            [ onClick startEditingMsg
+            , Exts.Html.Events.onEnter startEditingMsg
+            , class " pv2 pointer "
+            , tabindex 0
+            ]
+            [ div [] <| Markdown.toHtml Nothing content
+            ]
+
+
 viewHeader session =
     let
         viewSession =
