@@ -436,7 +436,7 @@ viewHeader session =
                 )
     in
         div [ class "flex items-center hs3" ]
-            [ div [ class "f3 tc" ] [ H.text "Elm Notes" ]
+            [ div [ class "f3 tc" ] [ H.a [ class "link black", href "/" ] [ H.text "Elm Notes" ] ]
             , viewSession
             ]
 
