@@ -403,59 +403,63 @@ isNoteListItemDomId =
     String.startsWith noteListItemDomIdPrefix
 
 
+viewNoteListItem editState note =
+    div [ class "bb b--black-10 pv2" ]
+        (case ( editState, isEditingNote note editState ) of
+            ( Editing eNote content, True ) ->
+                [ (div [ class "vs2" ]
+                    [ div []
+                        [ textarea
+                            [ id "editor"
+                            , class "w-100 h4"
+                            , autofocus True
+                            , value content
+                            , onInput OnUpdate
+                            ]
+                            []
+                        ]
+                    , div [ class "flex hs3" ]
+                        [ bbtn OnOk "Ok"
+                        , bbtn OnCancel "Cancel"
+                        , bbtn OnDelete "Delete"
+                        ]
+                    ]
+                  )
+                    |> Html.map EditMsg
+                ]
+
+            _ ->
+                let
+                    nodeDomId =
+                        noteListItemDomId note
+
+                    content =
+                        Note.title note
+
+                    startEditingMsg =
+                        EditMsg <| OnEdit note
+                in
+                    [ div
+                        [ id nodeDomId
+                        , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
+                        , onClick startEditingMsg
+                        , Exts.Html.Events.onEnter startEditingMsg
+                        , class " pv2 pointer "
+                        , tabindex 0
+                        ]
+                        {- [ text <| Note.title note ] -}
+                        [ div [] <| Markdown.toHtml Nothing content
+                        ]
+                    ]
+        )
+
+
 viewNoteList editState notes =
     let
-        viewNoteListItem note =
-            div [ class "bb b--black-10 pv2" ]
-                (case ( editState, isEditingNote note editState ) of
-                    ( Editing eNote content, True ) ->
-                        [ (div [ class "vs2" ]
-                            [ div []
-                                [ textarea
-                                    [ id "editor"
-                                    , class "w-100 h4"
-                                    , autofocus True
-                                    , value content
-                                    , onInput OnUpdate
-                                    ]
-                                    []
-                                ]
-                            , div [ class "flex hs3" ]
-                                [ bbtn OnOk "Ok"
-                                , bbtn OnCancel "Cancel"
-                                , bbtn OnDelete "Delete"
-                                ]
-                            ]
-                          )
-                            |> Html.map EditMsg
-                        ]
-
-                    _ ->
-                        let
-                            nodeDomId =
-                                noteListItemDomId note
-
-                            content =
-                                Note.title note
-
-                            startEditingMsg =
-                                EditMsg <| OnEdit note
-                        in
-                            [ div
-                                [ id nodeDomId
-                                , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
-                                , onClick startEditingMsg
-                                , Exts.Html.Events.onEnter startEditingMsg
-                                , class " pv2 pointer "
-                                , tabindex 0
-                                ]
-                                {- [ text <| Note.title note ] -}
-                                [ div [] <| Markdown.toHtml Nothing content
-                                ]
-                            ]
-                )
+        viewItem =
+            viewNoteListItem editState
     in
-        div [ class "pv1 vs1" ] <| List.map viewNoteListItem notes
+        div [ class "pv1 vs1" ] <| List.map viewItem notes
 
 
 
