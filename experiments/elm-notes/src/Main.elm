@@ -66,6 +66,10 @@ routeParser =
         ]
 
 
+routeFromUrl =
+    UrlPar.parse routeParser >> Maybe.withDefault NotFound
+
+
 type alias User =
     { uid : String
     , email : String
@@ -115,7 +119,7 @@ init flags url key =
           , session = InitialUnknown
           , key = key
           , url = url
-          , route = UrlPar.parse routeParser url |> Maybe.withDefault NotFound
+          , route = routeFromUrl url
           }
         , Cmd.none
         )
@@ -204,7 +208,7 @@ update msg model =
                     ( model, Nav.load href )
 
         UrlChanged url ->
-            ( { model | url = url }
+            ( { model | url = url, route = routeFromUrl url }
             , Cmd.none
             )
 
@@ -369,6 +373,18 @@ view model =
 
 htmlView : Model -> Html Msg
 htmlView model =
+    case routeFromUrl model.url of
+        NoteList ->
+            viewNoteListPage model
+
+        NoteDetail idStr ->
+            viewNoteListPage model
+
+        NotFound ->
+            viewNoteListPage model
+
+
+viewNoteListPage model =
     div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
         [ div [ class "vs3 center w-90" ]
             [ viewHeader model.session
