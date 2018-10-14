@@ -441,6 +441,15 @@ viewNoteListDisplayItem note =
         content =
             Note.getContent note
 
+        lines =
+            String.trim content |> String.lines
+
+        firstLine =
+            List.head lines |> Maybe.withDefault "<Empty>"
+
+        otherLines =
+            List.tail lines |> Maybe.withDefault [] |> String.join " " |> String.slice 0 100
+
         startEditingMsg =
             EditMsg <| OnEdit note
     in
@@ -452,7 +461,11 @@ viewNoteListDisplayItem note =
             , class " pv2 pointer "
             , tabindex 0
             ]
-            [ div [] <| Markdown.toHtml Nothing content ]
+            [ div [ class "f5" ] [ text firstLine ]
+            , div [ class "f6 truncate black-60" ] [ text otherLines ]
+
+            {- , div [] <| Markdown.toHtml Nothing content -}
+            ]
 
 
 viewNoteList editState notes =
