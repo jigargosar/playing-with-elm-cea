@@ -403,30 +403,33 @@ isNoteListItemDomId =
     String.startsWith noteListItemDomIdPrefix
 
 
+viewNoteListEditItem content =
+    (div [ class "vs2" ]
+        [ div []
+            [ textarea
+                [ id "editor"
+                , class "w-100 h4"
+                , autofocus True
+                , value content
+                , onInput OnUpdate
+                ]
+                []
+            ]
+        , div [ class "flex hs3" ]
+            [ bbtn OnOk "Ok"
+            , bbtn OnCancel "Cancel"
+            , bbtn OnDelete "Delete"
+            ]
+        ]
+    )
+        |> Html.map EditMsg
+
+
 viewNoteListItem editState note =
     div [ class "bb b--black-10 pv2" ]
         (case ( editState, isEditingNote note editState ) of
             ( Editing eNote content, True ) ->
-                [ (div [ class "vs2" ]
-                    [ div []
-                        [ textarea
-                            [ id "editor"
-                            , class "w-100 h4"
-                            , autofocus True
-                            , value content
-                            , onInput OnUpdate
-                            ]
-                            []
-                        ]
-                    , div [ class "flex hs3" ]
-                        [ bbtn OnOk "Ok"
-                        , bbtn OnCancel "Cancel"
-                        , bbtn OnDelete "Delete"
-                        ]
-                    ]
-                  )
-                    |> Html.map EditMsg
-                ]
+                [ viewNoteListEditItem content ]
 
             _ ->
                 let
