@@ -160,7 +160,7 @@ type Msg
     | SignIn
     | SignOut
     | NotesCollectionChanged E.Value
-    | OnUrlRequest Browser.UrlRequest
+    | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
 
 
@@ -195,8 +195,8 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        OnUrlRequest req ->
-            case req of
+        LinkClicked urlReq ->
+            case urlReq of
                 Browser.Internal url ->
                     ( model, Nav.pushUrl model.key (Url.toString url) )
 
@@ -543,11 +543,11 @@ subscriptions m =
 
 main : Program Flags Model Msg
 main =
-    B.application
+    Browser.application
         { init = init
         , view = view
         , update = update
         , subscriptions = subscriptions
-        , onUrlRequest = OnUrlRequest
+        , onUrlRequest = LinkClicked
         , onUrlChange = UrlChanged
         }
