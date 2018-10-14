@@ -365,16 +365,7 @@ viewAddNewNote editState =
     div [ class "vs3" ]
         (case editState of
             EditingNew content ->
-                [ div []
-                    [ textarea
-                        [ id "editor"
-                        , class "w-100 h5"
-                        , autofocus True
-                        , value content
-                        , onInput OnUpdate
-                        ]
-                        []
-                    ]
+                [ noteContentEditor content
                 , div [ class "flex hs3" ]
                     [ bbtn OnOk "Ok"
                     , bbtn OnCancel "Cancel"
