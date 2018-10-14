@@ -197,6 +197,7 @@ type Msg
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
     | RouteTo Route
+    | PushIfChanged String
 
 
 type alias UpdateReturn msg model =
@@ -230,13 +231,23 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
+        PushIfChanged urlStr ->
+            let
+                currentUrlStr =
+                    Url.toString model.url
+            in
+                if urlStr /= currentUrlStr then
+                    ( model, Nav.pushUrl model.key urlStr )
+                else
+                    ( model, Cmd.none )
+
         RouteTo route ->
-            ( model, Nav.pushUrl model.key (routeToUrlString route) )
+            update (PushIfChanged <| routeToUrlString route) model
 
         LinkClicked urlReq ->
             case urlReq of
                 Browser.Internal url ->
-                    ( model, Nav.pushUrl model.key (Url.toString url) )
+                    update (PushIfChanged <| Url.toString url) model
 
                 Browser.External href ->
                     ( model, Nav.load href )
