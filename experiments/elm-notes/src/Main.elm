@@ -412,6 +412,7 @@ viewNoteListEditItem content =
                 , autofocus True
                 , value content
                 , onInput OnUpdate
+                , Html.Events.custom "keydown" (D.fail "Temp fail")
                 ]
                 []
             ]
