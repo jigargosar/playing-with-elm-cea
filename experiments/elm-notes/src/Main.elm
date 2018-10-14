@@ -591,11 +591,8 @@ viewNoteListDisplayItem note =
         nodeDomId =
             noteListItemDomId note
 
-        content =
-            Note.getContent note
-
         lines =
-            String.trim content |> String.lines
+            Note.getContent note |> String.trim |> String.lines
 
         firstLine =
             List.head lines |> Maybe.withDefault "<Empty>"
