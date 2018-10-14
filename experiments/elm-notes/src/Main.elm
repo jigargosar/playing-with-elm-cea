@@ -525,16 +525,35 @@ viewNoteDetail editState note =
 
 
 viewNoteDetailEditor content =
-    (div [ class "vs2" ]
-        [ noteContentEditor content
-        , div [ class "flex hs3" ]
-            [ bbtn OnOk "Ok"
-            , bbtn OnCancel "Cancel"
-            , bbtn OnDelete "Delete"
+    let
+        viewNoteDetailContentEditor =
+            let
+                mapping =
+                    [ ( HotKey.esc, OnCancel )
+                    , ( HotKey.metaEnter, OnOk )
+                    ]
+            in
+                div []
+                    [ textarea
+                        [ id "editor"
+                        , class "w-100 h5"
+                        , autofocus True
+                        , value content
+                        , onInput OnUpdate
+                        , HotKey.onKeyDown mapping EditMsgNoOp
+                        ]
+                        []
+                    ]
+    in
+        div [ class "vs2" ]
+            [ viewNoteDetailContentEditor
+            , div [ class "flex hs3" ]
+                [ bbtn OnOk "Ok"
+                , bbtn OnCancel "Cancel"
+                , bbtn OnDelete "Delete"
+                ]
             ]
-        ]
-    )
-        |> Html.map EditMsg
+            |> Html.map EditMsg
 
 
 viewNoteDetailMarkdown note =
