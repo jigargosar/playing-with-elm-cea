@@ -51,6 +51,11 @@ port notesCollectionChanged : (E.Value -> msg) -> Sub msg
 ---- MODEL ----
 
 
+type Route
+    = NoteList
+    | Note String
+
+
 type alias User =
     { uid : String
     , email : String
