@@ -557,9 +557,6 @@ viewNoteListDisplayItem note =
 
         startEditingMsg =
             EditMsg <| OnEdit note
-
-        viewNoteMsg =
-            EditMsg <| OnEdit note
     in
         H.a
             [ id nodeDomId
