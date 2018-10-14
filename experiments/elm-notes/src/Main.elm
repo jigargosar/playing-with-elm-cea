@@ -419,6 +419,19 @@ onlyMetaKeyDown { shiftKey, metaKey, ctrlKey, altKey } =
     metaKey && not (shiftKey || ctrlKey || altKey)
 
 
+type alias HotKey =
+    { shiftKey : Bool
+    , ctrlKey : Bool
+    , metaKey : Bool
+    , altKey : Bool
+    , key : Keyboard.Key.Key
+    }
+
+
+defaultHotKey =
+    HotKey False False False False (Keyboard.Key.Ambiguous [])
+
+
 viewNoteListEditItem content =
     let
         handleKeyDown ke =
