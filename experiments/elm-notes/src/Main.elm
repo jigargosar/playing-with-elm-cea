@@ -391,16 +391,6 @@ restoreNoteListItemFocus =
 ---- VIEW ----
 
 
-targetIdDecoder : Decoder String
-targetIdDecoder =
-    D.at [ "target", "id" ] D.string
-
-
-onFocusInTargetId : (String -> msg) -> Html.Attribute msg
-onFocusInTargetId msg =
-    Html.Events.on "focusin" (targetIdDecoder |> D.map msg)
-
-
 view : Model -> Browser.Document Msg
 view model =
     { title = "Elm Notes", body = [ htmlView model ] }
@@ -494,7 +484,7 @@ viewAddNewNote editState =
 
 
 viewNoteDetailPage idStr model =
-    div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
+    div [ class "pv3 flex flex-column vh-100 vs3" ]
         [ div [ class "vs3 center w-90" ]
             [ viewHeader model.session
             , viewAddNewNote model.editState
@@ -584,17 +574,28 @@ viewNoteDetailMarkdown note =
 
 
 viewNoteListPage model =
-    div [ class "pv3 flex flex-column vh-100 vs3", onFocusInTargetId SetLastFocusedNoteListItemDomId ]
-        [ div [ class "vs3 center w-90" ]
-            [ viewHeader model.session
-            , viewAddNewNote model.editState
+    let
+        targetIdDecoder : Decoder String
+        targetIdDecoder =
+            D.at [ "target", "id" ] D.string
+
+        onFocusIn =
+            Html.Events.on "focusin"
+    in
+        div
+            [ class "pv3 flex flex-column vh-100 vs3"
+            , onFocusIn (D.map SetLastFocusedNoteListItemDomId targetIdDecoder)
             ]
-        , div [ class "flex-auto overflow-scroll" ]
-            [ div [ class "center w-90" ]
-                [ viewNoteList (currentNoteList model)
+            [ div [ class "vs3 center w-90" ]
+                [ viewHeader model.session
+                , viewAddNewNote model.editState
+                ]
+            , div [ class "flex-auto overflow-scroll" ]
+                [ div [ class "center w-90" ]
+                    [ viewNoteList (currentNoteList model)
+                    ]
                 ]
             ]
-        ]
 
 
 noteListItemDomIdPrefix =
