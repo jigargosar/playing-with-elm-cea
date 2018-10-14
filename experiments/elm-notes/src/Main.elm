@@ -411,6 +411,10 @@ anySoftKeyDown { shiftKey, metaKey, ctrlKey, altKey } =
     shiftKey || metaKey || ctrlKey || altKey
 
 
+noSoftKeyDown =
+    not << anySoftKeyDown
+
+
 onlyMetaKeyDown { shiftKey, metaKey, ctrlKey, altKey } =
     metaKey && not (shiftKey || ctrlKey || altKey)
 
