@@ -161,7 +161,7 @@ type Msg
     | SignOut
     | NotesCollectionChanged E.Value
     | OnUrlRequest Browser.UrlRequest
-    | OnUrlChange Url.Url
+    | UrlChanged Url.Url
 
 
 type alias UpdateReturn msg model =
@@ -203,7 +203,7 @@ update msg model =
                 Browser.External href ->
                     ( model, Nav.load href )
 
-        OnUrlChange url ->
+        UrlChanged url ->
             ( { model | url = url }
             , Cmd.none
             )
@@ -549,5 +549,5 @@ main =
         , update = update
         , subscriptions = subscriptions
         , onUrlRequest = OnUrlRequest
-        , onUrlChange = OnUrlChange
+        , onUrlChange = UrlChanged
         }
