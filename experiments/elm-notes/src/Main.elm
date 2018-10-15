@@ -212,6 +212,7 @@ type Msg
     | PushIfChanged String
     | NoteContentChanged Pages.EditNote.Model String
     | AutoSave
+    | EditNotePageMsg Pages.EditNote.Msg
 
 
 subscriptions : Model -> Sub Msg
@@ -318,6 +319,20 @@ update msg model =
                     Pages.EditNote.updateContent config newContent pageModel
             in
                 ( { model | page = NoteEditPage newPageModel }, Cmd.batch [ pageCmd ] )
+
+        EditNotePageMsg pageMsg ->
+            case model.page of
+                NoteEditPage pageModel ->
+                    let
+                        ( newPageModel, pageCmd ) =
+                            Pages.EditNote.update pageMsg pageModel
+                    in
+                        ( { model | page = NoteEditPage newPageModel }
+                        , Cmd.map EditNotePageMsg pageCmd
+                        )
+
+                _ ->
+                    ( model, Cmd.none )
 
         NotesCollectionChanged encNC ->
             let
