@@ -200,6 +200,7 @@ type alias NoteContent =
 type Msg
     = NoOp
     | SetNoteCollection NoteCollection
+    | UpdateNoteContent String Note Int
     | AddNote NoteContent Millis
     | DeleteNote Note
     | Session E.Value
@@ -359,6 +360,11 @@ update msg model =
 
         SetNoteCollection nc ->
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
+
+        UpdateNoteContent content note now ->
+            update
+                (SetNoteCollection <| NoteCollection.updateNoteContent now content note model.noteCollection)
+                model
 
         DeleteNote note ->
             let
