@@ -1,6 +1,7 @@
 module Note exposing (..)
 
 import BasicsX exposing (eq0, when)
+import Editable exposing (Editable(..))
 import Exts.Maybe
 import Id exposing (Id)
 import IdX
@@ -45,6 +46,14 @@ title =
 
 getContent =
     .content
+
+
+type alias EditableContent =
+    Editable String
+
+
+getEditableContent =
+    getContent >> Editable.ReadOnly >> Editable.edit
 
 
 init content =

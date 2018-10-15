@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Browser
+import Editable
 import Exts.Html.Events
 import Exts.List
 import Exts.Maybe exposing (maybe)
@@ -101,7 +102,7 @@ pageFromUrl url hasNC =
         case route of
             NoteEdit id ->
                 (getNoteById id hasNC)
-                    |> Maybe.map (\n -> NoteEditPage n (Note.getContent n))
+                    |> Maybe.map (\n -> NoteEditPage n (Note.getEditableContent n))
                     |> Maybe.withDefault (NotFoundPage "Note Not Found")
 
             NoteDetail id ->
@@ -130,7 +131,7 @@ type Session
 
 
 type Page
-    = NoteEditPage Note String
+    = NoteEditPage Note Note.EditableContent
     | NotFoundPage String
     | NoteListPage
     | NoteDetailPage Note
@@ -204,7 +205,7 @@ type Msg
     | UrlChanged Url.Url
     | RouteTo Route
     | PushIfChanged String
-    | NoteContentChanged Note String
+    | NoteContentChanged Note Note.EditableContent String
 
 
 type alias UpdateReturn msg model =
@@ -264,8 +265,8 @@ update msg model =
             , Cmd.none
             )
 
-        NoteContentChanged note content ->
-            ( { model | page = NoteEditPage note content }, Cmd.none )
+        NoteContentChanged note edtContent newContent ->
+            ( { model | page = NoteEditPage note (Editable.map (always newContent) edtContent) }, Cmd.none )
 
         NotesCollectionChanged encNC ->
             let
@@ -344,8 +345,8 @@ view model =
 htmlView : Model -> Html Msg
 htmlView model =
     case model.page of
-        NoteEditPage note content ->
-            viewNoteEditPage model note content
+        NoteEditPage note edtContent ->
+            viewNoteEditPage model note edtContent
 
         NoteDetailPage note ->
             viewNoteDetailPage model note
@@ -425,14 +426,19 @@ viewNoteDetailPage model note =
 ---- NOTE Edit PAGE ----
 
 
-viewNoteEditPage model note content =
+viewNoteEditPage model note edtContent =
     div [ class "pv3 flex flex-column vh-100 vs3" ]
         [ div [ class "vs3 center w-90" ]
             [ viewHeader model.session
             ]
         , div [ class "flex-grow-1 flex flex-row justify-center" ]
             [ div [ class "w-90" ]
-                [ textarea [ class "pa2 h-100 w-100", value content, onInput (NoteContentChanged note) ] []
+                [ textarea
+                    [ class "pa2 h-100 w-100"
+                    , value <| Editable.value edtContent
+                    , onInput (NoteContentChanged note edtContent)
+                    ]
+                    []
                 ]
             ]
         ]

@@ -21,7 +21,8 @@
       "elm-community/random-extra": "3.0.0",
       "elm-community/result-extra": "2.2.1",
       "krisajenkins/elm-exts": "28.0.0",
-      "pablohirafuji/elm-markdown": "2.0.5"
+      "pablohirafuji/elm-markdown": "2.0.5",
+      "stoeffel/editable": "2.0.1"
     },
     "indirect": {
       "elm/http": "1.0.0",
