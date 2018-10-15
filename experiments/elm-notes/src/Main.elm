@@ -283,34 +283,31 @@ update msg model =
             let
                 _ =
                     Debug.log "AutoSave Triggered" ()
-
-                _ =
-                    case model.page of
-                        NoteEditPage pageModel ->
-                            let
-                                newPageModel =
-                                    Pages.EditNote.updateOnAutoSaveMsg pageModel
-
-                                note =
-                                    Pages.EditNote.getNote newPageModel
-
-                                content =
-                                    Pages.EditNote.content newPageModel
-                            in
-                                ( { model | page = NoteEditPage newPageModel }
-                                , Time.now
-                                    |> Task.map Time.posixToMillis
-                                    |> Task.map
-                                        (\now ->
-                                            NoteCollection.updateNoteContent now content note model.noteCollection
-                                        )
-                                    |> Task.perform SetNoteCollection
-                                )
-
-                        _ ->
-                            ( model, Cmd.none )
             in
-                ( model, Cmd.none )
+                case model.page of
+                    NoteEditPage pageModel ->
+                        let
+                            newPageModel =
+                                Pages.EditNote.updateOnAutoSaveMsg pageModel
+
+                            note =
+                                Pages.EditNote.getNote newPageModel
+
+                            content =
+                                Pages.EditNote.content newPageModel
+                        in
+                            ( { model | page = NoteEditPage newPageModel }
+                            , Time.now
+                                |> Task.map Time.posixToMillis
+                                |> Task.map
+                                    (\now ->
+                                        NoteCollection.updateNoteContent now content note model.noteCollection
+                                    )
+                                |> Task.perform SetNoteCollection
+                            )
+
+                    _ ->
+                        ( model, Cmd.none )
 
         NoteContentChanged pageModel newContent ->
             let
