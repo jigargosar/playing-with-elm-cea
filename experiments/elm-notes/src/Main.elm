@@ -288,16 +288,12 @@ update msg model =
                     in
                         case reply of
                             Just (Pages.EditNote.SaveContent note content) ->
-                                let
-                                    _ =
-                                        Debug.log "AutoSave Triggered" ()
-                                in
-                                    ( { model | page = NoteEditPage newPageModel }
-                                    , Cmd.batch
-                                        [ Cmd.map EditNotePageMsg pageCmd
-                                        , withNowMillis (SetNoteContent content note)
-                                        ]
-                                    )
+                                ( { model | page = NoteEditPage newPageModel }
+                                , Cmd.batch
+                                    [ Cmd.map EditNotePageMsg pageCmd
+                                    , withNowMillis (SetNoteContent content note)
+                                    ]
+                                )
 
                             Nothing ->
                                 ( { model | page = NoteEditPage newPageModel }
