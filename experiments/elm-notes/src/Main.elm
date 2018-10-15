@@ -330,18 +330,26 @@ view model =
 
 htmlView : Model -> Html Msg
 htmlView model =
-    case ( routeFromUrl model.url, model.page ) of
-        ( NoteList, _ ) ->
+    case model.page of
+        NodeEditPage note content ->
+            viewNoteEditPage model content
+
+        NoteNotFound ->
             viewNoteListPage model
 
-        ( NoteDetail id, _ ) ->
-            viewNoteDetailPage id model
+        OtherPage ->
+            case (routeFromUrl model.url) of
+                NoteList ->
+                    viewNoteListPage model
 
-        ( NoteEdit id, _ ) ->
-            viewNoteEditPage id model
+                NoteDetail id ->
+                    viewNoteDetailPage id model
 
-        ( NotFound url, _ ) ->
-            viewNoteListPage model
+                NoteEdit _ ->
+                    viewNoteListPage model
+
+                NotFound url ->
+                    viewNoteListPage model
 
 
 bbtn msg title =
@@ -407,27 +415,21 @@ viewNoteDetail note =
 ---- NOTE Edit PAGE ----
 
 
-viewNoteEditPage id model =
+viewNoteEditPage model content =
     div [ class "pv3 flex flex-column vh-100 vs3" ]
         [ div [ class "vs3 center w-90" ]
             [ viewHeader model.session
             ]
         , div [ class "flex-grow-1 flex flex-row justify-center" ]
-            [ getNoteById id model
-                |> Maybe.map (viewNoteEdit)
-                |> Maybe.withDefault (text "Note Not Found")
+            [ viewNoteEdit content
             ]
         ]
 
 
-viewNoteEdit note =
-    let
-        content =
-            Note.getContent note
-    in
-        div [ class "w-90" ]
-            [ textarea [ class "pa2 h-100 w-100", value content ] []
-            ]
+viewNoteEdit content =
+    div [ class "w-90" ]
+        [ textarea [ class "pa2 h-100 w-100", value content ] []
+        ]
 
 
 
