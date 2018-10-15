@@ -101,11 +101,19 @@ pageFromUrl url hasNC =
         case route of
             NoteEdit id ->
                 (getNoteById id hasNC)
-                    |> Maybe.map (\n -> NodeEditPage n (Note.getContent n))
-                    |> Maybe.withDefault NoteNotFound
+                    |> Maybe.map (\n -> NoteEditPage n (Note.getContent n))
+                    |> Maybe.withDefault (NotFoundPage "Note Not Found")
 
-            _ ->
-                OtherPage
+            NoteDetail id ->
+                (getNoteById id hasNC)
+                    |> Maybe.map (\n -> NoteDetailPage n)
+                    |> Maybe.withDefault (NotFoundPage "Note Not Found")
+
+            NoteList ->
+                NoteListPage
+
+            NotFound _ ->
+                NotFoundPage "Oops Something went wrong"
 
 
 type alias User =
@@ -122,9 +130,10 @@ type Session
 
 
 type Page
-    = OtherPage
-    | NodeEditPage Note String
-    | NoteNotFound
+    = NoteEditPage Note String
+    | NotFoundPage String
+    | NoteListPage
+    | NoteDetailPage Note
 
 
 type alias Flags =
@@ -331,29 +340,25 @@ view model =
 htmlView : Model -> Html Msg
 htmlView model =
     case model.page of
-        NodeEditPage note content ->
+        NoteEditPage note content ->
             viewNoteEditPage model content
 
-        NoteNotFound ->
+        NoteDetailPage note ->
+            viewNoteDetailPage model note
+
+        NotFoundPage message ->
+            viewNotFoundPage message
+
+        NoteListPage ->
             viewNoteListPage model
-
-        OtherPage ->
-            case (routeFromUrl model.url) of
-                NoteList ->
-                    viewNoteListPage model
-
-                NoteDetail id ->
-                    viewNoteDetailPage id model
-
-                NoteEdit _ ->
-                    viewNoteListPage model
-
-                NotFound url ->
-                    viewNoteListPage model
 
 
 bbtn msg title =
     button [ class "ttu", onClick msg ] [ text title ]
+
+
+viewNotFoundPage message =
+    h1 [] [ text message ]
 
 
 
@@ -385,16 +390,14 @@ viewHeader session =
 ---- NOTE DETAIL PAGE ----
 
 
-viewNoteDetailPage id model =
+viewNoteDetailPage model note =
     div [ class "pv3 flex flex-column vh-100 vs3" ]
         [ div [ class "vs3 center w-90" ]
             [ viewHeader model.session
             ]
         , div [ class "flex-auto overflow-scroll" ]
             [ div [ class "center w-90" ]
-                [ getNoteById id model
-                    |> Maybe.map (viewNoteDetail)
-                    |> Maybe.withDefault (text "Note Not Found")
+                [ viewNoteDetail note
                 ]
             ]
         ]
