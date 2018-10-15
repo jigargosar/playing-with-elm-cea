@@ -18,6 +18,7 @@ import Html.Events exposing (onClick, onFocus, onInput)
 import Html.Lazy as H
 import Html.Attributes as H
 import Html.Attributes as HA
+import Id exposing (Id)
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
 import Keyboard.Event
@@ -55,7 +56,7 @@ port notesCollectionChanged : (E.Value -> msg) -> Sub msg
 
 type Route
     = NoteList
-    | NoteDetail String
+    | NoteDetail Id
     | NotFound Url.Url
 
 
@@ -63,7 +64,7 @@ routeParser : UrlPar.Parser (Route -> a) a
 routeParser =
     UrlPar.oneOf
         [ UrlPar.map NoteList UrlPar.top
-        , UrlPar.map NoteDetail (UrlPar.s "note" </> UrlPar.string)
+        , UrlPar.map (Id.fromString >> NoteDetail) (UrlPar.s "note" </> UrlPar.string)
         ]
 
 
@@ -76,15 +77,11 @@ routeToUrlString route =
             NoteList ->
                 absolute [] []
 
-            NoteDetail idStr ->
-                absolute [ "note", idStr ] []
+            NoteDetail id ->
+                absolute [ "note", Id.toString id ] []
 
             NotFound url ->
                 Url.toString url
-
-
-noteDetailRouteFromNote note =
-    NoteDetail <| Note.idStr note
 
 
 routeFromUrl url =
@@ -143,8 +140,8 @@ currentNoteList =
     .noteCollection >> NoteCollection.queryAll
 
 
-getNoteByIdStr id =
-    .noteCollection >> NoteCollection.getByIdStr id
+getNoteById id =
+    .noteCollection >> NoteCollection.getById id
 
 
 
@@ -311,8 +308,8 @@ htmlView model =
         NoteList ->
             viewNoteListPage model
 
-        NoteDetail idStr ->
-            viewNoteDetailPage idStr model
+        NoteDetail id ->
+            viewNoteDetailPage id model
 
         NotFound url ->
             viewNoteListPage model
@@ -351,14 +348,14 @@ viewHeader session =
 ---- NOTE DETAIL PAGE ----
 
 
-viewNoteDetailPage idStr model =
+viewNoteDetailPage id model =
     div [ class "pv3 flex flex-column vh-100 vs3" ]
         [ div [ class "vs3 center w-90" ]
             [ viewHeader model.session
             ]
         , div [ class "flex-auto overflow-scroll" ]
             [ div [ class "center w-90" ]
-                [ getNoteByIdStr idStr model
+                [ getNoteById id model
                     |> Maybe.map (viewNoteDetail)
                     |> Maybe.withDefault (text "Note Not Found")
                 ]
@@ -405,7 +402,7 @@ viewNoteListDisplayItem note =
             List.tail lines |> Maybe.withDefault [] |> String.join " " |> String.slice 0 100
 
         routeToNoteDetailViewMsg =
-            RouteTo <| noteDetailRouteFromNote note
+            RouteTo <| NoteDetail note.id
     in
         div
             [ onClick routeToNoteDetailViewMsg
