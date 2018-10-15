@@ -19,5 +19,14 @@ content =
     .edtContent >> Editable.value
 
 
-updateContent newContent model =
-    ( { model | edtContent = Editable.map (always newContent) model.edtContent }, Cmd.none )
+type alias F a =
+    a -> a
+
+
+updateContent : { autoSaveMsg : msg } -> String -> Model -> ( Model, Cmd msg )
+updateContent { autoSaveMsg } newContent model =
+    let
+        wasDirty =
+            Editable.isDirty model.edtContent
+    in
+        ( { model | edtContent = Editable.map (always newContent) model.edtContent }, Cmd.none )

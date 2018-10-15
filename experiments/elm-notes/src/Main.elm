@@ -211,6 +211,7 @@ type Msg
     | RouteTo Route
     | PushIfChanged String
     | NoteContentChanged Pages.EditNote.Model String
+    | AutoSave
 
 
 subscriptions : Model -> Sub Msg
@@ -278,10 +279,20 @@ update msg model =
             , Cmd.none
             )
 
+        AutoSave ->
+            let
+                _ =
+                    Debug.log "AutoSave Triggered" ()
+            in
+                ( model, Cmd.none )
+
         NoteContentChanged pageModel newContent ->
             let
+                config =
+                    { autoSaveMsg = AutoSave }
+
                 ( newPageModel, pageCmd ) =
-                    Pages.EditNote.updateContent newContent pageModel
+                    Pages.EditNote.updateContent config newContent pageModel
             in
                 ( { model | page = NoteEditPage newPageModel }, Cmd.batch [ pageCmd ] )
 
