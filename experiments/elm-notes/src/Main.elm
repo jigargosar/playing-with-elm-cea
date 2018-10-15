@@ -247,7 +247,7 @@ update msg model =
                     ( model, Nav.load href )
 
         UrlChanged url ->
-            ( { model | url = url }
+            ( { model | url = url, page = pageFromUrl url }
             , Cmd.none
             )
 
