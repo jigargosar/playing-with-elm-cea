@@ -20,4 +20,4 @@ content =
 
 
 updateContent newContent model =
-    { model | edtContent = Editable.map (always newContent) model.edtContent }
+    ( { model | edtContent = Editable.map (always newContent) model.edtContent }, Cmd.none )

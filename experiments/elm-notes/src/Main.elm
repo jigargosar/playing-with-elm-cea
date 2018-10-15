@@ -279,7 +279,11 @@ update msg model =
             )
 
         NoteContentChanged pageModel newContent ->
-            ( { model | page = NoteEditPage <| Pages.EditNote.updateContent newContent pageModel }, Cmd.none )
+            let
+                ( newPageModel, pageCmd ) =
+                    Pages.EditNote.updateContent newContent pageModel
+            in
+                ( { model | page = NoteEditPage newPageModel }, Cmd.batch [ pageCmd ] )
 
         NotesCollectionChanged encNC ->
             let
