@@ -317,7 +317,7 @@ htmlView model =
             viewNoteDetailPage id model
 
         NoteEdit id ->
-            viewNoteDetailPage id model
+            viewNoteEditPage id model
 
         NotFound url ->
             viewNoteListPage model
@@ -379,6 +379,33 @@ viewNoteDetail note =
         div []
             [ bbtn (RouteTo <| NoteEdit note.id) "Edit"
             , div [ class " pv2 pointer " ] [ div [] <| Markdown.toHtml Nothing content ]
+            ]
+
+
+
+---- NOTE Edit PAGE ----
+
+
+viewNoteEditPage id model =
+    div [ class "pv3 flex flex-column vh-100 vs3" ]
+        [ div [ class "vs3 center w-90" ]
+            [ viewHeader model.session
+            ]
+        , div [ class "flex-grow-1 flex flex-row justify-center" ]
+            [ getNoteById id model
+                |> Maybe.map (viewNoteEdit)
+                |> Maybe.withDefault (text "Note Not Found")
+            ]
+        ]
+
+
+viewNoteEdit note =
+    let
+        content =
+            Note.getContent note
+    in
+        div [ class "w-90" ]
+            [ textarea [ class "pa2 h-100 w-100", value content ] []
             ]
 
 
