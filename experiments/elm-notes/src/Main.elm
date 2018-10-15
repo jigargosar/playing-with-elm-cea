@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Browser
+import Debouncer.Messages
 import Editable
 import Exts.Html.Events
 import Exts.List
@@ -148,6 +149,7 @@ type alias Model =
     , key : Nav.Key
     , url : Url.Url
     , page : Page
+    , autoSaveDebouncer : Debouncer.Messages.Debouncer Msg
     }
 
 
@@ -166,6 +168,10 @@ init flags url key =
           , key = key
           , url = url
           , page = pageFromUrl url { noteCollection = noteCollection }
+          , autoSaveDebouncer =
+                Debouncer.Messages.manual
+                    |> Debouncer.Messages.settleWhenQuietFor (Just <| Debouncer.Messages.fromSeconds 1)
+                    |> Debouncer.Messages.toDebouncer
           }
         , Cmd.none
         )
@@ -206,6 +212,7 @@ type Msg
     | RouteTo Route
     | PushIfChanged String
     | NoteContentChanged Note Note.EditableContent String
+    | AutoSave (Debouncer.Messages.Msg Msg)
 
 
 subscriptions : Model -> Sub Msg
@@ -241,11 +248,22 @@ sequence =
     Update.Extra.sequence update
 
 
+updateAutoSaveDebouncer : Debouncer.Messages.UpdateConfig Msg Model
+updateAutoSaveDebouncer =
+    { mapMsg = AutoSave
+    , getDebouncer = .autoSaveDebouncer
+    , setDebouncer = \debouncer model -> { model | autoSaveDebouncer = debouncer }
+    }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
+
+        AutoSave subMsg ->
+            Debouncer.Messages.update update updateAutoSaveDebouncer subMsg model
 
         PushIfChanged urlStr ->
             let

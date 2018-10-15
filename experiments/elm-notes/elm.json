@@ -6,6 +6,7 @@
     "direct": {
       "Chadtech/id": "4.1.0",
       "Chadtech/random-pipeline": "1.0.2",
+      "Gizra/elm-debouncer": "2.0.0",
       "Gizra/elm-keyboard-event": "1.0.1",
       "NoRedInk/elm-json-decode-pipeline": "1.0.0",
       "SwiftsNamesake/proper-keyboard": "4.0.0",
@@ -28,6 +29,7 @@
       "elm/http": "1.0.0",
       "elm/regex": "1.0.0",
       "elm/virtual-dom": "1.0.0",
+      "elm-community/list-extra": "8.1.0",
       "etaque/elm-response": "3.1.0"
     }
   },
