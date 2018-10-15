@@ -104,19 +104,12 @@ type Session
     | InitialUnknown
 
 
-type EditState
-    = NotEditing
-    | EditingNew String
-    | Editing Note String
-
-
 type alias Flags =
     { now : Int, noteList : E.Value }
 
 
 type alias Model =
     { noteCollection : NoteCollection
-    , editState : EditState
     , lastFocusedNoteListItemDomId : String
     , session : Session
     , key : Nav.Key
@@ -135,7 +128,6 @@ init flags url key =
             Random.step (NoteCollection.generator flags.noteList) (Random.initialSeed flags.now)
     in
         ( { noteCollection = noteCollection
-          , editState = NotEditing
           , lastFocusedNoteListItemDomId = ""
           , session = InitialUnknown
           , key = key
@@ -167,24 +159,11 @@ type alias NoteContent =
     String
 
 
-type EditMsg
-    = OnNew
-    | OnEdit Note
-    | OnOk
-    | OnCancel
-    | OnDelete
-    | OnUpdate NoteContent
-    | EditMsgNoOp
-
-
 type Msg
     = NoOp
-    | EditMsg EditMsg
     | SetNoteCollection NoteCollection
     | AddNote NoteContent Millis
     | DeleteNote Note
-    | SetLastFocusedNoteListItemDomId String
-    | SetNotEditing
     | Session E.Value
     | SignIn
     | SignOut
@@ -286,14 +265,6 @@ update msg model =
             in
                 ( { model | session = newSession }, Cmd.none )
 
-        SetLastFocusedNoteListItemDomId domId ->
-            ( if isNoteListItemDomId domId then
-                { model | lastFocusedNoteListItemDomId = domId }
-              else
-                model
-            , Cmd.none
-            )
-
         SetNoteCollection nc ->
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
 
@@ -319,78 +290,10 @@ update msg model =
                     NoteCollection.addNew now content model.noteCollection
             in
                 update (SetNoteCollection nc) model
-                    |> addCmd (focusNoteListItem note)
-
-        SetNotEditing ->
-            ( { model | editState = NotEditing }, Cmd.none )
-                |> addEffect restoreNoteListItemFocus
-
-        EditMsg editMsg ->
-            case ( model.editState, editMsg ) of
-                ( _, OnNew ) ->
-                    ( { model | editState = EditingNew "" }, focusEditor )
-
-                ( _, OnEdit note ) ->
-                    ( { model | editState = Editing note note.content }, focusEditor )
-
-                ( EditingNew content, OnUpdate updatedContent ) ->
-                    ( { model | editState = EditingNew updatedContent }, Cmd.none )
-
-                ( EditingNew content, OnOk ) ->
-                    update SetNotEditing model
-                        |> addCmd (nowMillis <| AddNote content)
-
-                ( Editing note content, OnUpdate updatedContent ) ->
-                    ( { model | editState = Editing note updatedContent }, Cmd.none )
-
-                ( Editing note content, OnDelete ) ->
-                    ( model, Cmd.none ) |> sequence [ DeleteNote note, SetNotEditing ]
-
-                ( Editing note content, OnOk ) ->
-                    ( { model | editState = NotEditing }
-                    , Cmd.batch
-                        [ nowMillis
-                            (\now ->
-                                NoteCollection.updateNoteContent now content note model.noteCollection
-                                    |> SetNoteCollection
-                            )
-                        , focusNoteListItem note
-                        ]
-                    )
-
-                ( _, OnCancel ) ->
-                    update SetNotEditing model
-
-                _ ->
-                    ( model, Cmd.none )
 
 
 nowMillis msg =
     Task.perform (Time.posixToMillis >> msg) Time.now
-
-
-focus id =
-    Task.attempt
-        (\r ->
-            --            let
-            --                _ =
-            --                    r |> Result.mapError (Debug.log "Error")
-            --            in
-            NoOp
-        )
-        (B.focus id)
-
-
-focusEditor =
-    focus "editor"
-
-
-focusNoteListItem =
-    noteListItemDomId >> focus
-
-
-restoreNoteListItemFocus =
-    .lastFocusedNoteListItemDomId >> focus
 
 
 
@@ -444,44 +347,6 @@ viewHeader session =
             ]
 
 
-viewAddNewNote editState =
-    let
-        noteContentEditor content =
-            let
-                mapping =
-                    [ ( HotKey.esc, OnCancel )
-                    , ( HotKey.metaEnter, OnOk )
-                    ]
-            in
-                div []
-                    [ textarea
-                        [ id "editor"
-                        , class "w-100 h5"
-                        , autofocus True
-                        , value content
-                        , onInput OnUpdate
-                        , HotKey.onKeyDown mapping EditMsgNoOp
-                        ]
-                        []
-                    ]
-    in
-        div [ class "vs3" ]
-            (case editState of
-                EditingNew content ->
-                    [ noteContentEditor content
-                    , div [ class "flex hs3" ]
-                        [ bbtn OnOk "Ok"
-                        , bbtn OnCancel "Cancel"
-                        ]
-                    ]
-
-                _ ->
-                    [ bbtn OnNew "New"
-                    ]
-            )
-            |> Html.map EditMsg
-
-
 
 ---- NOTE DETAIL PAGE ----
 
@@ -490,82 +355,28 @@ viewNoteDetailPage idStr model =
     div [ class "pv3 flex flex-column vh-100 vs3" ]
         [ div [ class "vs3 center w-90" ]
             [ viewHeader model.session
-            , viewAddNewNote model.editState
             ]
         , div [ class "flex-auto overflow-scroll" ]
             [ div [ class "center w-90" ]
                 [ getNoteByIdStr idStr model
-                    |> Maybe.map (viewNoteDetail model.editState)
+                    |> Maybe.map (viewNoteDetail)
                     |> Maybe.withDefault (text "Note Not Found")
                 ]
             ]
         ]
 
 
-viewNoteDetail editState note =
-    let
-        isEditingNote =
-            case editState of
-                Editing editingNote content ->
-                    note == editingNote
-
-                _ ->
-                    False
-    in
-        div [ class "bb b--black-10 pv2" ]
-            [ case ( editState, isEditingNote ) of
-                ( Editing _ content, True ) ->
-                    viewNoteDetailEditor content
-
-                _ ->
-                    viewNoteDetailMarkdown note
-            ]
-
-
-viewNoteDetailEditor content =
-    let
-        viewNoteDetailContentEditor =
-            let
-                mapping =
-                    [ ( HotKey.esc, OnCancel )
-                    , ( HotKey.metaEnter, OnOk )
-                    ]
-            in
-                div []
-                    [ textarea
-                        [ id "editor"
-                        , class "w-100 h5"
-                        , autofocus True
-                        , value content
-                        , onInput OnUpdate
-                        , HotKey.onKeyDown mapping EditMsgNoOp
-                        ]
-                        []
-                    ]
-    in
-        div [ class "vs2" ]
-            [ viewNoteDetailContentEditor
-            , div [ class "flex hs3" ]
-                [ bbtn OnOk "Ok"
-                , bbtn OnCancel "Cancel"
-                , bbtn OnDelete "Delete"
-                ]
-            ]
-            |> Html.map EditMsg
+viewNoteDetail note =
+    viewNoteDetailMarkdown note
 
 
 viewNoteDetailMarkdown note =
     let
         content =
             Note.getContent note
-
-        startEditingMsg =
-            EditMsg <| OnEdit note
     in
         div
-            [ onClick startEditingMsg
-            , Exts.Html.Events.onEnter startEditingMsg
-            , class " pv2 pointer "
+            [ class " pv2 pointer "
             , tabindex 0
             ]
             [ div [] <| Markdown.toHtml Nothing content
@@ -577,47 +388,22 @@ viewNoteDetailMarkdown note =
 
 
 viewNoteListPage model =
-    let
-        targetIdDecoder : Decoder String
-        targetIdDecoder =
-            D.at [ "target", "id" ] D.string
-
-        onFocusIn =
-            Html.Events.on "focusin"
-    in
-        div
-            [ class "pv3 flex flex-column vh-100 vs3"
-            , onFocusIn (D.map SetLastFocusedNoteListItemDomId targetIdDecoder)
+    div
+        [ class "pv3 flex flex-column vh-100 vs3"
+        ]
+        [ div [ class "vs3 center w-90" ]
+            [ viewHeader model.session
             ]
-            [ div [ class "vs3 center w-90" ]
-                [ viewHeader model.session
-                , viewAddNewNote model.editState
-                ]
-            , div [ class "flex-auto overflow-scroll" ]
-                [ div [ class "center w-90" ]
-                    [ viewNoteList (currentNoteList model)
-                    ]
+        , div [ class "flex-auto overflow-scroll" ]
+            [ div [ class "center w-90" ]
+                [ viewNoteList (currentNoteList model)
                 ]
             ]
-
-
-noteListItemDomIdPrefix =
-    "note-li-"
-
-
-noteListItemDomId note =
-    noteListItemDomIdPrefix ++ (Note.idStr note)
-
-
-isNoteListItemDomId =
-    String.startsWith noteListItemDomIdPrefix
+        ]
 
 
 viewNoteListDisplayItem note =
     let
-        nodeDomId =
-            noteListItemDomId note
-
         lines =
             Note.getContent note |> String.trim |> String.lines
 
@@ -631,9 +417,7 @@ viewNoteListDisplayItem note =
             RouteTo <| noteDetailRouteFromNote note
     in
         div
-            [ id nodeDomId
-            , onFocus (SetLastFocusedNoteListItemDomId nodeDomId)
-            , onClick routeToNoteDetailViewMsg
+            [ onClick routeToNoteDetailViewMsg
             , Exts.Html.Events.onEnter routeToNoteDetailViewMsg
             , class "link black pv2 pointer "
             , tabindex 0
