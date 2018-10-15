@@ -116,7 +116,6 @@ type alias Model =
     , session : Session
     , key : Nav.Key
     , url : Url.Url
-    , route : Route
     }
 
 
@@ -134,7 +133,6 @@ init flags url key =
           , session = InitialUnknown
           , key = key
           , url = url
-          , route = routeFromUrl url
           }
         , Cmd.none
         )
@@ -229,7 +227,7 @@ update msg model =
                     ( model, Nav.load href )
 
         UrlChanged url ->
-            ( { model | url = url, route = routeFromUrl url }
+            ( { model | url = url }
             , Cmd.none
             )
 
