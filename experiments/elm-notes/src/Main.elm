@@ -27,6 +27,7 @@ import Keyboard.Key
 import Markdown
 import Note exposing (Note)
 import NoteCollection exposing (NoteCollection)
+import Pages.EditNote
 import Random
 import Task
 import Time
@@ -102,7 +103,7 @@ pageFromUrl url hasNC =
         case route of
             NoteEdit id ->
                 (getNoteById id hasNC)
-                    |> Maybe.map (\n -> NoteEditPage n (Note.getEditableContent n))
+                    |> Maybe.map createNoteEditPage
                     |> Maybe.withDefault (NotFoundPage "Note Not Found")
 
             NoteDetail id ->
@@ -131,10 +132,14 @@ type Session
 
 
 type Page
-    = NoteEditPage Note Note.EditableContent
+    = NoteEditPage Pages.EditNote.Model
     | NotFoundPage String
     | NoteListPage
     | NoteDetailPage Note
+
+
+createNoteEditPage note =
+    NoteEditPage <| Pages.EditNote.init note
 
 
 type alias Flags =
@@ -205,7 +210,7 @@ type Msg
     | UrlChanged Url.Url
     | RouteTo Route
     | PushIfChanged String
-    | NoteContentChanged Note Note.EditableContent String
+    | NoteContentChanged Pages.EditNote.Model String
 
 
 subscriptions : Model -> Sub Msg
@@ -273,8 +278,8 @@ update msg model =
             , Cmd.none
             )
 
-        NoteContentChanged note edtContent newContent ->
-            ( { model | page = NoteEditPage note (Editable.map (always newContent) edtContent) }, Cmd.none )
+        NoteContentChanged pageModel newContent ->
+            ( { model | page = NoteEditPage <| Pages.EditNote.updateContent newContent pageModel }, Cmd.none )
 
         NotesCollectionChanged encNC ->
             let
@@ -353,8 +358,8 @@ view model =
 htmlView : Model -> Html Msg
 htmlView model =
     case model.page of
-        NoteEditPage note edtContent ->
-            viewNoteEditPage model note edtContent
+        NoteEditPage pageRec ->
+            viewNoteEditPage model pageRec
 
         NoteDetailPage note ->
             viewNoteDetailPage model note
@@ -434,7 +439,7 @@ viewNoteDetailPage model note =
 ---- NOTE Edit PAGE ----
 
 
-viewNoteEditPage model note edtContent =
+viewNoteEditPage model pageModel =
     div [ class "pv3 flex flex-column vh-100 vs3" ]
         [ div [ class "vs3 center w-90" ]
             [ viewHeader model.session
@@ -443,8 +448,8 @@ viewNoteEditPage model note edtContent =
             [ div [ class "w-90" ]
                 [ textarea
                     [ class "pa2 h-100 w-100"
-                    , value <| Editable.value edtContent
-                    , onInput (NoteContentChanged note edtContent)
+                    , value <| Pages.EditNote.content pageModel
+                    , onInput (NoteContentChanged pageModel)
                     ]
                     []
                 ]
