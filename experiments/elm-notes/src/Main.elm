@@ -200,7 +200,7 @@ type alias NoteContent =
 type Msg
     = NoOp
     | SetNoteCollection NoteCollection
-    | UpdateNoteContent String Note Int
+    | SetNoteContent String Note Int
     | AddNote NoteContent Millis
     | DeleteNote Note
     | Session E.Value
@@ -298,7 +298,7 @@ update msg model =
                                 Pages.EditNote.content newPageModel
                         in
                             ( { model | page = NoteEditPage newPageModel }
-                            , withNowMillis (UpdateNoteContent content note)
+                            , withNowMillis (SetNoteContent content note)
                             )
 
                     _ ->
@@ -355,7 +355,7 @@ update msg model =
         SetNoteCollection nc ->
             ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
 
-        UpdateNoteContent content note now ->
+        SetNoteContent content note now ->
             update
                 (SetNoteCollection <| NoteCollection.updateNoteContent now content note model.noteCollection)
                 model
