@@ -391,26 +391,22 @@ viewHeader session =
 
 
 viewNoteDetailPage model note =
-    div [ class "pv3 flex flex-column vh-100 vs3" ]
-        [ div [ class "vs3 center w-90" ]
-            [ viewHeader model.session
-            ]
-        , div [ class "flex-auto overflow-scroll" ]
-            [ div [ class "center w-90" ]
-                [ viewNoteDetail note
-                ]
-            ]
-        ]
-
-
-viewNoteDetail note =
     let
         content =
             Note.getContent note
     in
-        div []
-            [ bbtn (RouteTo <| NoteEdit note.id) "Edit"
-            , div [ class " pv2 pointer " ] [ div [] <| Markdown.toHtml Nothing content ]
+        div [ class "pv3 flex flex-column vh-100 vs3" ]
+            [ div [ class "vs3 center w-90" ]
+                [ viewHeader model.session
+                ]
+            , div [ class "flex-auto overflow-scroll" ]
+                [ div [ class "center w-90" ]
+                    [ div []
+                        [ bbtn (RouteTo <| NoteEdit note.id) "Edit"
+                        , div [ class " pv2 pointer " ] [ div [] <| Markdown.toHtml Nothing content ]
+                        ]
+                    ]
+                ]
             ]
 
 
@@ -424,14 +420,10 @@ viewNoteEditPage model content =
             [ viewHeader model.session
             ]
         , div [ class "flex-grow-1 flex flex-row justify-center" ]
-            [ viewNoteEdit content
+            [ div [ class "w-90" ]
+                [ textarea [ class "pa2 h-100 w-100", value content ] []
+                ]
             ]
-        ]
-
-
-viewNoteEdit content =
-    div [ class "w-90" ]
-        [ textarea [ class "pa2 h-100 w-100", value content ] []
         ]
 
 
