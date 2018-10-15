@@ -204,6 +204,7 @@ type Msg
     | UrlChanged Url.Url
     | RouteTo Route
     | PushIfChanged String
+    | NoteContentChanged Note String
 
 
 type alias UpdateReturn msg model =
@@ -262,6 +263,9 @@ update msg model =
             ( { model | url = url, page = pageFromUrl url model }
             , Cmd.none
             )
+
+        NoteContentChanged note content ->
+            ( { model | page = NoteEditPage note content }, Cmd.none )
 
         NotesCollectionChanged encNC ->
             let
@@ -341,7 +345,7 @@ htmlView : Model -> Html Msg
 htmlView model =
     case model.page of
         NoteEditPage note content ->
-            viewNoteEditPage model content
+            viewNoteEditPage model note content
 
         NoteDetailPage note ->
             viewNoteDetailPage model note
@@ -421,14 +425,14 @@ viewNoteDetailPage model note =
 ---- NOTE Edit PAGE ----
 
 
-viewNoteEditPage model content =
+viewNoteEditPage model note content =
     div [ class "pv3 flex flex-column vh-100 vs3" ]
         [ div [ class "vs3 center w-90" ]
             [ viewHeader model.session
             ]
         , div [ class "flex-grow-1 flex flex-row justify-center" ]
             [ div [ class "w-90" ]
-                [ textarea [ class "pa2 h-100 w-100", value content ] []
+                [ textarea [ class "pa2 h-100 w-100", value content, onInput (NoteContentChanged note) ] []
                 ]
             ]
         ]
