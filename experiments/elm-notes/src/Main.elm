@@ -347,7 +347,7 @@ htmlView model =
             viewNoteDetailPage model note
 
         NotFoundPage message ->
-            viewNotFoundPage message
+            viewNotFoundPage model message
 
         NoteListPage ->
             viewNoteListPage model
@@ -357,8 +357,17 @@ bbtn msg title =
     button [ class "ttu", onClick msg ] [ text title ]
 
 
-viewNotFoundPage message =
-    h1 [] [ text message ]
+viewNotFoundPage model message =
+    div [ class "pv3 flex flex-column vh-100 vs3" ]
+        [ div [ class "vs3 center w-90" ]
+            [ viewHeader model.session
+            ]
+        , div [ class "flex-auto overflow-scroll" ]
+            [ div [ class "center w-90" ]
+                [ h1 [] [ text message ]
+                ]
+            ]
+        ]
 
 
 
