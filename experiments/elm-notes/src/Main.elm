@@ -367,20 +367,11 @@ viewNoteDetailPage idStr model =
 
 
 viewNoteDetail note =
-    viewNoteDetailMarkdown note
-
-
-viewNoteDetailMarkdown note =
     let
         content =
             Note.getContent note
     in
-        div
-            [ class " pv2 pointer "
-            , tabindex 0
-            ]
-            [ div [] <| Markdown.toHtml Nothing content
-            ]
+        div [ class " pv2 pointer " ] [ div [] <| Markdown.toHtml Nothing content ]
 
 
 
