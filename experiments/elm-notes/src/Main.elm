@@ -210,7 +210,6 @@ type Msg
     | UrlChanged Url.Url
     | RouteTo Route
     | PushIfChanged String
-    | NoteContentChanged Pages.EditNote.Model String
     | AutoSave
     | EditNotePageMsg Pages.EditNote.Msg
 
@@ -309,9 +308,6 @@ update msg model =
 
                     _ ->
                         ( model, Cmd.none )
-
-        NoteContentChanged pageModel newContent ->
-            update (EditNotePageMsg <| Pages.EditNote.ContentChanged newContent) model
 
         EditNotePageMsg pageMsg ->
             case model.page of
@@ -495,7 +491,7 @@ viewNoteEditPage model pageModel =
                 [ textarea
                     [ class "pa2 h-100 w-100"
                     , value <| Pages.EditNote.content pageModel
-                    , onInput (NoteContentChanged pageModel)
+                    , onInput (Pages.EditNote.ContentChanged >> EditNotePageMsg)
                     ]
                     []
                 ]
