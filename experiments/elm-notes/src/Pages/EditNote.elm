@@ -27,7 +27,7 @@ getNote =
 
 type Msg
     = AutoSave
-    | ContentChanged
+    | ContentChanged String
 
 
 updateContent : { autoSaveMsg : msg } -> String -> Model -> ( Model, Cmd msg )
@@ -66,7 +66,33 @@ updateOnAutoSaveMsg model =
 update msg model =
     case msg of
         AutoSave ->
-            ( model, Cmd.none )
+            ( { model
+                | edtContent = Editable.save model.edtContent |> Editable.edit
+                , isASScheduled = False
+              }
+            , Cmd.none
+            )
 
-        ContentChanged ->
-            ( model, Cmd.none )
+        ContentChanged newContent ->
+            let
+                newEdtContent =
+                    Editable.map (always newContent) model.edtContent
+
+                isDirty =
+                    Editable.isDirty newEdtContent
+
+                ( newIsScheduled, cmd ) =
+                    if model.isASScheduled || not isDirty then
+                        ( model.isASScheduled, Cmd.none )
+                    else
+                        ( True
+                        , Process.sleep 3000
+                            |> Task.perform (always AutoSave)
+                        )
+            in
+                ( { model
+                    | edtContent = Editable.map (always newContent) model.edtContent
+                    , isASScheduled = newIsScheduled
+                  }
+                , cmd
+                )
