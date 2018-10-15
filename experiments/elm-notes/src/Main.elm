@@ -93,6 +93,19 @@ routeFromUrl url =
     UrlPar.parse routeParser url |> Maybe.withDefault (NotFound url)
 
 
+pageFromUrl url =
+    let
+        route =
+            routeFromUrl url
+    in
+        case route of
+            NoteEdit id ->
+                NodeEditPage
+
+            _ ->
+                OtherPage
+
+
 type alias User =
     { uid : String
     , email : String
@@ -121,6 +134,7 @@ type alias Model =
     , session : Session
     , key : Nav.Key
     , url : Url.Url
+    , page : Page
     }
 
 
@@ -138,6 +152,7 @@ init flags url key =
           , session = InitialUnknown
           , key = key
           , url = url
+          , page = pageFromUrl url
           }
         , Cmd.none
         )
@@ -312,17 +327,17 @@ view model =
 
 htmlView : Model -> Html Msg
 htmlView model =
-    case routeFromUrl model.url of
-        NoteList ->
+    case ( routeFromUrl model.url, model.page ) of
+        ( NoteList, _ ) ->
             viewNoteListPage model
 
-        NoteDetail id ->
+        ( NoteDetail id, _ ) ->
             viewNoteDetailPage id model
 
-        NoteEdit id ->
+        ( NoteEdit id, _ ) ->
             viewNoteEditPage id model
 
-        NotFound url ->
+        ( NotFound url, _ ) ->
             viewNoteListPage model
 
 
