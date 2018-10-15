@@ -106,6 +106,11 @@ type Session
     | InitialUnknown
 
 
+type Page
+    = OtherPage
+    | NodeEditPage
+
+
 type alias Flags =
     { now : Int, noteList : E.Value }
 
