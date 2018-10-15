@@ -211,7 +211,6 @@ type Msg
     | UrlChanged Url.Url
     | RouteTo Route
     | PushIfChanged String
-    | AutoSave
     | EditNotePageMsg Pages.EditNote.Msg
 
 
@@ -280,40 +279,30 @@ update msg model =
             , Cmd.none
             )
 
-        AutoSave ->
-            let
-                _ =
-                    Debug.log "AutoSave Triggered" ()
-            in
-                case model.page of
-                    NoteEditPage pageModel ->
-                        let
-                            newPageModel =
-                                Pages.EditNote.updateOnAutoSaveMsg pageModel
-
-                            note =
-                                Pages.EditNote.getNote newPageModel
-
-                            content =
-                                Pages.EditNote.content newPageModel
-                        in
-                            ( { model | page = NoteEditPage newPageModel }
-                            , withNowMillis (SetNoteContent content note)
-                            )
-
-                    _ ->
-                        ( model, Cmd.none )
-
         EditNotePageMsg pageMsg ->
             case model.page of
                 NoteEditPage pageModel ->
                     let
-                        ( newPageModel, pageCmd ) =
+                        ( newPageModel, pageCmd, reply ) =
                             Pages.EditNote.update pageMsg pageModel
                     in
-                        ( { model | page = NoteEditPage newPageModel }
-                        , Cmd.map EditNotePageMsg pageCmd
-                        )
+                        case reply of
+                            Just (Pages.EditNote.SaveContent note content) ->
+                                let
+                                    _ =
+                                        Debug.log "AutoSave Triggered" ()
+                                in
+                                    ( { model | page = NoteEditPage newPageModel }
+                                    , Cmd.batch
+                                        [ Cmd.map EditNotePageMsg pageCmd
+                                        , withNowMillis (SetNoteContent content note)
+                                        ]
+                                    )
+
+                            Nothing ->
+                                ( { model | page = NoteEditPage newPageModel }
+                                , Cmd.map EditNotePageMsg pageCmd
+                                )
 
                 _ ->
                     ( model, Cmd.none )

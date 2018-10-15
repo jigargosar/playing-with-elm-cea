@@ -30,6 +30,10 @@ type Msg
     | ContentChanged String
 
 
+type Reply
+    = SaveContent Note.Note String
+
+
 updateContent : { autoSaveMsg : msg } -> String -> Model -> ( Model, Cmd msg )
 updateContent { autoSaveMsg } newContent model =
     let
@@ -63,16 +67,21 @@ updateOnAutoSaveMsg model =
     }
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> ( Model, Cmd Msg, Maybe Reply )
 update msg model =
     case msg of
         AutoSave ->
-            ( { model
-                | edtContent = Editable.save model.edtContent |> Editable.edit
-                , isASScheduled = False
-              }
-            , Cmd.none
-            )
+            let
+                newEdtContent =
+                    Editable.save model.edtContent |> Editable.edit
+            in
+                ( { model
+                    | edtContent = Editable.save model.edtContent |> Editable.edit
+                    , isASScheduled = False
+                  }
+                , Cmd.none
+                , Just <| SaveContent model.note (Editable.value newEdtContent)
+                )
 
         ContentChanged newContent ->
             let
@@ -96,4 +105,5 @@ update msg model =
                     , isASScheduled = newIsScheduled
                   }
                 , cmd
+                , Nothing
                 )
