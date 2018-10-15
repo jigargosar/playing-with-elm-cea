@@ -25,8 +25,9 @@ getNote =
     .note
 
 
-type alias F a =
-    a -> a
+type Msg
+    = AutoSave
+    | ContentChanged
 
 
 updateContent : { autoSaveMsg : msg } -> String -> Model -> ( Model, Cmd msg )
@@ -60,3 +61,12 @@ updateOnAutoSaveMsg model =
         | edtContent = Editable.save model.edtContent |> Editable.edit
         , isASScheduled = False
     }
+
+
+update msg model =
+    case msg of
+        AutoSave ->
+            ( model, Cmd.none )
+
+        ContentChanged ->
+            ( model, Cmd.none )
