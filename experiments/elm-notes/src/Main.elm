@@ -298,9 +298,7 @@ update msg model =
                                 Pages.EditNote.content newPageModel
                         in
                             ( { model | page = NoteEditPage newPageModel }
-                            , Time.now
-                                |> Task.map Time.posixToMillis
-                                |> Task.perform (UpdateNoteContent content note)
+                            , withNowMillis (UpdateNoteContent content note)
                             )
 
                     _ ->
@@ -386,7 +384,7 @@ update msg model =
                 update (SetNoteCollection nc) model
 
 
-nowMillis msg =
+withNowMillis msg =
     Task.perform (Time.posixToMillis >> msg) Time.now
 
 
