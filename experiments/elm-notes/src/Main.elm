@@ -311,14 +311,7 @@ update msg model =
                         ( model, Cmd.none )
 
         NoteContentChanged pageModel newContent ->
-            let
-                config =
-                    { autoSaveMsg = AutoSave }
-
-                ( newPageModel, pageCmd ) =
-                    Pages.EditNote.updateContent config newContent pageModel
-            in
-                ( { model | page = NoteEditPage newPageModel }, Cmd.batch [ pageCmd ] )
+            update (EditNotePageMsg <| Pages.EditNote.ContentChanged newContent) model
 
         EditNotePageMsg pageMsg ->
             case model.page of
