@@ -401,10 +401,8 @@ viewNoteDetailPage model note =
                 ]
             , div [ class "flex-auto overflow-scroll" ]
                 [ div [ class "center w-90" ]
-                    [ div []
-                        [ bbtn (RouteTo <| NoteEdit note.id) "Edit"
-                        , div [ class " pv2 pointer " ] [ div [] <| Markdown.toHtml Nothing content ]
-                        ]
+                    [ bbtn (RouteTo <| NoteEdit note.id) "Edit"
+                    , div [ class " pv2 pointer " ] [ div [] <| Markdown.toHtml Nothing content ]
                     ]
                 ]
             ]
