@@ -93,14 +93,16 @@ routeFromUrl url =
     UrlPar.parse routeParser url |> Maybe.withDefault (NotFound url)
 
 
-pageFromUrl url =
+pageFromUrl url hasNC =
     let
         route =
             routeFromUrl url
     in
         case route of
             NoteEdit id ->
-                NodeEditPage
+                (getNoteById id hasNC)
+                    |> Maybe.map (\n -> NodeEditPage n (Note.getContent n))
+                    |> Maybe.withDefault NoteNotFound
 
             _ ->
                 OtherPage
@@ -121,7 +123,8 @@ type Session
 
 type Page
     = OtherPage
-    | NodeEditPage
+    | NodeEditPage Note String
+    | NoteNotFound
 
 
 type alias Flags =
@@ -152,7 +155,7 @@ init flags url key =
           , session = InitialUnknown
           , key = key
           , url = url
-          , page = pageFromUrl url
+          , page = pageFromUrl url { noteCollection = noteCollection }
           }
         , Cmd.none
         )
@@ -247,7 +250,7 @@ update msg model =
                     ( model, Nav.load href )
 
         UrlChanged url ->
-            ( { model | url = url, page = pageFromUrl url }
+            ( { model | url = url, page = pageFromUrl url model }
             , Cmd.none
             )
 
