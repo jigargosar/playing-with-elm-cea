@@ -5,6 +5,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Note
+import Process
+import Task
 
 
 type alias Model =
@@ -28,5 +30,12 @@ updateContent { autoSaveMsg } newContent model =
     let
         wasDirty =
             Editable.isDirty model.edtContent
+
+        cmd =
+            if wasDirty then
+                Cmd.none
+            else
+                Process.sleep 3000
+                    |> Task.perform (always autoSaveMsg)
     in
-        ( { model | edtContent = Editable.map (always newContent) model.edtContent }, Cmd.none )
+        ( { model | edtContent = Editable.map (always newContent) model.edtContent }, cmd )
