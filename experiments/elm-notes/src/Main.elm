@@ -208,6 +208,14 @@ type Msg
     | NoteContentChanged Note Note.EditableContent String
 
 
+subscriptions : Model -> Sub Msg
+subscriptions m =
+    Sub.batch
+        [ sessionChanged Session
+        , notesCollectionChanged NotesCollectionChanged
+        ]
+
+
 type alias UpdateReturn msg model =
     ( model, Cmd msg )
 
@@ -500,14 +508,6 @@ viewNoteList notes =
 
 
 ---- PROGRAM ----
-
-
-subscriptions : Model -> Sub Msg
-subscriptions m =
-    Sub.batch
-        [ sessionChanged Session
-        , notesCollectionChanged NotesCollectionChanged
-        ]
 
 
 main : Program Flags Model Msg
