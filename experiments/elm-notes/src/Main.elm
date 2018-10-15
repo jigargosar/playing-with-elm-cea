@@ -300,11 +300,7 @@ update msg model =
                             ( { model | page = NoteEditPage newPageModel }
                             , Time.now
                                 |> Task.map Time.posixToMillis
-                                |> Task.map
-                                    (\now ->
-                                        NoteCollection.updateNoteContent now content note model.noteCollection
-                                    )
-                                |> Task.perform SetNoteCollection
+                                |> Task.perform (UpdateNoteContent content note)
                             )
 
                     _ ->
