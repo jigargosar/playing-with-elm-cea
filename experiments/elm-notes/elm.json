@@ -6,6 +6,7 @@
     "direct": {
       "Chadtech/id": "4.1.0",
       "Chadtech/random-pipeline": "1.0.2",
+      "Chadtech/return": "1.0.2",
       "Gizra/elm-debouncer": "2.0.0",
       "Gizra/elm-keyboard-event": "1.0.1",
       "NoRedInk/elm-json-decode-pipeline": "1.0.0",

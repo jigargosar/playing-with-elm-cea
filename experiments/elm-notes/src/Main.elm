@@ -35,6 +35,8 @@ import Update.Extra
 import Url
 import Url.Builder
 import Url.Parser as UrlPar exposing ((</>))
+import Return2 as R2
+import Return3 as R3
 
 
 port persistNoteCollection : E.Value -> Cmd msg
@@ -211,7 +213,7 @@ type Msg
     | UrlChanged Url.Url
     | RouteTo Route
     | PushIfChanged String
-    | EditNotePageMsg Pages.EditNote.Msg
+    | EditNoteMsg Pages.EditNote.Msg
 
 
 subscriptions : Model -> Sub Msg
@@ -228,23 +230,6 @@ type alias UpdateReturn msg model =
 
 type alias F a =
     a -> a
-
-
-addCmd : Cmd msg -> F (UpdateReturn msg model)
-addCmd cmd =
-    addEffect (always cmd)
-
-
-addEffect fn ( model, oldCmd ) =
-    ( model, Cmd.batch [ oldCmd, fn model ] )
-
-
-andThen _ =
-    identity
-
-
-sequence =
-    Update.Extra.sequence update
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -279,26 +264,49 @@ update msg model =
             , Cmd.none
             )
 
-        EditNotePageMsg pageMsg ->
+        EditNoteMsg subMsg ->
             case model.page of
-                NoteEditPage pageModel ->
+                NoteEditPage subModel ->
                     let
-                        ( newPageModel, pageCmd, reply ) =
-                            Pages.EditNote.update pageMsg pageModel
-                    in
-                        case reply of
-                            Just (Pages.EditNote.SaveContent note content) ->
-                                ( { model | page = NoteEditPage newPageModel }
-                                , Cmd.batch
-                                    [ Cmd.map EditNotePageMsg pageCmd
+                        --                        ( newSubModel, newSubCmd, reply ) =
+                        --                            Pages.EditNote.update subMsg subModel
+                        handleReply sm maybeReply m =
+                            case maybeReply of
+                                Just (Pages.EditNote.SaveContent note content) ->
+                                    ( { m | page = NoteEditPage sm }
                                     , withNowMillis (SetNoteContent content note)
-                                    ]
-                                )
+                                    )
 
-                            Nothing ->
-                                ( { model | page = NoteEditPage newPageModel }
-                                , Cmd.map EditNotePageMsg pageCmd
-                                )
+                                Nothing ->
+                                    ( { m | page = NoteEditPage sm }
+                                    , Cmd.none
+                                    )
+
+                        _ =
+                            subModel
+                                |> Pages.EditNote.update subMsg
+                                |> R3.mapCmd EditNoteMsg
+                                |> R3.incorp handleReply model
+
+                        --                        rold =
+                        --                            case reply of
+                        --                                Just (Pages.EditNote.SaveContent note content) ->
+                        --                                    ( { model | page = NoteEditPage newSubModel }
+                        --                                    , Cmd.batch
+                        --                                        [ Cmd.map EditNoteMsg newSubCmd
+                        --                                        , withNowMillis (SetNoteContent content note)
+                        --                                        ]
+                        --                                    )
+                        --
+                        --                                Nothing ->
+                        --                                    ( { model | page = NoteEditPage newSubModel }
+                        --                                    , Cmd.map EditNoteMsg newSubCmd
+                        --                                    )
+                    in
+                        subModel
+                            |> Pages.EditNote.update subMsg
+                            |> R3.mapCmd EditNoteMsg
+                            |> R3.incorp handleReply model
 
                 _ ->
                     ( model, Cmd.none )
@@ -476,7 +484,7 @@ viewNoteEditPage model pageModel =
                 [ textarea
                     [ class "pa2 h-100 w-100"
                     , value <| Pages.EditNote.content pageModel
-                    , onInput (Pages.EditNote.ContentChanged >> EditNotePageMsg)
+                    , onInput (Pages.EditNote.ContentChanged >> EditNoteMsg)
                     ]
                     []
                 ]
