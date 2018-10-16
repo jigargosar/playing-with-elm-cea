@@ -5,7 +5,7 @@ import Task
 
 
 type alias Model =
-    { ms : Int, scheduled : Bool }
+    { ms : Float, scheduled : Bool }
 
 
 init ms =
