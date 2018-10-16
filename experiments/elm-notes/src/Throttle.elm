@@ -1,7 +1,6 @@
 module Throttle exposing (..)
 
 import Process
-import Return2
 import Task
 
 
