@@ -205,6 +205,7 @@ type Msg
     | SetNoteCollectionAndPersist NoteCollection
     | SetNoteContent String Note Int
     | AddNote NoteContent Millis
+    | AddNoteClicked
     | DeleteNote Note
     | Session E.Value
     | SignIn
@@ -313,20 +314,14 @@ update msg model =
                 setNoteCollectionAndPersist newNoteCollection model
 
         DeleteNote note ->
-            let
-                nowMillisT =
-                    Time.now
-                        |> Task.map Time.posixToMillis
-            in
-                ( model
-                  --            , nowMillis
-                  --                (\now ->
-                  --                    SetNoteCollection <| NoteCollection.delete now note model.noteCollection
-                  --                )
-                , nowMillisT
-                    |> Task.map (\now -> NoteCollection.delete now note model.noteCollection)
-                    |> Task.perform SetNoteCollectionAndPersist
-                )
+            ( model
+            , nowMillis
+                |> Task.map (\now -> NoteCollection.delete now note model.noteCollection)
+                |> Task.perform SetNoteCollectionAndPersist
+            )
+
+        AddNoteClicked ->
+            ( model, Cmd.none )
 
         AddNote content now ->
             let
@@ -340,6 +335,11 @@ setNoteCollectionAndPersist noteCollection model =
     ( { model | noteCollection = noteCollection }
     , persistNoteCollection <| NoteCollection.encode noteCollection
     )
+
+
+nowMillis =
+    Time.now
+        |> Task.map Time.posixToMillis
 
 
 withNowMillis msg =
@@ -470,7 +470,10 @@ viewNoteEditPage model pageModel =
 
 viewNoteListPage model =
     model
-        |> withDefaultLayout [ viewNoteList <| currentNoteList model ]
+        |> withDefaultLayout
+            [ bbtn AddNoteClicked "New"
+            , viewNoteList <| currentNoteList model
+            ]
 
 
 viewNoteListDisplayItem note =
