@@ -310,8 +310,10 @@ update msg model =
             in
                 ( { model | session = newSession }, Cmd.none )
 
-        SetNoteCollection nc ->
-            ( { model | noteCollection = nc }, persistNoteCollection <| NoteCollection.encode nc )
+        SetNoteCollection newNoteCollection ->
+            ( { model | noteCollection = newNoteCollection }
+            , persistNoteCollection <| NoteCollection.encode newNoteCollection
+            )
 
         SetNoteContent content note now ->
             update
