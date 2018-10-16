@@ -1,24 +1,26 @@
 module EditableInput exposing (EditableInput, init, dirty, set, get, save)
 
 
-type alias Record a =
-    { initialValue : a, currentValue : a }
+type alias Model a =
+    { initial : a
+    , current : a
+    }
 
 
 type EditableInput a
-    = EditableInput (Record a)
+    = EditableInput (Model a)
 
 
 init value =
-    Record value value |> EditableInput
+    Model value value |> EditableInput
 
 
 current =
-    unTag >> .currentValue
+    unTag >> .current
 
 
 save =
-    updateRecord (\r -> { r | initialValue = r.currentValue })
+    updateRecord (\r -> { r | initial = r.current })
 
 
 get =
@@ -26,7 +28,7 @@ get =
 
 
 initial =
-    unTag >> .initialValue
+    unTag >> .initial
 
 
 unTag (EditableInput rec) =
@@ -46,4 +48,4 @@ set newValue =
 
 
 map f =
-    updateRecord (\r -> { r | currentValue = f r.currentValue })
+    updateRecord (\r -> { r | current = f r.current })
