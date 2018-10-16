@@ -268,23 +268,10 @@ update msg model =
         EditNotePageMsg pageMsg ->
             case model.page of
                 NoteEditPage pageModel ->
-                    let
-                        handleReply sm maybeReply m =
-                            case maybeReply of
-                                Just (EditNote.SaveContent note content) ->
-                                    ( { m | page = NoteEditPage sm }
-                                    , withNowMillis (SetNoteContent content note)
-                                    )
-
-                                Nothing ->
-                                    ( { m | page = NoteEditPage sm }
-                                    , Cmd.none
-                                    )
-                    in
-                        pageModel
-                            |> EditNote.update pageMsg
-                            |> R3.mapCmd EditNotePageMsg
-                            |> R3.incorp handleReply model
+                    pageModel
+                        |> EditNote.update pageMsg
+                        |> R3.mapCmd EditNotePageMsg
+                        |> R3.incorp handleEditNotePageReply model
 
                 _ ->
                     ( model, Cmd.none )
@@ -357,6 +344,19 @@ update msg model =
 
 withNowMillis msg =
     Task.perform (Time.posixToMillis >> msg) Time.now
+
+
+handleEditNotePageReply pageModel maybeReply model =
+    case maybeReply of
+        Just (EditNote.SaveContent note content) ->
+            ( { model | page = NoteEditPage pageModel }
+            , withNowMillis (SetNoteContent content note)
+            )
+
+        Nothing ->
+            ( { model | page = NoteEditPage pageModel }
+            , Cmd.none
+            )
 
 
 
