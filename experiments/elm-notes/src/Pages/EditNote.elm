@@ -14,7 +14,6 @@ type alias Model =
     { note : Note.Note
     , edtContent : EditableInput String
     , throttleSave : Throttle.Model
-    , saveScheduled : Bool
     }
 
 
@@ -22,7 +21,6 @@ init note =
     Model note
         (Note.getContent note |> EditableInput.init)
         (Throttle.init 3000)
-        False
 
 
 content =
