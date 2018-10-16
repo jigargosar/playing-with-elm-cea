@@ -47,24 +47,29 @@ type Reply
     = SaveContent Note.Note NoteContent
 
 
+withReply f ( m, c ) =
+    ( m, c, f m )
+
+
+withoutReply ( m, c ) =
+    ( m, c, Nothing )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe Reply )
 update msg model =
     case msg of
         AutoSave ->
-            let
-                newEdtContent =
-                    Editable.save model.edtContent |> Editable.edit
-            in
-                ( { model
-                    | edtContent = Editable.save model.edtContent |> Editable.edit
-                    , isASScheduled = False
-                  }
-                , Cmd.none
-                , Just <| SaveContent model.note (Editable.value newEdtContent)
-                )
+            ( { model
+                | edtContent = Editable.save model.edtContent
+                , isASScheduled = False
+              }
+            , Cmd.none
+            )
+                |> withReply (\m -> Just <| SaveContent m.note (content m))
 
         SetContent newContent ->
-            ( model, Cmd.none, Nothing )
+            ( model, Cmd.none )
+                |> withoutReply
 
         ContentChanged newContent ->
             let
@@ -87,5 +92,5 @@ update msg model =
                     , isASScheduled = newIsScheduled
                   }
                 , cmd
-                , Nothing
                 )
+                    |> withoutReply

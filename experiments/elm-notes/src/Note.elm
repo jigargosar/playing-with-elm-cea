@@ -53,7 +53,7 @@ type alias EditableContent =
 
 
 getEditableContent =
-    getContent >> Editable.ReadOnly >> Editable.edit
+    getContent >> Editable.ReadOnly
 
 
 init content =
