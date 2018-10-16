@@ -1,35 +1,28 @@
 module Pages.EditNote exposing (..)
 
-import EditableInput
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Note
 import Process
 import Task
-import Throttle
+import UserInput
 
 
 type alias Model =
     { note : Note.Note
-    , edtContent : EditableInput.Model String
-    , throttleSave : Throttle.Model
+    , contentInput : UserInput.Model NoteContent
     }
 
 
 init note =
     { note = note
-    , edtContent = Note.getContent note |> EditableInput.init
-    , throttleSave = Throttle.init 3000
+    , contentInput = Note.getContent note |> UserInput.init
     }
 
 
 content =
-    .edtContent >> EditableInput.get
-
-
-isContentDirty =
-    .edtContent >> EditableInput.dirty
+    .contentInput >> UserInput.get
 
 
 type alias NoteContent =
@@ -71,28 +64,22 @@ maybeBool bool value =
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe Reply )
 update msg model =
     case msg of
-        SaveIfDirty ->
-            let
-                wasDirty =
-                    EditableInput.dirty model.edtContent
-            in
-                ( { model
-                    | edtContent = EditableInput.save model.edtContent
-                    , throttleSave = Throttle.updateOnEmit model.throttleSave
-                  }
-                , Cmd.none
-                )
-                    |> withReply (\m -> maybeBool wasDirty <| SaveContent m.note (content m))
-
         ContentChanged newContent ->
             let
-                ( newThrottleSave, cmd ) =
-                    Throttle.push SaveIfDirty model.throttleSave
+                ( newContentInput, cmd ) =
+                    model.contentInput |> UserInput.onChange SaveIfDirty newContent
             in
-                ( { model
-                    | edtContent = model.edtContent |> EditableInput.set newContent
-                    , throttleSave = newThrottleSave
-                  }
+                ( { model | contentInput = newContentInput }
                 , cmd
                 )
                     |> withoutReply
+
+        SaveIfDirty ->
+            let
+                ( wasDirty, newContentInput ) =
+                    UserInput.onThrottledSaveMsg model.contentInput
+            in
+                ( { model | contentInput = newContentInput }
+                , Cmd.none
+                )
+                    |> withReply (\m -> maybeBool wasDirty <| SaveContent m.note (content m))

@@ -42,3 +42,7 @@ onThrottledSaveMsg model =
         )
     else
         ( False, model )
+
+
+get =
+    .editable >> EditableInput.get
