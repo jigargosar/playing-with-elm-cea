@@ -40,6 +40,7 @@ type alias NoteContent =
 type Msg
     = AutoSave
     | ContentChanged NoteContent
+    | AutoSaveTriggered
 
 
 type Reply
@@ -62,6 +63,13 @@ andThen f ( m1, c1 ) =
         ( m2, Cmd.batch [ c1, c2 ] )
 
 
+maybeBool bool value =
+    if bool then
+        Just value
+    else
+        Nothing
+
+
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe Reply )
 update msg model =
     case msg of
@@ -73,6 +81,19 @@ update msg model =
             , Cmd.none
             )
                 |> withReply (\m -> Just <| SaveContent m.note (content m))
+
+        AutoSaveTriggered ->
+            let
+                wasDirty =
+                    EditableInput.dirty model.edtContent
+            in
+                ( { model
+                    | edtContent = EditableInput.save model.edtContent
+                    , throttleSave = Throttle.updateOnEmit model.throttleSave
+                  }
+                , Cmd.none
+                )
+                    |> withReply (\m -> maybeBool wasDirty <| SaveContent m.note (content m))
 
         ContentChanged newContent ->
             ( { model

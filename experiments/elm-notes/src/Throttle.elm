@@ -26,6 +26,10 @@ push msg model =
         ( { model | scheduled = newScheduled }, cmd )
 
 
+updateOnEmit model =
+    { model | scheduled = False }
+
+
 type Msg
     = Emit
     | EventOccurred
