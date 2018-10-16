@@ -1,5 +1,8 @@
 module Throttle exposing (..)
 
+import Process
+import Task
+
 
 type alias Model =
     { ms : Int, scheduled : Bool }
@@ -16,4 +19,14 @@ update msg model =
             ( model, Cmd.none )
 
         Event ->
-            ( model, Cmd.none )
+            let
+                _ =
+                    1
+            in
+                if model.scheduled then
+                    ( model, Cmd.none )
+                else
+                    ( { model | scheduled = True }
+                    , Process.sleep model.ms
+                        |> Task.perform (always Trigger)
+                    )
