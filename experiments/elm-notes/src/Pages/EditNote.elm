@@ -14,7 +14,7 @@ type alias Model =
     { note : Note.Note
     , edtContent : Note.EditableContent
     , throttleSave : Throttle.Model
-    , isASScheduled : Bool
+    , saveScheduled : Bool
     }
 
 
@@ -69,7 +69,7 @@ update msg model =
         AutoSave ->
             ( { model
                 | edtContent = Editable.save model.edtContent
-                , isASScheduled = False
+                , saveScheduled = False
               }
             , Cmd.none
             )
@@ -92,11 +92,15 @@ update msg model =
                 |> withoutReply
 
 
+isContentDirty =
+    .edtContent >> Editable.isDirty
+
+
 updateScheduleSave model =
     let
-        ( newIsScheduled, cmd ) =
-            if model.isASScheduled then
-                ( model.isASScheduled, Cmd.none )
+        ( newSaveScheduled, cmd ) =
+            if model.saveScheduled || not (isContentDirty model) then
+                ( model.saveScheduled, Cmd.none )
             else
                 ( True
                 , Process.sleep 3000
@@ -104,7 +108,7 @@ updateScheduleSave model =
                 )
     in
         ( { model
-            | isASScheduled = newIsScheduled
+            | saveScheduled = newSaveScheduled
           }
         , cmd
         )
