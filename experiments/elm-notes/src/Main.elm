@@ -273,9 +273,6 @@ update msg model =
                 newNC : NoteCollection
                 newNC =
                     NoteCollection.replace encNC model.noteCollection
-
-                _ =
-                    Debug.log "NotesCollectionChanged" newNC
             in
                 update (SetNoteCollectionAndPersist newNC) model
 
