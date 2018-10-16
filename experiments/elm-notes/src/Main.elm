@@ -135,14 +135,14 @@ type Session
 
 
 type Page
-    = NoteEditPage EditNote.Model
+    = EditNotePage EditNote.Model
     | NotFoundPage String
     | NoteListPage
     | NoteDetailPage Note
 
 
 createNoteEditPage note =
-    NoteEditPage <| EditNote.init note
+    EditNotePage <| EditNote.init note
 
 
 type alias Flags =
@@ -267,7 +267,7 @@ update msg model =
 
         EditNotePageMsg pageMsg ->
             case model.page of
-                NoteEditPage pageModel ->
+                EditNotePage pageModel ->
                     pageModel
                         |> EditNote.update pageMsg
                         |> R3.mapCmd EditNotePageMsg
@@ -349,12 +349,12 @@ withNowMillis msg =
 handleEditNotePageReply pageModel maybeReply model =
     case maybeReply of
         Just (EditNote.SaveContent note content) ->
-            ( { model | page = NoteEditPage pageModel }
+            ( { model | page = EditNotePage pageModel }
             , withNowMillis (SetNoteContent content note)
             )
 
         Nothing ->
-            ( { model | page = NoteEditPage pageModel }
+            ( { model | page = EditNotePage pageModel }
             , Cmd.none
             )
 
@@ -371,7 +371,7 @@ view model =
 htmlView : Model -> Html Msg
 htmlView model =
     case model.page of
-        NoteEditPage pageRec ->
+        EditNotePage pageRec ->
             viewNoteEditPage model pageRec
 
         NoteDetailPage note ->
