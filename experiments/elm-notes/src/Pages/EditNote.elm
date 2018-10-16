@@ -40,7 +40,7 @@ type alias NoteContent =
 type Msg
     = AutoSave
     | ContentChanged NoteContent
-    | AutoSaveTriggered
+    | SaveIfDirty
 
 
 type Reply
@@ -82,7 +82,7 @@ update msg model =
             )
                 |> withReply (\m -> Just <| SaveContent m.note (content m))
 
-        AutoSaveTriggered ->
+        SaveIfDirty ->
             let
                 wasDirty =
                     EditableInput.dirty model.edtContent
@@ -103,23 +103,36 @@ update msg model =
               }
             , Cmd.none
             )
-                |> andThen updateCheckAndScheduleSave
+                |> andThen updateThrottleSave
                 |> withoutReply
 
 
-updateCheckAndScheduleSave model =
+updateThrottleSave model =
     let
-        ( newSaveScheduled, cmd ) =
-            if model.saveScheduled || not (isContentDirty model) then
-                ( model.saveScheduled, Cmd.none )
-            else
-                ( True
-                , Process.sleep 3000
-                    |> Task.perform (always AutoSave)
-                )
+        ( newThrottleSave, cmd ) =
+            Throttle.push SaveIfDirty model.throttleSave
     in
         ( { model
-            | saveScheduled = newSaveScheduled
+            | throttleSave = newThrottleSave
           }
         , cmd
         )
+
+
+
+--updateCheckAndScheduleSave model =
+--    let
+--        ( newSaveScheduled, cmd ) =
+--            if model.saveScheduled || not (isContentDirty model) then
+--                ( model.saveScheduled, Cmd.none )
+--            else
+--                ( True
+--                , Process.sleep 3000
+--                    |> Task.perform (always AutoSave)
+--                )
+--    in
+--        ( { model
+--            | saveScheduled = newSaveScheduled
+--          }
+--        , cmd
+--        )
