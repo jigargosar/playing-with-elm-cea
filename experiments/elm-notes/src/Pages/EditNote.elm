@@ -38,14 +38,6 @@ type Reply
     = SaveContent Note.Note NoteContent
 
 
-withReply f ( m, c ) =
-    ( m, c, f m )
-
-
-withoutReply ( m, c ) =
-    ( m, c, Nothing )
-
-
 andThen f ( m1, c1 ) =
     let
         ( m2, c2 ) =
@@ -71,15 +63,18 @@ update msg model =
             in
                 ( { model | contentInput = newContentInput }
                 , cmd
+                , Nothing
                 )
-                    |> withoutReply
 
         SaveIfDirty ->
             let
                 ( wasDirty, newContentInput ) =
                     UserInput.onThrottledSaveMsg model.contentInput
+
+                reply =
+                    maybeBool wasDirty <| SaveContent model.note (UserInput.get newContentInput)
             in
                 ( { model | contentInput = newContentInput }
                 , Cmd.none
+                , reply
                 )
-                    |> withReply (\m -> maybeBool wasDirty <| SaveContent m.note (content m))
