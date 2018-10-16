@@ -10,8 +10,12 @@ type alias Model =
 
 
 type Msg
-    = Trigger
-    | Event
+    = Emit
+    | EventOccurred
+
+
+type Reply
+    = Emitted
 
 
 update msg model =
@@ -20,24 +24,25 @@ update msg model =
             Debug.log "Trigger: Pre Update" ( msg, model )
     in
         (case msg of
-            Trigger ->
+            Emit ->
                 let
                     _ =
                         Debug.log "OnTrigger" model
                 in
-                    ( { model | scheduled = False }, Cmd.none )
+                    ( { model | scheduled = False }, Cmd.none, Just Emitted )
 
-            Event ->
+            EventOccurred ->
                 let
                     _ =
                         Debug.log "OnEventQueued" model
                 in
                     if model.scheduled then
-                        ( model, Cmd.none )
+                        ( model, Cmd.none, Nothing )
                     else
                         ( { model | scheduled = True }
                         , Process.sleep model.ms
-                            |> Task.perform (always Trigger)
+                            |> Task.perform (always Emit)
+                        , Nothing
                         )
         )
             |> Debug.log "Trigger: Post Update"
