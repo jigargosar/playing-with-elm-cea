@@ -33,15 +33,17 @@ onChange throttledSaveMsg newValue model =
 
 onThrottledSaveMsg : Model a -> ( Bool, Model a )
 onThrottledSaveMsg model =
-    if EditableInput.dirty model.editable then
-        ( True
-        , { model
-            | editable = EditableInput.save model.editable
-            , throttleSave = Throttle.updateOnEmit model.throttleSave
-          }
-        )
-    else
-        ( False, model )
+    let
+        wasDirty =
+            EditableInput.dirty model.editable
+
+        newModel =
+            { model
+                | editable = EditableInput.save model.editable
+                , throttleSave = Throttle.updateOnEmit model.throttleSave
+            }
+    in
+        ( wasDirty, newModel )
 
 
 get =
