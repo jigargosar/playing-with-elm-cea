@@ -38,8 +38,7 @@ type alias NoteContent =
 
 
 type Msg
-    = AutoSave
-    | ContentChanged NoteContent
+    = ContentChanged NoteContent
     | SaveIfDirty
 
 
@@ -73,15 +72,6 @@ maybeBool bool value =
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe Reply )
 update msg model =
     case msg of
-        AutoSave ->
-            ( { model
-                | edtContent = EditableInput.save model.edtContent
-                , saveScheduled = False
-              }
-            , Cmd.none
-            )
-                |> withReply (\m -> Just <| SaveContent m.note (content m))
-
         SaveIfDirty ->
             let
                 wasDirty =
@@ -96,43 +86,14 @@ update msg model =
                     |> withReply (\m -> maybeBool wasDirty <| SaveContent m.note (content m))
 
         ContentChanged newContent ->
-            ( { model
-                | edtContent =
-                    model.edtContent
-                        |> EditableInput.set newContent
-              }
-            , Cmd.none
-            )
-                |> andThen updateThrottleSave
-                |> withoutReply
-
-
-updateThrottleSave model =
-    let
-        ( newThrottleSave, cmd ) =
-            Throttle.push SaveIfDirty model.throttleSave
-    in
-        ( { model
-            | throttleSave = newThrottleSave
-          }
-        , cmd
-        )
-
-
-
---updateCheckAndScheduleSave model =
---    let
---        ( newSaveScheduled, cmd ) =
---            if model.saveScheduled || not (isContentDirty model) then
---                ( model.saveScheduled, Cmd.none )
---            else
---                ( True
---                , Process.sleep 3000
---                    |> Task.perform (always AutoSave)
---                )
---    in
---        ( { model
---            | saveScheduled = newSaveScheduled
---          }
---        , cmd
---        )
+            let
+                ( newThrottleSave, cmd ) =
+                    Throttle.push SaveIfDirty model.throttleSave
+            in
+                ( { model
+                    | edtContent = model.edtContent |> EditableInput.set newContent
+                    , throttleSave = newThrottleSave
+                  }
+                , cmd
+                )
+                    |> withoutReply
