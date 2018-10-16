@@ -202,7 +202,7 @@ type alias NoteContent =
 
 type Msg
     = NoOp
-    | SetNoteCollection NoteCollection
+    | SetNoteCollectionAndPersist NoteCollection
     | SetNoteContent String Note Int
     | AddNote NoteContent Millis
     | DeleteNote Note
@@ -277,7 +277,7 @@ update msg model =
                 _ =
                     Debug.log "NotesCollectionChanged" newNC
             in
-                update (SetNoteCollection newNC) model
+                update (SetNoteCollectionAndPersist newNC) model
 
         SignIn ->
             ( model, signIn () )
@@ -305,7 +305,7 @@ update msg model =
             in
                 ( { model | session = newSession }, Cmd.none )
 
-        SetNoteCollection newNoteCollection ->
+        SetNoteCollectionAndPersist newNoteCollection ->
             setNoteCollectionAndPersist newNoteCollection model
 
         SetNoteContent content note now ->
@@ -328,7 +328,7 @@ update msg model =
                   --                )
                 , nowMillisT
                     |> Task.map (\now -> NoteCollection.delete now note model.noteCollection)
-                    |> Task.perform SetNoteCollection
+                    |> Task.perform SetNoteCollectionAndPersist
                 )
 
         AddNote content now ->
@@ -336,7 +336,7 @@ update msg model =
                 ( note, nc ) =
                     NoteCollection.addNew now content model.noteCollection
             in
-                update (SetNoteCollection nc) model
+                update (SetNoteCollectionAndPersist nc) model
 
 
 setNoteCollectionAndPersist noteCollection model =
