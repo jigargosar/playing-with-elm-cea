@@ -1,4 +1,4 @@
-module EditableInput exposing (EditableInput, init, dirty, set, get, save)
+module EditableInput exposing (Model, EditableInput, init, dirty, set, get, save)
 
 
 type alias Model a =
