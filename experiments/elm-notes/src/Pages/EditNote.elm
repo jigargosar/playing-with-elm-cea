@@ -1,6 +1,6 @@
 module Pages.EditNote exposing (..)
 
-import EditableInput exposing (EditableInput)
+import EditableInput
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
