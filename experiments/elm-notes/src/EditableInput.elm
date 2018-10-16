@@ -1,8 +1,16 @@
-module EditableInput exposing (..)
+module EditableInput exposing (EditableInput, init, dirty, set)
+
+
+type alias Record =
+    { initialValue : a, currentValue : a }
 
 
 type EditableInput a
-    = EditableInput { initialValue : a, currentValue : a }
+    = EditableInput Record
+
+
+init value =
+    Record value value |> EditableInput
 
 
 current =
