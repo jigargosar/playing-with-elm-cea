@@ -389,16 +389,7 @@ bbtn msg title =
 
 
 viewNotFoundPage model message =
-    div [ class "pv3 flex flex-column vh-100 vs3" ]
-        [ div [ class "vs3 center w-90" ]
-            [ viewHeader model.session
-            ]
-        , div [ class "flex-auto overflow-scroll" ]
-            [ div [ class "center w-90" ]
-                [ h1 [] [ text message ]
-                ]
-            ]
-        ]
+    model |> withDefaultLayout [ h1 [] [ text message ] ]
 
 
 
