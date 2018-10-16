@@ -12,7 +12,7 @@ import Throttle
 
 type alias Model =
     { note : Note.Note
-    , edtContent : EditableInput String
+    , edtContent : EditableInput.Model String
     , throttleSave : Throttle.Model
     }
 
