@@ -214,7 +214,7 @@ type Msg
     | UrlChanged Url.Url
     | RouteTo Route
     | PushIfChanged String
-    | EditNotePageMsg EditNote.Msg
+    | EditNoteMsg EditNote.Msg
 
 
 subscriptions : Model -> Sub Msg
@@ -265,12 +265,12 @@ update msg model =
             , Cmd.none
             )
 
-        EditNotePageMsg pageMsg ->
+        EditNoteMsg pageMsg ->
             case model.page of
                 EditNotePage pageModel ->
                     pageModel
                         |> EditNote.update pageMsg
-                        |> R3.mapCmd EditNotePageMsg
+                        |> R3.mapCmd EditNoteMsg
                         |> R3.incorp handleEditNotePageReply model
 
                 _ ->
@@ -462,7 +462,7 @@ viewNoteEditPage model pageModel =
                 [ textarea
                     [ class "pa2 h-100 w-100"
                     , value <| EditNote.content pageModel
-                    , onInput (EditNote.ContentChanged >> EditNotePageMsg)
+                    , onInput (EditNote.ContentChanged >> EditNoteMsg)
                     ]
                     []
                 ]
