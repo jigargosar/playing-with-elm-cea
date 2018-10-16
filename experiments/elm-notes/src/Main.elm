@@ -402,6 +402,21 @@ viewNotFoundPage model message =
 
 
 
+---- Layout ----
+
+
+withDefaultLayout viewContent model =
+    div [ class "pv3 flex flex-column vh-100 vs3" ]
+        [ div [ class "vs3 center w-90" ]
+            [ viewHeader model.session
+            ]
+        , div [ class "flex-grow-1 flex flex-row justify-center" ]
+            [ div [ class "w-90" ] viewContent
+            ]
+        ]
+
+
+
 ---- HEADER VIEW ----
 
 
@@ -435,17 +450,11 @@ viewNoteDetailPage model note =
         content =
             Note.getContent note
     in
-        div [ class "pv3 flex flex-column vh-100 vs3" ]
-            [ div [ class "vs3 center w-90" ]
-                [ viewHeader model.session
+        model
+            |> withDefaultLayout
+                [ bbtn (RouteTo <| NoteEdit note.id) "Edit"
+                , div [ class " pv2 " ] <| Markdown.toHtml Nothing content
                 ]
-            , div [ class "flex-auto overflow-scroll" ]
-                [ div [ class "center w-90" ]
-                    [ bbtn (RouteTo <| NoteEdit note.id) "Edit"
-                    , div [ class " pv2 pointer " ] [ div [] <| Markdown.toHtml Nothing content ]
-                    ]
-                ]
-            ]
 
 
 
@@ -475,18 +484,8 @@ viewNoteEditPage model pageModel =
 
 
 viewNoteListPage model =
-    div
-        [ class "pv3 flex flex-column vh-100 vs3"
-        ]
-        [ div [ class "vs3 center w-90" ]
-            [ viewHeader model.session
-            ]
-        , div [ class "flex-auto overflow-scroll" ]
-            [ div [ class "center w-90" ]
-                [ viewNoteList (currentNoteList model)
-                ]
-            ]
-        ]
+    model
+        |> withDefaultLayout [ viewNoteList <| currentNoteList model ]
 
 
 viewNoteListDisplayItem note =
