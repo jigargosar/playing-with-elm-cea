@@ -29,8 +29,8 @@ content =
     .edtContent >> EditableInput.get
 
 
-getNote =
-    .note
+isContentDirty =
+    .edtContent >> EditableInput.dirty
 
 
 type alias NoteContent =
@@ -40,7 +40,6 @@ type alias NoteContent =
 type Msg
     = AutoSave
     | ContentChanged NoteContent
-    | SetContent NoteContent
 
 
 type Reply
@@ -75,10 +74,6 @@ update msg model =
             )
                 |> withReply (\m -> Just <| SaveContent m.note (content m))
 
-        SetContent newContent ->
-            ( model, Cmd.none )
-                |> withoutReply
-
         ContentChanged newContent ->
             ( { model
                 | edtContent =
@@ -89,10 +84,6 @@ update msg model =
             )
                 |> andThen updateCheckAndScheduleSave
                 |> withoutReply
-
-
-isContentDirty =
-    .edtContent >> EditableInput.dirty
 
 
 updateCheckAndScheduleSave model =
