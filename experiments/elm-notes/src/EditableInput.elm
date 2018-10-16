@@ -7,20 +7,20 @@ type alias Model a =
     }
 
 
-type EditableInput a
-    = EditableInput (Model a)
+type alias EditableInput a =
+    Model a
 
 
 init value =
-    Model value value |> EditableInput
+    Model value value
 
 
 current =
-    unTag >> .current
+    .current
 
 
-save =
-    updateRecord (\r -> { r | initial = r.current })
+save r =
+    { r | initial = r.current }
 
 
 get =
@@ -28,15 +28,7 @@ get =
 
 
 initial =
-    unTag >> .initial
-
-
-unTag (EditableInput rec) =
-    rec
-
-
-updateRecord f =
-    unTag >> f >> EditableInput
+    .initial
 
 
 dirty ei =
@@ -47,5 +39,5 @@ set newValue =
     always newValue |> map
 
 
-map f =
-    updateRecord (\r -> { r | current = f r.current })
+map f r =
+    { r | current = f r.current }
