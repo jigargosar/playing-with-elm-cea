@@ -27,7 +27,7 @@ import Keyboard.Key
 import Markdown
 import Note exposing (Note)
 import NoteCollection exposing (NoteCollection)
-import Pages.EditNote
+import Pages.EditNote as EditNote
 import Random
 import Task
 import Time
@@ -134,14 +134,14 @@ type Session
 
 
 type Page
-    = NoteEditPage Pages.EditNote.Model
+    = NoteEditPage EditNote.Model
     | NotFoundPage String
     | NoteListPage
     | NoteDetailPage Note
 
 
 createNoteEditPage note =
-    NoteEditPage <| Pages.EditNote.init note
+    NoteEditPage <| EditNote.init note
 
 
 type alias Flags =
@@ -213,7 +213,7 @@ type Msg
     | UrlChanged Url.Url
     | RouteTo Route
     | PushIfChanged String
-    | EditNoteMsg Pages.EditNote.Msg
+    | EditNoteMsg EditNote.Msg
 
 
 subscriptions : Model -> Sub Msg
@@ -268,11 +268,9 @@ update msg model =
             case model.page of
                 NoteEditPage subModel ->
                     let
-                        --                        ( newSubModel, newSubCmd, reply ) =
-                        --                            Pages.EditNote.update subMsg subModel
                         handleReply sm maybeReply m =
                             case maybeReply of
-                                Just (Pages.EditNote.SaveContent note content) ->
+                                Just (EditNote.SaveContent note content) ->
                                     ( { m | page = NoteEditPage sm }
                                     , withNowMillis (SetNoteContent content note)
                                     )
@@ -281,30 +279,9 @@ update msg model =
                                     ( { m | page = NoteEditPage sm }
                                     , Cmd.none
                                     )
-
-                        _ =
-                            subModel
-                                |> Pages.EditNote.update subMsg
-                                |> R3.mapCmd EditNoteMsg
-                                |> R3.incorp handleReply model
-
-                        --                        rold =
-                        --                            case reply of
-                        --                                Just (Pages.EditNote.SaveContent note content) ->
-                        --                                    ( { model | page = NoteEditPage newSubModel }
-                        --                                    , Cmd.batch
-                        --                                        [ Cmd.map EditNoteMsg newSubCmd
-                        --                                        , withNowMillis (SetNoteContent content note)
-                        --                                        ]
-                        --                                    )
-                        --
-                        --                                Nothing ->
-                        --                                    ( { model | page = NoteEditPage newSubModel }
-                        --                                    , Cmd.map EditNoteMsg newSubCmd
-                        --                                    )
                     in
                         subModel
-                            |> Pages.EditNote.update subMsg
+                            |> EditNote.update subMsg
                             |> R3.mapCmd EditNoteMsg
                             |> R3.incorp handleReply model
 
@@ -483,8 +460,8 @@ viewNoteEditPage model pageModel =
             [ div [ class "w-90" ]
                 [ textarea
                     [ class "pa2 h-100 w-100"
-                    , value <| Pages.EditNote.content pageModel
-                    , onInput (Pages.EditNote.ContentChanged >> EditNoteMsg)
+                    , value <| EditNote.content pageModel
+                    , onInput (EditNote.ContentChanged >> EditNoteMsg)
                     ]
                     []
                 ]
