@@ -25,7 +25,7 @@ update msg model =
                     _ =
                         Debug.log "OnTrigger" model
                 in
-                    ( model, Cmd.none )
+                    ( { model | scheduled = False }, Cmd.none )
 
             Event ->
                 let
