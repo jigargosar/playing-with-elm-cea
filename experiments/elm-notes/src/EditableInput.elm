@@ -15,8 +15,8 @@ init value =
     Model value value
 
 
-save r =
-    { r | initial = r.current }
+save model =
+    { model | initial = model.current }
 
 
 get =
@@ -31,5 +31,5 @@ set newValue =
     always newValue |> map
 
 
-map f r =
-    { r | current = f r.current }
+map f model =
+    { model | current = f model.current }
