@@ -306,9 +306,11 @@ update msg model =
             updateNoteCollection newNoteCollection model
 
         SetNoteContent content note now ->
-            update
-                (SetNoteCollection <| NoteCollection.updateNoteContent now content note model.noteCollection)
-                model
+            let
+                newNoteCollection =
+                    NoteCollection.updateNoteContent now content note model.noteCollection
+            in
+                updateNoteCollection newNoteCollection model
 
         DeleteNote note ->
             let
