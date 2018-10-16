@@ -31,7 +31,7 @@ type alias NoteContent =
 
 type Msg
     = ContentChanged NoteContent
-    | SaveIfDirty
+    | ThrottledSave
 
 
 type Reply
@@ -59,14 +59,14 @@ update msg model =
         ContentChanged newContent ->
             let
                 ( newContentInput, cmd ) =
-                    model.contentInput |> UserInput.onChange SaveIfDirty newContent
+                    model.contentInput |> UserInput.onChange ThrottledSave newContent
             in
                 ( { model | contentInput = newContentInput }
                 , cmd
                 , Nothing
                 )
 
-        SaveIfDirty ->
+        ThrottledSave ->
             let
                 ( wasDirty, newContentInput ) =
                     UserInput.onThrottledSaveMsg model.contentInput
