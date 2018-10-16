@@ -9,6 +9,10 @@ type alias Model =
     { ms : Int, scheduled : Bool }
 
 
+init ms =
+    Model ms False
+
+
 type Msg
     = Emit
     | EventOccurred

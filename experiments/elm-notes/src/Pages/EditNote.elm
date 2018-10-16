@@ -7,14 +7,22 @@ import Html.Events exposing (..)
 import Note
 import Process
 import Task
+import Throttle
 
 
 type alias Model =
-    { note : Note.Note, edtContent : Note.EditableContent, isASScheduled : Bool }
+    { note : Note.Note
+    , edtContent : Note.EditableContent
+    , throttleSave : Throttle.Model
+    , isASScheduled : Bool
+    }
 
 
 init note =
-    Model note (Note.getEditableContent note) False
+    Model note
+        (Note.getEditableContent note)
+        (Throttle.init 3000)
+        False
 
 
 content =
