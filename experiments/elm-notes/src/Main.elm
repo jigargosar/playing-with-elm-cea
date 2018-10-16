@@ -336,6 +336,12 @@ update msg model =
                 update (SetNoteCollection nc) model
 
 
+updateNoteCollection noteCollection model =
+    ( { model | noteCollection = noteCollection }
+    , persistNoteCollection <| NoteCollection.encode noteCollection
+    )
+
+
 withNowMillis msg =
     Task.perform (Time.posixToMillis >> msg) Time.now
 
