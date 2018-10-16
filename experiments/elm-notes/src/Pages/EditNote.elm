@@ -18,9 +18,10 @@ type alias Model =
 
 
 init note =
-    Model note
-        (Note.getContent note |> EditableInput.init)
-        (Throttle.init 3000)
+    { note = note
+    , edtContent = Note.getContent note |> EditableInput.init
+    , throttleSave = Throttle.init 3000
+    }
 
 
 content =
