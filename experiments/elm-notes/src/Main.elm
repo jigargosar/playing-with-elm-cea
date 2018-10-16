@@ -225,14 +225,6 @@ subscriptions m =
         ]
 
 
-type alias UpdateReturn msg model =
-    ( model, Cmd msg )
-
-
-type alias F a =
-    a -> a
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
