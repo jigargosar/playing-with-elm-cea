@@ -33,46 +33,18 @@ getNote =
     .note
 
 
+type alias NoteContent =
+    String
+
+
 type Msg
     = AutoSave
-    | ContentChanged String
+    | ContentChanged NoteContent
+    | SetContent NoteContent
 
 
 type Reply
-    = SaveContent Note.Note String
-
-
-updateContent : { autoSaveMsg : msg } -> String -> Model -> ( Model, Cmd msg )
-updateContent { autoSaveMsg } newContent model =
-    let
-        newEdtContent =
-            Editable.map (always newContent) model.edtContent
-
-        isDirty =
-            Editable.isDirty newEdtContent
-
-        ( newIsScheduled, cmd ) =
-            if model.isASScheduled || not isDirty then
-                ( model.isASScheduled, Cmd.none )
-            else
-                ( True
-                , Process.sleep 3000
-                    |> Task.perform (always autoSaveMsg)
-                )
-    in
-        ( { model
-            | edtContent = Editable.map (always newContent) model.edtContent
-            , isASScheduled = newIsScheduled
-          }
-        , cmd
-        )
-
-
-updateOnAutoSaveMsg model =
-    { model
-        | edtContent = Editable.save model.edtContent |> Editable.edit
-        , isASScheduled = False
-    }
+    = SaveContent Note.Note NoteContent
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe Reply )
@@ -91,16 +63,18 @@ update msg model =
                 , Just <| SaveContent model.note (Editable.value newEdtContent)
                 )
 
+        SetContent newContent ->
+            ( model, Cmd.none, Nothing )
+
         ContentChanged newContent ->
             let
                 newEdtContent =
-                    Editable.map (always newContent) model.edtContent
-
-                isDirty =
-                    Editable.isDirty newEdtContent
+                    model.edtContent
+                        |> Editable.edit
+                        |> Editable.map (always newContent)
 
                 ( newIsScheduled, cmd ) =
-                    if model.isASScheduled || not isDirty then
+                    if model.isASScheduled then
                         ( model.isASScheduled, Cmd.none )
                     else
                         ( True
@@ -109,7 +83,7 @@ update msg model =
                         )
             in
                 ( { model
-                    | edtContent = Editable.map (always newContent) model.edtContent
+                    | edtContent = newEdtContent
                     , isASScheduled = newIsScheduled
                   }
                 , cmd
