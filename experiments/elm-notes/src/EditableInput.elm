@@ -15,24 +15,16 @@ init value =
     Model value value
 
 
-current =
-    .current
-
-
 save r =
     { r | initial = r.current }
 
 
 get =
-    current
-
-
-initial =
-    .initial
+    .current
 
 
 dirty ei =
-    initial ei /= current ei
+    ei.initial /= ei.current
 
 
 set newValue =
