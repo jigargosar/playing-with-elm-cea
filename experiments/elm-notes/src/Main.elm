@@ -209,7 +209,7 @@ type Msg
     | Session E.Value
     | SignIn
     | SignOut
-    | NotesCollectionChanged E.Value
+    | NoteCollectionChanged E.Value
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
     | RouteTo Route
@@ -221,7 +221,7 @@ subscriptions : Model -> Sub Msg
 subscriptions m =
     Sub.batch
         [ sessionChanged Session
-        , notesCollectionChanged NotesCollectionChanged
+        , notesCollectionChanged NoteCollectionChanged
         ]
 
 
@@ -268,7 +268,7 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        NotesCollectionChanged encNC ->
+        NoteCollectionChanged encNC ->
             let
                 newNC : NoteCollection
                 newNC =
