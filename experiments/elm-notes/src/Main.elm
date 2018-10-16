@@ -200,12 +200,17 @@ type alias NoteContent =
     String
 
 
+type alias F a =
+    a -> a
+
+
 type Msg
     = NoOp
     | SetNoteCollectionAndPersist NoteCollection
     | SetNoteContent String Note Int
     | AddNote NoteContent Millis
     | AddNoteClicked
+    | WithNow (F Model)
     | DeleteNote Note
     | Session E.Value
     | SignIn
@@ -315,13 +320,32 @@ update msg model =
 
         DeleteNote note ->
             ( model
-            , nowMillis
+            , nowMillisTask
                 |> Task.map (\now -> NoteCollection.delete now note model.noteCollection)
                 |> Task.perform SetNoteCollectionAndPersist
             )
 
+        WithNow fn ->
+            let
+                _ =
+                    fn model
+            in
+                ( model, Cmd.none )
+
         AddNoteClicked ->
-            ( model, Cmd.none )
+            ( model
+            , nowMillisTask
+                |> Task.map
+                    (\now ->
+                        \nm ->
+                            let
+                                _ =
+                                    Debug.log "FnInMsg" ( now, nm )
+                            in
+                                nm
+                    )
+                |> Task.perform WithNow
+            )
 
         AddNote content now ->
             let
@@ -337,9 +361,8 @@ setNoteCollectionAndPersist noteCollection model =
     )
 
 
-nowMillis =
-    Time.now
-        |> Task.map Time.posixToMillis
+nowMillisTask =
+    Time.now |> Task.map Time.posixToMillis
 
 
 withNowMillis msg =
