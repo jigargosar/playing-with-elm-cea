@@ -1,6 +1,6 @@
 module Pages.EditNote exposing (..)
 
-import Editable
+import EditableInput exposing (EditableInput)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -12,7 +12,7 @@ import Throttle
 
 type alias Model =
     { note : Note.Note
-    , edtContent : Note.EditableContent
+    , edtContent : EditableInput String
     , throttleSave : Throttle.Model
     , saveScheduled : Bool
     }
@@ -20,13 +20,13 @@ type alias Model =
 
 init note =
     Model note
-        (Note.getEditableContent note)
+        (Note.getContent note |> EditableInput.init)
         (Throttle.init 3000)
         False
 
 
 content =
-    .edtContent >> Editable.value
+    .edtContent >> EditableInput.get
 
 
 getNote =
@@ -68,7 +68,7 @@ update msg model =
     case msg of
         AutoSave ->
             ( { model
-                | edtContent = Editable.save model.edtContent
+                | edtContent = EditableInput.save model.edtContent
                 , saveScheduled = False
               }
             , Cmd.none
@@ -83,20 +83,19 @@ update msg model =
             ( { model
                 | edtContent =
                     model.edtContent
-                        |> Editable.edit
-                        |> Editable.map (always newContent)
+                        |> EditableInput.set newContent
               }
             , Cmd.none
             )
-                |> andThen updateScheduleSave
+                |> andThen updateCheckAndScheduleSave
                 |> withoutReply
 
 
 isContentDirty =
-    .edtContent >> Editable.isDirty
+    .edtContent >> EditableInput.dirty
 
 
-updateScheduleSave model =
+updateCheckAndScheduleSave model =
     let
         ( newSaveScheduled, cmd ) =
             if model.saveScheduled || not (isContentDirty model) then

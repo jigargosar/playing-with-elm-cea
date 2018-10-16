@@ -1,12 +1,12 @@
-module EditableInput exposing (EditableInput, init, dirty, set)
+module EditableInput exposing (EditableInput, init, dirty, set, get, save)
 
 
-type alias Record =
+type alias Record a =
     { initialValue : a, currentValue : a }
 
 
 type EditableInput a
-    = EditableInput Record
+    = EditableInput (Record a)
 
 
 init value =
@@ -15,6 +15,14 @@ init value =
 
 current =
     unTag >> .currentValue
+
+
+save =
+    updateRecord (\r -> { r | initialValue = r.currentValue })
+
+
+get =
+    current
 
 
 initial =
