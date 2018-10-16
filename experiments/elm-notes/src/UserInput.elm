@@ -29,3 +29,16 @@ onChange throttledSaveMsg newValue model =
           }
         , cmd
         )
+
+
+save : Model a -> ( Bool, Model a )
+save model =
+    if EditableInput.dirty model.editable then
+        ( True
+        , { model
+            | editable = EditableInput.save model.editable
+            , throttleSave = Throttle.updateOnEmit model.throttleSave
+          }
+        )
+    else
+        ( False, model )
