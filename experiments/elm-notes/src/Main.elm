@@ -37,6 +37,7 @@ import Url.Builder
 import Url.Parser as UrlPar exposing ((</>))
 import Return2 as R2
 import Return3 as R3
+import UserInput
 
 
 port persistNoteCollection : E.Value -> Cmd msg
@@ -213,7 +214,7 @@ type Msg
     | UrlChanged Url.Url
     | RouteTo Route
     | PushIfChanged String
-    | EditNoteMsg EditNote.Msg
+    | EditNotePageMsg EditNote.Msg
 
 
 subscriptions : Model -> Sub Msg
@@ -264,9 +265,9 @@ update msg model =
             , Cmd.none
             )
 
-        EditNoteMsg subMsg ->
+        EditNotePageMsg pageMsg ->
             case model.page of
-                NoteEditPage subModel ->
+                NoteEditPage pageModel ->
                     let
                         handleReply sm maybeReply m =
                             case maybeReply of
@@ -280,9 +281,9 @@ update msg model =
                                     , Cmd.none
                                     )
                     in
-                        subModel
-                            |> EditNote.update subMsg
-                            |> R3.mapCmd EditNoteMsg
+                        pageModel
+                            |> EditNote.update pageMsg
+                            |> R3.mapCmd EditNotePageMsg
                             |> R3.incorp handleReply model
 
                 _ ->
@@ -461,7 +462,7 @@ viewNoteEditPage model pageModel =
                 [ textarea
                     [ class "pa2 h-100 w-100"
                     , value <| EditNote.content pageModel
-                    , onInput (EditNote.ContentChanged >> EditNoteMsg)
+                    , onInput (EditNote.ContentChanged >> EditNotePageMsg)
                     ]
                     []
                 ]

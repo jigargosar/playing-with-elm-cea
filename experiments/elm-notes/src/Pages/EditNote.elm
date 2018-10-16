@@ -25,6 +25,10 @@ content =
     .contentInput >> UserInput.get
 
 
+getNote =
+    .note
+
+
 type alias NoteContent =
     String
 
