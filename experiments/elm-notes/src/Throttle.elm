@@ -1,6 +1,7 @@
 module Throttle exposing (..)
 
 import Process
+import Return2
 import Task
 
 
@@ -14,19 +15,29 @@ type Msg
 
 
 update msg model =
-    case msg of
-        Trigger ->
-            ( model, Cmd.none )
-
-        Event ->
-            let
-                _ =
-                    1
-            in
-                if model.scheduled then
+    let
+        _ =
+            Debug.log "Trigger: Pre Update" ( msg, model )
+    in
+        (case msg of
+            Trigger ->
+                let
+                    _ =
+                        Debug.log "OnTrigger" model
+                in
                     ( model, Cmd.none )
-                else
-                    ( { model | scheduled = True }
-                    , Process.sleep model.ms
-                        |> Task.perform (always Trigger)
-                    )
+
+            Event ->
+                let
+                    _ =
+                        Debug.log "OnEventQueued" model
+                in
+                    if model.scheduled then
+                        ( model, Cmd.none )
+                    else
+                        ( { model | scheduled = True }
+                        , Process.sleep model.ms
+                            |> Task.perform (always Trigger)
+                        )
+        )
+            |> Debug.log "Trigger: Post Update"
