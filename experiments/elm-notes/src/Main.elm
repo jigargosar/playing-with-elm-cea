@@ -273,6 +273,9 @@ update msg model =
                 newNC : NoteCollection
                 newNC =
                     NoteCollection.replace encNC model.noteCollection
+
+                _ =
+                    Debug.log "NotesCollectionChanged" newNC
             in
                 update (SetNoteCollection newNC) model
 
@@ -303,14 +306,14 @@ update msg model =
                 ( { model | session = newSession }, Cmd.none )
 
         SetNoteCollection newNoteCollection ->
-            updateNoteCollection newNoteCollection model
+            setNoteCollectionAndPersist newNoteCollection model
 
         SetNoteContent content note now ->
             let
                 newNoteCollection =
                     NoteCollection.updateNoteContent now content note model.noteCollection
             in
-                updateNoteCollection newNoteCollection model
+                setNoteCollectionAndPersist newNoteCollection model
 
         DeleteNote note ->
             let
@@ -336,7 +339,7 @@ update msg model =
                 update (SetNoteCollection nc) model
 
 
-updateNoteCollection noteCollection model =
+setNoteCollectionAndPersist noteCollection model =
     ( { model | noteCollection = noteCollection }
     , persistNoteCollection <| NoteCollection.encode noteCollection
     )
