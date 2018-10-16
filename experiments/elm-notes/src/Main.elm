@@ -462,21 +462,15 @@ viewNoteDetailPage model note =
 
 
 viewNoteEditPage model pageModel =
-    div [ class "pv3 flex flex-column vh-100 vs3" ]
-        [ div [ class "vs3 center w-90" ]
-            [ viewHeader model.session
-            ]
-        , div [ class "flex-grow-1 flex flex-row justify-center" ]
-            [ div [ class "w-90" ]
-                [ textarea
-                    [ class "pa2 h-100 w-100"
-                    , value <| EditNote.content pageModel
-                    , onInput (EditNote.ContentChanged >> EditNoteMsg)
-                    ]
-                    []
+    model
+        |> withDefaultLayout
+            [ textarea
+                [ class "pa2 h-100 w-100"
+                , value <| EditNote.content pageModel
+                , onInput (EditNote.ContentChanged >> EditNoteMsg)
                 ]
+                []
             ]
-        ]
 
 
 
