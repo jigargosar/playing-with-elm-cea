@@ -55,6 +55,14 @@ withoutReply ( m, c ) =
     ( m, c, Nothing )
 
 
+andThen f ( m1, c1 ) =
+    let
+        ( m2, c2 ) =
+            f m1
+    in
+        ( m2, Cmd.batch [ c1, c2 ] )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe Reply )
 update msg model =
     case msg of
@@ -72,25 +80,31 @@ update msg model =
                 |> withoutReply
 
         ContentChanged newContent ->
-            let
-                newEdtContent =
+            ( { model
+                | edtContent =
                     model.edtContent
                         |> Editable.edit
                         |> Editable.map (always newContent)
+              }
+            , Cmd.none
+            )
+                |> andThen updateScheduleSave
+                |> withoutReply
 
-                ( newIsScheduled, cmd ) =
-                    if model.isASScheduled then
-                        ( model.isASScheduled, Cmd.none )
-                    else
-                        ( True
-                        , Process.sleep 3000
-                            |> Task.perform (always AutoSave)
-                        )
-            in
-                ( { model
-                    | edtContent = newEdtContent
-                    , isASScheduled = newIsScheduled
-                  }
-                , cmd
+
+updateScheduleSave model =
+    let
+        ( newIsScheduled, cmd ) =
+            if model.isASScheduled then
+                ( model.isASScheduled, Cmd.none )
+            else
+                ( True
+                , Process.sleep 3000
+                    |> Task.perform (always AutoSave)
                 )
-                    |> withoutReply
+    in
+        ( { model
+            | isASScheduled = newIsScheduled
+          }
+        , cmd
+        )
