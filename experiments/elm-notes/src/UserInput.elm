@@ -31,25 +31,14 @@ onChange throttledSaveMsg newValue model =
         )
 
 
+save : Model a -> Model a
 save model =
-    { model
-        | editable = EditableInput.save model.editable
-    }
+    { model | editable = EditableInput.save model.editable }
 
 
-onThrottledSaveMsg : Model a -> ( Bool, Model a )
-onThrottledSaveMsg model =
-    let
-        wasDirty =
-            EditableInput.dirty model.editable
-
-        newModel =
-            { model
-                | editable = EditableInput.save model.editable
-                , throttleSave = Throttle.updateOnEmit model.throttleSave
-            }
-    in
-        ( wasDirty, newModel )
+onThrottledSaveMsg : Model a -> Model a
+onThrottledSaveMsg =
+    save >> \model -> { model | throttleSave = Throttle.updateOnEmit model.throttleSave }
 
 
 get =

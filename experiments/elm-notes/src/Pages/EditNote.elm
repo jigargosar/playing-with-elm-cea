@@ -43,6 +43,7 @@ type Msg
     = ContentChanged NoteContent
     | ThrottledSave
     | ContentBlurred
+    | Save
     | SetNoteAndPersist Note.Note
     | UpdateNoteFromNotesCollectionChanges E.Value
 
@@ -76,27 +77,18 @@ update msg model =
                 , cmd
                 )
 
+        Save ->
+            ( model
+            , taskNowMilli
+                |> Task.map (\now -> Note.updateContent (content model) now model.note)
+                |> Task.perform SetNoteAndPersist
+            )
+
         ContentBlurred ->
-            let
-                newContentInput =
-                    UserInput.save model.contentInput
-            in
-                ( { model | contentInput = newContentInput }
-                , taskNowMilli
-                    |> Task.map (\now -> Note.updateContent (UserInput.get newContentInput) now model.note)
-                    |> Task.perform SetNoteAndPersist
-                )
+            update Save { model | contentInput = UserInput.save model.contentInput }
 
         ThrottledSave ->
-            let
-                ( wasDirty, newContentInput ) =
-                    UserInput.onThrottledSaveMsg model.contentInput
-            in
-                ( { model | contentInput = newContentInput }
-                , taskNowMilli
-                    |> Task.map (\now -> Note.updateContent (UserInput.get newContentInput) now model.note)
-                    |> Task.perform SetNoteAndPersist
-                )
+            update Save { model | contentInput = UserInput.onThrottledSaveMsg model.contentInput }
 
 
 taskNowMilli : Task x Int
