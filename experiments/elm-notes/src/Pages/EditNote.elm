@@ -1,5 +1,6 @@
 module Pages.EditNote exposing (..)
 
+import Basics.Extra exposing (flip)
 import Collection
 import Dict
 import Html exposing (..)
@@ -75,7 +76,7 @@ update msg model =
         ContentChanged newContent ->
             model.contentInput
                 |> UserInput.onChange ThrottledSave newContent
-                |> Tuple.mapFirst (\ci -> overContentInput (always ci) model)
+                |> Tuple.mapFirst (flip setContentInput model)
 
         Save ->
             ( model
@@ -99,3 +100,8 @@ taskNowMilli =
 overContentInput : (ContentInput -> ContentInput) -> Model -> Model
 overContentInput updateFn model =
     { model | contentInput = updateFn model.contentInput }
+
+
+setContentInput : ContentInput -> Model -> Model
+setContentInput =
+    always >> overContentInput
