@@ -20,14 +20,6 @@ type alias Model item =
     { dict : Dict String item, seed : Random.Seed }
 
 
-type alias F a =
-    a -> a
-
-
-type alias ModelF item =
-    F (Model item)
-
-
 getDict =
     .dict
 
@@ -40,7 +32,7 @@ overDict f model =
     setDict (f (getDict model)) model
 
 
-insert : Id -> item -> ModelF item
+insert : Id -> item -> Model item -> Model item
 insert id item =
     overDict <| Dict.insert id item
 
@@ -50,7 +42,7 @@ insertIn model id item =
     insert id item model
 
 
-update : Id -> F item -> ModelF item
+update : Id -> (item -> item) -> Model item -> Model item
 update id f =
     overDict <| Dict.update id (Maybe.map f)
 
@@ -58,14 +50,16 @@ update id f =
 insertWith : (Id -> Millis -> item) -> Model item -> Task x (Model item)
 insertWith initItem model =
     let
-        ( newId, newSeed ) =
+        ( id, newSeed ) =
             Random.step IdX.stringIdGenerator model.seed
-
-        newModel =
-            { model | seed = newSeed }
     in
-        taskNowMilli
-            |> Task.map (initItem newId >> insertIn newModel newId)
+        insertWithHelp id initItem ({ model | seed = newSeed })
+
+
+insertWithHelp : Id -> (Id -> Millis -> item) -> Model item -> Task x (Model item)
+insertWithHelp id initItemFn model =
+    taskNowMilli
+        |> Task.map (initItemFn id >> \item -> insert id item model)
 
 
 taskNowMilli : Task x Int
@@ -73,6 +67,7 @@ taskNowMilli =
     Time.now |> Task.map Time.posixToMillis
 
 
-foo : Cmd Int
-foo =
-    Task.perform identity taskNowMilli
+updateWith : Id -> (Millis -> item -> item) -> Model item -> Task x (Model item)
+updateWith id updateFn model =
+    taskNowMilli
+        |> Task.map (\nowMilli -> update id (updateFn nowMilli) model)
