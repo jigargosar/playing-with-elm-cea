@@ -3,6 +3,7 @@ module Collection exposing (..)
 import Basics.Extra exposing (flip)
 import Dict exposing (Dict)
 import IdX
+import Json.Encode
 import Random
 import Task exposing (Task)
 import Time
@@ -59,3 +60,8 @@ updateWith : Id -> (Millis -> item -> item) -> Model item -> Task x (Model item)
 updateWith id updateFn model =
     taskNowMilli
         |> Task.map (\nowMilli -> update id (updateFn nowMilli) model)
+
+
+encode : (item -> Json.Encode.Value) -> Model item -> Json.Encode.Value
+encode encodeItem model =
+    model.dict |> Json.Encode.dict identity encodeItem
