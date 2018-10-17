@@ -210,7 +210,6 @@ type Msg
     | SetNoteContent String Note Int
     | NewNoteClicked
     | NewNoteAdded ( Note, NoteCollection )
-    | WithNow (F Model)
     | Session E.Value
     | SignIn
     | SignOut
@@ -317,13 +316,6 @@ update msg model =
             in
                 setNoteCollectionAndPersist newNoteCollection model
 
-        WithNow fn ->
-            let
-                _ =
-                    fn model
-            in
-                ( model, Cmd.none )
-
         NewNoteAdded ( note, noteCollection ) ->
             setNoteCollectionAndPersist noteCollection model
                 |> andThen (update <| RouteTo <| NoteEdit note.id)
@@ -339,10 +331,6 @@ setNoteCollectionAndPersist noteCollection model =
     ( { model | noteCollection = noteCollection }
     , persistNoteCollection <| NoteCollection.encode noteCollection
     )
-
-
-nowMillisTask =
-    Time.now |> Task.map Time.posixToMillis
 
 
 andThenUpdate msg =
