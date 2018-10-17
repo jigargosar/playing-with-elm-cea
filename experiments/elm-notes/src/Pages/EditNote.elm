@@ -150,7 +150,9 @@ update2 msg model =
                     UserInput.onThrottledSaveMsg model.contentInput
             in
                 ( { model | contentInput = newContentInput }
-                , Cmd.none
+                , taskNowMilli
+                    |> Task.map (\now -> Note.updateContent (UserInput.get newContentInput) now model.note)
+                    |> Task.perform SetNoteAndPersist
                 )
 
 

@@ -254,10 +254,15 @@ update msg model =
         EditNoteMsg pageMsg ->
             case model.page of
                 EditNotePage pageModel ->
-                    pageModel
-                        |> EditNote.update pageMsg
-                        |> R3.mapCmd EditNoteMsg
-                        |> R3.incorp handleEditNotePageReply model
+                    {- pageModel
+                       |> EditNote.update pageMsg
+                       |> R3.mapCmd EditNoteMsg
+                       |> R3.incorp handleEditNotePageReply model
+                    -}
+                    EditNote.update2 pageMsg pageModel
+                        |> Tuple.mapBoth
+                            (\newPageMode -> { model | page = EditNotePage newPageMode })
+                            (Cmd.map EditNoteMsg)
 
                 _ ->
                     ( model, Cmd.none )
