@@ -3,10 +3,13 @@ module Collection exposing (..)
 import Basics.Extra exposing (flip)
 import Dict exposing (Dict)
 import IdX
+import Json.Decode exposing (Decoder)
 import Json.Encode
 import Random
 import Task exposing (Task)
 import Time
+import Json.Decode as D
+import Json.Encode as E
 
 
 type alias Id =
@@ -62,6 +65,17 @@ updateWith id updateFn model =
         |> Task.map (\nowMilli -> update id (updateFn nowMilli) model)
 
 
-encode : (item -> Json.Encode.Value) -> Model item -> Json.Encode.Value
+encode : (item -> E.Value) -> Model item -> E.Value
 encode encodeItem model =
-    model.dict |> Json.Encode.dict identity encodeItem
+    model.dict |> E.dict identity encodeItem
+
+
+generator : Decoder item -> E.Value -> Random.Generator (Model item)
+generator itemDecoder encodedDict =
+    let
+        dict =
+            D.decodeValue (D.dict itemDecoder) encodedDict
+                |> Result.mapError (identity)
+                |> Result.withDefault Dict.empty
+    in
+        Random.map (Model dict) Random.independentSeed
