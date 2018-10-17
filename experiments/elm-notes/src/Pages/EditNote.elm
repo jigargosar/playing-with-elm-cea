@@ -1,5 +1,7 @@
 module Pages.EditNote exposing (..)
 
+import Collection
+import Dict
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -113,7 +115,14 @@ update2 msg model =
             ( model, Ports.persistNote <| Note.encode note )
 
         UpdateNoteFromNotesCollectionChanges encodedNotesCollection ->
-            ( model, Cmd.none )
+            let
+                newNote =
+                    D.decodeValue (D.dict Note.decoder) encodedNotesCollection
+                        |> Result.toMaybe
+                        |> Maybe.andThen (Dict.get model.note.id >> Debug.log "Note Updated")
+                        |> Maybe.withDefault (model.note)
+            in
+                ( { model | note = newNote }, Cmd.none )
 
         ContentChanged newContent ->
             let
