@@ -343,7 +343,7 @@ handleEditNotePageReply pageModel maybeReply model =
     case maybeReply of
         Just (EditNote.SaveContent note content) ->
             ( { model | page = EditNotePage pageModel }
-            , Collection.updateWith note.id (\now -> Note.updateContent now content) model.noteCollection
+            , Collection.updateWith note.id (Note.updateContent content) model.noteCollection
                 |> Task.perform SetNoteCollectionAndPersist
             )
 

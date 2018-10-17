@@ -61,8 +61,8 @@ getEditableContent =
     getContent >> Editable.ReadOnly
 
 
-updateContent : Collection.Millis -> Content -> Note -> Note
-updateContent now content note =
+updateContent : Content -> Collection.Millis -> Note -> Note
+updateContent content now note =
     if content == note.content then
         note
     else
