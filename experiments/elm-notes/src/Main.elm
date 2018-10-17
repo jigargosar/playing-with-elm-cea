@@ -209,6 +209,7 @@ type Msg
     | SetNoteCollectionAndPersist NoteCollection
     | SetNoteContent String Note Int
     | NewNoteClicked
+    | NewNoteAdded ( Note, NoteCollection )
     | WithNow (F Model)
     | Session E.Value
     | SignIn
@@ -323,10 +324,14 @@ update msg model =
             in
                 ( model, Cmd.none )
 
+        NewNoteAdded ( note, noteCollection ) ->
+            setNoteCollectionAndPersist noteCollection model
+                |> andThen (update <| RouteTo <| NoteEdit note.id)
+
         NewNoteClicked ->
             ( model
             , Collection.createAndAdd (Note.init) model.noteCollection
-                |> Task.perform SetNoteCollectionAndPersist
+                |> Task.perform NewNoteAdded
             )
 
 
@@ -338,6 +343,18 @@ setNoteCollectionAndPersist noteCollection model =
 
 nowMillisTask =
     Time.now |> Task.map Time.posixToMillis
+
+
+andThenUpdate msg =
+    andThen (update msg)
+
+
+andThen f ( m1, c1 ) =
+    let
+        ( m2, c2 ) =
+            f m1
+    in
+        ( m2, Cmd.batch [ c1, c2 ] )
 
 
 withNowMillis msg =
