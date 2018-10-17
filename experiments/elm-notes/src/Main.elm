@@ -77,14 +77,10 @@ routeToUrlString route =
                 Url.toString url
 
 
-routeFromUrl url =
-    UrlPar.parse routeParser url |> Maybe.withDefault (NotFound url)
-
-
 pageFromUrl url hasNC =
     let
         route =
-            routeFromUrl url
+            UrlPar.parse routeParser url |> Maybe.withDefault (NotFound url)
     in
         case route of
             NoteEdit id ->
