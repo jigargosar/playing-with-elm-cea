@@ -20,8 +20,8 @@ type alias Model item =
     { dict : Dict String item, seed : Random.Seed }
 
 
-overDict f model =
-    { model | dict = f model.dict }
+overDict updateFn model =
+    { model | dict = updateFn model.dict }
 
 
 insert : Id -> item -> Model item -> Model item
