@@ -175,7 +175,6 @@ type alias Flags =
 
 type alias Model =
     { noteCollection : NoteCollection
-    , lastFocusedNoteListItemDomId : String
     , authState : AuthState
     , key : Nav.Key
     , url : Url.Url
@@ -193,7 +192,6 @@ init flags url key =
             Random.step (Collection.generator Note.decoder flags.noteList) (Random.initialSeed flags.now)
     in
         ( { noteCollection = noteCollection
-          , lastFocusedNoteListItemDomId = ""
           , authState = InitialUnknown
           , key = key
           , url = url
