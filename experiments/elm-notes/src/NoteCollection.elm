@@ -15,10 +15,6 @@ type alias NoteCollection =
     Collection.Model Note
 
 
-queryAll =
-    queryAllSortByModifiedAt
-
-
 queryAllSortByModifiedAt =
     Collection.items
         >> List.filter (.deleted >> not)

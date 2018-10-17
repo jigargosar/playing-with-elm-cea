@@ -181,7 +181,7 @@ init flags url key =
 
 currentNoteList : Model -> List Note
 currentNoteList =
-    .noteCollection >> NoteCollection.queryAll
+    .noteCollection >> NoteCollection.queryAllSortByModifiedAt
 
 
 getNoteById id =
