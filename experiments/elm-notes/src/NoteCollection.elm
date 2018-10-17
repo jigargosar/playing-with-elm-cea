@@ -29,21 +29,17 @@ getById =
     Collection.get
 
 
-type alias F a =
-    a -> a
-
-
-updateNote : F Note -> Note -> F NoteCollection
+updateNote : (Note -> Note) -> Note -> NoteCollection -> NoteCollection
 updateNote fn note nc =
     nc
 
 
-updateNoteContent : Int -> String -> Note -> F NoteCollection
+updateNoteContent : Int -> String -> Note -> NoteCollection -> NoteCollection
 updateNoteContent now content =
     updateNote (Note.updateContent now content)
 
 
-replace : E.Value -> F NoteCollection
+replace : E.Value -> NoteCollection -> NoteCollection
 replace encDb nc =
     nc
 
