@@ -113,8 +113,8 @@ type AuthState
     | InitialUnknown
 
 
-userDecoder : Decoder UserDetails
-userDecoder =
+userDetailsDecoder : Decoder UserDetails
+userDetailsDecoder =
     D.map3 UserDetails
         (D.field "uid" D.string)
         (D.field "email" D.string)
@@ -123,7 +123,7 @@ userDecoder =
 
 authStateDecoder : Decoder AuthState
 authStateDecoder =
-    D.oneOf [ D.null Anon, D.map Authenticated userDecoder ]
+    D.oneOf [ D.null Anon, D.map Authenticated userDetailsDecoder ]
 
 
 type Page
