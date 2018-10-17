@@ -86,10 +86,10 @@ update msg model =
             )
 
         ContentBlurred ->
-            update Save { model | contentInput = UserInput.save model.contentInput }
+            update Save (overContentInput UserInput.save model)
 
         ThrottledSave ->
-            update Save { model | contentInput = UserInput.onThrottledSaveMsg model.contentInput }
+            update Save (overContentInput UserInput.onThrottledSaveMsg model)
 
 
 taskNowMilli : Task x Int
