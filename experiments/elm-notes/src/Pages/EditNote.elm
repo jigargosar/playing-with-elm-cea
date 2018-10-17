@@ -88,3 +88,34 @@ update msg model =
                 , Cmd.none
                 , reply
                 )
+
+
+update2 : Msg -> Model -> ( Model, Cmd Msg )
+update2 msg model =
+    case msg of
+        ContentChanged newContent ->
+            let
+                ( newContentInput, cmd ) =
+                    model.contentInput |> UserInput.onChange ThrottledSave newContent
+            in
+                ( { model | contentInput = newContentInput }
+                , cmd
+                )
+
+        ContentBlurred ->
+            let
+                ( wasDirty, newContentInput ) =
+                    UserInput.save model.contentInput
+            in
+                ( { model | contentInput = newContentInput }
+                , Cmd.none
+                )
+
+        ThrottledSave ->
+            let
+                ( wasDirty, newContentInput ) =
+                    UserInput.onThrottledSaveMsg model.contentInput
+            in
+                ( { model | contentInput = newContentInput }
+                , Cmd.none
+                )
