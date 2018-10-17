@@ -9,6 +9,8 @@ import Process
 import Task exposing (Task)
 import Time
 import UserInput
+import Json.Decode as D
+import Json.Encode as E
 
 
 type alias Model =
@@ -40,6 +42,7 @@ type Msg
     | ThrottledSave
     | ContentBlurred
     | SetNoteAndPersist Note.Note
+    | UpdateNoteFromNotesCollectionChanges E.Value
 
 
 type Reply
@@ -57,6 +60,9 @@ update : Msg -> Model -> ( Model, Cmd Msg, Maybe Reply )
 update msg model =
     case msg of
         SetNoteAndPersist _ ->
+            ( model, Cmd.none, Nothing )
+
+        UpdateNoteFromNotesCollectionChanges _ ->
             ( model, Cmd.none, Nothing )
 
         ContentChanged newContent ->
@@ -101,6 +107,9 @@ update2 msg model =
     case msg of
         SetNoteAndPersist note ->
             ( model, Ports.persistNote <| Note.encode note )
+
+        UpdateNoteFromNotesCollectionChanges encodedNotesCollection ->
+            ( model, Cmd.none )
 
         ContentChanged newContent ->
             let
