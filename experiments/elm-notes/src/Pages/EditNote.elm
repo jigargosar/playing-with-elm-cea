@@ -78,7 +78,7 @@ update msg model =
 
         ContentBlurred ->
             let
-                ( wasDirty, newContentInput ) =
+                newContentInput =
                     UserInput.save model.contentInput
             in
                 ( { model | contentInput = newContentInput }
