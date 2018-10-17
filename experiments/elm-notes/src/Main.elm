@@ -254,11 +254,6 @@ update msg model =
         EditNoteMsg pageMsg ->
             case model.page of
                 EditNotePage pageModel ->
-                    {- pageModel
-                       |> EditNote.update pageMsg
-                       |> R3.mapCmd EditNoteMsg
-                       |> R3.incorp handleEditNotePageReply model
-                    -}
                     EditNote.update2 pageMsg pageModel
                         |> Tuple.mapBoth
                             (\newPageMode -> { model | page = EditNotePage newPageMode })
@@ -318,30 +313,12 @@ setNoteCollectionAndPersist noteCollection model =
     )
 
 
-andThenUpdate msg =
-    andThen (update msg)
-
-
 andThen f ( m1, c1 ) =
     let
         ( m2, c2 ) =
             f m1
     in
         ( m2, Cmd.batch [ c1, c2 ] )
-
-
-handleEditNotePageReply pageModel maybeReply model =
-    case maybeReply of
-        Just (EditNote.SaveContent note content) ->
-            ( { model | page = EditNotePage pageModel }
-            , Collection.updateWith note.id (Note.updateContent content) model.noteCollection
-                |> Task.perform SetNoteCollectionAndPersist
-            )
-
-        Nothing ->
-            ( { model | page = EditNotePage pageModel }
-            , Cmd.none
-            )
 
 
 

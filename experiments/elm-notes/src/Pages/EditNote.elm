@@ -62,52 +62,6 @@ maybeBool bool value =
         Nothing
 
 
-update : Msg -> Model -> ( Model, Cmd Msg, Maybe Reply )
-update msg model =
-    case msg of
-        SetNoteAndPersist _ ->
-            ( model, Cmd.none, Nothing )
-
-        UpdateNoteFromNotesCollectionChanges _ ->
-            ( model, Cmd.none, Nothing )
-
-        ContentChanged newContent ->
-            let
-                ( newContentInput, cmd ) =
-                    model.contentInput |> UserInput.onChange ThrottledSave newContent
-            in
-                ( { model | contentInput = newContentInput }
-                , cmd
-                , Nothing
-                )
-
-        ContentBlurred ->
-            let
-                ( wasDirty, newContentInput ) =
-                    UserInput.save model.contentInput
-
-                reply =
-                    maybeBool wasDirty <| SaveContent model.note (UserInput.get newContentInput)
-            in
-                ( { model | contentInput = newContentInput }
-                , Cmd.none
-                , reply
-                )
-
-        ThrottledSave ->
-            let
-                ( wasDirty, newContentInput ) =
-                    UserInput.onThrottledSaveMsg model.contentInput
-
-                reply =
-                    maybeBool wasDirty <| SaveContent model.note (UserInput.get newContentInput)
-            in
-                ( { model | contentInput = newContentInput }
-                , Cmd.none
-                , reply
-                )
-
-
 update2 : Msg -> Model -> ( Model, Cmd Msg )
 update2 msg model =
     case msg of
