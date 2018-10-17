@@ -27,6 +27,7 @@ import Keyboard.Key
 import Markdown
 import Note exposing (Note)
 import Pages.EditNote as EditNote
+import Ports
 import Random
 import Task
 import Time
@@ -36,22 +37,6 @@ import Url.Builder
 import Url.Parser as UrlPar exposing ((</>))
 import Return3 as R3
 import UserInput
-
-
-port persistNoteCollection : E.Value -> Cmd msg
-
-
-port sessionChanged : (E.Value -> msg) -> Sub msg
-
-
-port signIn : () -> Cmd msg
-
-
-port signOut : () -> Cmd msg
-
-
-port notesCollectionChanged : (E.Value -> msg) -> Sub msg
-
 
 
 ---- MODEL ----
@@ -228,8 +213,8 @@ type Msg
 subscriptions : Model -> Sub Msg
 subscriptions m =
     Sub.batch
-        [ sessionChanged Session
-        , notesCollectionChanged ReplaceNoteCollection
+        [ Ports.sessionChanged Session
+        , Ports.notesCollectionChanged ReplaceNoteCollection
         ]
 
 
@@ -282,10 +267,10 @@ update msg model =
                     (Collection.replace Note.decoder encodedValue model.noteCollection)
 
         SignIn ->
-            ( model, signIn () )
+            ( model, Ports.signIn () )
 
         SignOut ->
-            ( model, signOut () )
+            ( model, Ports.signOut () )
 
         Session encSession ->
             let
@@ -323,7 +308,7 @@ update msg model =
 
 setNoteCollectionAndPersist noteCollection model =
     ( { model | noteCollection = noteCollection }
-    , persistNoteCollection <| Collection.encode Note.encode noteCollection
+    , Ports.persistNoteCollection <| Collection.encode Note.encode noteCollection
     )
 
 
