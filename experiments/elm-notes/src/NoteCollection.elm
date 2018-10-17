@@ -40,8 +40,8 @@ updateNoteContent now content =
 
 
 replace : E.Value -> NoteCollection -> NoteCollection
-replace encDb nc =
-    nc
+replace encodedValue =
+    Collection.replace Note.decoder encodedValue
 
 
 generator : E.Value -> Random.Generator NoteCollection
