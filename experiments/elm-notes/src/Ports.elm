@@ -7,6 +7,9 @@ import Json.Encode as E
 port persistNoteCollection : E.Value -> Cmd msg
 
 
+port persistNote : E.Value -> Cmd msg
+
+
 port sessionChanged : (E.Value -> msg) -> Sub msg
 
 

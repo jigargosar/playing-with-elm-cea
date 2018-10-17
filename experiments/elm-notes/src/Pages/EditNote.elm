@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Note
+import Ports
 import Process
 import Task exposing (Task)
 import Time
@@ -99,7 +100,7 @@ update2 : Msg -> Model -> ( Model, Cmd Msg )
 update2 msg model =
     case msg of
         SetNoteAndPersist note ->
-            ( model, Cmd.none )
+            ( model, Ports.persistNote <| Note.encode note )
 
         ContentChanged newContent ->
             let
