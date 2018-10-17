@@ -325,17 +325,8 @@ update msg model =
 
         AddNoteClicked ->
             ( model
-            , nowMillisTask
-                |> Task.map
-                    (\now ->
-                        \nm ->
-                            let
-                                _ =
-                                    Debug.log "FnInMsg" ( now, nm )
-                            in
-                                nm
-                    )
-                |> Task.perform WithNow
+            , Collection.insertWith (Note.init) model.noteCollection
+                |> Task.perform SetNoteCollectionAndPersist
             )
 
 

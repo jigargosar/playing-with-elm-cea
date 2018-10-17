@@ -35,6 +35,10 @@ type alias Note =
     { content : String, deleted : Bool, createdAt : Int, modifiedAt : Int, id : Collection.Id }
 
 
+init id now =
+    { content = "", deleted = False, id = id, createdAt = now, modifiedAt = now }
+
+
 
 --generator : Int -> String -> Random.Generator Note
 --generator now content =
@@ -55,10 +59,6 @@ type alias EditableContent =
 
 getEditableContent =
     getContent >> Editable.ReadOnly
-
-
-init content =
-    Note content
 
 
 updateContent now content note =
