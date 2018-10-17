@@ -113,6 +113,19 @@ type AuthState
     | InitialUnknown
 
 
+userDecoder : Decoder UserDetails
+userDecoder =
+    D.map3 UserDetails
+        (D.field "uid" D.string)
+        (D.field "email" D.string)
+        (D.field "displayName" D.string)
+
+
+authStateDecoder : Decoder AuthState
+authStateDecoder =
+    D.oneOf [ D.null Anon, D.map Authenticated userDecoder ]
+
+
 type Page
     = EditNotePage EditNote.Model
     | NotFoundPage String
@@ -271,17 +284,6 @@ update msg model =
 
         AuthState encAuthState ->
             let
-                userDecoder : Decoder UserDetails
-                userDecoder =
-                    D.map3 UserDetails
-                        (D.field "uid" D.string)
-                        (D.field "email" D.string)
-                        (D.field "displayName" D.string)
-
-                authStateDecoder : Decoder AuthState
-                authStateDecoder =
-                    D.oneOf [ D.null Anon, D.map Authenticated userDecoder ]
-
                 newAuthState =
                     D.decodeValue authStateDecoder encAuthState
                         --                        |> Result.mapError (Debug.log "Error: authState")
