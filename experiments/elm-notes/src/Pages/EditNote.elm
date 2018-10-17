@@ -45,6 +45,10 @@ type Msg
     | UpdateNoteFromNotesCollectionChanges E.Value
 
 
+subscriptions =
+    Sub.batch [ Ports.notesCollectionChanged UpdateNoteFromNotesCollectionChanges ]
+
+
 type Reply
     = SaveContent Note.Note NoteContent
 

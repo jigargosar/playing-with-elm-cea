@@ -215,6 +215,7 @@ subscriptions m =
     Sub.batch
         [ Ports.sessionChanged Session
         , Ports.notesCollectionChanged ReplaceNoteCollection
+        , EditNote.subscriptions |> Sub.map EditNoteMsg
         ]
 
 
