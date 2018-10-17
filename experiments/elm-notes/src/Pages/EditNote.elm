@@ -15,9 +15,13 @@ import Json.Decode as D
 import Json.Encode as E
 
 
+type alias ContentInput =
+    UserInput.Model NoteContent
+
+
 type alias Model =
     { note : Note.Note
-    , contentInput : UserInput.Model NoteContent
+    , contentInput : ContentInput
     }
 
 
@@ -69,13 +73,9 @@ update msg model =
                 ( { model | note = newNote }, Cmd.none )
 
         ContentChanged newContent ->
-            let
-                ( newContentInput, cmd ) =
-                    model.contentInput |> UserInput.onChange ThrottledSave newContent
-            in
-                ( { model | contentInput = newContentInput }
-                , cmd
-                )
+            model.contentInput
+                |> UserInput.onChange ThrottledSave newContent
+                |> Tuple.mapFirst (\ci -> overContentInput (always ci) model)
 
         Save ->
             ( model
@@ -94,3 +94,8 @@ update msg model =
 taskNowMilli : Task x Int
 taskNowMilli =
     Time.now |> Task.map Time.posixToMillis
+
+
+overContentInput : (ContentInput -> ContentInput) -> Model -> Model
+overContentInput updateFn model =
+    { model | contentInput = updateFn model.contentInput }
