@@ -34,7 +34,6 @@ import Update.Extra
 import Url
 import Url.Builder
 import Url.Parser as UrlPar exposing ((</>))
-import Return2 as R2
 import Return3 as R3
 import UserInput
 
