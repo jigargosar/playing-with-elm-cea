@@ -42,6 +42,20 @@ subscribe(
   app,
 )
 
+subscribe(
+  'persistNote',
+  note => {
+    let user = auth().currentUser
+    if (user) {
+      const batch = firestore().batch()
+      const cRef = userCRef(user.uid, elmNotesCollectionName)
+      batch.set(cRef.doc(note.id), note)
+      batch.commit().catch(console.error)
+    }
+  },
+  app,
+)
+
 subscribe('signIn', signIn, app)
 subscribe('signOut', signOut, app)
 let elmNotesListener = identity
@@ -70,7 +84,9 @@ auth().onAuthStateChanged(function(user) {
 const elmNotesCollectionName = `elm-notes`
 
 function subscribe(port, fn, app) {
-  app.ports[port].subscribe(fn)
+  if (app.ports[port]) {
+    app.ports[port].subscribe(fn)
+  } else console.log('Port Not Found', port, app.ports)
 }
 
 function storageGetOr(or, key) {
