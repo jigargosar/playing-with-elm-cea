@@ -166,7 +166,7 @@ init flags url key =
             Browser.application
 
         ( noteCollection, _ ) =
-            Random.step (NoteCollection.generator flags.noteList) (Random.initialSeed flags.now)
+            Random.step (Collection.generator Note.decoder flags.noteList) (Random.initialSeed flags.now)
     in
         ( { noteCollection = noteCollection
           , lastFocusedNoteListItemDomId = ""
@@ -185,7 +185,7 @@ currentNoteList =
 
 
 getNoteById id =
-    .noteCollection >> NoteCollection.getById id
+    .noteCollection >> Collection.get id
 
 
 
@@ -212,7 +212,7 @@ type Msg
     | Session E.Value
     | SignIn
     | SignOut
-    | NoteCollectionChanged E.Value
+    | ReplaceNoteCollection E.Value
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
     | RouteTo Route
@@ -224,7 +224,7 @@ subscriptions : Model -> Sub Msg
 subscriptions m =
     Sub.batch
         [ sessionChanged Session
-        , notesCollectionChanged NoteCollectionChanged
+        , notesCollectionChanged ReplaceNoteCollection
         ]
 
 
@@ -271,13 +271,10 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        NoteCollectionChanged encNC ->
-            let
-                newNC : NoteCollection
-                newNC =
-                    NoteCollection.replace encNC model.noteCollection
-            in
-                update (SetNoteCollectionAndPersist newNC) model
+        ReplaceNoteCollection encodedValue ->
+            model
+                |> setNoteCollectionAndPersist
+                    (Collection.replace Note.decoder encodedValue model.noteCollection)
 
         SignIn ->
             ( model, signIn () )

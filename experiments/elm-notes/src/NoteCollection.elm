@@ -21,16 +21,6 @@ queryAllSortByModifiedAt =
         >> List.sortBy (.modifiedAt >> (*) -1)
 
 
-getById =
-    Collection.get
-
-
-
-replace : E.Value -> NoteCollection -> NoteCollection
-replace encodedValue =
-    Collection.replace Note.decoder encodedValue
-
-
 generator : E.Value -> Random.Generator NoteCollection
 generator encodedValue =
     Collection.generator Note.decoder encodedValue
