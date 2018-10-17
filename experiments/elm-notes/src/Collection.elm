@@ -79,3 +79,11 @@ generator itemDecoder encodedDict =
                 |> Result.withDefault Dict.empty
     in
         Random.map (Model dict) Random.independentSeed
+
+
+items =
+    .dict >> Dict.values
+
+
+get id =
+    .dict >> Dict.get id

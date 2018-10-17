@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Browser
+import Collection
 import Editable
 import Exts.Html.Events
 import Exts.List
@@ -19,7 +20,6 @@ import Html.Events exposing (onClick, onFocus, onInput)
 import Html.Lazy as H
 import Html.Attributes as H
 import Html.Attributes as HA
-import Id exposing (Id)
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
 import Keyboard.Event
@@ -61,8 +61,8 @@ port notesCollectionChanged : (E.Value -> msg) -> Sub msg
 
 type Route
     = NoteList
-    | NoteDetail Id
-    | NoteEdit Id
+    | NoteDetail Collection.Id
+    | NoteEdit Collection.Id
     | NotFound Url.Url
 
 
@@ -70,8 +70,8 @@ routeParser : UrlPar.Parser (Route -> a) a
 routeParser =
     UrlPar.oneOf
         [ UrlPar.map NoteList UrlPar.top
-        , UrlPar.map (Id.fromString >> NoteDetail) (UrlPar.s "note" </> UrlPar.string)
-        , UrlPar.map (Id.fromString >> NoteEdit) (UrlPar.s "note" </> UrlPar.s "edit" </> UrlPar.string)
+        , UrlPar.map (NoteDetail) (UrlPar.s "note" </> UrlPar.string)
+        , UrlPar.map (NoteEdit) (UrlPar.s "note" </> UrlPar.s "edit" </> UrlPar.string)
         ]
 
 
@@ -85,10 +85,10 @@ routeToUrlString route =
                 absolute [] []
 
             NoteDetail id ->
-                absolute [ "note", Id.toString id ] []
+                absolute [ "note", id ] []
 
             NoteEdit id ->
-                absolute [ "note", "edit", Id.toString id ] []
+                absolute [ "note", "edit", id ] []
 
             NotFound url ->
                 Url.toString url
@@ -208,10 +208,8 @@ type Msg
     = NoOp
     | SetNoteCollectionAndPersist NoteCollection
     | SetNoteContent String Note Int
-    | AddNote NoteContent Millis
     | AddNoteClicked
     | WithNow (F Model)
-    | DeleteNote Note
     | Session E.Value
     | SignIn
     | SignOut
@@ -318,13 +316,6 @@ update msg model =
             in
                 setNoteCollectionAndPersist newNoteCollection model
 
-        DeleteNote note ->
-            ( model
-            , nowMillisTask
-                |> Task.map (\now -> NoteCollection.delete now note model.noteCollection)
-                |> Task.perform SetNoteCollectionAndPersist
-            )
-
         WithNow fn ->
             let
                 _ =
@@ -346,13 +337,6 @@ update msg model =
                     )
                 |> Task.perform WithNow
             )
-
-        AddNote content now ->
-            let
-                ( note, nc ) =
-                    NoteCollection.addNew now content model.noteCollection
-            in
-                update (SetNoteCollectionAndPersist nc) model
 
 
 setNoteCollectionAndPersist noteCollection model =
