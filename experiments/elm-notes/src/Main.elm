@@ -39,7 +39,7 @@ import Return3 as R3
 import UserInput
 
 
----- MODEL ----
+-- Routing
 
 
 type Route
@@ -100,6 +100,25 @@ stepUrl url hasNC =
                 NotFoundPage "Oops Something went wrong"
 
 
+
+-- Page
+
+
+type Page
+    = EditNotePage EditNote.Model
+    | NotFoundPage String
+    | NoteListPage
+    | NoteDetailPage Note
+
+
+createNoteEditPage note =
+    EditNotePage <| EditNote.init note
+
+
+
+--- Auth
+
+
 type alias UserDetails =
     { uid : String
     , email : String
@@ -126,23 +145,32 @@ authStateDecoder =
     D.oneOf [ D.null Anon, D.map Authenticated userDetailsDecoder ]
 
 
-type Page
-    = EditNotePage EditNote.Model
-    | NotFoundPage String
-    | NoteListPage
-    | NoteDetailPage Note
 
-
-createNoteEditPage note =
-    EditNotePage <| EditNote.init note
-
-
-type alias Flags =
-    { now : Int, noteList : E.Value }
+-- Notes
 
 
 type alias NoteCollection =
     Collection.Model Note
+
+
+currentNoteList : Model -> List Note
+currentNoteList =
+    .noteCollection
+        >> Collection.items
+        >> List.filter (.deleted >> not)
+        >> List.sortBy (.modifiedAt >> (*) -1)
+
+
+getNoteById id =
+    .noteCollection >> Collection.get id
+
+
+
+---- MODEL ----
+
+
+type alias Flags =
+    { now : Int, noteList : E.Value }
 
 
 type alias Model =
@@ -173,18 +201,6 @@ init flags url key =
           }
         , Cmd.none
         )
-
-
-currentNoteList : Model -> List Note
-currentNoteList =
-    .noteCollection
-        >> Collection.items
-        >> List.filter (.deleted >> not)
-        >> List.sortBy (.modifiedAt >> (*) -1)
-
-
-getNoteById id =
-    .noteCollection >> Collection.get id
 
 
 
@@ -226,6 +242,14 @@ subscriptions m =
         , Ports.notesCollectionChanged ReplaceNoteCollection
         , EditNote.subscriptions |> Sub.map EditNoteMsg
         ]
+
+
+andThen f ( m1, c1 ) =
+    let
+        ( m2, c2 ) =
+            f m1
+    in
+        ( m2, Cmd.batch [ c1, c2 ] )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -309,14 +333,6 @@ setNoteCollectionAndPersist noteCollection model =
     ( { model | noteCollection = noteCollection }
     , Ports.persistNoteCollection <| Collection.encode Note.encode noteCollection
     )
-
-
-andThen f ( m1, c1 ) =
-    let
-        ( m2, c2 ) =
-            f m1
-    in
-        ( m2, Cmd.batch [ c1, c2 ] )
 
 
 
