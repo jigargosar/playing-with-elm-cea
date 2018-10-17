@@ -49,7 +49,7 @@ type Msg
     | ThrottledSave
     | ContentBlurred
     | Save
-    | SetNoteAndPersist Note.Note
+    | PersistNote Note.Note
     | UpdateNoteFromNotesCollectionChanges E.Value
 
 
@@ -60,7 +60,7 @@ subscriptions =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SetNoteAndPersist note ->
+        PersistNote note ->
             ( model, Ports.persistNote <| Note.encode note )
 
         UpdateNoteFromNotesCollectionChanges encodedNotesCollection ->
@@ -81,8 +81,8 @@ update msg model =
         Save ->
             ( model
             , taskNowMilli
-                |> Task.map (\now -> Note.updateContent (content model) now model.note)
-                |> Task.perform SetNoteAndPersist
+                |> Task.map (Note.updateContent (content model) model.note)
+                |> Task.perform PersistNote
             )
 
         ContentBlurred ->
