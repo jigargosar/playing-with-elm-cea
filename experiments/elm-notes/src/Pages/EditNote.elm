@@ -51,19 +51,8 @@ subscriptions =
     Sub.batch [ Ports.notesCollectionChanged UpdateNoteFromNotesCollectionChanges ]
 
 
-type Reply
-    = SaveContent Note.Note NoteContent
-
-
-maybeBool bool value =
-    if bool then
-        Just value
-    else
-        Nothing
-
-
-update2 : Msg -> Model -> ( Model, Cmd Msg )
-update2 msg model =
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
     case msg of
         SetNoteAndPersist note ->
             ( model, Ports.persistNote <| Note.encode note )
