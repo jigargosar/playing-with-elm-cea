@@ -20,6 +20,7 @@ type alias Model item =
     { dict : Dict String item, seed : Random.Seed }
 
 
+overDict : (Dict String item -> Dict String item) -> Model item -> Model item
 overDict updateFn model =
     { model | dict = updateFn model.dict }
 
