@@ -64,8 +64,8 @@ insertWith initItem model =
         newModel =
             { model | seed = newSeed }
     in
-        Task.map2 initItem (Task.succeed newId) (Time.now |> Task.map Time.posixToMillis)
-            |> Task.map (insertIn newModel newId)
+        taskNowMilli
+            |> Task.map (initItem newId >> insertIn newModel newId)
 
 
 taskNowMilli : Task x Int
