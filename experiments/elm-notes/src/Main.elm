@@ -26,7 +26,6 @@ import Keyboard.Event
 import Keyboard.Key
 import Markdown
 import Note exposing (Note)
-import NoteCollection exposing (NoteCollection)
 import Pages.EditNote as EditNote
 import Random
 import Task
@@ -149,6 +148,10 @@ type alias Flags =
     { now : Int, noteList : E.Value }
 
 
+type alias NoteCollection =
+    Collection.Model Note
+
+
 type alias Model =
     { noteCollection : NoteCollection
     , lastFocusedNoteListItemDomId : String
@@ -181,7 +184,10 @@ init flags url key =
 
 currentNoteList : Model -> List Note
 currentNoteList =
-    .noteCollection >> NoteCollection.queryAllSortByModifiedAt
+    .noteCollection
+        >> Collection.items
+        >> List.filter (.deleted >> not)
+        >> List.sortBy (.modifiedAt >> (*) -1)
 
 
 getNoteById id =
@@ -318,7 +324,7 @@ update msg model =
 
 setNoteCollectionAndPersist noteCollection model =
     ( { model | noteCollection = noteCollection }
-    , persistNoteCollection <| NoteCollection.encode noteCollection
+    , persistNoteCollection <| Collection.encode Note.encode noteCollection
     )
 
 
