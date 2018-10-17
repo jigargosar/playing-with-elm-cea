@@ -74,7 +74,7 @@ auth().onAuthStateChanged(function(user) {
       app.ports.notesCollectionChanged.send(docsDict)
     })
   }
-  app.ports.sessionChanged.send(
+  app.ports.authStateChanged.send(
     unless(isNil)(pick(['uid', 'email', 'displayName']))(user),
   )
 })

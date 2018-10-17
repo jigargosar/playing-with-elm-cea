@@ -10,7 +10,7 @@ port persistNoteCollection : E.Value -> Cmd msg
 port persistNote : E.Value -> Cmd msg
 
 
-port sessionChanged : (E.Value -> msg) -> Sub msg
+port authStateChanged : (E.Value -> msg) -> Sub msg
 
 
 port signIn : () -> Cmd msg

@@ -107,7 +107,7 @@ type alias User =
     }
 
 
-type Session
+type AuthState
     = Auth User
     | Anon
     | InitialUnknown
@@ -135,7 +135,7 @@ type alias NoteCollection =
 type alias Model =
     { noteCollection : NoteCollection
     , lastFocusedNoteListItemDomId : String
-    , session : Session
+    , authState : AuthState
     , key : Nav.Key
     , url : Url.Url
     , page : Page
@@ -153,7 +153,7 @@ init flags url key =
     in
         ( { noteCollection = noteCollection
           , lastFocusedNoteListItemDomId = ""
-          , session = InitialUnknown
+          , authState = InitialUnknown
           , key = key
           , url = url
           , page = stepUrl url { noteCollection = noteCollection }
@@ -195,7 +195,7 @@ type Msg
     | SetNoteCollectionAndPersist NoteCollection
     | NewNoteClicked
     | NewNoteAdded ( Note, NoteCollection )
-    | Session E.Value
+    | AuthState E.Value
     | SignIn
     | SignOut
     | ReplaceNoteCollection E.Value
@@ -209,7 +209,7 @@ type Msg
 subscriptions : Model -> Sub Msg
 subscriptions m =
     Sub.batch
-        [ Ports.sessionChanged Session
+        [ Ports.authStateChanged AuthState
         , Ports.notesCollectionChanged ReplaceNoteCollection
         , EditNote.subscriptions |> Sub.map EditNoteMsg
         ]
@@ -269,7 +269,7 @@ update msg model =
         SignOut ->
             ( model, Ports.signOut () )
 
-        Session encSession ->
+        AuthState encAuthState ->
             let
                 userDecoder : Decoder User
                 userDecoder =
@@ -278,16 +278,16 @@ update msg model =
                         (D.field "email" D.string)
                         (D.field "displayName" D.string)
 
-                sessionDecoder : Decoder Session
-                sessionDecoder =
+                authStateDecoder : Decoder AuthState
+                authStateDecoder =
                     D.oneOf [ D.null Anon, D.map Auth userDecoder ]
 
-                newSession =
-                    D.decodeValue sessionDecoder encSession
-                        --                        |> Result.mapError (Debug.log "Error: session")
-                        |> Result.withDefault model.session
+                newAuthState =
+                    D.decodeValue authStateDecoder encAuthState
+                        --                        |> Result.mapError (Debug.log "Error: authState")
+                        |> Result.withDefault model.authState
             in
-                ( { model | session = newSession }, Cmd.none )
+                ( { model | authState = newAuthState }, Cmd.none )
 
         SetNoteCollectionAndPersist newNoteCollection ->
             setNoteCollectionAndPersist newNoteCollection model
@@ -357,7 +357,7 @@ viewNotFoundPage model message =
 withDefaultLayout viewContent model =
     div [ class "pv3 flex flex-column vh-100 vs3" ]
         [ div [ class "vs3 center w-90" ]
-            [ viewHeader model.session
+            [ viewHeader model.authState
             ]
         , div [ class "flex-grow-1 flex flex-row justify-center" ]
             [ div [ class "w-90" ] viewContent
@@ -369,11 +369,11 @@ withDefaultLayout viewContent model =
 ---- HEADER VIEW ----
 
 
-viewHeader session =
+viewHeader authState =
     let
-        viewSession =
+        viewAuthState =
             div [ class "flex items-center hs3" ]
-                (case session of
+                (case authState of
                     InitialUnknown ->
                         [ div [] [ text <| "InitialUnknown" ] ]
 
@@ -386,7 +386,7 @@ viewHeader session =
     in
         div [ class "flex items-center hs3" ]
             [ div [ class "f3 tc" ] [ H.a [ class "link black", href "/" ] [ H.text "Elm Notes" ] ]
-            , viewSession
+            , viewAuthState
             ]
 
 
