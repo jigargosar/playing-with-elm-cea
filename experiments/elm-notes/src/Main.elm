@@ -208,7 +208,7 @@ type Msg
     = NoOp
     | SetNoteCollectionAndPersist NoteCollection
     | SetNoteContent String Note Int
-    | AddNoteClicked
+    | NewNoteClicked
     | WithNow (F Model)
     | Session E.Value
     | SignIn
@@ -323,9 +323,9 @@ update msg model =
             in
                 ( model, Cmd.none )
 
-        AddNoteClicked ->
+        NewNoteClicked ->
             ( model
-            , Collection.insertWith (Note.init) model.noteCollection
+            , Collection.createAndAdd (Note.init) model.noteCollection
                 |> Task.perform SetNoteCollectionAndPersist
             )
 
@@ -469,7 +469,7 @@ viewNoteEditPage model pageModel =
 viewNoteListPage model =
     model
         |> withDefaultLayout
-            [ bbtn AddNoteClicked "New"
+            [ bbtn NewNoteClicked "New"
             , viewNoteList <| currentNoteList model
             ]
 

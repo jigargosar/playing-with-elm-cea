@@ -39,19 +39,19 @@ update id f =
     overDict <| Dict.update id (Maybe.map f)
 
 
-insertWith : (Id -> Millis -> item) -> Model item -> Task x (Model item)
-insertWith initItem model =
+createAndAdd : (Id -> Millis -> item) -> Model item -> Task x ( item, Model item )
+createAndAdd initItem model =
     let
         ( id, newSeed ) =
             Random.step IdX.stringIdGenerator model.seed
     in
-        insertWithHelp id initItem ({ model | seed = newSeed })
+        createAndAddHelp id initItem ({ model | seed = newSeed })
 
 
-insertWithHelp : Id -> (Id -> Millis -> item) -> Model item -> Task x (Model item)
-insertWithHelp id initItemFn model =
+createAndAddHelp : Id -> (Id -> Millis -> item) -> Model item -> Task x ( item, Model item )
+createAndAddHelp id initItemFn model =
     taskNowMilli
-        |> Task.map (initItemFn id >> \item -> insert id item model)
+        |> Task.map (initItemFn id >> \item -> ( item, insert id item model ))
 
 
 taskNowMilli : Task x Int
