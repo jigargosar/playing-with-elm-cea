@@ -5,7 +5,8 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Note
 import Process
-import Task
+import Task exposing (Task)
+import Time
 import UserInput
 
 
@@ -37,6 +38,7 @@ type Msg
     = ContentChanged NoteContent
     | ThrottledSave
     | ContentBlurred
+    | SetNoteAndPersist Note.Note
 
 
 type Reply
@@ -53,6 +55,9 @@ maybeBool bool value =
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe Reply )
 update msg model =
     case msg of
+        SetNoteAndPersist _ ->
+            ( model, Cmd.none, Nothing )
+
         ContentChanged newContent ->
             let
                 ( newContentInput, cmd ) =
@@ -93,6 +98,9 @@ update msg model =
 update2 : Msg -> Model -> ( Model, Cmd Msg )
 update2 msg model =
     case msg of
+        SetNoteAndPersist note ->
+            ( model, Cmd.none )
+
         ContentChanged newContent ->
             let
                 ( newContentInput, cmd ) =
@@ -108,7 +116,9 @@ update2 msg model =
                     UserInput.save model.contentInput
             in
                 ( { model | contentInput = newContentInput }
-                , Cmd.none
+                , taskNowMilli
+                    |> Task.map (\now -> Note.updateContent (UserInput.get newContentInput) now model.note)
+                    |> Task.perform SetNoteAndPersist
                 )
 
         ThrottledSave ->
@@ -119,3 +129,8 @@ update2 msg model =
                 ( { model | contentInput = newContentInput }
                 , Cmd.none
                 )
+
+
+taskNowMilli : Task x Int
+taskNowMilli =
+    Time.now |> Task.map Time.posixToMillis
