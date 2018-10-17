@@ -25,15 +25,6 @@ getById =
     Collection.get
 
 
-updateNote : (Note -> Note) -> Note -> NoteCollection -> NoteCollection
-updateNote fn note nc =
-    nc
-
-
-updateNoteContent : Int -> String -> Note -> NoteCollection -> NoteCollection
-updateNoteContent now content =
-    updateNote (Note.updateContent now content)
-
 
 replace : E.Value -> NoteCollection -> NoteCollection
 replace encodedValue =

@@ -197,7 +197,7 @@ type alias Millis =
 
 
 type alias NoteContent =
-    String
+    Note.Content
 
 
 type alias F a =
@@ -207,7 +207,6 @@ type alias F a =
 type Msg
     = NoOp
     | SetNoteCollectionAndPersist NoteCollection
-    | SetNoteContent String Note Int
     | NewNoteClicked
     | NewNoteAdded ( Note, NoteCollection )
     | Session E.Value
@@ -309,13 +308,6 @@ update msg model =
         SetNoteCollectionAndPersist newNoteCollection ->
             setNoteCollectionAndPersist newNoteCollection model
 
-        SetNoteContent content note now ->
-            let
-                newNoteCollection =
-                    NoteCollection.updateNoteContent now content note model.noteCollection
-            in
-                setNoteCollectionAndPersist newNoteCollection model
-
         NewNoteAdded ( note, noteCollection ) ->
             setNoteCollectionAndPersist noteCollection model
                 |> andThen (update <| RouteTo <| NoteEdit note.id)
@@ -345,15 +337,12 @@ andThen f ( m1, c1 ) =
         ( m2, Cmd.batch [ c1, c2 ] )
 
 
-withNowMillis msg =
-    Task.perform (Time.posixToMillis >> msg) Time.now
-
-
 handleEditNotePageReply pageModel maybeReply model =
     case maybeReply of
         Just (EditNote.SaveContent note content) ->
             ( { model | page = EditNotePage pageModel }
-            , withNowMillis (SetNoteContent content note)
+            , Collection.updateWith note.id (\now -> Note.updateContent now content) model.noteCollection
+                |> Task.perform SetNoteCollectionAndPersist
             )
 
         Nothing ->

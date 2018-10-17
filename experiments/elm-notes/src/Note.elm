@@ -61,6 +61,7 @@ getEditableContent =
     getContent >> Editable.ReadOnly
 
 
+updateContent : Collection.Millis -> Content -> Note -> Note
 updateContent now content note =
     if content == note.content then
         note
@@ -74,3 +75,7 @@ delete now note =
 
 idStr =
     .id
+
+
+type alias Content =
+    String
