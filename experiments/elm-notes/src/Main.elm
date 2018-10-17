@@ -16,7 +16,7 @@ import Browser.Events as BE
 import Browser.Dom as B
 import Browser.Dom as BD
 import Html as H exposing (Html)
-import Html.Events exposing (onClick, onFocus, onInput)
+import Html.Events exposing (onBlur, onClick, onFocus, onInput)
 import Html.Lazy as H
 import Html.Attributes as H
 import Html.Attributes as HA
@@ -451,6 +451,7 @@ viewNoteEditPage model pageModel =
                 [ class "pa2 h-100 w-100"
                 , value <| EditNote.content pageModel
                 , onInput (EditNote.ContentChanged >> EditNoteMsg)
+                , onBlur (EditNote.ContentBlurred |> EditNoteMsg)
                 ]
                 []
             ]

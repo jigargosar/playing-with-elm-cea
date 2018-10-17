@@ -31,6 +31,19 @@ onChange throttledSaveMsg newValue model =
         )
 
 
+save model =
+    let
+        wasDirty =
+            EditableInput.dirty model.editable
+
+        newModel =
+            { model
+                | editable = EditableInput.save model.editable
+            }
+    in
+        ( wasDirty, newModel )
+
+
 onThrottledSaveMsg : Model a -> ( Bool, Model a )
 onThrottledSaveMsg model =
     let

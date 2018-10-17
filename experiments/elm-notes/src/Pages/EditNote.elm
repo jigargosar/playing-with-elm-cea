@@ -36,6 +36,7 @@ type alias NoteContent =
 type Msg
     = ContentChanged NoteContent
     | ThrottledSave
+    | ContentBlurred
 
 
 type Reply
@@ -60,6 +61,19 @@ update msg model =
                 ( { model | contentInput = newContentInput }
                 , cmd
                 , Nothing
+                )
+
+        ContentBlurred ->
+            let
+                ( wasDirty, newContentInput ) =
+                    UserInput.save model.contentInput
+
+                reply =
+                    maybeBool wasDirty <| SaveContent model.note (UserInput.get newContentInput)
+            in
+                ( { model | contentInput = newContentInput }
+                , Cmd.none
+                , reply
                 )
 
         ThrottledSave ->
