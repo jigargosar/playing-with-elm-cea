@@ -77,7 +77,7 @@ routeToUrlString route =
                 Url.toString url
 
 
-pageFromUrl url hasNC =
+stepUrl url hasNC =
     let
         route =
             UrlPar.parse routeParser url |> Maybe.withDefault (NotFound url)
@@ -156,7 +156,7 @@ init flags url key =
           , session = InitialUnknown
           , key = key
           , url = url
-          , page = pageFromUrl url { noteCollection = noteCollection }
+          , page = stepUrl url { noteCollection = noteCollection }
           }
         , Cmd.none
         )
@@ -243,7 +243,7 @@ update msg model =
                     ( model, Nav.load href )
 
         UrlChanged url ->
-            ( { model | url = url, page = pageFromUrl url model }
+            ( { model | url = url, page = stepUrl url model }
             , Cmd.none
             )
 
