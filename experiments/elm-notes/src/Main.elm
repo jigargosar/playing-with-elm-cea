@@ -100,7 +100,7 @@ stepUrl url hasNC =
                 NotFoundPage "Oops Something went wrong"
 
 
-type alias User =
+type alias UserDetails =
     { uid : String
     , email : String
     , displayName : String
@@ -108,7 +108,7 @@ type alias User =
 
 
 type AuthState
-    = Auth User
+    = Authenticated UserDetails
     | Anon
     | InitialUnknown
 
@@ -271,16 +271,16 @@ update msg model =
 
         AuthState encAuthState ->
             let
-                userDecoder : Decoder User
+                userDecoder : Decoder UserDetails
                 userDecoder =
-                    D.map3 User
+                    D.map3 UserDetails
                         (D.field "uid" D.string)
                         (D.field "email" D.string)
                         (D.field "displayName" D.string)
 
                 authStateDecoder : Decoder AuthState
                 authStateDecoder =
-                    D.oneOf [ D.null Anon, D.map Auth userDecoder ]
+                    D.oneOf [ D.null Anon, D.map Authenticated userDecoder ]
 
                 newAuthState =
                     D.decodeValue authStateDecoder encAuthState
@@ -380,7 +380,7 @@ viewHeader authState =
                     Anon ->
                         [ div [] [ text <| "SignedOut" ], bbtn SignIn "SignIn" ]
 
-                    Auth user ->
+                    Authenticated user ->
                         [ div [] [ text <| "SignedIn: " ++ user.displayName ], bbtn SignOut "SignOut" ]
                 )
     in
