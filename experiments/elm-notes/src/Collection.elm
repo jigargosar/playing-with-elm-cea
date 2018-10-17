@@ -72,13 +72,16 @@ encode encodeItem model =
 
 generator : Decoder item -> E.Value -> Random.Generator (Model item)
 generator itemDecoder encodedDict =
-    let
-        dict =
-            D.decodeValue (D.dict itemDecoder) encodedDict
-                |> Result.mapError (identity)
-                |> Result.withDefault Dict.empty
-    in
-        Random.map (Model dict) Random.independentSeed
+    Random.map (Model Dict.empty) Random.independentSeed
+        |> Random.map (replace itemDecoder encodedDict)
+
+
+replace : Decoder item -> E.Value -> Model item -> Model item
+replace itemDecoder encodedDict model =
+    D.decodeValue (D.dict itemDecoder) encodedDict
+        |> Result.map (\dict -> overDict (always dict) model)
+        |> Result.mapError (identity)
+        |> Result.withDefault model
 
 
 items =
