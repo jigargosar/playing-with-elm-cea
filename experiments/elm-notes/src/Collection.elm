@@ -37,11 +37,6 @@ insert id item =
     overDict <| Dict.insert id item
 
 
-insertIn : Model item -> Id -> item -> Model item
-insertIn model id item =
-    insert id item model
-
-
 update : Id -> (item -> item) -> Model item -> Model item
 update id f =
     overDict <| Dict.update id (Maybe.map f)
