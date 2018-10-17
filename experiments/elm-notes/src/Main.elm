@@ -228,7 +228,7 @@ type Msg
     | SignIn
     | SignOut
     | ReplaceNoteCollection E.Value
-    | LinkClicked Browser.UrlRequest
+    | UrlRequested Browser.UrlRequest
     | UrlChanged Url.Url
     | RouteTo Route
     | PushIfChanged String
@@ -271,7 +271,7 @@ update msg model =
         RouteTo route ->
             update (PushIfChanged <| routeToUrlString route) model
 
-        LinkClicked urlReq ->
+        UrlRequested urlReq ->
             case urlReq of
                 Browser.Internal url ->
                     update (PushIfChanged <| Url.toString url) model
@@ -499,6 +499,6 @@ main =
         , view = view
         , update = update
         , subscriptions = subscriptions
-        , onUrlRequest = LinkClicked
+        , onUrlRequest = UrlRequested
         , onUrlChange = UrlChanged
         }
