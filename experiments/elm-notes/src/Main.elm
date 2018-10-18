@@ -8,6 +8,7 @@ import Json.Decode as D
 import Json.Encode as E
 import Browser.Navigation as Nav
 import Browser
+import Pages.Note
 import Pages.Notes as Notes
 import Ports
 import Random
@@ -40,6 +41,7 @@ main =
 type Page
     = NotFound Session
     | Notes Notes.Model
+    | Note Pages.Note.Model
 
 
 
@@ -89,11 +91,21 @@ exit model =
         Notes m ->
             m.session
 
+        Note m ->
+            m.session
+
 
 stepNotes : Model -> ( Notes.Model, Cmd Notes.Msg ) -> ( Model, Cmd Msg )
 stepNotes model ( notes, cmd ) =
     ( { model | page = Notes notes }
     , Cmd.map NotesMsg cmd
+    )
+
+
+stepNote : Model -> ( Pages.Note.Model, Cmd Pages.Note.Msg ) -> ( Model, Cmd Msg )
+stepNote model ( notes, cmd ) =
+    ( { model | page = Note notes }
+    , Cmd.map NoteMsg cmd
     )
 
 
@@ -136,6 +148,7 @@ type Msg
     | UrlChanged Url
     | AuthMsg Auth.Msg
     | NotesMsg Notes.Msg
+    | NoteMsg Pages.Note.Msg
 
 
 subscriptions : Model -> Sub Msg
@@ -175,6 +188,14 @@ update message model =
                 _ ->
                     ( model, Cmd.none )
 
+        NoteMsg msg ->
+            case model.page of
+                Note note ->
+                    stepNote model (Pages.Note.update msg note)
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 stepAuth model ( authState, cmd ) =
     ( { model | authState = authState }, Cmd.map AuthMsg cmd )
@@ -202,3 +223,6 @@ view model =
 
             Notes notes ->
                 Skeleton.view config NotesMsg (Notes.view notes)
+
+            Note note ->
+                Skeleton.view config NoteMsg (Pages.Note.view note)
