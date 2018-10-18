@@ -77,7 +77,12 @@ update msg model =
             ( model, Cmd.none )
 
         UrlRequested urlReq ->
-            ( model, Cmd.none )
+            case urlReq of
+                Browser.Internal url ->
+                    ( model, Nav.pushUrl model.key (Url.toString url) )
+
+                Browser.External href ->
+                    ( model, Nav.load href )
 
         UrlChanged url ->
             stepUrl url model
