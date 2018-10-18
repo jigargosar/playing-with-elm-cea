@@ -14,6 +14,7 @@ import Task
 type Edit
     = New
     | Existing Collection.Id Note.Content
+    | NotFound Collection.Id
 
 
 type alias Model =
@@ -36,12 +37,9 @@ initWithNoteId : Collection.Id -> Session -> ( Model, Cmd Msg )
 initWithNoteId id session =
     ( { session = session
       , edit =
-            Existing id
-                (session.nc
-                    |> Collection.get id
-                    |> Maybe.map Note.getContent
-                    |> Maybe.withDefault "Note Not Found ;("
-                )
+            Session.getNote id session
+                |> Maybe.map (Note.getContent >> Existing id)
+                |> Maybe.withDefault (NotFound id)
       }
     , Cmd.none
     )
@@ -54,10 +52,13 @@ getNC =
 getContent model =
     case model.edit of
         New ->
-            ""
+            Just ""
 
         Existing id content ->
-            content
+            Just content
+
+        NotFound id ->
+            Nothing
 
 
 overSession : (Session -> Session) -> Model -> Model
@@ -71,7 +72,9 @@ update message model =
             ( model, Cmd.none )
 
         NewAdded ( note, nc ) ->
-            ( model |> overSession (Session.setNC nc), Session.replaceHref (Href.editNote note.id) model.session )
+            ( model |> overSession (Session.setNC nc)
+            , Session.replaceHref (Href.editNote note.id) model.session
+            )
 
         ContentChanged newContent ->
             case model.edit of
@@ -84,6 +87,9 @@ update message model =
                 Existing id content ->
                     ( { model | edit = Existing id newContent }, Cmd.none )
 
+                NotFound id ->
+                    ( model, Cmd.none )
+
         ContentBlurred ->
             ( model, Cmd.none )
 
@@ -92,13 +98,20 @@ view : Model -> Skeleton.Details Msg
 view model =
     { title = "New Note"
     , attrs = []
-    , kids =
-        [ textarea
-            [ class "pa2 h-100 w-100"
-            , value <| getContent model
-            , onInput (ContentChanged)
-            , onBlur (ContentBlurred)
-            ]
-            []
-        ]
+    , kids = [ viewKids model ]
     }
+
+
+viewKids model =
+    getContent model
+        |> Maybe.map
+            (\content ->
+                textarea
+                    [ class "pa2 h-100 w-100"
+                    , value content
+                    , onInput (ContentChanged)
+                    , onBlur (ContentBlurred)
+                    ]
+                    []
+            )
+        |> Maybe.withDefault (div [] [ text "Note Not Found" ])

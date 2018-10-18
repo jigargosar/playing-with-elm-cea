@@ -33,3 +33,7 @@ replaceHref href session =
 
 setNC nc session =
     { session | nc = nc }
+
+
+getNote id =
+    .nc >> Collection.get id
