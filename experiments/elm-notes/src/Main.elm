@@ -236,7 +236,7 @@ skeletonView config toMsg details =
 
 
 rowS3 classes attrs =
-    div (class ("flex flex-row hs3 items-center" ++ classes) :: attrs)
+    div (class ("flex flex-row hs3 items-center " ++ classes) :: attrs)
 
 
 row =
@@ -258,8 +258,8 @@ viewHeader auth =
             [ txtA [] "ELM Notes"
             , case auth of
                 Auth.Authenticated { displayName, photoUrl } ->
-                    row ""
-                        [ onClick Auth.SignInClicked ]
+                    row "pointer"
+                        [ onClick Auth.SignOutClicked ]
                         [ img [ width 24, class "br-pill", src photoUrl ] []
                         , txt displayName
                         ]
@@ -268,7 +268,11 @@ viewHeader auth =
                     txt "Loading"
 
                 Auth.Anon ->
-                    txtA [ onClick Auth.SignOutClicked ] "Anon"
+                    row "pointer"
+                        [ onClick Auth.SignInClicked ]
+                        [ img [ width 24, class "br-pill", src "" ] []
+                        , text "Anon"
+                        ]
             ]
             |> Html.map AuthMsg
         ]
