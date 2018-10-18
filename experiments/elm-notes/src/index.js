@@ -71,6 +71,9 @@ onAuthStateChanged(authStateChangeHandler)
 
 function authStateChangeHandler(user) {
   if (user) {
+    if (process.env.NODE_ENV !== 'production') {
+      global.user = user
+    }
     elmNotesListener()
     const cRef = userCRef(user.uid, elmNotesCollectionName)
     elmNotesListener = cRef.onSnapshot(qSnap => {
@@ -86,7 +89,20 @@ function authStateChangeHandler(user) {
   }
   send(
     'authStateChanged',
-    unless(isNil)(pick(['uid', 'email', 'displayName', 'photoURL']))(user),
+    unless(isNil)(
+      pick([
+        'uid',
+        'email',
+        'displayName',
+        'photoURL',
+        'isAnonymous',
+        'metadata',
+        'phoneNumber',
+        'providerData',
+        'emailVerified',
+        'refreshToken',
+      ]),
+    )(user),
     app,
   )
 }
