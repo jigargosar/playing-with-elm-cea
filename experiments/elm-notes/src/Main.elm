@@ -121,15 +121,15 @@ route parser handler =
 
 stepSession sessionMsg model =
     let
-        session =
+        ( session, cmd ) =
             Session.update sessionMsg (exit model)
     in
         case model.page of
-            NotFound nfModel ->
-                update NoOp model
+            NotFound session_ ->
+                ( { model | page = NotFound session }, Cmd.none )
 
-            Home home ->
-                update NoOp model
+            Home session_ ->
+                ( { model | page = Home session }, Cmd.none )
 
 
 type Msg
