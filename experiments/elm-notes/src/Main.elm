@@ -177,11 +177,11 @@ view : Model -> Browser.Document Msg
 view model =
     let
         config =
-            { authState = model.authState }
+            { authState = model.authState, toAuthMsg = AuthMsg }
     in
         case model.page of
             NotFound _ ->
-                Skeleton.view config
+                skeletonview config
                     identity
                     { title = "Not Found"
                     , header = []
@@ -196,20 +196,49 @@ view model =
                     }
 
             Notes notes ->
-                Skeleton.view config NotesMsg (Notes.view notes)
+                skeletonview config NotesMsg (Notes.view notes)
+
+
+type alias SkeletonConfig msg =
+    { authState : AuthState
+    , toAuthMsg : Auth.Msg -> msg
+    }
 
 
 
 ---- SkeletonView
+
+
+skeletonview : SkeletonConfig msg -> (a -> msg) -> Skeleton.Details a -> Browser.Document msg
+skeletonview config toMsg details =
+    { title =
+        details.title
+    , body =
+        [ {- viewHeader details.header
+             , lazy viewWarning details.warning
+             ,
+          -}
+          viewHeader config
+        , Html.map
+            toMsg
+          <|
+            div (class "center" :: details.attrs) details.kids
+
+        --        , viewFooter
+        ]
+    }
+
+
+
 ---- Header View
 
 
-viewHeader auth =
+viewHeader { authState, toAuthMsg } =
     div [ class "bg-black white" ]
         [ row "b _bg-white-50 center pv3 ph3 ph0-l justify-between measure-wide shadow-1"
             []
             [ txtA [] "ELM Notes"
-            , case auth of
+            , case authState of
                 Auth.Authenticated { displayName, photoUrl } ->
                     viewAuthAvatarBtn (Just Auth.SignOutClicked) (Just photoUrl) displayName
 
@@ -219,7 +248,7 @@ viewHeader auth =
                 Auth.Anon ->
                     viewAuthAvatarBtn (Just Auth.SignInClicked) Nothing "Anon"
             ]
-            |> Html.map AuthMsg
+            |> Html.map toAuthMsg
         ]
 
 
