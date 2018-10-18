@@ -181,7 +181,7 @@ view model =
     in
         case model.page of
             NotFound _ ->
-                skeletonView config
+                Skeleton.view config
                     identity
                     { title = "Not Found"
                     , header = []
@@ -196,92 +196,4 @@ view model =
                     }
 
             Notes notes ->
-                skeletonView config NotesMsg (Notes.view notes)
-
-
-type alias SkeletonConfig msg =
-    { authState : AuthState
-    , toAuthMsg : Auth.Msg -> msg
-    }
-
-
-
----- SkeletonView
-
-
-skeletonView : SkeletonConfig msg -> (a -> msg) -> Skeleton.Details a -> Browser.Document msg
-skeletonView config toMsg details =
-    { title =
-        details.title
-    , body =
-        [ {- viewHeader details.header
-             , lazy viewWarning details.warning
-             ,
-          -}
-          viewHeader config
-        , Html.map
-            toMsg
-          <|
-            div (class "center" :: details.attrs) details.kids
-
-        --        , viewFooter
-        ]
-    }
-
-
-
----- Header View
-
-
-viewHeader { authState, toAuthMsg } =
-    div [ class "bg-black white" ]
-        [ row "b _bg-white-50 center pv3 ph3 ph0-l justify-between measure-wide shadow-1"
-            []
-            [ txtA [] "ELM Notes"
-            , case authState of
-                Auth.Authenticated { displayName, photoUrl } ->
-                    viewAuthAvatarBtn (Just Auth.SignOutClicked) (Just photoUrl) displayName
-
-                Auth.InitialUnknown ->
-                    viewAuthAvatarBtn Nothing Nothing "Loading"
-
-                Auth.Anon ->
-                    viewAuthAvatarBtn (Just Auth.SignInClicked) Nothing "Anon"
-            ]
-            |> Html.map toAuthMsg
-        ]
-
-
-viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
-    let
-        onClickAttr =
-            Maybe.map (onClick >> List.singleton) maybeOnClick |> Maybe.withDefault []
-
-        photoUrl =
-            Maybe.withDefault "anon.svg" maybePhotoUrl
-    in
-        row "pointer"
-            onClickAttr
-            [ txt textContent
-            , img [ width 24, height 24, class "br-pill", src photoUrl ] []
-            ]
-
-
-
---- View Helpers
-
-
-rowS3 classes attrs =
-    div (class ("flex flex-row hs3 items-center " ++ classes) :: attrs)
-
-
-row =
-    rowS3
-
-
-txtA attrs content =
-    row "" attrs [ text content ]
-
-
-txt =
-    txtA []
+                Skeleton.view config NotesMsg (Notes.view notes)
