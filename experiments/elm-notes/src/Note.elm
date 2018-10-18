@@ -35,8 +35,12 @@ type alias Note =
     { content : String, deleted : Bool, createdAt : Int, modifiedAt : Int, id : Collection.Id }
 
 
-init id now =
-    { content = "", deleted = False, id = id, createdAt = now, modifiedAt = now }
+init =
+    initWithContent ""
+
+
+initWithContent content id now =
+    { content = content, deleted = False, id = id, createdAt = now, modifiedAt = now }
 
 
 

@@ -23,6 +23,7 @@ type Msg
     = Nop
     | ContentChanged Note.Content
     | ContentBlurred
+    | NewAdded ( Note, NotesCollection )
 
 
 initNewNote : Session -> ( Model, Cmd Msg )
@@ -53,8 +54,19 @@ update message model =
         Nop ->
             ( model, Cmd.none )
 
-        ContentChanged newContent ->
+        NewAdded ( note, nc ) ->
             ( model, Cmd.none )
+
+        ContentChanged newContent ->
+            case model.edit of
+                New ->
+                    ( model
+                    , Collection.createAndAdd (Note.initWithContent newContent) (getNC model)
+                        |> Task.perform NewAdded
+                    )
+
+                Existing ->
+                    ( model, Cmd.none )
 
         ContentBlurred ->
             ( model, Cmd.none )
