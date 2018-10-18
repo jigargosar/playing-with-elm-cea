@@ -26,7 +26,7 @@ update message model =
 
 view : Model -> Skeleton.Details Msg
 view model =
-    { title = "Elm Packages"
+    { title = "Notes List"
     , header = []
     , warning = []
     , attrs = []
