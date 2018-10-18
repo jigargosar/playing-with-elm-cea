@@ -120,7 +120,7 @@ stepUrl url model =
                 [ route top
                     (stepNotes model (Notes.init session))
                 , route (s "note" </> s "new")
-                    (stepNote model (Pages.Note.init session))
+                    (stepNote model (Pages.Note.initNewNote session))
                 ]
     in
         (case Parser.parse parser url of
