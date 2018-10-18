@@ -21,6 +21,7 @@ import {
   signOut,
   userCRef,
 } from './fire'
+import pathOr from 'ramda/es/pathOr'
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
@@ -95,10 +96,10 @@ function authStateChangeHandler(user) {
 const elmNotesCollectionName = `elm-notes`
 
 function subscribe(port, fn, app) {
-  if (app.ports && app.ports[port]) {
+  if (pathOr(null, ['ports', port, 'subscribe'])(app)) {
     app.ports[port].subscribe(fn)
   } else {
-    console.log('Port Not Found', port, app.ports)
+    console.error('Port Not Found', port, app.ports)
   }
 }
 
@@ -106,7 +107,7 @@ function send(port, data, app) {
   if (app.ports && app.ports[port]) {
     app.ports[port].send(data)
   } else {
-    console.log('Port Not Found', port, app.ports)
+    console.error('Port Not Found', port, app.ports)
   }
 }
 
