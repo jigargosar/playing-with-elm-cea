@@ -176,6 +176,7 @@ stepAuth model ( authState, cmd ) =
 view : Model -> Browser.Document Msg
 view model =
     let
+        config : Skeleton.AuthDetails Msg
         config =
             { authState = model.authState, toAuthMsg = AuthMsg }
     in

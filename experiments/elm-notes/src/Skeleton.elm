@@ -16,13 +16,13 @@ type alias Details msg =
     }
 
 
-type alias SkeletonConfig msg =
+type alias AuthDetails msg =
     { authState : AuthState
     , toAuthMsg : Auth.Msg -> msg
     }
 
 
-view : SkeletonConfig msg -> (a -> msg) -> Details a -> Browser.Document msg
+view : AuthDetails msg -> (a -> msg) -> Details a -> Browser.Document msg
 view config toMsg details =
     { title =
         details.title
