@@ -37,3 +37,7 @@ userDetailsDecoder =
 authStateDecoder : Decoder AuthState
 authStateDecoder =
     D.oneOf [ D.null Anon, D.map Authenticated userDetailsDecoder ]
+
+
+type Msg
+    = AuthStateChanged E.Value

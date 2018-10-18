@@ -6,6 +6,7 @@ import Json.Decode as D
 import Json.Encode as E
 import Browser.Navigation as Nav
 import Browser
+import Ports
 import Session exposing (Session)
 import Url exposing (Url)
 import Url.Parser as Parser exposing (Parser, oneOf, top)
@@ -106,12 +107,13 @@ type Msg
     = NoOp
     | UrlRequested Browser.UrlRequest
     | UrlChanged Url
+    | SessionMsg Session.Msg
 
 
 subscriptions : Model -> Sub Msg
 subscriptions m =
     Sub.batch
-        []
+        [ Ports.authStateChanged Session.AuthStateChanged |> Sub.map SessionMsg ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -130,6 +132,14 @@ update msg model =
 
         UrlChanged url ->
             stepUrl url model
+
+        SessionMsg sessionMessage ->
+            case model.page of
+                NotFound session ->
+                    update NoOp model
+
+                Home home ->
+                    update NoOp model
 
 
 
