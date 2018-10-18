@@ -234,8 +234,17 @@ skeletonView config toMsg details =
     }
 
 
+rowS3 classes attrs kids =
+    div (class ("flex flex-row hs3 " ++ classes) :: attrs) kids
+
+
+row =
+    rowS3
+
+
 viewHeader auth =
-    div [ class "flex flex-row hs3" ]
+    row ""
+        []
         [ div [] [ text "ELM Notes" ]
         , case auth of
             Auth.Authenticated { displayName } ->
