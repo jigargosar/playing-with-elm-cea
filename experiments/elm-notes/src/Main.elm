@@ -251,7 +251,7 @@ txt =
 
 
 viewHeader auth =
-    row ""
+    row "center pv3 justify-between measure"
         []
         [ txtA [] "ELM Notes"
         , case auth of
