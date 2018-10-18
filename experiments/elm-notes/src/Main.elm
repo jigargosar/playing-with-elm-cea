@@ -119,6 +119,19 @@ route parser handler =
     Parser.map handler parser
 
 
+stepSession sessionMsg model =
+    let
+        _ =
+            Session.update sessionMsg (exit model)
+    in
+        case model.page of
+            NotFound nfModel ->
+                update NoOp model
+
+            Home home ->
+                update NoOp model
+
+
 type Msg
     = NoOp
     | UrlRequested Browser.UrlRequest
@@ -150,12 +163,7 @@ update msg model =
             stepUrl url model
 
         SessionMsg sessionMessage ->
-            case model.page of
-                NotFound session ->
-                    update NoOp model
-
-                Home home ->
-                    update NoOp model
+            stepSession sessionMessage model
 
 
 

@@ -41,3 +41,15 @@ authStateDecoder =
 
 type Msg
     = AuthStateChanged E.Value
+
+
+update msg model =
+    case msg of
+        AuthStateChanged encodedValue ->
+            ( { model
+                | authState =
+                    D.decodeValue authStateDecoder encodedValue
+                        |> Result.withDefault model.authState
+              }
+            , Cmd.none
+            )
