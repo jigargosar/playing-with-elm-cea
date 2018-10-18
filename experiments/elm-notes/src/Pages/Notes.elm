@@ -1,6 +1,8 @@
 module Pages.Notes exposing (..)
 
+import Html exposing (..)
 import Session exposing (Session)
+import Skeleton
 
 
 type alias Model =
@@ -20,3 +22,14 @@ update message model =
     case message of
         Nop ->
             ( model, Cmd.none )
+
+
+view : Model -> Skeleton.Details Msg
+view model =
+    { title = "Elm Packages"
+    , header = []
+    , warning = []
+    , attrs = []
+    , kids =
+        [ div [] [ text "Home View" ] ]
+    }

@@ -12,6 +12,7 @@ import Pages.Notes as Notes
 import Ports
 import Random
 import Session exposing (Session)
+import Skeleton
 import Url exposing (Url)
 import Url.Parser as Parser exposing (Parser, oneOf, top)
 
@@ -180,7 +181,7 @@ view model =
     in
         case model.page of
             NotFound _ ->
-                skeletonView config
+                Skeleton.skeletonView config
                     identity
                     { title = "Not Found"
                     , header = []
@@ -195,62 +196,11 @@ view model =
                     }
 
             Notes notes ->
-                skeletonView config NotesMsg (homeView notes)
-
-
-
----- Page Views
-
-
-homeView : Notes.Model -> SkeletonDetails Notes.Msg
-homeView model =
-    { title = "Elm Packages"
-    , header = []
-    , warning = []
-    , attrs = []
-    , kids =
-        [ div [] [ text "Home View" ] ]
-    }
+                Skeleton.skeletonView config NotesMsg (Notes.view notes)
 
 
 
 ---- SkeletonView
-
-
-type alias SkeletonConfig =
-    { authState : AuthState }
-
-
-type alias SkeletonDetails msg =
-    { title : String
-    , header : List String
-    , warning : List String
-    , attrs : List (Html.Attribute msg)
-    , kids : List (Html msg)
-    }
-
-
-skeletonView : SkeletonConfig -> (a -> Msg) -> SkeletonDetails a -> Browser.Document Msg
-skeletonView config toMsg details =
-    { title =
-        details.title
-    , body =
-        [ {- viewHeader details.header
-             , lazy viewWarning details.warning
-             ,
-          -}
-          viewHeader config.authState
-        , Html.map
-            toMsg
-          <|
-            div (class "center" :: details.attrs) details.kids
-
-        --        , viewFooter
-        ]
-    }
-
-
-
 ---- Header View
 
 
