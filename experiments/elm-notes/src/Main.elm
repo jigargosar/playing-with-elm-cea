@@ -181,7 +181,7 @@ view model =
     in
         case model.page of
             NotFound _ ->
-                skeletonview config
+                skeletonView config
                     identity
                     { title = "Not Found"
                     , header = []
@@ -196,7 +196,7 @@ view model =
                     }
 
             Notes notes ->
-                skeletonview config NotesMsg (Notes.view notes)
+                skeletonView config NotesMsg (Notes.view notes)
 
 
 type alias SkeletonConfig msg =
@@ -209,8 +209,8 @@ type alias SkeletonConfig msg =
 ---- SkeletonView
 
 
-skeletonview : SkeletonConfig msg -> (a -> msg) -> Skeleton.Details a -> Browser.Document msg
-skeletonview config toMsg details =
+skeletonView : SkeletonConfig msg -> (a -> msg) -> Skeleton.Details a -> Browser.Document msg
+skeletonView config toMsg details =
     { title =
         details.title
     , body =
