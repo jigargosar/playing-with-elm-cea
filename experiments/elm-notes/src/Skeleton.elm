@@ -35,7 +35,7 @@ view config toMsg details =
         , Html.map
             toMsg
           <|
-            div (class "center" :: details.attrs) details.kids
+            div (class "center pv3 ph3 ph0-l justify-between measure-wide" :: details.attrs) details.kids
 
         --        , viewFooter
         ]

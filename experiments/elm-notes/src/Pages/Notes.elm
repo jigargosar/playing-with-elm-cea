@@ -32,5 +32,5 @@ view model =
     , warning = []
     , attrs = []
     , kids =
-        [ div [ class "center pv3 ph3 ph0-l justify-between measure-wide" ] [ text "Notes" ] ]
+        [ div [] [ text "Notes" ] ]
     }
