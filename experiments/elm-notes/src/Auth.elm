@@ -1,8 +1,9 @@
-module Session exposing (..)
+module Auth exposing (..)
 
 import Json.Decode exposing (Decoder)
 import Json.Decode as D
 import Json.Encode as E
+import Ports
 
 
 type alias UserDetails =
@@ -16,6 +17,10 @@ type AuthState
     = Authenticated UserDetails
     | Anon
     | InitialUnknown
+
+
+init =
+    InitialUnknown
 
 
 userDetailsDecoder : Decoder UserDetails
@@ -42,3 +47,9 @@ update msg authState =
                 |> Result.withDefault authState
             , Cmd.none
             )
+
+
+subscriptions : AuthState -> Sub Msg
+subscriptions authState =
+    Sub.batch
+        [ Ports.authStateChanged AuthStateChanged ]

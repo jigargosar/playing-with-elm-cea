@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Auth exposing (AuthState)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Json.Decode as D
@@ -61,6 +62,7 @@ type alias Flags =
 type alias Model =
     { key : Nav.Key
     , page : Page
+    , authState : AuthState
     }
 
 
@@ -69,6 +71,7 @@ init flags url key =
     stepUrl url
         { key = key
         , page = NotFound Session.empty
+        , authState = Auth.init
         }
 
 
@@ -119,37 +122,22 @@ route parser handler =
     Parser.map handler parser
 
 
-stepSession sessionMsg model =
-    let
-        ( session, cmd ) =
-            Session.update sessionMsg (exit model)
-    in
-        (case model.page of
-            NotFound session_ ->
-                ( { model | page = NotFound session }, Cmd.none )
-
-            Home session_ ->
-                (stepHome model (initHome session))
-        )
-            |> Tuple.mapSecond (List.singleton >> (::) cmd >> Cmd.batch)
-
-
 type Msg
     = NoOp
     | UrlRequested Browser.UrlRequest
     | UrlChanged Url
-    | SessionMsg Session.Msg
+    | AuthMsg Auth.Msg
 
 
 subscriptions : Model -> Sub Msg
-subscriptions m =
+subscriptions model =
     Sub.batch
-        [ Ports.authStateChanged Session.AuthStateChanged |> Sub.map SessionMsg ]
+        [ Auth.subscriptions model.authState |> Sub.map AuthMsg ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
+update message model =
+    case message of
         NoOp ->
             ( model, Cmd.none )
 
@@ -164,8 +152,12 @@ update msg model =
         UrlChanged url ->
             stepUrl url model
 
-        SessionMsg sessionMessage ->
-            stepSession sessionMessage model
+        AuthMsg msg ->
+            stepAuth model (Auth.update msg model.authState)
+
+
+stepAuth model ( authState, cmd ) =
+    ( { model | authState = authState }, Cmd.map AuthMsg cmd )
 
 
 
