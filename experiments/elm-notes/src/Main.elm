@@ -234,8 +234,8 @@ skeletonView config toMsg details =
     }
 
 
-rowS3 classes attrs kids =
-    div (class ("flex flex-row hs3 " ++ classes) :: attrs) kids
+rowS3 classes attrs =
+    div (class ("flex flex-row hs3 " ++ classes) :: attrs)
 
 
 row =
