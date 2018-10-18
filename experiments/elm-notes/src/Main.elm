@@ -258,25 +258,28 @@ viewHeader auth =
             [ txtA [] "ELM Notes"
             , case auth of
                 Auth.Authenticated { displayName, photoUrl } ->
-                    row "pointer"
-                        [ onClick Auth.SignOutClicked ]
-                        [ img [ width 24, class "br-pill", src photoUrl ] []
-                        , txt displayName
-                        ]
+                    viewAuthAvatarBtn (Just Auth.SignOutClicked) (Just photoUrl) displayName
 
                 Auth.InitialUnknown ->
-                    row ""
-                        []
-                        [ img [ width 24, class "br-pill", src "anon.svg" ] []
-                        , text "Loading"
-                        ]
+                    viewAuthAvatarBtn Nothing Nothing "Loading"
 
                 Auth.Anon ->
-                    row "pointer"
-                        [ onClick Auth.SignInClicked ]
-                        [ img [ width 24, class "br-pill", src "anon.svg" ] []
-                        , text "Anon"
-                        ]
+                    viewAuthAvatarBtn (Just Auth.SignInClicked) Nothing "Anon"
             ]
             |> Html.map AuthMsg
         ]
+
+
+viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
+    let
+        onClickAttr =
+            Maybe.map (onClick >> List.singleton) maybeOnClick |> Maybe.withDefault []
+
+        photoUrl =
+            Maybe.withDefault "anon.svg" maybePhotoUrl
+    in
+        row "pointer"
+            onClickAttr
+            [ txt textContent
+            , img [ width 24, class "br-pill", src photoUrl ] []
+            ]
