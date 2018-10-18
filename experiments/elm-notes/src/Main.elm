@@ -222,7 +222,7 @@ view model =
                     identity
                     { title = "Not Found"
                     , attrs = []
-                    , kids = [ div [] [ text "Not Found View" ] ]
+                    , kids = [ div [] [ text "404 Page Not Found" ] ]
                     }
 
             Notes notes ->
