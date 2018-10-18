@@ -235,7 +235,7 @@ skeletonView config toMsg details =
 
 
 rowS3 classes attrs =
-    div (class ("flex flex-row hs3 " ++ classes) :: attrs)
+    div (class ("flex flex-row hs3 items-center" ++ classes) :: attrs)
 
 
 row =
@@ -243,7 +243,7 @@ row =
 
 
 txtA attrs content =
-    div attrs [ text content ]
+    row "" attrs [ text content ]
 
 
 txt =
@@ -256,8 +256,8 @@ viewHeader auth =
             []
             [ txtA [] "ELM Notes"
             , case auth of
-                Auth.Authenticated { displayName } ->
-                    txt displayName
+                Auth.Authenticated { displayName, photoUrl } ->
+                    row "" [] [ img [ class "br-pill h2 w2", src photoUrl ] [], txt displayName ]
 
                 Auth.InitialUnknown ->
                     txt "Loading"
