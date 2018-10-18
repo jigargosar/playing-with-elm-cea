@@ -3,6 +3,7 @@ module Main exposing (..)
 import Auth exposing (AuthState)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 import Json.Decode as D
 import Json.Encode as E
 import Browser.Navigation as Nav
@@ -214,7 +215,7 @@ type alias SkeletonConfig =
     { authState : AuthState }
 
 
-skeletonView : SkeletonConfig -> (a -> msg) -> SkeletonDetails a -> Browser.Document msg
+skeletonView : SkeletonConfig -> (a -> Msg) -> SkeletonDetails a -> Browser.Document Msg
 skeletonView config toMsg details =
     { title =
         details.title
@@ -257,7 +258,11 @@ viewHeader auth =
             [ txtA [] "ELM Notes"
             , case auth of
                 Auth.Authenticated { displayName, photoUrl } ->
-                    row "" [] [ img [ width 24, class "br-pill", src photoUrl ] [], txt displayName ]
+                    row ""
+                        [ onClick Auth.SignInClicked ]
+                        [ img [ width 24, class "br-pill", src photoUrl ] []
+                        , txt displayName
+                        ]
 
                 Auth.InitialUnknown ->
                     txt "Loading"
@@ -265,4 +270,5 @@ viewHeader auth =
                 Auth.Anon ->
                     txt "Anon"
             ]
+            |> Html.map AuthMsg
         ]

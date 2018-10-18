@@ -40,15 +40,19 @@ authStateDecoder =
 
 type Msg
     = AuthStateChanged E.Value
+    | SignInClicked
 
 
-update msg authState =
+update msg model =
     case msg of
         AuthStateChanged encodedValue ->
             ( D.decodeValue authStateDecoder encodedValue
-                |> Result.withDefault authState
+                |> Result.withDefault model
             , Cmd.none
             )
+
+        SignInClicked ->
+            ( model, Cmd.none )
 
 
 subscriptions : AuthState -> Sub Msg
