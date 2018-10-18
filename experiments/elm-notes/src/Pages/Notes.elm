@@ -1,6 +1,7 @@
 module Pages.Notes exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Session exposing (Session)
 import Skeleton
 
@@ -26,10 +27,10 @@ update message model =
 
 view : Model -> Skeleton.Details Msg
 view model =
-    { title = "Notes List"
+    { title = "Notes"
     , header = []
     , warning = []
     , attrs = []
     , kids =
-        [ div [] [ text "Home View" ] ]
+        [ div [ class "center pv3 ph3 ph0-l justify-between measure-wide" ] [ text "Notes" ] ]
     }
