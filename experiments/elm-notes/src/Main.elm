@@ -153,7 +153,10 @@ update message model =
         UrlRequested urlReq ->
             case urlReq of
                 Browser.Internal url ->
-                    ( model, Nav.pushUrl model.key (Url.toString url) )
+                    if Url.toString model.url /= Url.toString url then
+                        ( model, Nav.pushUrl model.key (Url.toString url) )
+                    else
+                        ( model, Cmd.none )
 
                 Browser.External href ->
                     ( model, Nav.load href )
