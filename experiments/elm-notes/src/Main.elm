@@ -51,7 +51,8 @@ type alias Flags =
 
 
 type alias Model =
-    { key : Nav.Key
+    { url : Url
+    , key : Nav.Key
     , page : Page
     , authState : AuthState
     }
@@ -59,16 +60,17 @@ type alias Model =
 
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    Random.step (generator key flags.noteList) (Random.initialSeed flags.now)
+    Random.step (generator url key flags.noteList) (Random.initialSeed flags.now)
         |> Tuple.first
         |> stepUrl url
 
 
-generator key encodedNC =
+generator url key encodedNC =
     Session.generator encodedNC
         |> Random.map
             (\session ->
-                { key = key
+                { url = url
+                , key = key
                 , page = NotFound session
                 , authState = Auth.init
                 }
@@ -107,7 +109,7 @@ stepUrl url model =
                     (stepNotes model (Notes.init session))
                 ]
     in
-        case Parser.parse parser url of
+        (case Parser.parse parser url of
             Just answer ->
                 answer
 
@@ -115,6 +117,12 @@ stepUrl url model =
                 ( { model | page = NotFound session }
                 , Cmd.none
                 )
+        )
+            |> Tuple.mapFirst (setUrl url)
+
+
+setUrl url model =
+    { model | url = url }
 
 
 route : Parser a b -> a -> Parser (b -> c) c
