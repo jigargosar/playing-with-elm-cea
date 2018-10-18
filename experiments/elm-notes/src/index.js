@@ -13,7 +13,14 @@ import {
   prop,
   unless,
 } from 'ramda'
-import { auth, firestore, signIn, signOut, userCRef } from './fire'
+import {
+  auth,
+  firestore,
+  onAuthStateChanged,
+  signIn,
+  signOut,
+  userCRef,
+} from './fire'
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
@@ -59,7 +66,9 @@ subscribe(
 subscribe('signIn', signIn, app)
 subscribe('signOut', signOut, app)
 let elmNotesListener = identity
-auth().onAuthStateChanged(function(user) {
+onAuthStateChanged(authStateChangeHandler)
+
+function authStateChangeHandler(user) {
   if (user) {
     elmNotesListener()
     const cRef = userCRef(user.uid, elmNotesCollectionName)
@@ -71,22 +80,34 @@ auth().onAuthStateChanged(function(user) {
       )
       let docsDict = qSnapToAllDocsDict(qSnap)
       // console.log(docsDict)
-      app.ports.notesCollectionChanged.send(docsDict)
+      send('notesCollectionChanged', docsDict, app)
     })
   }
-  app.ports.authStateChanged.send(
+  send(
+    'authStateChanged',
     unless(isNil)(pick(['uid', 'email', 'displayName']))(user),
+    app,
   )
-})
+}
 
 // HELPER FUNCTIONS
 
 const elmNotesCollectionName = `elm-notes`
 
 function subscribe(port, fn, app) {
-  if (app.ports[port]) {
+  if (app.ports && app.ports[port]) {
     app.ports[port].subscribe(fn)
-  } else console.log('Port Not Found', port, app.ports)
+  } else {
+    console.log('Port Not Found', port, app.ports)
+  }
+}
+
+function send(port, data, app) {
+  if (app.ports && app.ports[port]) {
+    app.ports[port].send(data)
+  } else {
+    console.log('Port Not Found', port, app.ports)
+  }
 }
 
 function storageGetOr(or, key) {

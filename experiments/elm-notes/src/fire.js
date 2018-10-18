@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
+import { compose, partial, tryCatch } from 'ramda'
 
 const fire = firebase
 
@@ -50,4 +51,10 @@ export const signIn = () => {
   })
   // return auth.signInWithRedirect(googleAuthProvider)
   return auth.signInWithPopup(googleAuthProvider)
+}
+
+export function onAuthStateChanged(cb) {
+  return auth().onAuthStateChanged(
+    tryCatch(cb, partial(console.error, ['[fire] onAuthStateChanged'])),
+  )
 }
