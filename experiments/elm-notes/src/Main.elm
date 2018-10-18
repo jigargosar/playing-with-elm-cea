@@ -251,16 +251,18 @@ txt =
 
 
 viewHeader auth =
-    row "center pv3 justify-between measure"
-        []
-        [ txtA [] "ELM Notes"
-        , case auth of
-            Auth.Authenticated { displayName } ->
-                txt displayName
+    div [ class "bg-black white" ]
+        [ row "_bg-white-50 center pv3 ph3 ph0-l justify-between measure-wide"
+            []
+            [ txtA [] "ELM Notes"
+            , case auth of
+                Auth.Authenticated { displayName } ->
+                    txt displayName
 
-            Auth.InitialUnknown ->
-                txt "Loading"
+                Auth.InitialUnknown ->
+                    txt "Loading"
 
-            Auth.Anon ->
-                txt "Anon"
+                Auth.Anon ->
+                    txt "Anon"
+            ]
         ]
