@@ -1,6 +1,7 @@
 module Pages.Notes exposing (..)
 
 import Collection
+import Exts.Html.Events
 import Href
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -17,6 +18,7 @@ type alias Model =
 
 type Msg
     = Nop
+    | ViewNote Note
 
 
 init : Session -> ( Model, Cmd Msg )
@@ -37,6 +39,9 @@ update message model =
     case message of
         Nop ->
             ( model, Cmd.none )
+
+        ViewNote note ->
+            ( model, Session.pushHref (Href.viewNote note.id) model.session )
 
 
 currentNoteList : Model -> List Note
@@ -77,15 +82,13 @@ viewNoteItem note =
         otherLines =
             List.tail lines |> Maybe.withDefault [] |> String.join " " |> String.slice 0 100
 
-        --            routeToNoteDetailViewMsg =
-        --                RouteTo <| NoteDetail note.id
+        viewNoteMsg =
+            ViewNote note
     in
-        a
-            [ {- onClick routeToNoteDetailViewMsg
-                 , Exts.Html.Events.onEnter routeToNoteDetailViewMsg
-                 ,
-              -}
-              class "link black pv2 pointer "
+        div
+            [ onClick viewNoteMsg
+            , Exts.Html.Events.onEnter viewNoteMsg
+            , class "link black pv2 pointer "
             , href ("note/" ++ note.id)
             , tabindex 0
             ]

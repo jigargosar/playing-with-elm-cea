@@ -9,3 +9,7 @@ newNote =
 
 editNote id =
     Url.Builder.absolute [ "notes", id ] [ string "edit" "" ]
+
+
+viewNote id =
+    Url.Builder.absolute [ "notes", id ] []

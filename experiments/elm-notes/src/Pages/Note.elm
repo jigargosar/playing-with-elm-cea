@@ -5,6 +5,7 @@ import Href
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Markdown
 import Note exposing (Note)
 import Session exposing (NotesCollection, Session)
 import Skeleton
@@ -13,7 +14,8 @@ import Task
 
 type Edit
     = New
-    | Existing Collection.Id Note.Content
+    | Editing Collection.Id Note.Content
+    | Viewing Collection.Id Note.Content
     | NotFound Collection.Id
 
 
@@ -33,12 +35,24 @@ initNewNote session =
     ( { session = session, edit = New }, Cmd.none )
 
 
-initWithNoteId : Collection.Id -> Session -> ( Model, Cmd Msg )
-initWithNoteId id session =
+initEditNote : Collection.Id -> Session -> ( Model, Cmd Msg )
+initEditNote id session =
     ( { session = session
       , edit =
             Session.getNote id session
-                |> Maybe.map (Note.getContent >> Existing id)
+                |> Maybe.map (Note.getContent >> Editing id)
+                |> Maybe.withDefault (NotFound id)
+      }
+    , Cmd.none
+    )
+
+
+initShowNote : Collection.Id -> Session -> ( Model, Cmd Msg )
+initShowNote id session =
+    ( { session = session
+      , edit =
+            Session.getNote id session
+                |> Maybe.map (Note.getContent >> Viewing id)
                 |> Maybe.withDefault (NotFound id)
       }
     , Cmd.none
@@ -54,7 +68,10 @@ getContent model =
         New ->
             Just ""
 
-        Existing id content ->
+        Editing id content ->
+            Just content
+
+        Viewing id content ->
             Just content
 
         NotFound id ->
@@ -84,10 +101,13 @@ update message model =
                         |> Task.perform NewAdded
                     )
 
-                Existing id content ->
-                    ( { model | edit = Existing id newContent }, Cmd.none )
+                Editing id content ->
+                    ( { model | edit = Editing id newContent }, Cmd.none )
 
                 NotFound id ->
+                    ( model, Cmd.none )
+
+                Viewing id content ->
                     ( model, Cmd.none )
 
         ContentBlurred ->
@@ -103,15 +123,27 @@ view model =
 
 
 viewKids model =
-    getContent model
-        |> Maybe.map
-            (\content ->
-                textarea
-                    [ class "pa2 h-100 w-100"
-                    , value content
-                    , onInput (ContentChanged)
-                    , onBlur (ContentBlurred)
-                    ]
-                    []
-            )
-        |> Maybe.withDefault (div [] [ text "Note Not Found" ])
+    case model.edit of
+        New ->
+            textarea
+                [ class "pa2 h-100 w-100"
+                , value ""
+                , onInput (ContentChanged)
+                , onBlur (ContentBlurred)
+                ]
+                []
+
+        Editing id content ->
+            textarea
+                [ class "pa2 h-100 w-100"
+                , value content
+                , onInput (ContentChanged)
+                , onBlur (ContentBlurred)
+                ]
+                []
+
+        Viewing id content ->
+            div [ class " pv2 " ] <| Markdown.toHtml Nothing content
+
+        NotFound id ->
+            div [] [ text "Note Not Found" ]

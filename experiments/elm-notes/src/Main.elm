@@ -123,8 +123,13 @@ stepUrl url model =
                 , route (s "notes" </> s "new")
                     (stepNote model (Pages.Note.initNewNote session))
                 , route (s "notes" </> string <?> Query.string "edit")
-                    (\id _ ->
-                        stepNote model (Pages.Note.initWithNoteId id session)
+                    (\id maybeEdit ->
+                        case maybeEdit of
+                            Just _ ->
+                                stepNote model (Pages.Note.initEditNote id session)
+
+                            Nothing ->
+                                stepNote model (Pages.Note.initShowNote id session)
                     )
                 ]
     in
