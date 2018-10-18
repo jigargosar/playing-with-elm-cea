@@ -25,3 +25,7 @@ generator key encodedNC =
 
 pushHref href session =
     Nav.pushUrl session.key href
+
+
+setNC nc session =
+    { session | nc = nc }

@@ -26,8 +26,12 @@ init session =
 
 
 getNC =
-    .session
-        >> .nc
+    .session >> .nc
+
+
+overSession : (Session -> Session) -> Model -> Model
+overSession updateFn model =
+    { model | session = updateFn model.session }
 
 
 update message model =
@@ -36,7 +40,7 @@ update message model =
             ( model, Cmd.none )
 
         NewAdded ( note, nc ) ->
-            ( model, Session.pushHref ("note/" ++ note.id) model.session )
+            ( model |> overSession (Session.setNC nc), Session.pushHref ("note/" ++ note.id) model.session )
 
         New ->
             ( model
