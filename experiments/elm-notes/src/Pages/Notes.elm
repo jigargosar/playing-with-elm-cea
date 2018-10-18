@@ -5,8 +5,9 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Note exposing (Note)
-import Session exposing (Session)
+import Session exposing (NotesCollection, Session)
 import Skeleton
+import Task
 
 
 type alias Model =
@@ -16,6 +17,7 @@ type alias Model =
 type Msg
     = Nop
     | New
+    | NewAdded ( Note, NotesCollection )
 
 
 init : Session -> ( Model, Cmd Msg )
@@ -23,19 +25,29 @@ init session =
     ( { session = session }, Cmd.none )
 
 
+getNC =
+    .session
+        >> .nc
+
+
 update message model =
     case message of
         Nop ->
             ( model, Cmd.none )
 
-        New ->
+        NewAdded ( note, nc ) ->
             ( model, Cmd.none )
+
+        New ->
+            ( model
+            , Collection.createAndAdd (Note.init) (getNC model)
+                |> Task.perform NewAdded
+            )
 
 
 currentNoteList : Model -> List Note
 currentNoteList =
-    .session
-        >> .nc
+    getNC
         >> Collection.items
         >> List.filter (.deleted >> not)
         >> List.sortBy (.modifiedAt >> (*) -1)
