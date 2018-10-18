@@ -9,6 +9,7 @@ import {
   identity,
   isNil,
   map,
+  pathOr,
   pick,
   prop,
   unless,
@@ -21,7 +22,6 @@ import {
   signOut,
   userCRef,
 } from './fire'
-import pathOr from 'ramda/es/pathOr'
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
