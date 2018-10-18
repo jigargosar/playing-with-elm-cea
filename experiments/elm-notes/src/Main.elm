@@ -8,6 +8,7 @@ import Browser.Navigation as Nav
 import Browser
 import Session exposing (Session)
 import Url exposing (Url)
+import Url.Parser as Parser exposing (Parser, oneOf, top)
 
 
 -- Routing
@@ -16,6 +17,7 @@ import Url exposing (Url)
 
 type Page
     = NotFound Session
+    | Home Session
 
 
 
@@ -49,13 +51,55 @@ exit model =
         NotFound session ->
             session
 
+        Home session ->
+            session
 
+
+type alias HomeModel =
+    Session
+
+
+type alias HomeMsg =
+    Msg
+
+
+stepHome : Model -> ( HomeModel, Cmd HomeMsg ) -> ( Model, Cmd Msg )
+stepHome model ( home, cmd ) =
+    ( { model | page = Home home }
+    , cmd
+    )
+
+
+initHome : Session -> ( HomeModel, Cmd HomeMsg )
+initHome session =
+    ( session, Cmd.none )
+
+
+stepUrl : Url -> Model -> ( Model, Cmd Msg )
 stepUrl url model =
     let
         session =
             exit model
+
+        parser =
+            oneOf
+                [ route top
+                    (stepHome model (initHome session))
+                ]
     in
-        ( model, Cmd.none )
+        case Parser.parse parser url of
+            Just answer ->
+                answer
+
+            Nothing ->
+                ( { model | page = NotFound session }
+                , Cmd.none
+                )
+
+
+route : Parser a b -> a -> Parser (b -> c) c
+route parser handler =
+    Parser.map handler parser
 
 
 type Msg
