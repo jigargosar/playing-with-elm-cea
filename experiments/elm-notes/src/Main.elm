@@ -252,7 +252,7 @@ txt =
 
 viewHeader auth =
     div [ class "bg-black white" ]
-        [ row "b _bg-white-50 center pv3 ph3 ph0-l justify-between measure-wide"
+        [ row "b _bg-white-50 center pv3 ph3 ph0-l justify-between measure-wide shadow-1"
             []
             [ txtA [] "ELM Notes"
             , case auth of

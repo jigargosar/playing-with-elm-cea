@@ -1,17 +1,21 @@
 :root {
-  --sans-serif: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;
+  --sans-serif: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
+    'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
+    sans-serif;
 
-  --rem1: .25rem;
-  --rem2: .5rem;
+  --rem1: 0.25rem;
+  --rem2: 0.5rem;
   --rem3: 1rem;
   --rem4: 2rem;
   --rem5: 4rem;
   --rem6: 8rem;
   --rem7: 16rem;
-
 }
 
-html, body, #root, [data-elm-hot=true] {
+html,
+body,
+#root,
+[data-elm-hot='true'] {
   font-family: var(--sans-serif);
   /*font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;*/
   height: 100%;
@@ -20,13 +24,13 @@ html, body, #root, [data-elm-hot=true] {
   font-smoothing: antialiased;
 }
 
-.vh-100, .v-100 {
-  height: 100vh;
-}
+/*.vh-100, .v-100 {*/
+/*height: 100vh;*/
+/*}*/
 
-.vw-100, .v100 {
-  width: 100vw;
-}
+/*.vw-100, .v100 {*/
+/*width: 100vw;*/
+/*}*/
 
 .vs1 > * {
   margin-bottom: var(--rem1);
@@ -110,7 +114,8 @@ html, body, #root, [data-elm-hot=true] {
   pointer-events: bounding-box;
 }
 
-[data-elm-hot] > div:nth-child(2), #root div:nth-child(2) {
+[data-elm-hot] > div:nth-child(2),
+#root div:nth-child(2) {
   transform: translate(38%, 43%) scale(0.3, 0.4);
   bottom: 0;
 }
