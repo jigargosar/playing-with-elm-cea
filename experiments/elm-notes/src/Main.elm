@@ -15,7 +15,8 @@ import Random
 import Session exposing (Session)
 import Skeleton
 import Url exposing (Url)
-import Url.Parser as Parser exposing ((</>), Parser, oneOf, s, string, top)
+import Url.Parser as Parser exposing ((</>), (<?>), Parser, oneOf, s, string, top)
+import Url.Parser.Query as Query
 
 
 ---- PROGRAM ----
@@ -119,10 +120,12 @@ stepUrl url model =
             oneOf
                 [ route top
                     (stepNotes model (Notes.init session))
-                , route (s "note" </> s "new")
+                , route (s "notes" </> s "new")
                     (stepNote model (Pages.Note.initNewNote session))
-                , route (s "note" </> string)
-                    (\id -> stepNote model (Pages.Note.initWithNoteId id session))
+                , route (s "notes" </> string <?> Query.string "edit")
+                    (\id _ ->
+                        stepNote model (Pages.Note.initWithNoteId id session)
+                    )
                 ]
     in
         (case Parser.parse parser url of

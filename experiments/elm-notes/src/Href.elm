@@ -4,8 +4,8 @@ import Url.Builder exposing (string)
 
 
 newNote =
-    Url.Builder.absolute [ "note", "new" ] []
+    Url.Builder.absolute [ "notes", "new" ] []
 
 
 editNote id =
-    Url.Builder.absolute [ "note", id ] [ string "edit" "" ]
+    Url.Builder.absolute [ "notes", id ] [ string "edit" "" ]
