@@ -70,12 +70,13 @@ viewNoteItem note =
         --            routeToNoteDetailViewMsg =
         --                RouteTo <| NoteDetail note.id
     in
-        div
+        a
             [ {- onClick routeToNoteDetailViewMsg
                  , Exts.Html.Events.onEnter routeToNoteDetailViewMsg
                  ,
               -}
               class "link black pv2 pointer "
+            , href ("note/" ++ note.id)
             , tabindex 0
             ]
             [ div [ class "f5" ] [ text firstLine ]
