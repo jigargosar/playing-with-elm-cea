@@ -10,6 +10,7 @@ type alias UserDetails =
     { uid : String
     , email : String
     , displayName : String
+    , photoUrl : String
     }
 
 
@@ -25,10 +26,11 @@ init =
 
 userDetailsDecoder : Decoder UserDetails
 userDetailsDecoder =
-    D.map3 UserDetails
+    D.map4 UserDetails
         (D.field "uid" D.string)
         (D.field "email" D.string)
         (D.field "displayName" D.string)
+        (D.field "photoURL" D.string)
 
 
 authStateDecoder : Decoder AuthState

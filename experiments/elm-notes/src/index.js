@@ -86,7 +86,7 @@ function authStateChangeHandler(user) {
   }
   send(
     'authStateChanged',
-    unless(isNil)(pick(['uid', 'email', 'displayName']))(user),
+    unless(isNil)(pick(['uid', 'email', 'displayName', 'photoURL']))(user),
     app,
   )
 }
