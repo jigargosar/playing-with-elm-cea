@@ -30,7 +30,7 @@ userDetailsDecoder =
         (D.field "uid" D.string)
         (D.field "email" D.string)
         (D.field "displayName" D.string)
-        (D.field "photoURL" D.string)
+        (D.maybe (D.field "photoURL" D.string) |> D.map (Maybe.withDefault ""))
 
 
 authStateDecoder : Decoder AuthState
