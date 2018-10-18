@@ -32,10 +32,9 @@ view config toMsg details =
              ,
           -}
           viewHeader config
-        , Html.map
-            toMsg
-          <|
-            div (class "center pv3 ph3 ph0-l justify-between measure-wide" :: details.attrs) details.kids
+        , Html.map toMsg <|
+            div (class "center pv3 ph3 ph0-l justify-between measure-wide" :: details.attrs)
+                details.kids
 
         --        , viewFooter
         ]
