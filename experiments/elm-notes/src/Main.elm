@@ -165,15 +165,6 @@ stepAuth model ( authState, cmd ) =
 ---- VIEW ----
 
 
-type alias SkeletonDetails msg =
-    { title : String
-    , header : List String
-    , warning : List String
-    , attrs : List (Html.Attribute msg)
-    , kids : List (Html msg)
-    }
-
-
 view : Model -> Browser.Document Msg
 view model =
     let
@@ -200,6 +191,10 @@ view model =
                 skeletonView config identity (homeView home)
 
 
+
+---- Page Views
+
+
 homeView : HomeModel -> SkeletonDetails HomeMsg
 homeView model =
     { title = "Elm Packages"
@@ -211,8 +206,21 @@ homeView model =
     }
 
 
+
+---- SkeletonView
+
+
 type alias SkeletonConfig =
     { authState : AuthState }
+
+
+type alias SkeletonDetails msg =
+    { title : String
+    , header : List String
+    , warning : List String
+    , attrs : List (Html.Attribute msg)
+    , kids : List (Html msg)
+    }
 
 
 skeletonView : SkeletonConfig -> (a -> Msg) -> SkeletonDetails a -> Browser.Document Msg
@@ -235,20 +243,8 @@ skeletonView config toMsg details =
     }
 
 
-rowS3 classes attrs =
-    div (class ("flex flex-row hs3 items-center " ++ classes) :: attrs)
 
-
-row =
-    rowS3
-
-
-txtA attrs content =
-    row "" attrs [ text content ]
-
-
-txt =
-    txtA []
+---- Header View
 
 
 viewHeader auth =
@@ -283,3 +279,23 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
             [ txt textContent
             , img [ width 24, class "br-pill", src photoUrl ] []
             ]
+
+
+
+--- View Helpers
+
+
+rowS3 classes attrs =
+    div (class ("flex flex-row hs3 items-center " ++ classes) :: attrs)
+
+
+row =
+    rowS3
+
+
+txtA attrs content =
+    row "" attrs [ text content ]
+
+
+txt =
+    txtA []
