@@ -6,6 +6,7 @@ import Json.Decode as D
 import Json.Encode as E
 import Browser.Navigation as Nav
 import Browser
+import Session exposing (Session)
 import Url exposing (Url)
 
 
@@ -14,7 +15,7 @@ import Url exposing (Url)
 
 
 type Page
-    = NotFound
+    = NotFound Session
 
 
 
@@ -27,23 +28,34 @@ type alias Flags =
 
 type alias Model =
     { key : Nav.Key
-    , url : Url
     , page : Page
     }
 
 
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( { key = key
-      , url = url
-      , page = NotFound
-      }
-    , Cmd.none
-    )
+    stepUrl url
+        { key = key
+        , page = NotFound Session.empty
+        }
 
 
 
 ---- UPDATE ----
+
+
+exit model =
+    case model.page of
+        NotFound session ->
+            session
+
+
+stepUrl url model =
+    let
+        session =
+            exit model
+    in
+        ( model, Cmd.none )
 
 
 type Msg
@@ -68,7 +80,7 @@ update msg model =
             ( model, Cmd.none )
 
         UrlChanged url ->
-            ( model, Cmd.none )
+            stepUrl url model
 
 
 
