@@ -242,10 +242,14 @@ row =
     rowS3
 
 
+txt attrs content =
+    div attrs [ text content ]
+
+
 viewHeader auth =
     row ""
         []
-        [ div [] [ text "ELM Notes" ]
+        [ txt [] "ELM Notes"
         , case auth of
             Auth.Authenticated { displayName } ->
                 div [] [ div [] [ text displayName ] ]
