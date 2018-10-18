@@ -28,8 +28,6 @@ update message model =
 view : Model -> Skeleton.Details Msg
 view model =
     { title = "Notes"
-    , header = []
-    , warning = []
     , attrs = []
     , kids =
         [ div [] [ text "Notes" ] ]

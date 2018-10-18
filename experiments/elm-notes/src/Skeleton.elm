@@ -9,8 +9,6 @@ import Html.Events exposing (..)
 
 type alias Details msg =
     { title : String
-    , header : List String
-    , warning : List String
     , attrs : List (Html.Attribute msg)
     , kids : List (Html msg)
     }
@@ -27,11 +25,7 @@ view config toMsg details =
     { title =
         details.title
     , body =
-        [ {- viewHeader details.header
-             , lazy viewWarning details.warning
-             ,
-          -}
-          viewHeader config
+        [ viewHeader config
         , Html.map toMsg <|
             div (class "center pv3 ph3 ph0-l justify-between measure-wide" :: details.attrs)
                 details.kids

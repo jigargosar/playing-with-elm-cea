@@ -196,13 +196,6 @@ view model =
                 Skeleton.view config
                     identity
                     { title = "Not Found"
-                    , header = []
-
-                    {- , warning = Skeleton.NoProblems
-                       , attrs = Problem.styles
-                       , kids = Problem.notFound
-                    -}
-                    , warning = []
                     , attrs = []
                     , kids = [ div [] [ text "Not Found View" ] ]
                     }
