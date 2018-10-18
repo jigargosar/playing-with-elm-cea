@@ -36,7 +36,7 @@ update message model =
             ( model, Cmd.none )
 
         NewAdded ( note, nc ) ->
-            ( model, Cmd.none )
+            ( model, Session.pushHref ("note/" ++ note.id) model.session )
 
         New ->
             ( model

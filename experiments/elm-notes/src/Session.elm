@@ -21,3 +21,7 @@ generator : Nav.Key -> E.Value -> Random.Generator Session
 generator key encodedNC =
     Collection.generator Note.decoder encodedNC
         |> Random.map (Session key)
+
+
+pushHref href session =
+    Nav.pushUrl session.key href
