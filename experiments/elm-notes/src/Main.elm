@@ -124,12 +124,14 @@ stepSession sessionMsg model =
         ( session, cmd ) =
             Session.update sessionMsg (exit model)
     in
-        case model.page of
+        (case model.page of
             NotFound session_ ->
                 ( { model | page = NotFound session }, Cmd.none )
 
             Home session_ ->
-                ( { model | page = Home session }, Cmd.none )
+                (stepHome model (initHome session))
+        )
+            |> Tuple.mapSecond (List.singleton >> (::) cmd >> Cmd.batch)
 
 
 type Msg
