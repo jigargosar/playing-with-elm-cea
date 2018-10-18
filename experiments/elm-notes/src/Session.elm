@@ -27,5 +27,9 @@ pushHref href session =
     Nav.pushUrl session.key href
 
 
+replaceHref href session =
+    Nav.replaceUrl session.key href
+
+
 setNC nc session =
     { session | nc = nc }

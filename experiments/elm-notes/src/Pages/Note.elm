@@ -1,6 +1,7 @@
 module Pages.Note exposing (..)
 
 import Collection
+import Href
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -55,7 +56,7 @@ update message model =
             ( model, Cmd.none )
 
         NewAdded ( note, nc ) ->
-            ( model, Cmd.none )
+            ( model |> overSession (Session.setNC nc), Session.replaceHref (Href.editNote note.id) model.session )
 
         ContentChanged newContent ->
             case model.edit of
