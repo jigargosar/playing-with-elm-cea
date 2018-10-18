@@ -8,6 +8,7 @@ import Json.Decode as D
 import Json.Encode as E
 import Browser.Navigation as Nav
 import Browser
+import Pages.Notes as Notes
 import Ports
 import Session exposing (Session)
 import Url exposing (Url)
@@ -34,22 +35,9 @@ main =
 -- Page
 
 
-type alias HomeModel =
-    Session
-
-
-type alias HomeMsg =
-    Msg
-
-
-initHome : Session -> ( HomeModel, Cmd HomeMsg )
-initHome session =
-    ( session, Cmd.none )
-
-
 type Page
     = NotFound Session
-    | Home Session
+    | Notes Notes.Model
 
 
 
@@ -85,14 +73,14 @@ exit model =
         NotFound session ->
             session
 
-        Home session ->
-            session
+        Notes m ->
+            m.session
 
 
-stepHome : Model -> ( HomeModel, Cmd HomeMsg ) -> ( Model, Cmd Msg )
-stepHome model ( home, cmd ) =
-    ( { model | page = Home home }
-    , cmd
+stepNotes : Model -> ( Notes.Model, Cmd Notes.Msg ) -> ( Model, Cmd Msg )
+stepNotes model ( notes, cmd ) =
+    ( { model | page = Notes notes }
+    , Cmd.map NotesMsg cmd
     )
 
 
@@ -105,7 +93,7 @@ stepUrl url model =
         parser =
             oneOf
                 [ route top
-                    (stepHome model (initHome session))
+                    (stepNotes model (Notes.init session))
                 ]
     in
         case Parser.parse parser url of
@@ -128,6 +116,7 @@ type Msg
     | UrlRequested Browser.UrlRequest
     | UrlChanged Url
     | AuthMsg Auth.Msg
+    | NotesMsg Notes.Msg
 
 
 subscriptions : Model -> Sub Msg
@@ -155,6 +144,14 @@ update message model =
 
         AuthMsg msg ->
             stepAuth model (Auth.update msg model.authState)
+
+        NotesMsg msg ->
+            case model.page of
+                Notes notes ->
+                    stepNotes model (Notes.update msg notes)
+
+                _ ->
+                    ( model, Cmd.none )
 
 
 stepAuth model ( authState, cmd ) =
@@ -187,15 +184,15 @@ view model =
                     , kids = [ div [] [ text "Not Found View" ] ]
                     }
 
-            Home home ->
-                skeletonView config identity (homeView home)
+            Notes notes ->
+                skeletonView config NotesMsg (homeView notes)
 
 
 
 ---- Page Views
 
 
-homeView : HomeModel -> SkeletonDetails HomeMsg
+homeView : Notes.Model -> SkeletonDetails Notes.Msg
 homeView model =
     { title = "Elm Packages"
     , header = []
