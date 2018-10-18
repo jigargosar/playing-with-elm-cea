@@ -12,8 +12,37 @@ import Url exposing (Url)
 import Url.Parser as Parser exposing (Parser, oneOf, top)
 
 
+---- PROGRAM ----
+
+
+main : Program Flags Model Msg
+main =
+    Browser.application
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        , onUrlRequest = UrlRequested
+        , onUrlChange = UrlChanged
+        }
+
+
+
 -- Routing
 -- Page
+
+
+type alias HomeModel =
+    Session
+
+
+type alias HomeMsg =
+    Msg
+
+
+initHome : Session -> ( HomeModel, Cmd HomeMsg )
+initHome session =
+    ( session, Cmd.none )
 
 
 type Page
@@ -56,24 +85,11 @@ exit model =
             session
 
 
-type alias HomeModel =
-    Session
-
-
-type alias HomeMsg =
-    Msg
-
-
 stepHome : Model -> ( HomeModel, Cmd HomeMsg ) -> ( Model, Cmd Msg )
 stepHome model ( home, cmd ) =
     ( { model | page = Home home }
     , cmd
     )
-
-
-initHome : Session -> ( HomeModel, Cmd HomeMsg )
-initHome session =
-    ( session, Cmd.none )
 
 
 stepUrl : Url -> Model -> ( Model, Cmd Msg )
@@ -202,19 +218,3 @@ skeletonView toMsg details =
         --        , viewFooter
         ]
     }
-
-
-
----- PROGRAM ----
-
-
-main : Program Flags Model Msg
-main =
-    Browser.application
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        , onUrlRequest = UrlRequested
-        , onUrlChange = UrlChanged
-        }
