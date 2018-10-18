@@ -1,5 +1,6 @@
 module Session exposing (..)
 
+import Browser.Navigation as Nav
 import Collection
 import Json.Decode exposing (Decoder)
 import Json.Decode as D
@@ -13,10 +14,10 @@ type alias NotesCollection =
 
 
 type alias Session =
-    { nc : NotesCollection }
+    { key : Nav.Key, nc : NotesCollection }
 
 
-generator : E.Value -> Random.Generator Session
-generator encodedNC =
+generator : Nav.Key -> E.Value -> Random.Generator Session
+generator key encodedNC =
     Collection.generator Note.decoder encodedNC
-        |> Random.map Session
+        |> Random.map (Session key)

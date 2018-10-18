@@ -66,7 +66,7 @@ init flags url key =
 
 
 generator url key encodedNC =
-    Session.generator encodedNC
+    Session.generator key encodedNC
         |> Random.map
             (\session ->
                 { url = url
