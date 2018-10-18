@@ -175,23 +175,28 @@ type alias SkeletonDetails msg =
 
 view : Model -> Browser.Document Msg
 view model =
-    case model.page of
-        NotFound _ ->
-            skeletonView never
-                { title = "Not Found"
-                , header = []
+    let
+        config =
+            { authState = model.authState }
+    in
+        case model.page of
+            NotFound _ ->
+                skeletonView config
+                    identity
+                    { title = "Not Found"
+                    , header = []
 
-                {- , warning = Skeleton.NoProblems
-                   , attrs = Problem.styles
-                   , kids = Problem.notFound
-                -}
-                , warning = []
-                , attrs = []
-                , kids = [ div [] [ text "Not Found View" ] ]
-                }
+                    {- , warning = Skeleton.NoProblems
+                       , attrs = Problem.styles
+                       , kids = Problem.notFound
+                    -}
+                    , warning = []
+                    , attrs = []
+                    , kids = [ div [] [ text "Not Found View" ] ]
+                    }
 
-        Home home ->
-            skeletonView identity (homeView home)
+            Home home ->
+                skeletonView config identity (homeView home)
 
 
 homeView : HomeModel -> SkeletonDetails HomeMsg
@@ -205,8 +210,12 @@ homeView model =
     }
 
 
-skeletonView : (a -> msg) -> SkeletonDetails a -> Browser.Document msg
-skeletonView toMsg details =
+type alias SkeletonConfig =
+    { authState : AuthState }
+
+
+skeletonView : SkeletonConfig -> (a -> msg) -> SkeletonDetails a -> Browser.Document msg
+skeletonView config toMsg details =
     { title =
         details.title
     , body =
@@ -214,9 +223,27 @@ skeletonView toMsg details =
              , lazy viewWarning details.warning
              ,
           -}
-          Html.map toMsg <|
+          viewHeader config.authState
+        , Html.map
+            toMsg
+          <|
             div (class "center" :: details.attrs) details.kids
 
         --        , viewFooter
         ]
     }
+
+
+viewHeader auth =
+    div []
+        [ div [] [ text "ELM Notes" ]
+        , case auth of
+            Auth.Authenticated { displayName } ->
+                div [] [ div [] [ text displayName ] ]
+
+            Auth.InitialUnknown ->
+                div [] [ text "Loading" ]
+
+            Auth.Anon ->
+                div [] [ text "Anon" ]
+        ]
