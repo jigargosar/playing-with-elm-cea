@@ -257,7 +257,7 @@ viewHeader auth =
             [ txtA [] "ELM Notes"
             , case auth of
                 Auth.Authenticated { displayName, photoUrl } ->
-                    row "" [] [ img [ class "br-pill h2 w2", src photoUrl ] [], txt displayName ]
+                    row "" [] [ img [ width 24, class "br-pill", src photoUrl ] [], txt displayName ]
 
                 Auth.InitialUnknown ->
                     txt "Loading"
