@@ -235,7 +235,7 @@ skeletonView config toMsg details =
 
 
 viewHeader auth =
-    div []
+    div [ class "flex flex-row hs3" ]
         [ div [] [ text "ELM Notes" ]
         , case auth of
             Auth.Authenticated { displayName } ->
