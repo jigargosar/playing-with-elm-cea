@@ -15,6 +15,7 @@ type alias Model =
 
 type Msg
     = Nop
+    | New
 
 
 init : Session -> ( Model, Cmd Msg )
@@ -25,6 +26,9 @@ init session =
 update message model =
     case message of
         Nop ->
+            ( model, Cmd.none )
+
+        New ->
             ( model, Cmd.none )
 
 
@@ -42,7 +46,7 @@ view model =
     { title = "Notes"
     , attrs = []
     , kids =
-        [ bbtn Nop "New", viewNotes (currentNoteList model) ]
+        [ bbtn New "New", viewNotes (currentNoteList model) ]
     }
 
 
