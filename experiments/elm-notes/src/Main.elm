@@ -10,6 +10,7 @@ import Browser.Navigation as Nav
 import Browser
 import Pages.Notes as Notes
 import Ports
+import Random
 import Session exposing (Session)
 import Url exposing (Url)
 import Url.Parser as Parser exposing (Parser, oneOf, top)
@@ -57,11 +58,20 @@ type alias Model =
 
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    stepUrl url
-        { key = key
-        , page = NotFound Session.empty
-        , authState = Auth.init
-        }
+    Random.step (generator key flags.noteList) (Random.initialSeed flags.now)
+        |> Tuple.first
+        |> stepUrl url
+
+
+generator key encodedNC =
+    Session.generator encodedNC
+        |> Random.map
+            (\session ->
+                { key = key
+                , page = NotFound session
+                , authState = Auth.init
+                }
+            )
 
 
 
