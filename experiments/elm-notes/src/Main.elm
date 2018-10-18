@@ -265,12 +265,16 @@ viewHeader auth =
                         ]
 
                 Auth.InitialUnknown ->
-                    txt "Loading"
+                    row ""
+                        []
+                        [ img [ width 24, class "br-pill", src "anon.svg" ] []
+                        , text "Loading"
+                        ]
 
                 Auth.Anon ->
                     row "pointer"
                         [ onClick Auth.SignInClicked ]
-                        [ img [ width 24, class "br-pill", src "" ] []
+                        [ img [ width 24, class "br-pill", src "anon.svg" ] []
                         , text "Anon"
                         ]
             ]
