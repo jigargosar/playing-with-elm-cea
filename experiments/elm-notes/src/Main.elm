@@ -181,7 +181,7 @@ view model =
     in
         case model.page of
             NotFound _ ->
-                Skeleton.skeletonView config
+                Skeleton.view config
                     identity
                     { title = "Not Found"
                     , header = []
@@ -196,7 +196,7 @@ view model =
                     }
 
             Notes notes ->
-                Skeleton.skeletonView config NotesMsg (Notes.view notes)
+                Skeleton.view config NotesMsg (Notes.view notes)
 
 
 

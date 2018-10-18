@@ -19,8 +19,8 @@ type alias Details msg =
     }
 
 
-skeletonView : SkeletonConfig -> (a -> msg) -> Details a -> Browser.Document msg
-skeletonView config toMsg details =
+view : SkeletonConfig -> (a -> msg) -> Details a -> Browser.Document msg
+view config toMsg details =
     { title =
         details.title
     , body =
