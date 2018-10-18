@@ -13,7 +13,7 @@ import Task
 
 type Edit
     = New
-    | Existing
+    | Existing Collection.Id Note.Content
 
 
 type alias Model =
@@ -32,6 +32,21 @@ initNewNote session =
     ( { session = session, edit = New }, Cmd.none )
 
 
+initWithNoteId : Collection.Id -> Session -> ( Model, Cmd Msg )
+initWithNoteId id session =
+    ( { session = session
+      , edit =
+            Existing id
+                (session.nc
+                    |> Collection.get id
+                    |> Maybe.map Note.getContent
+                    |> Maybe.withDefault "Note Not Found ;("
+                )
+      }
+    , Cmd.none
+    )
+
+
 getNC =
     .session >> .nc
 
@@ -41,8 +56,8 @@ getContent model =
         New ->
             ""
 
-        Existing ->
-            ""
+        Existing id content ->
+            content
 
 
 overSession : (Session -> Session) -> Model -> Model
@@ -66,8 +81,8 @@ update message model =
                         |> Task.perform NewAdded
                     )
 
-                Existing ->
-                    ( model, Cmd.none )
+                Existing id content ->
+                    ( { model | edit = Existing id newContent }, Cmd.none )
 
         ContentBlurred ->
             ( model, Cmd.none )
