@@ -268,7 +268,7 @@ viewHeader auth =
                     txt "Loading"
 
                 Auth.Anon ->
-                    txt "Anon"
+                    txtA [ onClick Auth.SignOutClicked ] "Anon"
             ]
             |> Html.map AuthMsg
         ]

@@ -41,6 +41,7 @@ authStateDecoder =
 type Msg
     = AuthStateChanged E.Value
     | SignInClicked
+    | SignOutClicked
 
 
 update msg model =
@@ -52,6 +53,9 @@ update msg model =
             )
 
         SignInClicked ->
+            ( model, Cmd.none )
+
+        SignOutClicked ->
             ( model, Cmd.none )
 
 
