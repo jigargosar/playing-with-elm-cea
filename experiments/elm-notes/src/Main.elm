@@ -242,21 +242,25 @@ row =
     rowS3
 
 
-txt attrs content =
+txtA attrs content =
     div attrs [ text content ]
+
+
+txt =
+    txtA []
 
 
 viewHeader auth =
     row ""
         []
-        [ txt [] "ELM Notes"
+        [ txtA [] "ELM Notes"
         , case auth of
             Auth.Authenticated { displayName } ->
-                txt [] displayName
+                txt displayName
 
             Auth.InitialUnknown ->
-                txt [] "Loading"
+                txt "Loading"
 
             Auth.Anon ->
-                txt [] "Anon"
+                txt "Anon"
         ]
