@@ -252,11 +252,11 @@ viewHeader auth =
         [ txt [] "ELM Notes"
         , case auth of
             Auth.Authenticated { displayName } ->
-                div [] [ div [] [ text displayName ] ]
+                txt [] displayName
 
             Auth.InitialUnknown ->
-                div [] [ text "Loading" ]
+                txt [] "Loading"
 
             Auth.Anon ->
-                div [] [ text "Anon" ]
+                txt [] "Anon"
         ]
