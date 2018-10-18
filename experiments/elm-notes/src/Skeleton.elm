@@ -46,7 +46,7 @@ viewHeader { authState, toAuthMsg } =
     div [ class "bg-black white" ]
         [ row "b _bg-white-50 center pv3 ph3 ph0-l justify-between measure-wide shadow-1"
             []
-            [ txtA [] "ELM Notes"
+            [ a [ class "no-underline color-inherit bg-inherit ", href "/" ] [ txtA [] "ELM Notes" ]
             , case authState of
                 Auth.Authenticated { displayName, photoUrl } ->
                     viewAuthAvatarBtn (Just Auth.SignOutClicked) (Just photoUrl) displayName
