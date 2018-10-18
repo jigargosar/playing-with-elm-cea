@@ -1,6 +1,7 @@
 module Pages.Notes exposing (..)
 
 import Collection
+import Href
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -16,11 +17,6 @@ type alias Model =
 
 type Msg
     = Nop
-
-
-
---    | New
---    | NewAdded ( Note, NotesCollection )
 
 
 init : Session -> ( Model, Cmd Msg )
@@ -43,17 +39,6 @@ update message model =
             ( model, Cmd.none )
 
 
-
---        NewAdded ( note, nc ) ->
---            ( model |> overSession (Session.setNC nc), Session.pushHref ("note/" ++ note.id) model.session )
---
---        New ->
---            ( model
---            , Collection.createAndAdd (Note.init) (getNC model)
---                |> Task.perform NewAdded
---            )
-
-
 currentNoteList : Model -> List Note
 currentNoteList =
     getNC
@@ -67,7 +52,7 @@ view model =
     { title = "Notes"
     , attrs = []
     , kids =
-        [ a [ class "link", href "/notes/new" ] [ text "New" ], viewNotes (currentNoteList model) ]
+        [ a [ class "link", href Href.newNote ] [ text "New" ], viewNotes (currentNoteList model) ]
     }
 
 
