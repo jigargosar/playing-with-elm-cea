@@ -121,7 +121,7 @@ route parser handler =
 
 stepSession sessionMsg model =
     let
-        _ =
+        session =
             Session.update sessionMsg (exit model)
     in
         case model.page of
