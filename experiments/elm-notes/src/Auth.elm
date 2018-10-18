@@ -53,10 +53,10 @@ update msg model =
             )
 
         SignInClicked ->
-            ( model, Cmd.none )
+            ( model, Ports.signIn () )
 
         SignOutClicked ->
-            ( model, Cmd.none )
+            ( model, Ports.signOut () )
 
 
 subscriptions : AuthState -> Sub Msg
