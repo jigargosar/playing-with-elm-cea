@@ -136,13 +136,62 @@ update msg model =
 ---- VIEW ----
 
 
+type alias SkeletonDetails msg =
+    { title : String
+    , header : List String
+    , warning : List String
+    , attrs : List (Html.Attribute msg)
+    , kids : List (Html msg)
+    }
+
+
 view : Model -> Browser.Document Msg
 view model =
-    { title = "Elm Notes", body = [ htmlView model ] }
+    case model.page of
+        NotFound _ ->
+            skeletonView never
+                { title = "Not Found"
+                , header = []
+
+                {- , warning = Skeleton.NoProblems
+                   , attrs = Problem.styles
+                   , kids = Problem.notFound
+                -}
+                , warning = []
+                , attrs = []
+                , kids = [ div [] [ text "Not Found View" ] ]
+                }
+
+        Home home ->
+            skeletonView identity (homeView home)
 
 
-htmlView model =
-    div [ class "" ] [ text "SPA" ]
+homeView : HomeModel -> SkeletonDetails HomeMsg
+homeView model =
+    { title = "Elm Packages"
+    , header = []
+    , warning = []
+    , attrs = []
+    , kids =
+        [ div [] [ text "Home View" ] ]
+    }
+
+
+skeletonView : (a -> msg) -> SkeletonDetails a -> Browser.Document msg
+skeletonView toMsg details =
+    { title =
+        details.title
+    , body =
+        [ {- viewHeader details.header
+             , lazy viewWarning details.warning
+             ,
+          -}
+          Html.map toMsg <|
+            div (class "center" :: details.attrs) details.kids
+
+        --        , viewFooter
+        ]
+    }
 
 
 
