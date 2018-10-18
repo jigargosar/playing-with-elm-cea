@@ -274,7 +274,7 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
         row "pointer"
             onClickAttr
             [ txt textContent
-            , img [ width 24, class "br-pill", src photoUrl ] []
+            , img [ width 24, height 24, class "br-pill", src photoUrl ] []
             ]
 
 
