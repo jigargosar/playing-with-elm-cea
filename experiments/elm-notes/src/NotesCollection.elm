@@ -46,3 +46,7 @@ toPersistNoteCmdById id =
 
 toPersistNoteCmd =
     Note.encode >> Ports.persistNote
+
+
+deleteAllWithId =
+    1
