@@ -165,7 +165,7 @@ viewKids model =
     [ div [ class "flex items-center hs3" ]
         (if hasSelection then
             [ button [ onClick All ]
-                [ FeatherIcons.x
+                [ FeatherIcons.checkSquare
                     |> FeatherIcons.toHtml []
                 ]
             , button [ onClick Clear ]
