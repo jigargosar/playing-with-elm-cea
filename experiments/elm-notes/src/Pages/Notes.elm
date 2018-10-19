@@ -27,7 +27,8 @@ type Msg
     = Nop
     | ViewNote Note
     | NCC E.Value
-    | ToggleSelection Note
+    | Toggle Note
+    | Clear
 
 
 subscriptions =
@@ -59,13 +60,21 @@ isSelected note =
     .selection >> Set.member note.id
 
 
+overSelection : (Set Note.Id -> Set Note.Id) -> Model -> Model
+overSelection updateFn model =
+    { model | selection = updateFn model.selection }
+
+
 update message model =
     case message of
         Nop ->
             ( model, Cmd.none )
 
-        ToggleSelection note ->
-            ( { model | selection = toggleMember note.id model.selection }, Cmd.none )
+        Toggle note ->
+            ( overSelection (toggleMember note.id) model, Cmd.none )
+
+        Clear ->
+            ( overSelection (always Set.empty) model, Cmd.none )
 
         ViewNote note ->
             ( model, Session.pushHref (Href.viewNoteId note.id) model.session )
@@ -106,10 +115,10 @@ viewKids model =
                     isSelected note model
             in
                 div
-                    [ class "flex flex-row items-center hs3 bb b--black-10 ph1"
+                    [ class "flex flex-row items-center hs3 bb b--black-10"
                     , classList [ ( "bg-light-yellow", selected ) ]
                     ]
-                    [ button [ onClick <| ToggleSelection note ]
+                    [ button [ onClick <| Toggle note ]
                         [ (if selected then
                             FeatherIcons.check
                            else
@@ -127,15 +136,26 @@ viewKids model =
         viewNotes =
             div [ class "pv3" ] <| List.map viewItem (currentNoteList model)
     in
-        [ div [ class "flex hs3" ]
+        [ div [ class "flex items-center hs3" ]
             (if hasSelection then
-                [ button [ onClick Nop ] [ text "Delete" ]
+                [ button [ onClick Nop ]
+                    [ FeatherIcons.check
+                        |> FeatherIcons.toHtml []
+                    ]
+                , button [ onClick Clear ]
+                    [ FeatherIcons.x
+                        |> FeatherIcons.toHtml []
+                    ]
                 , div [ class "flex-auto" ] []
-                , link "/" "Clear"
-                , link "/" "All"
+                , button [ onClick Nop ]
+                    [ FeatherIcons.trash2
+                        |> FeatherIcons.toHtml []
+                    ]
                 ]
              else
-                [ a [ class "link", href Href.newNote ] [ text "New" ] ]
+                [ div [ class "flex-auto" ] []
+                , a [ href Href.newNote ] [ FeatherIcons.filePlus |> FeatherIcons.toHtml [] ]
+                ]
             )
         , viewNotes
         ]
@@ -154,7 +174,7 @@ viewNoteContent hasSelection selected note =
 
         onClickMsg =
             if hasSelection then
-                ToggleSelection note
+                Toggle note
             else
                 ViewNote note
     in
