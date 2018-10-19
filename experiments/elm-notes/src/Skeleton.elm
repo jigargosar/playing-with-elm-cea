@@ -2,6 +2,7 @@ module Skeleton exposing (AuthDetails, Details, view)
 
 import Auth exposing (AuthState)
 import Browser
+import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -61,13 +62,18 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
         onClickAttr =
             Maybe.map (onClick >> List.singleton) maybeOnClick |> Maybe.withDefault []
 
-        photoUrl =
-            Maybe.withDefault "anon.svg" maybePhotoUrl
+        avatar =
+            case maybePhotoUrl of
+                Just url ->
+                    img [ width 24, height 24, class "br-pill", src url ] []
+
+                Nothing ->
+                    FeatherIcons.user |> FeatherIcons.toHtml []
     in
     row "pointer"
         onClickAttr
         [ txt textContent
-        , img [ width 24, height 24, class "br-pill", src photoUrl ] []
+        , avatar
         ]
 
 
