@@ -27,7 +27,7 @@ view config toMsg details =
     , body =
         [ viewHeader config
         , Html.map toMsg <|
-            div (class "pv3 ph3 ph0-l h-100 w-100 measure-wide center overflow-y-auto" :: details.attrs)
+            div (class "pa3 ph0-l h-100 w-100 measure-wide center overflow-y-auto" :: details.attrs)
                 details.kids
 
         --        , viewFooter
@@ -37,7 +37,7 @@ view config toMsg details =
 
 viewHeader { authState, toAuthMsg } =
     div [ class "bg-black white w-100 " ]
-        [ row "b _bg-white-50 pv3 ph3 ph0-l justify-between measure-wide center shadow-1"
+        [ row "b _bg-white-50 pa3 ph0-l justify-between measure-wide center shadow-1"
             []
             [ a [ class "no-underline color-inherit bg-inherit ", href "/" ] [ txtA [] "ELM Notes" ]
             , case authState of
