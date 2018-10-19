@@ -26,6 +26,7 @@ type alias Model =
 type Msg
     = Nop
     | ViewNote Note
+    | Delete Note
     | NCC E.Value
     | Toggle Note
     | Clear
@@ -82,6 +83,9 @@ update message model =
 
         ViewNote note ->
             ( model, Session.pushHref (Href.viewNoteId note.id) model.session )
+
+        Delete note ->
+            ( model, Cmd.none )
 
         NCC encVal ->
             let
