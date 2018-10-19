@@ -124,10 +124,25 @@ update message model =
 
 view : Model -> Skeleton.Details Msg
 view model =
-    { title = "New Note"
+    { title = getPageTitle model
     , attrs = []
     , kids = [ viewKids model ]
     }
+
+
+getPageTitle model =
+    case model.edit of
+        New ->
+            "New Note"
+
+        Editing _ _ ->
+            "Edit Note"
+
+        Viewing _ _ ->
+            "View Note"
+
+        NotFound _ ->
+            "Oops"
 
 
 viewKids model =
