@@ -113,7 +113,7 @@ viewKids model =
                                 "--"
                             )
                         ]
-                    , viewNoteItem selected note
+                    , viewNoteContent selected note
                     , if hasSelection then
                         text ""
                       else
@@ -137,7 +137,7 @@ viewKids model =
         ]
 
 
-viewNoteItem selected note =
+viewNoteContent selected note =
     let
         lines =
             Note.getContent note |> String.trim |> String.lines
