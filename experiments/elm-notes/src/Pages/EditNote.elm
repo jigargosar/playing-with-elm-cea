@@ -1,4 +1,13 @@
-module Pages.EditNote exposing (..)
+module Pages.EditNote exposing
+    ( ContentInput
+    , Model
+    , Msg(ContentBlurred, ContentChanged)
+    , NoteContent
+    , content
+    , init
+    , subscriptions
+    , update
+    )
 
 import Basics.Extra exposing (flip)
 import Collection
@@ -6,14 +15,14 @@ import Dict
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Json.Decode as D
+import Json.Encode as E
 import Note
 import Ports
 import Process
 import Task exposing (Task)
 import Time
 import UserInput
-import Json.Decode as D
-import Json.Encode as E
 
 
 type alias ContentInput =
@@ -69,9 +78,9 @@ update msg model =
                     D.decodeValue (D.dict Note.decoder) encodedNotesCollection
                         |> Result.toMaybe
                         |> Maybe.andThen (Dict.get model.note.id >> Debug.log "Note Updated")
-                        |> Maybe.withDefault (model.note)
+                        |> Maybe.withDefault model.note
             in
-                ( { model | note = newNote }, Cmd.none )
+            ( { model | note = newNote }, Cmd.none )
 
         ContentChanged newContent ->
             model.contentInput
@@ -80,9 +89,11 @@ update msg model =
 
         Save ->
             ( model
-            , taskNowMilli
-                |> Task.map (Note.updateContent (content model) model.note)
-                |> Task.perform PersistNote
+            , {- taskNowMilli
+                 |> Task.map (Note.updateContent (content model) model.note)
+                 |> Task.perform PersistNote
+              -}
+              Cmd.none
             )
 
         ContentBlurred ->
