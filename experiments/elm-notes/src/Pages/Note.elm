@@ -1,4 +1,4 @@
-module Pages.Note exposing (..)
+module Pages.Note exposing (Model, Msg, getContent, initEditNote, initNewNote, initShowNote, update, view)
 
 import FeatherIcons
 import Href
@@ -195,8 +195,8 @@ noteEditor content =
         [ textarea
             [ class "pa2 min-h-100 w-100"
             , value content
-            , onInput (ContentChanged)
-            , onBlur (ContentBlurred)
+            , onInput ContentChanged
+            , onBlur ContentBlurred
             ]
             []
         ]
