@@ -53,7 +53,11 @@ update message model =
             ( model, Session.pushHref (Href.viewNote note.id) model.session )
 
         NCC encVal ->
-            ( model |> overSession (Session.overNC (NotesCollection.replace encVal)), Cmd.none )
+            let
+                ( nc, cmd ) =
+                    NotesCollection.replace encVal (getNC model)
+            in
+                ( model |> overSession (Session.setNC nc), cmd )
 
 
 currentNoteList : Model -> List Note

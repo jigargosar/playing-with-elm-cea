@@ -18,8 +18,10 @@ generator encodedNC =
     Collection.generator Note.decoder encodedNC
 
 
+replace : E.Value -> NotesCollection -> ( NotesCollection, Cmd msg )
 replace encVal =
     Collection.replace Note.decoder encVal
+        >> withCacheNotesCollectionCmd
 
 
 addNewWithContent : Note.Content -> NotesCollection -> Task x ( ( Note, NotesCollection ), Cmd msg )
@@ -30,3 +32,7 @@ addNewWithContent content nc =
 
 withCacheNoteCmd ( note, nc ) =
     ( ( note, nc ), Ports.cacheNote (Note.encode note) )
+
+
+withCacheNotesCollectionCmd nc =
+    ( nc, Ports.cacheNotesCollection (Collection.encode Note.encode nc) )
