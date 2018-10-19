@@ -4,6 +4,7 @@ import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
 import {
   compose,
+  forEach,
   forEachObjIndexed,
   fromPairs,
   identity,
@@ -32,6 +33,7 @@ const db = new loki('DB', {
     console.log('db.serialize()', db.serialize())
   },*/
 })
+
 // const users = db.addCollection('users', { indices: ['email'] })
 //
 // var odin = users.insert( { name : 'odin', email: 'odin.soap@lokijs.org', age: 38 } );
@@ -46,7 +48,7 @@ const db = new loki('DB', {
 // users.update(stan);
 
 db.loadJSON(localStorage.getItem('DB') || '')
-console.log('db.serialize()', db.serialize())
+// console.log('db.serialize()', db.serialize())
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
@@ -76,13 +78,13 @@ registerServiceWorker()
 // )
 //
 subscribe(
-  'persistNote',
-  note => {
+  'persistNoteList',
+  noteList => {
     let user = auth().currentUser
     if (user) {
       const batch = firestore().batch()
       const cRef = userCRef(user.uid, elmNotesCollectionName)
-      batch.set(cRef.doc(note.id), note)
+      forEach(note => batch.set(cRef.doc(note.id), note))(noteList)
       batch.commit().catch(console.error)
     }
   },
