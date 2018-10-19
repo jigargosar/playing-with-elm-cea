@@ -104,7 +104,10 @@ viewKids model =
                 selected =
                     isSelected note model
             in
-                div [ class "flex flex-row items-center hs3" ]
+                div
+                    [ class "flex flex-row items-center hs3 bb b--black-10 ph1"
+                    , classList [ ( "bg-light-yellow", selected ) ]
+                    ]
                     [ div [ class "pointer", onClick <| ToggleSelection note ]
                         [ text
                             (if selected then
@@ -113,7 +116,7 @@ viewKids model =
                                 "--"
                             )
                         ]
-                    , viewNoteContent selected note
+                    , viewNoteContent hasSelection selected note
                     , if hasSelection then
                         text ""
                       else
@@ -137,7 +140,7 @@ viewKids model =
         ]
 
 
-viewNoteContent selected note =
+viewNoteContent hasSelection selected note =
     let
         lines =
             Note.getContent note |> String.trim |> String.lines
@@ -148,14 +151,18 @@ viewNoteContent selected note =
         otherLines =
             List.tail lines |> Maybe.withDefault [] |> String.join " " |> String.slice 0 100
 
-        viewNoteMsg =
-            ViewNote note
+        onClickMsg =
+            if hasSelection then
+                ToggleSelection note
+            else
+                ViewNote note
     in
         div
-            [ onClick viewNoteMsg
-            , Exts.Html.Events.onEnter viewNoteMsg
-            , class "flex-auto link black pv3 pointer bb b--black-10"
-            , href ("note/" ++ note.id)
+            [ onClick onClickMsg
+            , Exts.Html.Events.onEnter onClickMsg
+            , class "flex-auto link black pv3 pointer "
+
+            --            , href ("note/" ++ note.id)
             , tabindex 0
             ]
             [ div [ class "f5" ] [ text firstLine ]
