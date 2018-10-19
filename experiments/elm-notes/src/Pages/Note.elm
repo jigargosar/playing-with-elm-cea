@@ -136,7 +136,10 @@ viewKids model =
             noteEditor ""
 
         Editing id content ->
-            noteEditor content
+            div [ class "flex flex-column h-100 vs3" ]
+                [ link (Href.viewNoteId id) "View"
+                , noteEditor content
+                ]
 
         Viewing id content ->
             div []
@@ -149,10 +152,16 @@ viewKids model =
 
 
 noteEditor content =
-    textarea
-        [ class "pa2 min-h-100 w-100 db"
-        , value content
-        , onInput (ContentChanged)
-        , onBlur (ContentBlurred)
+    div [ class "flex-auto flex" ]
+        [ textarea
+            [ class "pa2 min-h-100 w-100"
+            , value content
+            , onInput (ContentChanged)
+            , onBlur (ContentBlurred)
+            ]
+            []
         ]
-        []
+
+
+link url lbl =
+    a [ href url ] [ text lbl ]
