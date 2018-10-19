@@ -121,9 +121,9 @@ update message model =
                         |> Task.perform NewAdded
                     )
 
-                Editing id content ->
+                Editing id _ ->
                     ( { model | edit = Editing id newContent }
-                    , getNC model |> NotesCollection.updateNoteContent id content |> Task.perform UpdateCollection
+                    , getNC model |> NotesCollection.updateNoteContent id newContent |> Task.perform UpdateCollection
                     )
 
                 NotFound id ->
