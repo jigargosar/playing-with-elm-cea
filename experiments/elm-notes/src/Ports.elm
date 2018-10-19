@@ -10,9 +10,6 @@ port persistNoteCollection : E.Value -> Cmd msg
 port persistNote : E.Value -> Cmd msg
 
 
-port cacheNote : E.Value -> Cmd msg
-
-
 port cacheNotesCollection : E.Value -> Cmd msg
 
 
