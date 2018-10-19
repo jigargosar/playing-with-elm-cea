@@ -90,11 +90,11 @@ view model =
     { title = "Notes"
     , attrs = []
     , kids =
-        [ a [ class "link", href Href.newNote ] [ text "New" ], viewNotes model ]
+        viewKids model
     }
 
 
-viewNotes model =
+viewKids model =
     let
         hasSelection =
             Set.isEmpty model.selection |> not
@@ -115,8 +115,13 @@ viewNotes model =
                   else
                     link "/" "e"
                 ]
+
+        viewNotes =
+            div [ class "pv3" ] <| List.map viewItem (currentNoteList model)
     in
-        div [ class "pv3" ] <| List.map viewItem (currentNoteList model)
+        [ a [ class "link", href Href.newNote ] [ text "New" ]
+        , viewNotes
+        ]
 
 
 viewNoteItem note =
