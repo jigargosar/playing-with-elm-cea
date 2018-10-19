@@ -14,10 +14,12 @@ import Task
 import Json.Decode as D
 import Json.Encode as E
 import NotesCollection
+import Set exposing (Set)
+import UI exposing (link)
 
 
 type alias Model =
-    { session : Session }
+    { session : Session, selected : Set Note.Id }
 
 
 type Msg
@@ -32,7 +34,7 @@ subscriptions =
 
 init : Session -> ( Model, Cmd Msg )
 init session =
-    ( { session = session }, Cmd.none )
+    ( { session = session, selected = Set.empty }, Cmd.none )
 
 
 getNC =
@@ -80,7 +82,11 @@ view model =
 viewNotes notes =
     let
         viewItem note =
-            viewNoteItem note
+            div [ class "flex flex-row items-center hs3" ]
+                [ div [] [ text "--" ]
+                , viewNoteItem note
+                , link "/" "e"
+                ]
     in
         div [ class "pv3" ] <| List.map viewItem notes
 
@@ -102,14 +108,10 @@ viewNoteItem note =
         div
             [ onClick viewNoteMsg
             , Exts.Html.Events.onEnter viewNoteMsg
-            , class "link black pv3 pointer bb b--black-10"
+            , class "flex-auto link black pv3 pointer bb b--black-10"
             , href ("note/" ++ note.id)
             , tabindex 0
             ]
             [ div [ class "f5" ] [ text firstLine ]
             , div [ class "f6 truncate black-60" ] [ text otherLines ]
             ]
-
-
-bbtn msg title =
-    button [ class "ttu", onClick msg ] [ text title ]

@@ -10,6 +10,7 @@ import NotesCollection exposing (NotesCollection)
 import Session exposing (Session)
 import Skeleton
 import Task
+import UI exposing (link)
 
 
 type Edit
@@ -176,7 +177,3 @@ noteEditor content =
             ]
             []
         ]
-
-
-link url lbl =
-    a [ href url ] [ text lbl ]
