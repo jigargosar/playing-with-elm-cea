@@ -80,11 +80,9 @@ view model =
 viewNotes notes =
     let
         viewItem note =
-            div [ class "bb b--black-10 pv2" ]
-                [ viewNoteItem note
-                ]
+            viewNoteItem note
     in
-        div [ class "pv1 vs1" ] <| List.map viewItem notes
+        div [ class "pv3" ] <| List.map viewItem notes
 
 
 viewNoteItem note =
@@ -104,7 +102,7 @@ viewNoteItem note =
         div
             [ onClick viewNoteMsg
             , Exts.Html.Events.onEnter viewNoteMsg
-            , class "link black pv2 pointer "
+            , class "link black pv3 pointer bb b--black-10"
             , href ("note/" ++ note.id)
             , tabindex 0
             ]
