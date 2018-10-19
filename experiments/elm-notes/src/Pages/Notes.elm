@@ -100,21 +100,25 @@ viewKids model =
             Set.isEmpty model.selection |> not
 
         viewItem note =
-            div [ class "flex flex-row items-center hs3" ]
-                [ div [ class "pointer", onClick <| ToggleSelection note ]
-                    [ text
-                        (if isSelected note model then
-                            "|||"
-                         else
-                            "--"
-                        )
+            let
+                selected =
+                    isSelected note model
+            in
+                div [ class "flex flex-row items-center hs3" ]
+                    [ div [ class "pointer", onClick <| ToggleSelection note ]
+                        [ text
+                            (if selected then
+                                "|||"
+                             else
+                                "--"
+                            )
+                        ]
+                    , viewNoteItem selected note
+                    , if hasSelection then
+                        text ""
+                      else
+                        link "/" "e"
                     ]
-                , viewNoteItem note
-                , if hasSelection then
-                    text ""
-                  else
-                    link "/" "e"
-                ]
 
         viewNotes =
             div [ class "pv3" ] <| List.map viewItem (currentNoteList model)
@@ -133,7 +137,7 @@ viewKids model =
         ]
 
 
-viewNoteItem note =
+viewNoteItem selected note =
     let
         lines =
             Note.getContent note |> String.trim |> String.lines
