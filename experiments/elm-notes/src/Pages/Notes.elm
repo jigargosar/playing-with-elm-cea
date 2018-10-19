@@ -109,7 +109,7 @@ viewKids model =
                     [ class "flex flex-row items-center hs3 bb b--black-10 ph1"
                     , classList [ ( "bg-light-yellow", selected ) ]
                     ]
-                    [ div [ class "pointer", onClick <| ToggleSelection note ]
+                    [ button [ class "pointer", onClick <| ToggleSelection note ]
                         [ (if selected then
                             FeatherIcons.check
                            else
@@ -121,7 +121,7 @@ viewKids model =
                     , if hasSelection then
                         text ""
                       else
-                        link (Href.editNoteId note.id) "e"
+                        a [ href (Href.editNoteId note.id) ] [ FeatherIcons.edit3 |> FeatherIcons.toHtml [] ]
                     ]
 
         viewNotes =
