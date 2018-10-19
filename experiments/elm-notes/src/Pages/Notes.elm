@@ -129,7 +129,7 @@ viewKids model =
     in
         [ div [ class "flex hs3" ]
             (if hasSelection then
-                [ link "/" "Delete"
+                [ button [ onClick Nop ] [ text "Delete" ]
                 , div [ class "flex-auto" ] []
                 , link "/" "Clear"
                 , link "/" "All"
@@ -161,7 +161,7 @@ viewNoteContent hasSelection selected note =
         div
             [ onClick onClickMsg
             , Exts.Html.Events.onEnter onClickMsg
-            , class "flex-auto link black pv3 pointer "
+            , class "flex-auto black pv3 pointer "
 
             --            , href ("note/" ++ note.id)
             , tabindex 0
