@@ -28,6 +28,7 @@ type Msg
     | ContentChanged Note.Content
     | ContentBlurred
     | NewAdded ( ( Note, NotesCollection ), Cmd Msg )
+    | UpdateCollection ( NotesCollection, Cmd Msg )
 
 
 initNewNote : Session -> ( Model, Cmd Msg )
@@ -93,6 +94,11 @@ update message model =
             , Cmd.batch [ cmd, Session.replaceHref (Href.editNote note.id) model.session ]
             )
 
+        UpdateCollection ( nc, cmd ) ->
+            ( model |> overSession (Session.setNC nc)
+            , cmd
+            )
+
         ContentChanged newContent ->
             case model.edit of
                 New ->
@@ -102,7 +108,9 @@ update message model =
                     )
 
                 Editing id content ->
-                    ( { model | edit = Editing id newContent }, Cmd.none )
+                    ( { model | edit = Editing id newContent }
+                    , getNC model |> NotesCollection.updateNoteContent id content |> Task.perform UpdateCollection
+                    )
 
                 NotFound id ->
                     ( model, Cmd.none )

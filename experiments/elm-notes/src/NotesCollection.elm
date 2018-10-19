@@ -32,3 +32,9 @@ addNewWithContent content =
 
 toCacheNCCmd nc =
     Ports.cacheNotesCollection (Collection.encode Note.encode nc)
+
+
+updateNoteContent : Note.Id -> Note.Content -> NotesCollection -> Task x ( NotesCollection, Cmd msg )
+updateNoteContent id content =
+    Collection.updateWith id (Note.updateContent content)
+        >> Task.map (\nc -> ( nc, toCacheNCCmd nc ))
