@@ -75,19 +75,19 @@ registerServiceWorker()
 //   app,
 // )
 //
-// subscribe(
-//   'persistNote',
-//   note => {
-//     let user = auth().currentUser
-//     if (user) {
-//       const batch = firestore().batch()
-//       const cRef = userCRef(user.uid, elmNotesCollectionName)
-//       batch.set(cRef.doc(note.id), note)
-//       batch.commit().catch(console.error)
-//     }
-//   },
-//   app,
-// )
+subscribe(
+  'persistNote',
+  note => {
+    let user = auth().currentUser
+    if (user) {
+      const batch = firestore().batch()
+      const cRef = userCRef(user.uid, elmNotesCollectionName)
+      batch.set(cRef.doc(note.id), note)
+      batch.commit().catch(console.error)
+    }
+  },
+  app,
+)
 
 subscribe(
   'cacheNotesCollection',

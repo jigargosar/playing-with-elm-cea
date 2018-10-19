@@ -27,11 +27,15 @@ replace encVal =
 addNewWithContent : Note.Content -> NotesCollection -> Task x ( ( Note, NotesCollection ), Cmd msg )
 addNewWithContent content =
     Collection.createAndAdd (Note.initWithContent content)
-        >> Task.map (\( note, nc ) -> ( ( note, nc ), toCacheNCCmd nc ))
+        >> Task.map (\( note, nc ) -> ( ( note, nc ), Cmd.batch [ toPersistNoteCmd note, toCacheNCCmd nc ] ))
 
 
 toCacheNCCmd nc =
     Ports.cacheNotesCollection (Collection.encode Note.encode nc)
+
+
+toPersistNoteCmd =
+    Note.encode >> Ports.persistNote
 
 
 updateNoteContent : Note.Id -> Note.Content -> NotesCollection -> Task x ( NotesCollection, Cmd msg )
