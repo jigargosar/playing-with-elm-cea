@@ -92,5 +92,9 @@ items =
     .dict >> Dict.values
 
 
+ids =
+    .dict >> Dict.keys
+
+
 get id =
     .dict >> Dict.get id

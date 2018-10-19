@@ -29,6 +29,7 @@ type Msg
     | NCC E.Value
     | Toggle Note
     | Clear
+    | All
 
 
 subscriptions =
@@ -75,6 +76,9 @@ update message model =
 
         Clear ->
             ( overSelection (always Set.empty) model, Cmd.none )
+
+        All ->
+            ( overSelection (always (getNC model |> Collection.ids |> Set.fromList)) model, Cmd.none )
 
         ViewNote note ->
             ( model, Session.pushHref (Href.viewNoteId note.id) model.session )
@@ -138,7 +142,7 @@ viewKids model =
     in
         [ div [ class "flex items-center hs3" ]
             (if hasSelection then
-                [ button [ onClick Nop ]
+                [ button [ onClick All ]
                     [ FeatherIcons.check
                         |> FeatherIcons.toHtml []
                     ]
