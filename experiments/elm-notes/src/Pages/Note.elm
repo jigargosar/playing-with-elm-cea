@@ -1,6 +1,5 @@
 module Pages.Note exposing (..)
 
-import Collection
 import Href
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -15,9 +14,9 @@ import Task
 
 type Edit
     = New
-    | Editing Collection.Id Note.Content
-    | Viewing Collection.Id Note.Content
-    | NotFound Collection.Id
+    | Editing Note.Id Note.Content
+    | Viewing Note.Id Note.Content
+    | NotFound Note.Id
 
 
 type alias Model =
@@ -28,7 +27,7 @@ type Msg
     = Nop
     | ContentChanged Note.Content
     | ContentBlurred
-    | NewAdded ( Note, NotesCollection )
+    | NewAdded ( ( Note, NotesCollection ), Cmd Msg )
 
 
 initNewNote : Session -> ( Model, Cmd Msg )
@@ -36,7 +35,7 @@ initNewNote session =
     ( { session = session, edit = New }, Cmd.none )
 
 
-initEditNote : Collection.Id -> Session -> ( Model, Cmd Msg )
+initEditNote : Note.Id -> Session -> ( Model, Cmd Msg )
 initEditNote id session =
     ( { session = session
       , edit =
@@ -48,7 +47,7 @@ initEditNote id session =
     )
 
 
-initShowNote : Collection.Id -> Session -> ( Model, Cmd Msg )
+initShowNote : Note.Id -> Session -> ( Model, Cmd Msg )
 initShowNote id session =
     ( { session = session
       , edit =
@@ -89,16 +88,16 @@ update message model =
         Nop ->
             ( model, Cmd.none )
 
-        NewAdded ( note, nc ) ->
+        NewAdded ( ( note, nc ), cmd ) ->
             ( model |> overSession (Session.setNC nc)
-            , Session.replaceHref (Href.editNote note.id) model.session
+            , Cmd.batch [ cmd, Session.replaceHref (Href.editNote note.id) model.session ]
             )
 
         ContentChanged newContent ->
             case model.edit of
                 New ->
                     ( model
-                    , Collection.createAndAdd (Note.initWithContent newContent) (getNC model)
+                    , NotesCollection.addNewWithContent newContent (getNC model)
                         |> Task.perform NewAdded
                     )
 

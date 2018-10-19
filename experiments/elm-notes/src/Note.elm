@@ -83,3 +83,7 @@ idStr =
 
 type alias Content =
     String
+
+
+type alias Id =
+    Collection.Id
