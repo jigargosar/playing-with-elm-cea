@@ -1,4 +1,4 @@
-module UI exposing (..)
+module UI exposing (link, row, spacer)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
