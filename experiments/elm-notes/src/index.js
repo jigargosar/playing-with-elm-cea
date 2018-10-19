@@ -22,6 +22,31 @@ import {
   signOut,
   userCRef,
 } from './fire'
+import loki from 'lokijs'
+
+const db = new loki('Example', {
+  verbose: true,
+  autosave: true,
+  env: 'BROWSER',
+  /*autoload: true, autoloadCallback: function () {
+    console.log('db.serialize()', db.serialize())
+  },*/
+})
+// const users = db.addCollection('users', { indices: ['email'] })
+//
+// var odin = users.insert( { name : 'odin', email: 'odin.soap@lokijs.org', age: 38 } );
+// var thor = users.insert( { name : 'thor', email : 'thor.soap@lokijs.org', age: 25 } );
+// var stan = users.insert( { name : 'stan', email : 'stan.soap@lokijs.org', age: 29 } );
+// var oliver = users.insert( { name : 'oliver', email : 'oliver.soap@lokijs.org', age: 31 } );
+// var hector = users.insert( { name : 'hector', email : 'hector.soap@lokijs.org', age: 15} );
+// var achilles = users.insert( { name : 'achilles', email : 'achilles.soap@lokijs.org', age: 31 } );
+//
+// stan.name = 'Stan Laurel';
+// update object (this really only syncs the index)
+// users.update(stan);
+
+db.loadJSON(localStorage.getItem('Example'))
+console.log('db.serialize()', db.serialize())
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
