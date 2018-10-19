@@ -2,6 +2,7 @@ module Pages.Notes exposing (..)
 
 import Collection
 import Exts.Html.Events
+import FeatherIcons
 import Href
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -109,12 +110,12 @@ viewKids model =
                     , classList [ ( "bg-light-yellow", selected ) ]
                     ]
                     [ div [ class "pointer", onClick <| ToggleSelection note ]
-                        [ text
-                            (if selected then
-                                "|||"
-                             else
-                                "--"
-                            )
+                        [ (if selected then
+                            FeatherIcons.check
+                           else
+                            FeatherIcons.minus
+                          )
+                            |> FeatherIcons.toHtml []
                         ]
                     , viewNoteContent hasSelection selected note
                     , if hasSelection then
