@@ -7,7 +7,8 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Markdown
 import Note exposing (Note)
-import Session exposing (NotesCollection, Session)
+import NotesCollection exposing (NotesCollection)
+import Session exposing (Session)
 import Skeleton
 import Task
 

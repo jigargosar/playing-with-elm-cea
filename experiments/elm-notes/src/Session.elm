@@ -6,11 +6,8 @@ import Json.Decode exposing (Decoder)
 import Json.Decode as D
 import Json.Encode as E
 import Note exposing (Note)
+import NotesCollection exposing (NotesCollection)
 import Random
-
-
-type alias NotesCollection =
-    Collection.Model Note
 
 
 type alias Session =
@@ -19,7 +16,7 @@ type alias Session =
 
 generator : Nav.Key -> E.Value -> Random.Generator Session
 generator key encodedNC =
-    Collection.generator Note.decoder encodedNC
+    NotesCollection.generator encodedNC
         |> Random.map (Session key)
 
 
