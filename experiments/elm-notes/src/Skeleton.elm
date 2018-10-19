@@ -1,4 +1,4 @@
-module Skeleton exposing (..)
+module Skeleton exposing (AuthDetails, Details, view)
 
 import Auth exposing (AuthState)
 import Browser
@@ -64,11 +64,11 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
         photoUrl =
             Maybe.withDefault "anon.svg" maybePhotoUrl
     in
-        row "pointer"
-            onClickAttr
-            [ txt textContent
-            , img [ width 24, height 24, class "br-pill", src photoUrl ] []
-            ]
+    row "pointer"
+        onClickAttr
+        [ txt textContent
+        , img [ width 24, height 24, class "br-pill", src photoUrl ] []
+        ]
 
 
 
