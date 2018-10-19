@@ -79,7 +79,7 @@ update message model =
             ( overSelection (always Set.empty) model, Cmd.none )
 
         All ->
-            ( overSelection (always (getNC model |> Collection.ids |> Set.fromList)) model, Cmd.none )
+            ( overSelection (always (getNC model |> Collection.idList |> Set.fromList)) model, Cmd.none )
 
         ViewNote note ->
             ( model, Session.pushHref (Href.viewNoteId note.id) model.session )

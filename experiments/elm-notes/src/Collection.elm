@@ -10,6 +10,7 @@ import Task exposing (Task)
 import Time
 import Json.Decode as D
 import Json.Encode as E
+import Set exposing (Set)
 
 
 type alias Id =
@@ -69,6 +70,12 @@ updateWith id updateFn model =
         |> Task.map (\nowMilli -> update id (updateFn nowMilli) model)
 
 
+updateIdSetWith : Set Id -> (Millis -> item -> item) -> Model item -> Task x (Model item)
+updateIdSetWith idSet updateFn model =
+    taskNowMilli
+        |> Task.map (\nowMilli -> idSet |> Set.foldl (\id -> update id (updateFn nowMilli)) model)
+
+
 encode : (item -> E.Value) -> Model item -> E.Value
 encode encodeItem model =
     model.dict |> E.dict identity encodeItem
@@ -92,7 +99,7 @@ items =
     .dict >> Dict.values
 
 
-ids =
+idList =
     .dict >> Dict.keys
 
 
