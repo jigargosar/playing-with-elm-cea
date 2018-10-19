@@ -73,6 +73,7 @@ updateContent content now note =
         { note | content = content, modifiedAt = now }
 
 
+delete : Collection.Millis -> Note -> Note
 delete now note =
     { note | deleted = True, modifiedAt = now }
 

@@ -6,6 +6,7 @@ import Json.Encode as E
 import Note exposing (Note)
 import Ports
 import Random
+import Set exposing (Set)
 import Task exposing (Task)
 
 
@@ -44,9 +45,22 @@ toPersistNoteCmdById id =
     Collection.get id >> Maybe.map toPersistNoteCmd >> Maybe.withDefault Cmd.none
 
 
+toPersistNoteListCmdByIdSet : Collection.Ids -> NotesCollection -> Cmd msg
+toPersistNoteListCmdByIdSet idSet =
+    Collection.getByIdSet idSet >> toPersistNoteListCmd
+
+
+toPersistNoteCmd : Note -> Cmd msg
 toPersistNoteCmd =
-    Note.encode >> Ports.persistNote
+    List.singleton >> toPersistNoteListCmd
 
 
-deleteAllWithId =
-    1
+toPersistNoteListCmd : List Note -> Cmd msg
+toPersistNoteListCmd =
+    E.list Note.encode >> Ports.persistNoteList
+
+
+deleteAllWithIds : Set Note.Id -> NotesCollection -> Task x ( NotesCollection, Cmd msg )
+deleteAllWithIds idSet =
+    Collection.updateIdSetWith idSet Note.delete
+        >> Task.map (\nc -> ( nc, Cmd.batch [ toPersistNoteListCmdByIdSet idSet nc, toCacheNCCmd nc ] ))

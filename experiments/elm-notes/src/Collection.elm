@@ -17,6 +17,10 @@ type alias Id =
     String
 
 
+type alias Ids =
+    Set Id
+
+
 type alias Millis =
     Int
 
@@ -105,3 +109,8 @@ idList =
 
 get id =
     .dict >> Dict.get id
+
+
+getByIdSet : Set Id -> Collection item -> List item
+getByIdSet idSet =
+    .dict >> Dict.filter (\id _ -> idSet |> Set.member id) >> Dict.values

@@ -61,7 +61,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         PersistNote note ->
-            ( model, Ports.persistNote <| Note.encode note )
+            ( model, Ports.persistNoteList <| Note.encode note )
 
         UpdateNoteFromNotesCollectionChanges encodedNotesCollection ->
             let

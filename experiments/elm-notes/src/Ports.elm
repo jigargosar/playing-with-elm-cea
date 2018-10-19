@@ -7,7 +7,7 @@ import Json.Encode as E
 port persistNoteCollection : E.Value -> Cmd msg
 
 
-port persistNote : E.Value -> Cmd msg
+port persistNoteList : E.Value -> Cmd msg
 
 
 port cacheNotesCollection : E.Value -> Cmd msg
