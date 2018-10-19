@@ -1,7 +1,7 @@
 module Pages.EditNote exposing
     ( ContentInput
     , Model
-    , Msg(ContentBlurred, ContentChanged)
+    , Msg(..)
     , NoteContent
     , content
     , init
