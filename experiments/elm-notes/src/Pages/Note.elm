@@ -167,7 +167,7 @@ viewKids model =
                     []
                     [ spacer
                     , button [ onClick <| Back ]
-                        [ FeatherIcons.arrowLeftCircle
+                        [ FeatherIcons.slash
                             |> FeatherIcons.toHtml []
                         ]
                     ]
