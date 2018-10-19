@@ -31,6 +31,7 @@ type Msg
     | ContentBlurred
     | NewAdded ( ( Note, NotesCollection ), Cmd Msg )
     | StartEditing Note.Id
+    | View Note.Id
     | UpdateCollection ( NotesCollection, Cmd Msg )
 
 
@@ -105,6 +106,9 @@ update message model =
         StartEditing id ->
             ( model, Session.replaceHref (Href.editNoteId id) model.session )
 
+        View id ->
+            ( model, Session.replaceHref (Href.viewNoteId id) model.session )
+
         ContentChanged newContent ->
             case model.edit of
                 New ->
@@ -158,7 +162,14 @@ viewKids model =
 
         Editing id content ->
             div [ class "flex flex-column h-100 vs3" ]
-                [ link (Href.viewNoteId id) "View"
+                [ row ""
+                    []
+                    [ spacer
+                    , button [ onClick <| View id ]
+                        [ FeatherIcons.fileText
+                            |> FeatherIcons.toHtml []
+                        ]
+                    ]
                 , noteEditor content
                 ]
 
