@@ -27,8 +27,10 @@ view config toMsg details =
     , body =
         [ viewHeader config
         , Html.map toMsg <|
-            div (class "pa3 ph0-l h-100 w-100 measure-wide center overflow-y-auto" :: details.attrs)
-                details.kids
+            div [ class "pa3 ph0-l h-100 w-100 overflow-y-auto flex" ]
+                [ div [ class "measure-wide center w-100" ]
+                    details.kids
+                ]
 
         --        , viewFooter
         ]
