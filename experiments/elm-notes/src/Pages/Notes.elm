@@ -26,7 +26,7 @@ type alias Model =
 type Msg
     = Nop
     | ViewNote Note
-    | Delete Note
+    | Delete
     | NCC E.Value
     | Toggle Note
     | Clear
@@ -84,7 +84,7 @@ update message model =
         ViewNote note ->
             ( model, Session.pushHref (Href.viewNoteId note.id) model.session )
 
-        Delete note ->
+        Delete ->
             ( model, Cmd.none )
 
         NCC encVal ->
@@ -155,7 +155,7 @@ viewKids model =
                         |> FeatherIcons.toHtml []
                     ]
                 , div [ class "flex-auto" ] []
-                , button [ onClick Nop ]
+                , button [ onClick Delete ]
                     [ FeatherIcons.trash2
                         |> FeatherIcons.toHtml []
                     ]
