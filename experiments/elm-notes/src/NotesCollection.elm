@@ -30,15 +30,19 @@ addNewWithContent content =
         >> Task.map (\( note, nc ) -> ( ( note, nc ), Cmd.batch [ toPersistNoteCmd note, toCacheNCCmd nc ] ))
 
 
+updateNoteContent : Note.Id -> Note.Content -> NotesCollection -> Task x ( NotesCollection, Cmd msg )
+updateNoteContent id content =
+    Collection.updateWith id (Note.updateContent content)
+        >> Task.map (\nc -> ( nc, Cmd.batch [ toPersistNoteCmdById id nc, toCacheNCCmd nc ] ))
+
+
 toCacheNCCmd nc =
     Ports.cacheNotesCollection (Collection.encode Note.encode nc)
 
 
+toPersistNoteCmdById id =
+    Collection.get id >> Maybe.map toPersistNoteCmd >> Maybe.withDefault Cmd.none
+
+
 toPersistNoteCmd =
     Note.encode >> Ports.persistNote
-
-
-updateNoteContent : Note.Id -> Note.Content -> NotesCollection -> Task x ( NotesCollection, Cmd msg )
-updateNoteContent id content =
-    Collection.updateWith id (Note.updateContent content)
-        >> Task.map (\nc -> ( nc, toCacheNCCmd nc ))
