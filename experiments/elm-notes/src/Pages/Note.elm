@@ -133,22 +133,10 @@ view model =
 viewKids model =
     case model.edit of
         New ->
-            textarea
-                [ class "pa2 min-h-100 w-100 db"
-                , value ""
-                , onInput (ContentChanged)
-                , onBlur (ContentBlurred)
-                ]
-                []
+            noteEditor ""
 
         Editing id content ->
-            textarea
-                [ class "pa2 h-100 w-100 db"
-                , value content
-                , onInput (ContentChanged)
-                , onBlur (ContentBlurred)
-                ]
-                []
+            noteEditor content
 
         Viewing id content ->
             div []
@@ -158,3 +146,13 @@ viewKids model =
 
         NotFound id ->
             div [] [ text "Note Not Found" ]
+
+
+noteEditor content =
+    textarea
+        [ class "pa2 min-h-100 w-100 db"
+        , value content
+        , onInput (ContentChanged)
+        , onBlur (ContentBlurred)
+        ]
+        []
