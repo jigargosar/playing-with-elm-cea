@@ -134,7 +134,7 @@ viewKids model =
     case model.edit of
         New ->
             textarea
-                [ class "pa2 h-100 w-100"
+                [ class "pa2 min-h-100 w-100 db"
                 , value ""
                 , onInput (ContentChanged)
                 , onBlur (ContentBlurred)
@@ -143,7 +143,7 @@ viewKids model =
 
         Editing id content ->
             textarea
-                [ class "pa2 h-100 w-100"
+                [ class "pa2 h-100 w-100 db"
                 , value content
                 , onInput (ContentChanged)
                 , onBlur (ContentBlurred)
