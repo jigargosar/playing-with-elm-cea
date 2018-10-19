@@ -109,7 +109,7 @@ viewKids model =
                     [ class "flex flex-row items-center hs3 bb b--black-10 ph1"
                     , classList [ ( "bg-light-yellow", selected ) ]
                     ]
-                    [ button [ class "pointer", onClick <| ToggleSelection note ]
+                    [ button [ onClick <| ToggleSelection note ]
                         [ (if selected then
                             FeatherIcons.check
                            else

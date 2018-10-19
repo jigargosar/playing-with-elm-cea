@@ -45,6 +45,7 @@ button {
   color: dodgerblue;
   background: none;
   border: none;
+  cursor: pointer;
 }
 
 /*.vh-100, .v-100 {*/
