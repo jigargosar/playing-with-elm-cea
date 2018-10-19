@@ -119,7 +119,16 @@ viewKids model =
         viewNotes =
             div [ class "pv3" ] <| List.map viewItem (currentNoteList model)
     in
-        [ a [ class "link", href Href.newNote ] [ text "New" ]
+        [ div [ class "flex hs3" ]
+            (if hasSelection then
+                [ link "/" "Delete"
+                , div [ class "flex-auto" ] []
+                , link "/" "Clear"
+                , link "/" "All"
+                ]
+             else
+                [ a [ class "link", href Href.newNote ] [ text "New" ] ]
+            )
         , viewNotes
         ]
 
