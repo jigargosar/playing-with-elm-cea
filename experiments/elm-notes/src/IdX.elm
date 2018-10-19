@@ -1,7 +1,5 @@
 module IdX exposing (idCharGenerator, idChars, stringIdGenerator)
 
---import Id
-
 import Random
 
 
@@ -27,8 +25,3 @@ idCharGenerator =
 stringIdGenerator : Random.Generator String
 stringIdGenerator =
     Random.list 21 idCharGenerator |> Random.map String.fromList
-
-
-
---generator =
---    stringIdGenerator |> Random.map (Id.fromString)
