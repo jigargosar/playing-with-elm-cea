@@ -151,7 +151,10 @@ viewKids model =
                 []
 
         Viewing id content ->
-            div [] [ a [ href <| Href.editNoteId id ] [ text "Edit" ], div [ class " pv2 " ] <| Markdown.toHtml Nothing content ]
+            div []
+                [ a [ href <| Href.editNoteId id ] [ text "Edit" ]
+                , div [ class " pv2 " ] <| Markdown.toHtml Nothing content
+                ]
 
         NotFound id ->
             div [] [ text "Note Not Found" ]
