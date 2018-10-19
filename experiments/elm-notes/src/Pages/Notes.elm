@@ -27,7 +27,7 @@ type Msg
     = Nop
     | ViewNote Note
     | Delete
-    | NCUpdated ( NotesCollection, Cmd Msg )
+    | SelectionDeleted ( NotesCollection, Cmd Msg )
     | NCC E.Value
     | Toggle Note
     | Clear
@@ -68,6 +68,10 @@ overSelection updateFn model =
     { model | selection = updateFn model.selection }
 
 
+clearSelection =
+    overSelection (always Set.empty)
+
+
 update message model =
     case message of
         Nop ->
@@ -77,7 +81,7 @@ update message model =
             ( overSelection (toggleMember note.id) model, Cmd.none )
 
         Clear ->
-            ( overSelection (always Set.empty) model, Cmd.none )
+            ( clearSelection model, Cmd.none )
 
         All ->
             ( overSelection (always (getNC model |> Collection.idList |> Set.fromList)) model, Cmd.none )
@@ -85,13 +89,17 @@ update message model =
         ViewNote note ->
             ( model, Session.pushHref (Href.viewNoteId note.id) model.session )
 
-        NCUpdated ( nc, cmd ) ->
-            ( model |> overSession (Session.setNC nc), cmd )
+        SelectionDeleted ( nc, cmd ) ->
+            ( model
+                |> overSession (Session.setNC nc)
+                |> clearSelection
+            , cmd
+            )
 
         Delete ->
             ( model
             , NotesCollection.deleteAllWithIds model.selection (getNC model)
-                |> Task.perform NCUpdated
+                |> Task.perform SelectionDeleted
             )
 
         NCC encVal ->
