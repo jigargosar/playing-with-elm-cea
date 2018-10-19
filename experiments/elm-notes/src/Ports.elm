@@ -13,6 +13,9 @@ port persistNote : E.Value -> Cmd msg
 port cacheNote : E.Value -> Cmd msg
 
 
+port cacheNotesCollection : E.Value -> Cmd msg
+
+
 port authStateChanged : (E.Value -> msg) -> Sub msg
 
 

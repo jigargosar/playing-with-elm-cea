@@ -58,33 +58,41 @@ const app = Elm.Main.init({
 
 registerServiceWorker()
 
-subscribe(
-  'persistNoteCollection',
-  nc => {
-    storageSet('noteCollection', nc)
-    let user = auth().currentUser
-    if (user) {
-      const batch = firestore().batch()
-      const cRef = userCRef(user.uid, elmNotesCollectionName)
-      forEachObjIndexed(note => {
-        batch.set(cRef.doc(note.id), note)
-      })(nc)
-      batch.commit().catch(console.error)
-    }
-  },
-  app,
-)
+// subscribe(
+//   'persistNoteCollection',
+//   nc => {
+//     storageSet('noteCollection', nc)
+//     let user = auth().currentUser
+//     if (user) {
+//       const batch = firestore().batch()
+//       const cRef = userCRef(user.uid, elmNotesCollectionName)
+//       forEachObjIndexed(note => {
+//         batch.set(cRef.doc(note.id), note)
+//       })(nc)
+//       batch.commit().catch(console.error)
+//     }
+//   },
+//   app,
+// )
+//
+// subscribe(
+//   'persistNote',
+//   note => {
+//     let user = auth().currentUser
+//     if (user) {
+//       const batch = firestore().batch()
+//       const cRef = userCRef(user.uid, elmNotesCollectionName)
+//       batch.set(cRef.doc(note.id), note)
+//       batch.commit().catch(console.error)
+//     }
+//   },
+//   app,
+// )
 
 subscribe(
-  'persistNote',
-  note => {
-    let user = auth().currentUser
-    if (user) {
-      const batch = firestore().batch()
-      const cRef = userCRef(user.uid, elmNotesCollectionName)
-      batch.set(cRef.doc(note.id), note)
-      batch.commit().catch(console.error)
-    }
+  'cacheNotesCollection',
+  nc => {
+    storageSet('noteCollection', nc)
   },
   app,
 )
