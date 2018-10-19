@@ -181,7 +181,7 @@ viewKids model =
 
          else
             [ div [ class "flex-auto" ] []
-            , a [ href Href.newNote ] [ FeatherIcons.filePlus |> FeatherIcons.toHtml [] ]
+            , a [ href Href.newNote ] [ button [] [ FeatherIcons.filePlus |> FeatherIcons.toHtml [] ] ]
             ]
         )
     , viewNotes
