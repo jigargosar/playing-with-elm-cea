@@ -1,5 +1,6 @@
 module Pages.Note exposing (..)
 
+import FeatherIcons
 import Href
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -10,7 +11,7 @@ import NotesCollection exposing (NotesCollection)
 import Session exposing (Session)
 import Skeleton
 import Task
-import UI exposing (link)
+import UI exposing (link, row, spacer)
 
 
 type Edit
@@ -29,6 +30,7 @@ type Msg
     | ContentChanged Note.Content
     | ContentBlurred
     | NewAdded ( ( Note, NotesCollection ), Cmd Msg )
+    | StartEditing Note.Id
     | UpdateCollection ( NotesCollection, Cmd Msg )
 
 
@@ -100,6 +102,9 @@ update message model =
             , cmd
             )
 
+        StartEditing id ->
+            ( model, Session.replaceHref (Href.editNoteId id) model.session )
+
         ContentChanged newContent ->
             case model.edit of
                 New ->
@@ -159,7 +164,14 @@ viewKids model =
 
         Viewing id content ->
             div []
-                [ a [ href <| Href.editNoteId id ] [ text "Edit" ]
+                [ row ""
+                    []
+                    [ spacer
+                    , button [ onClick <| StartEditing id ]
+                        [ FeatherIcons.edit3
+                            |> FeatherIcons.toHtml []
+                        ]
+                    ]
                 , div [ class " pv2 " ] <| Markdown.toHtml Nothing content
                 ]
 
