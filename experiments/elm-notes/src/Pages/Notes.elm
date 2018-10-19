@@ -14,7 +14,7 @@ import Skeleton
 import Task
 import Json.Decode as D
 import Json.Encode as E
-import NotesCollection
+import NotesCollection exposing (NotesCollection)
 import Set exposing (Set)
 import UI exposing (link)
 
@@ -27,6 +27,7 @@ type Msg
     = Nop
     | ViewNote Note
     | Delete
+    | NCUpdated ( NotesCollection, Cmd Msg )
     | NCC E.Value
     | Toggle Note
     | Clear
@@ -84,8 +85,14 @@ update message model =
         ViewNote note ->
             ( model, Session.pushHref (Href.viewNoteId note.id) model.session )
 
+        NCUpdated ( nc, cmd ) ->
+            ( model |> overSession (Session.setNC nc), cmd )
+
         Delete ->
-            ( model, Cmd.none )
+            ( model
+            , NotesCollection.deleteAllWithIds model.selection (getNC model)
+                |> Task.perform NCUpdated
+            )
 
         NCC encVal ->
             let
