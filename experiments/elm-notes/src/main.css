@@ -35,6 +35,12 @@ body > :nth-child(3) {
   font-size: 0.5rem;
 }
 
+a {
+  color: dodgerblue;
+  font-weight: bold;
+  text-decoration: none;
+}
+
 /*.vh-100, .v-100 {*/
 /*height: 100vh;*/
 /*}*/
