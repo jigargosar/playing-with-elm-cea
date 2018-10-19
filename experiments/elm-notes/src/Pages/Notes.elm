@@ -54,6 +54,10 @@ toggleMember item set =
         Set.insert item set
 
 
+isSelected note =
+    .selection >> Set.member note.id
+
+
 update message model =
     case message of
         Nop ->
@@ -86,20 +90,27 @@ view model =
     { title = "Notes"
     , attrs = []
     , kids =
-        [ a [ class "link", href Href.newNote ] [ text "New" ], viewNotes (currentNoteList model) ]
+        [ a [ class "link", href Href.newNote ] [ text "New" ], viewNotes model ]
     }
 
 
-viewNotes notes =
+viewNotes model =
     let
         viewItem note =
             div [ class "flex flex-row items-center hs3" ]
-                [ div [ onClick <| ToggleSelection note ] [ text "--" ]
+                [ div [ class "pointer", onClick <| ToggleSelection note ]
+                    [ text
+                        (if isSelected note model then
+                            "|||"
+                         else
+                            "--"
+                        )
+                    ]
                 , viewNoteItem note
                 , link "/" "e"
                 ]
     in
-        div [ class "pv3" ] <| List.map viewItem notes
+        div [ class "pv3" ] <| List.map viewItem (currentNoteList model)
 
 
 viewNoteItem note =
