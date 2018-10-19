@@ -1,6 +1,7 @@
-module IdX exposing (..)
+module IdX exposing (idCharGenerator, idChars, stringIdGenerator)
 
-import Id
+--import Id
+
 import Random
 
 
@@ -15,7 +16,7 @@ idChars =
         numbers =
             "0123456789"
     in
-        alphabets.lowercase ++ alphabets.uppercase ++ numbers ++ "_" |> String.toList
+    alphabets.lowercase ++ alphabets.uppercase ++ numbers ++ "_" |> String.toList
 
 
 idCharGenerator : Random.Generator Char
@@ -28,5 +29,6 @@ stringIdGenerator =
     Random.list 21 idCharGenerator |> Random.map String.fromList
 
 
-generator =
-    stringIdGenerator |> Random.map (Id.fromString)
+
+--generator =
+--    stringIdGenerator |> Random.map (Id.fromString)
