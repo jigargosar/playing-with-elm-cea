@@ -120,7 +120,7 @@ viewKids model =
                     , if hasSelection then
                         text ""
                       else
-                        link "/" "e"
+                        link (Href.editNoteId note.id) "e"
                     ]
 
         viewNotes =
