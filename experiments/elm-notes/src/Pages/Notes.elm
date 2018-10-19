@@ -50,7 +50,7 @@ update message model =
             ( model, Cmd.none )
 
         ViewNote note ->
-            ( model, Session.pushHref (Href.viewNote note.id) model.session )
+            ( model, Session.pushHref (Href.viewNoteId note.id) model.session )
 
         NCC encVal ->
             let

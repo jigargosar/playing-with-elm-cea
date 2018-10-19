@@ -91,7 +91,7 @@ update message model =
 
         NewAdded ( ( note, nc ), cmd ) ->
             ( model |> overSession (Session.setNC nc)
-            , Cmd.batch [ cmd, Session.replaceHref (Href.editNote note.id) model.session ]
+            , Cmd.batch [ cmd, Session.replaceHref (Href.editNoteId note.id) model.session ]
             )
 
         UpdateCollection ( nc, cmd ) ->
@@ -151,7 +151,7 @@ viewKids model =
                 []
 
         Viewing id content ->
-            div [ class " pv2 " ] <| Markdown.toHtml Nothing content
+            div [] [ a [ href <| Href.editNoteId id ] [ text "Edit" ], div [ class " pv2 " ] <| Markdown.toHtml Nothing content ]
 
         NotFound id ->
             div [] [ text "Note Not Found" ]
