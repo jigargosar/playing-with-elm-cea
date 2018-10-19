@@ -27,6 +27,7 @@ type alias Model =
 
 type Msg
     = Nop
+    | Back
     | ContentChanged Note.Content
     | ContentBlurred
     | NewAdded ( ( Note, NotesCollection ), Cmd Msg )
@@ -93,6 +94,9 @@ update message model =
         Nop ->
             ( model, Cmd.none )
 
+        Back ->
+            ( model, Session.back model.session )
+
         NewAdded ( ( note, nc ), cmd ) ->
             ( model |> overSession (Session.setNC nc)
             , Cmd.batch [ cmd, Session.replaceHref (Href.editNoteId note.id) model.session ]
@@ -158,7 +162,17 @@ getPageTitle model =
 viewKids model =
     case model.edit of
         New ->
-            noteEditor ""
+            div [ class "flex flex-column h-100 vs3" ]
+                [ row ""
+                    []
+                    [ spacer
+                    , button [ onClick <| Back ]
+                        [ FeatherIcons.arrowLeftCircle
+                            |> FeatherIcons.toHtml []
+                        ]
+                    ]
+                , noteEditor ""
+                ]
 
         Editing id content ->
             div [ class "flex flex-column h-100 vs3" ]

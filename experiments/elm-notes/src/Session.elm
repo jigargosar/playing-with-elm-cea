@@ -1,9 +1,8 @@
-module Session exposing (..)
+module Session exposing (Session, back, generator, getNote, overNC, pushHref, replaceHref, setNC)
 
 import Browser.Navigation as Nav
 import Collection
-import Json.Decode exposing (Decoder)
-import Json.Decode as D
+import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
 import Note exposing (Note)
 import NotesCollection exposing (NotesCollection)
@@ -39,3 +38,7 @@ overNC updateFn model =
 
 getNote id =
     .nc >> Collection.get id
+
+
+back model =
+    Nav.back model.key 1
