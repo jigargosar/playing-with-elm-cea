@@ -1,4 +1,4 @@
-module Pages.Note exposing (Model, Msg, getContent, initEditNote, initNewNote, initShowNote, update, view)
+module Page.Note exposing (Model, Msg, getContent, initEditNote, initNewNote, initShowNote, update, view)
 
 import FeatherIcons
 import Href

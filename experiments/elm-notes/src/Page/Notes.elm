@@ -1,4 +1,4 @@
-module Pages.Notes exposing (Model, Msg, init, subscriptions, update, view)
+module Page.Notes exposing (Model, Msg, init, subscriptions, update, view)
 
 import Collection
 import Exts.Html.Events

@@ -1,15 +1,15 @@
-module Main exposing (..)
+module Main exposing (Flags, Model, Msg(..), Page(..), exit, generator, init, main, route, setUrl, stepAuth, stepNote, stepNotes, stepUrl, subscriptions, update, view)
 
 import Auth exposing (AuthState)
+import Browser
+import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Json.Decode as D
 import Json.Encode as E
-import Browser.Navigation as Nav
-import Browser
-import Pages.Note
-import Pages.Notes as Notes
+import Page.Note
+import Page.Notes as Notes
 import Ports
 import Random
 import Session exposing (Session)
@@ -17,6 +17,7 @@ import Skeleton
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), (<?>), Parser, oneOf, s, string, top)
 import Url.Parser.Query as Query
+
 
 
 ---- PROGRAM ----
@@ -42,7 +43,7 @@ main =
 type Page
     = NotFound Session
     | Notes Notes.Model
-    | Note Pages.Note.Model
+    | Note Page.Note.Model
 
 
 
@@ -103,7 +104,7 @@ stepNotes model ( notes, cmd ) =
     )
 
 
-stepNote : Model -> ( Pages.Note.Model, Cmd Pages.Note.Msg ) -> ( Model, Cmd Msg )
+stepNote : Model -> ( Page.Note.Model, Cmd Page.Note.Msg ) -> ( Model, Cmd Msg )
 stepNote model ( notes, cmd ) =
     ( { model | page = Note notes }
     , Cmd.map NoteMsg cmd
@@ -121,28 +122,28 @@ stepUrl url model =
                 [ route top
                     (stepNotes model (Notes.init session))
                 , route (s "notes" </> s "new")
-                    (stepNote model (Pages.Note.initNewNote session))
+                    (stepNote model (Page.Note.initNewNote session))
                 , route (s "notes" </> string <?> Query.string "edit")
                     (\id maybeEdit ->
                         case maybeEdit of
                             Just _ ->
-                                stepNote model (Pages.Note.initEditNote id session)
+                                stepNote model (Page.Note.initEditNote id session)
 
                             Nothing ->
-                                stepNote model (Pages.Note.initShowNote id session)
+                                stepNote model (Page.Note.initShowNote id session)
                     )
                 ]
     in
-        (case Parser.parse parser url of
-            Just answer ->
-                answer
+    (case Parser.parse parser url of
+        Just answer ->
+            answer
 
-            Nothing ->
-                ( { model | page = NotFound session }
-                , Cmd.none
-                )
-        )
-            |> Tuple.mapFirst (setUrl url)
+        Nothing ->
+            ( { model | page = NotFound session }
+            , Cmd.none
+            )
+    )
+        |> Tuple.mapFirst (setUrl url)
 
 
 setUrl url model =
@@ -160,7 +161,7 @@ type Msg
     | UrlChanged Url
     | AuthMsg Auth.Msg
     | NotesMsg Notes.Msg
-    | NoteMsg Pages.Note.Msg
+    | NoteMsg Page.Note.Msg
 
 
 subscriptions : Model -> Sub Msg
@@ -182,6 +183,7 @@ update message model =
                 Browser.Internal url ->
                     if Url.toString model.url /= Url.toString url then
                         ( model, Nav.pushUrl model.key (Url.toString url) )
+
                     else
                         ( model, Cmd.none )
 
@@ -205,7 +207,7 @@ update message model =
         NoteMsg msg ->
             case model.page of
                 Note note ->
-                    stepNote model (Pages.Note.update msg note)
+                    stepNote model (Page.Note.update msg note)
 
                 _ ->
                     ( model, Cmd.none )
@@ -226,17 +228,17 @@ view model =
         config =
             { authState = model.authState, toAuthMsg = AuthMsg }
     in
-        case model.page of
-            NotFound _ ->
-                Skeleton.view config
-                    identity
-                    { title = "Not Found"
-                    , attrs = []
-                    , kids = [ div [] [ text "404 Page Not Found" ] ]
-                    }
+    case model.page of
+        NotFound _ ->
+            Skeleton.view config
+                identity
+                { title = "Not Found"
+                , attrs = []
+                , kids = [ div [] [ text "404 Page Not Found" ] ]
+                }
 
-            Notes notes ->
-                Skeleton.view config NotesMsg (Notes.view notes)
+        Notes notes ->
+            Skeleton.view config NotesMsg (Notes.view notes)
 
-            Note note ->
-                Skeleton.view config NoteMsg (Pages.Note.view note)
+        Note note ->
+            Skeleton.view config NoteMsg (Page.Note.view note)
