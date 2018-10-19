@@ -96,6 +96,9 @@ view model =
 
 viewNotes model =
     let
+        hasSelection =
+            Set.isEmpty model.selection |> not
+
         viewItem note =
             div [ class "flex flex-row items-center hs3" ]
                 [ div [ class "pointer", onClick <| ToggleSelection note ]
@@ -107,7 +110,10 @@ viewNotes model =
                         )
                     ]
                 , viewNoteItem note
-                , link "/" "e"
+                , if hasSelection then
+                    text ""
+                  else
+                    link "/" "e"
                 ]
     in
         div [ class "pv3" ] <| List.map viewItem (currentNoteList model)
