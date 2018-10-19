@@ -24,6 +24,10 @@ type alias Model item =
     { dict : Dict String item, seed : Random.Seed }
 
 
+type alias Collection item =
+    Model item
+
+
 overDict : (Dict String item -> Dict String item) -> Model item -> Model item
 overDict updateFn model =
     { model | dict = updateFn model.dict }
