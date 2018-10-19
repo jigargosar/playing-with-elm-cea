@@ -19,13 +19,14 @@ import UI exposing (link)
 
 
 type alias Model =
-    { session : Session, selected : Set Note.Id }
+    { session : Session, selection : Set Note.Id }
 
 
 type Msg
     = Nop
     | ViewNote Note
     | NCC E.Value
+    | ToggleSelection Note
 
 
 subscriptions =
@@ -34,7 +35,7 @@ subscriptions =
 
 init : Session -> ( Model, Cmd Msg )
 init session =
-    ( { session = session, selected = Set.empty }, Cmd.none )
+    ( { session = session, selection = Set.empty }, Cmd.none )
 
 
 getNC =
@@ -46,10 +47,20 @@ overSession updateFn model =
     { model | session = updateFn model.session }
 
 
+toggleMember item set =
+    if Set.member item set then
+        Set.remove item set
+    else
+        Set.insert item set
+
+
 update message model =
     case message of
         Nop ->
             ( model, Cmd.none )
+
+        ToggleSelection note ->
+            ( { model | selection = toggleMember note.id model.selection }, Cmd.none )
 
         ViewNote note ->
             ( model, Session.pushHref (Href.viewNoteId note.id) model.session )
@@ -83,7 +94,7 @@ viewNotes notes =
     let
         viewItem note =
             div [ class "flex flex-row items-center hs3" ]
-                [ div [] [ text "--" ]
+                [ div [ onClick <| ToggleSelection note ] [ text "--" ]
                 , viewNoteItem note
                 , link "/" "e"
                 ]
