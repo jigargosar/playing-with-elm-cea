@@ -24,7 +24,7 @@ import {
 } from './fire'
 import loki from 'lokijs'
 
-const db = new loki('Example', {
+const db = new loki('DB', {
   verbose: true,
   autosave: true,
   env: 'BROWSER',
@@ -45,7 +45,7 @@ const db = new loki('Example', {
 // update object (this really only syncs the index)
 // users.update(stan);
 
-db.loadJSON(localStorage.getItem('Example'))
+db.loadJSON(localStorage.getItem('DB') || '')
 console.log('db.serialize()', db.serialize())
 
 const app = Elm.Main.init({

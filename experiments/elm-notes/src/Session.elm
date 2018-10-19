@@ -32,5 +32,10 @@ setNC nc session =
     { session | nc = nc }
 
 
+overNC : (NotesCollection -> NotesCollection) -> Session -> Session
+overNC updateFn model =
+    { model | nc = updateFn model.nc }
+
+
 getNote id =
     .nc >> Collection.get id

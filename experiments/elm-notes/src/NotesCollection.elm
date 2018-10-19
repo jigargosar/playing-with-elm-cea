@@ -18,6 +18,10 @@ generator encodedNC =
     Collection.generator Note.decoder encodedNC
 
 
+replace encVal =
+    Collection.replace Note.decoder encVal
+
+
 addNewWithContent : Note.Content -> NotesCollection -> Task x ( ( Note, NotesCollection ), Cmd msg )
 addNewWithContent content nc =
     Collection.createAndAdd (Note.initWithContent content) nc

@@ -166,7 +166,9 @@ type Msg
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Auth.subscriptions model.authState |> Sub.map AuthMsg ]
+        [ Auth.subscriptions model.authState |> Sub.map AuthMsg
+        , Notes.subscriptions |> Sub.map NotesMsg
+        ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

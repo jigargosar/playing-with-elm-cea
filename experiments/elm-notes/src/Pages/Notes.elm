@@ -7,9 +7,13 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Note exposing (Note)
+import Ports
 import Session exposing (Session)
 import Skeleton
 import Task
+import Json.Decode as D
+import Json.Encode as E
+import NotesCollection
 
 
 type alias Model =
@@ -19,6 +23,11 @@ type alias Model =
 type Msg
     = Nop
     | ViewNote Note
+    | NCC E.Value
+
+
+subscriptions =
+    Sub.batch [ Ports.notesCollectionChanged NCC ]
 
 
 init : Session -> ( Model, Cmd Msg )
@@ -42,6 +51,9 @@ update message model =
 
         ViewNote note ->
             ( model, Session.pushHref (Href.viewNote note.id) model.session )
+
+        NCC encVal ->
+            ( model |> overSession (Session.overNC (NotesCollection.replace encVal)), Cmd.none )
 
 
 currentNoteList : Model -> List Note
