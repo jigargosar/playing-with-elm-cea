@@ -156,7 +156,7 @@ viewKids model =
                     text ""
 
                   else
-                    a [ href (Href.editNoteId note.id) ] [ FeatherIcons.edit3 |> FeatherIcons.toHtml [] ]
+                    a [ href (Href.editNoteId note.id) ] [ button [] [ FeatherIcons.edit3 |> FeatherIcons.toHtml [] ] ]
                 ]
 
         viewNotes =
