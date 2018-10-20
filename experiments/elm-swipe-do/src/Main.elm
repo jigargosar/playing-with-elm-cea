@@ -40,7 +40,8 @@ view : Model -> Html Msg
 view model =
     div [ class "flex w-100 justify-center bg-black white" ]
         [ div [ class "flex w-100 measure-wide items-center" ]
-            [ spacer
+            [ txtC "b pa3" "ELM Swipe Do"
+            , spacer
             , txtC "b pa3" "Scheduled"
             , txtC "b pa3" "Todo"
             , txtC "b pa3" "Done"
