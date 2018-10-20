@@ -85,14 +85,33 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
 
 
 viewMagicButton { mbClickedMsg, mbState } =
-    button [ onClick mbClickedMsg, class "absolute bottom-1" ]
-        [ (if mbState.open then
-            FeatherIcons.x
+    let
+        isOpen =
+            mbState.open
 
-           else
-            FeatherIcons.menu
-          )
-            |> FeatherIcons.toHtml []
+        buttonRow =
+            row ""
+                []
+                (if isOpen then
+                    [ button [ onClick mbClickedMsg ] [ FeatherIcons.arrowLeft |> FeatherIcons.toHtml [] ]
+                    , button [ onClick mbClickedMsg ] [ FeatherIcons.filePlus |> FeatherIcons.toHtml [] ]
+                    ]
+
+                 else
+                    []
+                )
+    in
+    div [ class "flex flex-column absolute bottom-1 vs3" ]
+        [ buttonRow
+        , button [ onClick mbClickedMsg ]
+            [ (if isOpen then
+                FeatherIcons.x
+
+               else
+                FeatherIcons.menu
+              )
+                |> FeatherIcons.toHtml []
+            ]
         ]
 
 
