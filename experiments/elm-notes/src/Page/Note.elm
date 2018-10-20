@@ -199,7 +199,7 @@ viewKids model =
 noteEditor content =
     div [ class "flex-auto flex" ]
         [ textarea
-            [ class "pa2 min-h-100 w-100"
+            [ class "pa2 pb5 min-h-100 w-100"
             , value content
             , onInput ContentChanged
             , onBlur ContentBlurred
