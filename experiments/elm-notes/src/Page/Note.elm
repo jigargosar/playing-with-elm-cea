@@ -9,7 +9,7 @@ import Markdown
 import Note exposing (Note)
 import NotesCollection exposing (NotesCollection)
 import Session exposing (Session)
-import Skeleton exposing (defaultSkeletonDetails)
+import Skeleton exposing (ActionConfig, defaultSkeletonDetails)
 import Task
 import UI exposing (link, row, spacer)
 
@@ -141,7 +141,23 @@ view model =
     { defaultSkeletonDetails
         | title = getPageTitle model
         , kids = [ viewKids model ]
+        , mm = { actions = getActions model }
     }
+
+
+getActions model =
+    case model.edit of
+        New ->
+            [ ActionConfig FeatherIcons.x Nop ]
+
+        Editing _ _ ->
+            [ ActionConfig FeatherIcons.x Nop ]
+
+        Viewing _ _ ->
+            [ ActionConfig FeatherIcons.home Nop, ActionConfig FeatherIcons.edit Nop ]
+
+        NotFound _ ->
+            [ ActionConfig FeatherIcons.x Nop ]
 
 
 getPageTitle model =
