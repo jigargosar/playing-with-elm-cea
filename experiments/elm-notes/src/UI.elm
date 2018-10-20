@@ -23,5 +23,14 @@ spacer =
 
 
 fBtn : msg -> FeatherIcons.Icon -> Html msg
-fBtn msg fIcon =
-    button [ onClick msg ] [ fIcon |> FeatherIcons.toHtml [] ]
+fBtn =
+    fDBtn False
+
+
+type alias Disabled =
+    Bool
+
+
+fDBtn : Disabled -> msg -> FeatherIcons.Icon -> Html msg
+fDBtn disabled_ msg fIcon =
+    button [ disabled disabled_, onClick msg ] [ fIcon |> FeatherIcons.toHtml [] ]
