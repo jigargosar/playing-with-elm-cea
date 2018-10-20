@@ -39,7 +39,7 @@ type alias MainDetails msg =
     , back : msg
     , forward : msg
     , home : msg
-    , mmModel : MagicMenu
+    , magicMenu : MagicMenu
     }
 
 
@@ -108,10 +108,10 @@ boolHtml bool html_ =
         text ""
 
 
-viewMagicButton { mbClickedMsg, mmModel, back, forward, home } toMsg details =
+viewMagicButton { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
     let
         isOpen =
-            mmModel.open
+            magicMenu.open
 
         actionButtons =
             details.mmConfig.actions
