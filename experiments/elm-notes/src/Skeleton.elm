@@ -15,15 +15,15 @@ import MagicMenu exposing (MagicMenu)
 import UI exposing (boolHtml, fBtn)
 
 
-type alias Details msg =
+type alias Details a =
     { title : String
-    , attrs : List (Html.Attribute msg)
-    , kids : List (Html msg)
-    , actions : List (MagicMenu.Action msg)
+    , attrs : List (Html.Attribute a)
+    , kids : List (Html a)
+    , actions : List (MagicMenu.Action a)
     }
 
 
-defaultSkeletonDetails : Details msg
+defaultSkeletonDetails : Details a
 defaultSkeletonDetails =
     { title = "Elm Notes"
     , attrs = []
