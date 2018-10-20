@@ -1,4 +1,4 @@
-module UI exposing (..)
+module UI exposing (Disabled, boolHtml, fBtn, fDBtn, link, row, rowS3, spacer)
 
 import FeatherIcons
 import Html exposing (..)
@@ -34,3 +34,11 @@ type alias Disabled =
 fDBtn : FeatherIcons.Icon -> Disabled -> msg -> Html msg
 fDBtn fIcon disabled_ msg =
     button [ disabled disabled_, onClick msg ] [ fIcon |> FeatherIcons.toHtml [] ]
+
+
+boolHtml bool html_ =
+    if bool then
+        html_
+
+    else
+        text ""

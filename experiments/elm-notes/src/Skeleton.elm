@@ -12,7 +12,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import MagicMenu exposing (MagicMenu)
-import UI exposing (fBtn)
+import UI exposing (boolHtml, fBtn)
 
 
 type alias Details msg =
@@ -98,14 +98,6 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
         [ txt textContent
         , avatar
         ]
-
-
-boolHtml bool html_ =
-    if bool then
-        html_
-
-    else
-        text ""
 
 
 viewMagicMenu { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
