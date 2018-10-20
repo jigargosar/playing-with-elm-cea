@@ -61,7 +61,7 @@ type alias Model =
     , key : Nav.Key
     , page : Page
     , authState : AuthState
-    , mbState : MagicMenu
+    , mmModel : MagicMenu
     }
 
 
@@ -80,7 +80,7 @@ generator url key encodedNC =
                 , key = key
                 , page = NotFound session
                 , authState = Auth.init
-                , mbState = { open = False }
+                , mmModel = { open = False }
                 }
             )
 
@@ -235,7 +235,7 @@ update message model =
 
 overMbState : (MagicMenu -> MagicMenu) -> Model -> Model
 overMbState updateFn model =
-    { model | mbState = updateFn model.mbState }
+    { model | mmModel = updateFn model.mmModel }
 
 
 overOpen : (Bool -> Bool) -> MagicMenu -> MagicMenu
@@ -259,7 +259,7 @@ view model =
             { authState = model.authState
             , toAuthMsg = AuthMsg
             , mbClickedMsg = MBClicked
-            , mbState = model.mbState
+            , mmModel = model.mmModel
             , back = Back
             , forward = Forward
             , home =
