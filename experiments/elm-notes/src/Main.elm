@@ -13,7 +13,7 @@ import Page.Notes as Notes
 import Ports
 import Random
 import Session exposing (Session)
-import Skeleton
+import Skeleton exposing (MBState)
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), (<?>), Parser, oneOf, s, string, top)
 import Url.Parser.Query as Query
@@ -59,6 +59,7 @@ type alias Model =
     , key : Nav.Key
     , page : Page
     , authState : AuthState
+    , mbState : MBState
     }
 
 
@@ -77,6 +78,7 @@ generator url key encodedNC =
                 , key = key
                 , page = NotFound session
                 , authState = Auth.init
+                , mbState = { open = False }
                 }
             )
 
@@ -228,9 +230,13 @@ stepAuth model ( authState, cmd ) =
 view : Model -> Browser.Document Msg
 view model =
     let
-        config : Skeleton.AuthDetails Msg
+        config : Skeleton.MainDetails Msg
         config =
-            { authState = model.authState, toAuthMsg = AuthMsg, mbClickedMsg = MBClicked }
+            { authState = model.authState
+            , toAuthMsg = AuthMsg
+            , mbClickedMsg = MBClicked
+            , mbState = model.mbState
+            }
     in
     case model.page of
         NotFound _ ->

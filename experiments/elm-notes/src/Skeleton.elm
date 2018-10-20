@@ -1,4 +1,4 @@
-module Skeleton exposing (AuthDetails, Details, view)
+module Skeleton exposing (Details, MBState, MainDetails, view)
 
 import Auth exposing (AuthState)
 import Browser
@@ -15,14 +15,19 @@ type alias Details msg =
     }
 
 
-type alias AuthDetails msg =
+type alias MBState =
+    { open : Bool }
+
+
+type alias MainDetails msg =
     { authState : AuthState
     , toAuthMsg : Auth.Msg -> msg
     , mbClickedMsg : msg
+    , mbState : MBState
     }
 
 
-view : AuthDetails msg -> (a -> msg) -> Details a -> Browser.Document msg
+view : MainDetails msg -> (a -> msg) -> Details a -> Browser.Document msg
 view config toMsg details =
     { title =
         details.title
