@@ -23,6 +23,8 @@ type alias MainDetails msg =
     { authState : AuthState
     , toAuthMsg : Auth.Msg -> msg
     , mbClickedMsg : msg
+    , back : msg
+    , forward : msg
     , mbState : MBState
     }
 

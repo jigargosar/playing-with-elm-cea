@@ -165,6 +165,8 @@ type Msg
     | NotesMsg Notes.Msg
     | NoteMsg Page.Note.Msg
     | MBClicked
+    | Back
+    | Forward
 
 
 subscriptions : Model -> Sub Msg
@@ -218,6 +220,12 @@ update message model =
         MBClicked ->
             ( model |> overMbState (overOpen not), Cmd.none )
 
+        Back ->
+            ( model, Cmd.none )
+
+        Forward ->
+            ( model, Cmd.none )
+
 
 overMbState : (MBState -> MBState) -> Model -> Model
 overMbState updateFn model =
@@ -246,6 +254,8 @@ view model =
             , toAuthMsg = AuthMsg
             , mbClickedMsg = MBClicked
             , mbState = model.mbState
+            , back = Back
+            , forward = Forward
             }
     in
     case model.page of
