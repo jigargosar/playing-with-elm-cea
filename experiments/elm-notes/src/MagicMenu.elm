@@ -1,4 +1,4 @@
-module MagicMenu exposing (IconBtn, MagicMenu, MagicMenuDetails, defaultMagicMenuConfig)
+module MagicMenu exposing (Action, MagicMenu)
 
 import FeatherIcons
 
@@ -7,13 +7,5 @@ type alias MagicMenu =
     { open : Bool }
 
 
-type alias IconBtn msg =
+type alias Action msg =
     { icon : FeatherIcons.Icon, msg : msg }
-
-
-type alias MagicMenuDetails msg =
-    { actions : List (IconBtn msg) }
-
-
-defaultMagicMenuConfig =
-    { actions = [] }

@@ -11,7 +11,7 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import MagicMenu exposing (MagicMenu, MagicMenuDetails, defaultMagicMenuConfig)
+import MagicMenu exposing (MagicMenu)
 import UI exposing (fBtn)
 
 
@@ -19,7 +19,7 @@ type alias Details msg =
     { title : String
     , attrs : List (Html.Attribute msg)
     , kids : List (Html msg)
-    , mmConfig : MagicMenuDetails msg
+    , actions : List (MagicMenu.Action msg)
     }
 
 
@@ -28,7 +28,7 @@ defaultSkeletonDetails =
     { title = "Elm Notes"
     , attrs = []
     , kids = []
-    , mmConfig = defaultMagicMenuConfig
+    , actions = []
     }
 
 
@@ -114,7 +114,7 @@ viewMagicMenu { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
             magicMenu.open
 
         actionButtons =
-            details.mmConfig.actions
+            details.actions
                 |> List.map ((\{ icon, msg } -> UI.fBtn icon msg) >> Html.map toMsg)
 
         backBtn =

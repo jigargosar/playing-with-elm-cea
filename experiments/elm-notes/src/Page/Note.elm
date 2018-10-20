@@ -5,7 +5,7 @@ import Href
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import MagicMenu exposing (IconBtn)
+import MagicMenu exposing (Action)
 import Markdown
 import Note exposing (Note)
 import NotesCollection exposing (NotesCollection)
@@ -142,7 +142,7 @@ view model =
     { defaultSkeletonDetails
         | title = getPageTitle model
         , kids = [ viewKids model ]
-        , mmConfig = { actions = getActions model }
+        , actions = getActions model
     }
 
 
@@ -152,10 +152,10 @@ getActions model =
             []
 
         Editing id _ ->
-            [ IconBtn FeatherIcons.fileText (View id) ]
+            [ Action FeatherIcons.fileText (View id) ]
 
         Viewing id _ ->
-            [ IconBtn FeatherIcons.edit3 (StartEditing id) ]
+            [ Action FeatherIcons.edit3 (StartEditing id) ]
 
         NotFound _ ->
             []
