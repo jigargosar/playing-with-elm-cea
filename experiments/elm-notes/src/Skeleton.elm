@@ -40,7 +40,7 @@ view config toMsg details =
                 ]
 
         --        , viewFooter
-        , viewMagicButton
+        , viewMagicButton config
         ]
     }
 
@@ -84,8 +84,16 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
         ]
 
 
-viewMagicButton =
-    button [ class "absolute bottom-1" ] [ FeatherIcons.menu |> FeatherIcons.toHtml [] ]
+viewMagicButton { mbClickedMsg, mbState } =
+    button [ onClick mbClickedMsg, class "absolute bottom-1" ]
+        [ (if mbState.open then
+            FeatherIcons.x
+
+           else
+            FeatherIcons.menu
+          )
+            |> FeatherIcons.toHtml []
+        ]
 
 
 
