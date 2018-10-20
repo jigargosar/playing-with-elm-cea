@@ -38,9 +38,9 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "w-100 bg-black white b " ]
-        [ div [ class "measure-wide flex flex-row items-center justify-center" ]
-            [ txtC "pa3" "Elm Swipe Do" ]
+    div [ class "flex w-100 justify-center bg-black white" ]
+        [ div [ class "flex w-100 measure-wide items-center" ]
+            [ txtC "b pa3" "Elm Swipe Do" ]
         ]
 
 
