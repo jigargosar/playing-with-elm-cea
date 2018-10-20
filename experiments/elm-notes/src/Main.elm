@@ -268,6 +268,17 @@ view model =
             , toAuthMsg = AuthMsg
             , mbClickedMsg = MBClicked
             , magicMenu = model.magicMenu
+            , magicMenuNavActions =
+                { back = Back
+                , forward = Forward
+                , home =
+                    if model.url.path == "/" then
+                        NoOp
+
+                    else
+                        Home
+                }
+            , toMagicMenuMsg = MagicMenuMsg
             , back = Back
             , forward = Forward
             , home =

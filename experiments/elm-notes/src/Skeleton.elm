@@ -35,11 +35,13 @@ defaultSkeletonDetails =
 type alias MainDetails msg =
     { authState : AuthState
     , toAuthMsg : Auth.Msg -> msg
+    , magicMenu : MagicMenu
+    , magicMenuNavActions : MagicMenu.NavActions msg
+    , toMagicMenuMsg : MagicMenu.Msg -> msg
     , mbClickedMsg : msg
     , back : msg
     , forward : msg
     , home : msg
-    , magicMenu : MagicMenu
     }
 
 
