@@ -154,7 +154,7 @@ getActions model =
             [ ActionConfig FeatherIcons.x Nop ]
 
         Viewing _ _ ->
-            [ ActionConfig FeatherIcons.home Nop, ActionConfig FeatherIcons.edit Nop ]
+            [ ActionConfig FeatherIcons.home Nop, ActionConfig FeatherIcons.edit2 Nop ]
 
         NotFound _ ->
             [ ActionConfig FeatherIcons.x Nop ]
