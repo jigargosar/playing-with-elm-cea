@@ -5,7 +5,7 @@ import Href
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import MagicMenu exposing (ActionConfig)
+import MagicMenu exposing (IconBtn)
 import Markdown
 import Note exposing (Note)
 import NotesCollection exposing (NotesCollection)
@@ -152,10 +152,10 @@ getActions model =
             []
 
         Editing id _ ->
-            [ ActionConfig FeatherIcons.fileText (View id) ]
+            [ IconBtn FeatherIcons.fileText (View id) ]
 
         Viewing id _ ->
-            [ ActionConfig FeatherIcons.edit3 (StartEditing id) ]
+            [ IconBtn FeatherIcons.edit3 (StartEditing id) ]
 
         NotFound _ ->
             []

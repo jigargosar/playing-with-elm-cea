@@ -9,7 +9,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
-import MagicMenu exposing (ActionConfig)
+import MagicMenu exposing (IconBtn)
 import Note exposing (Note)
 import NotesCollection exposing (NotesCollection)
 import Ports
@@ -135,13 +135,13 @@ view model =
 
 getActions model =
     if isSelecting model then
-        [ ActionConfig FeatherIcons.checkSquare All
-        , ActionConfig FeatherIcons.slash Clear
-        , ActionConfig FeatherIcons.trash2 Delete
+        [ IconBtn FeatherIcons.checkSquare All
+        , IconBtn FeatherIcons.slash Clear
+        , IconBtn FeatherIcons.trash2 Delete
         ]
 
     else
-        [ ActionConfig FeatherIcons.filePlus New ]
+        [ IconBtn FeatherIcons.filePlus New ]
 
 
 isSelecting model =
