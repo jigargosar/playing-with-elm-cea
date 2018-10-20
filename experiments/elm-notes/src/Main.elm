@@ -167,7 +167,6 @@ type Msg
     | NotesMsg Notes.Msg
     | NoteMsg Page.Note.Msg
     | MagicMenuMsg MagicMenu.Msg
-    | MBClicked
     | Back
     | Forward
     | Home
@@ -224,9 +223,6 @@ update message model =
                 _ ->
                     ( model, Cmd.none )
 
-        MBClicked ->
-            ( model |> overMagicMenu (overOpen not), Cmd.none )
-
         Back ->
             ( model, Nav.back model.key 1 )
 
@@ -235,16 +231,6 @@ update message model =
 
         Home ->
             ( model, Nav.pushUrl model.key Href.home )
-
-
-overMagicMenu : (MagicMenu -> MagicMenu) -> Model -> Model
-overMagicMenu updateFn model =
-    { model | magicMenu = updateFn model.magicMenu }
-
-
-overOpen : (Bool -> Bool) -> MagicMenu -> MagicMenu
-overOpen updateFn model =
-    { model | open = updateFn model.open }
 
 
 stepAuth model ( authState, cmd ) =
@@ -266,7 +252,6 @@ view model =
         config =
             { authState = model.authState
             , toAuthMsg = AuthMsg
-            , mbClickedMsg = MBClicked
             , magicMenu = model.magicMenu
             , magicMenuNavActions =
                 { back = Back
@@ -279,14 +264,6 @@ view model =
                         Home
                 }
             , toMagicMenuMsg = MagicMenuMsg
-            , back = Back
-            , forward = Forward
-            , home =
-                if model.url.path == "/" then
-                    NoOp
-
-                else
-                    Home
             }
     in
     case model.page of
