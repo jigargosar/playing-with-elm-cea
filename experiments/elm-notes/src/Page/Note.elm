@@ -180,30 +180,12 @@ viewKids model =
     case model.edit of
         New ->
             div [ class "flex flex-column h-100 vs3" ]
-                [ row ""
-                    []
-                    [ spacer
-
-                    --                    , button [ onClick <| Back ]
-                    --                        [ FeatherIcons.slash
-                    --                            |> FeatherIcons.toHtml []
-                    --                        ]
-                    ]
-                , noteEditor ""
+                [ noteEditor ""
                 ]
 
         Editing id content ->
             div [ class "flex flex-column h-100 vs3" ]
-                [ row ""
-                    []
-                    [ spacer
-
-                    --                    , button [ onClick <| View id ]
-                    --                        [ FeatherIcons.fileText
-                    --                            |> FeatherIcons.toHtml []
-                    --                        ]
-                    ]
-                , noteEditor content
+                [ noteEditor content
                 ]
 
         Viewing id content ->
