@@ -110,6 +110,10 @@ viewMagicMenu { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
             details.actions
                 |> List.map ((\{ icon, msg } -> UI.fBtn icon msg) >> Html.map toMsg)
 
+        actions =
+            details.actions
+                |> List.map (\{ icon, msg } -> MagicMenu.Action icon (toMsg msg))
+
         backBtn =
             UI.fBtn FeatherIcons.arrowLeft back
 
@@ -136,7 +140,7 @@ viewMagicMenu { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
             else
                 FeatherIcons.menu
     in
-    MagicMenu.view [] { back = back, forward = forward, home = home } mbClickedMsg magicMenu
+    MagicMenu.view actions { back = back, forward = forward, home = home } mbClickedMsg magicMenu
 
 
 
