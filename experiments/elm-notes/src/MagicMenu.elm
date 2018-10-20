@@ -52,7 +52,7 @@ view actions { back, forward, home } toMsg model =
             actions
                 |> List.map (\{ icon, msg } -> UI.fBtn icon msg {- >> Html.map toMsg -})
 
-        buttonRow =
+        actionsRow =
             row "justify-center"
                 []
                 (if isOpen then
@@ -70,7 +70,7 @@ view actions { back, forward, home } toMsg model =
                 FeatherIcons.menu
     in
     div [ class "flex flex-column absolute bottom-1 vs3" ]
-        [ buttonRow
+        [ actionsRow
         , row ""
             []
             [ div [ class "absolute", style "left" "calc(-38px - var(--rem3) )" ] [ boolHtml isOpen homeBtn ]
