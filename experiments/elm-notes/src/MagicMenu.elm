@@ -9,3 +9,7 @@ type alias MagicMenu =
 
 type alias Action msg =
     { icon : FeatherIcons.Icon, msg : msg }
+
+
+type alias Nav msg =
+    { home : msg, back : msg, forward : msg }
