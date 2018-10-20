@@ -42,11 +42,17 @@ view model =
         [ div [ class "flex w-100 measure-wide items-center" ]
             [ txtC "b pa3" "ELM Swipe Do"
             , spacer
-            , txtC "b pa3" "Scheduled"
-            , txtC "b pa3" "Todo"
-            , txtC "b pa3" "Done"
+            , viewTabs
             , spacer
             ]
+        ]
+
+
+viewTabs =
+    div [ class "flex " ]
+        [ txtC "b pa3" "Scheduled"
+        , txtC "b pa3" "Todo"
+        , txtC "b pa3" "Done"
         ]
 
 
