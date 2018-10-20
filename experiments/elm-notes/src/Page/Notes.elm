@@ -99,7 +99,7 @@ update message model =
             )
 
         New ->
-            ( model, Cmd.none )
+            ( model, model.session |> Session.pushHref Href.newNote )
 
         Delete ->
             ( model
@@ -189,7 +189,8 @@ viewKids model =
 
          else
             [ div [ class "flex-auto" ] []
-            , a [ href Href.newNote ] [ button [] [ FeatherIcons.filePlus |> FeatherIcons.toHtml [] ] ]
+
+            --            , a [ href Href.newNote ] [ button [] [ FeatherIcons.filePlus |> FeatherIcons.toHtml [] ] ]
             ]
         )
     , viewNotes
