@@ -16,12 +16,12 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
 
-type alias ActionConfig =
-    {}
+type alias ActionConfig msg =
+    { icon : FeatherIcons.Icon, msg : msg }
 
 
-type alias MagicMenuConfig =
-    { actions : List ActionConfig }
+type alias MagicMenuConfig msg =
+    { actions : List (ActionConfig msg) }
 
 
 defaultMagicMenuConfig =
@@ -32,7 +32,7 @@ type alias Details msg =
     { title : String
     , attrs : List (Html.Attribute msg)
     , kids : List (Html msg)
-    , mm : MagicMenuConfig
+    , mm : MagicMenuConfig msg
     }
 
 
