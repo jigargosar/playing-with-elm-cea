@@ -11,7 +11,7 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import MagicMenu exposing (MBState, MagicMenuDetails)
+import MagicMenu exposing (MagicMenu, MagicMenuDetails)
 import UI exposing (fBtn)
 
 
@@ -43,7 +43,7 @@ type alias MainDetails msg =
     , back : msg
     , forward : msg
     , home : msg
-    , mbState : MBState
+    , mbState : MagicMenu
     }
 
 

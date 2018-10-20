@@ -9,7 +9,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Json.Decode as D
 import Json.Encode as E
-import MagicMenu exposing (MBState)
+import MagicMenu exposing (MagicMenu)
 import Page.Note
 import Page.Notes as Notes
 import Ports
@@ -61,7 +61,7 @@ type alias Model =
     , key : Nav.Key
     , page : Page
     , authState : AuthState
-    , mbState : MBState
+    , mbState : MagicMenu
     }
 
 
@@ -233,12 +233,12 @@ update message model =
             ( model, Nav.pushUrl model.key Href.home )
 
 
-overMbState : (MBState -> MBState) -> Model -> Model
+overMbState : (MagicMenu -> MagicMenu) -> Model -> Model
 overMbState updateFn model =
     { model | mbState = updateFn model.mbState }
 
 
-overOpen : (Bool -> Bool) -> MBState -> MBState
+overOpen : (Bool -> Bool) -> MagicMenu -> MagicMenu
 overOpen updateFn model =
     { model | open = updateFn model.open }
 

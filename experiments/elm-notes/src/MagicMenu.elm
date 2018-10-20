@@ -1,9 +1,9 @@
-module MagicMenu exposing (ActionConfig, MBState, MagicMenuDetails)
+module MagicMenu exposing (ActionConfig, MagicMenu, MagicMenuDetails)
 
 import FeatherIcons
 
 
-type alias MBState =
+type alias MagicMenu =
     { open : Bool }
 
 
