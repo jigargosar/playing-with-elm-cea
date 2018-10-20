@@ -141,6 +141,9 @@ viewMagicButton { mbClickedMsg, mbState, back, forward, home } toMsg details =
         forwardBtn =
             UI.fBtn FeatherIcons.arrowRight forward
 
+        homeBtn =
+            fBtn FeatherIcons.home home
+
         buttonRow =
             row "justify-center"
                 []
@@ -162,7 +165,8 @@ viewMagicButton { mbClickedMsg, mbState, back, forward, home } toMsg details =
         [ buttonRow
         , row ""
             []
-            [ boolHtml isOpen backBtn
+            [ div [ class "absolute", style "left" "calc(-38px - var(--rem3) )" ] [ boolHtml isOpen homeBtn ]
+            , boolHtml isOpen backBtn
             , fBtn menuToggleIcon mbClickedMsg
             , boolHtml isOpen forwardBtn
             ]
