@@ -3,6 +3,7 @@ module Main exposing (Model, Msg(..), init, main, update, view)
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import UI exposing (..)
 
 
 
@@ -37,9 +38,8 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "" ]
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working!" ]
+    div [ class "pa3 w-100 bg-black white b " ]
+        [ div [ class "center measure-wide" ] [ txt "Elm Swipe Do" ]
         ]
 
 
