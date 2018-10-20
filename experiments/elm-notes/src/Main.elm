@@ -14,7 +14,7 @@ import Page.Notes as Notes
 import Ports
 import Random
 import Session exposing (Session)
-import Skeleton exposing (MBState)
+import Skeleton exposing (MBState, defaultSkeletonDetails)
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), (<?>), Parser, oneOf, s, string, top)
 import Url.Parser.Query as Query
@@ -273,9 +273,9 @@ view model =
         NotFound _ ->
             Skeleton.view config
                 identity
-                { title = "Not Found"
-                , attrs = []
-                , kids = [ div [] [ text "404 Page Not Found" ] ]
+                { defaultSkeletonDetails
+                    | title = "Not Found"
+                    , kids = [ div [] [ text "404 Page Not Found" ] ]
                 }
 
         Notes notes ->

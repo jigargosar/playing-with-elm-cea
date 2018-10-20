@@ -1,4 +1,4 @@
-module Skeleton exposing (Details, MBState, MainDetails, view)
+module Skeleton exposing (Details, MBState, MagicMenuConfig, MainDetails, defaultSkeletonDetails, view)
 
 import Auth exposing (AuthState)
 import Browser
@@ -8,10 +8,24 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
 
+type alias MagicMenuConfig =
+    {}
+
+
 type alias Details msg =
     { title : String
     , attrs : List (Html.Attribute msg)
     , kids : List (Html msg)
+    , mm : MagicMenuConfig
+    }
+
+
+defaultSkeletonDetails : Details msg
+defaultSkeletonDetails =
+    { title = "Elm Notes"
+    , attrs = []
+    , kids = []
+    , mm = {}
     }
 
 

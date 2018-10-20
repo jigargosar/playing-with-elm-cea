@@ -9,7 +9,7 @@ import Markdown
 import Note exposing (Note)
 import NotesCollection exposing (NotesCollection)
 import Session exposing (Session)
-import Skeleton
+import Skeleton exposing (defaultSkeletonDetails)
 import Task
 import UI exposing (link, row, spacer)
 
@@ -138,9 +138,9 @@ update message model =
 
 view : Model -> Skeleton.Details Msg
 view model =
-    { title = getPageTitle model
-    , attrs = []
-    , kids = [ viewKids model ]
+    { defaultSkeletonDetails
+        | title = getPageTitle model
+        , kids = [ viewKids model ]
     }
 
 

@@ -14,7 +14,7 @@ import NotesCollection exposing (NotesCollection)
 import Ports
 import Session exposing (Session)
 import Set exposing (Set)
-import Skeleton
+import Skeleton exposing (defaultSkeletonDetails)
 import Task
 import UI exposing (link)
 
@@ -121,10 +121,9 @@ currentNoteList =
 
 view : Model -> Skeleton.Details Msg
 view model =
-    { title = "Notes"
-    , attrs = []
-    , kids =
-        viewKids model
+    { defaultSkeletonDetails
+        | title = "Notes"
+        , kids = viewKids model
     }
 
 
