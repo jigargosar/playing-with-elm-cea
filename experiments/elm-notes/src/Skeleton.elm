@@ -100,6 +100,7 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
         ]
 
 
+viewMagicMenu : MainDetails msg -> (a -> msg) -> Details a -> Html msg
 viewMagicMenu { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
     let
         isOpen =
@@ -135,19 +136,57 @@ viewMagicMenu { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
             else
                 FeatherIcons.menu
     in
-    div [ class "flex flex-column absolute bottom-1 vs3" ]
-        [ buttonRow
-        , row ""
-            []
-            [ div [ class "absolute", style "left" "calc(-38px - var(--rem3) )" ] [ boolHtml isOpen homeBtn ]
-            , boolHtml isOpen backBtn
-            , fBtn menuToggleIcon mbClickedMsg
-            , boolHtml isOpen forwardBtn
-            ]
-        ]
+    MagicMenu.view [] { back = back, forward = forward, home = home } mbClickedMsg magicMenu
 
 
 
+--viewMagicMenu { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
+--    let
+--        isOpen =
+--            magicMenu.open
+--
+--        actionButtons =
+--            details.actions
+--                |> List.map ((\{ icon, msg } -> UI.fBtn icon msg) >> Html.map toMsg)
+--
+--        backBtn =
+--            UI.fBtn FeatherIcons.arrowLeft back
+--
+--        forwardBtn =
+--            UI.fBtn FeatherIcons.arrowRight forward
+--
+--        homeBtn =
+--            fBtn FeatherIcons.home home
+--
+--        buttonRow =
+--            row "justify-center"
+--                []
+--                (if isOpen then
+--                    actionButtons
+--
+--                 else
+--                    []
+--                )
+--
+--        menuToggleIcon =
+--            if isOpen then
+--                FeatherIcons.x
+--
+--            else
+--                FeatherIcons.menu
+--    in
+--    div [ class "flex flex-column absolute bottom-1 vs3" ]
+--        [ buttonRow
+--        , row ""
+--            []
+--            [ div [ class "absolute", style "left" "calc(-38px - var(--rem3) )" ] [ boolHtml isOpen homeBtn ]
+--            , boolHtml isOpen backBtn
+--            , fBtn menuToggleIcon mbClickedMsg
+--            , boolHtml isOpen forwardBtn
+--            ]
+--        ]
+--
+--
 --- View Helpers
 
 

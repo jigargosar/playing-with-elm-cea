@@ -26,8 +26,8 @@ type alias NavActions msg =
     { home : msg, back : msg, forward : msg }
 
 
-view : Actions msg -> NavActions msg -> (Msg -> msg) -> MagicMenu -> Html msg
-view actions { back, forward, home } toMsg model =
+view : Actions msg -> NavActions msg -> msg -> MagicMenu -> Html msg
+view actions { back, forward, home } clickMsg model =
     let
         isOpen =
             model.open
@@ -68,7 +68,7 @@ view actions { back, forward, home } toMsg model =
             []
             [ div [ class "absolute", style "left" "calc(-38px - var(--rem3) )" ] [ boolHtml isOpen homeBtn ]
             , boolHtml isOpen backBtn
-            , fBtn menuToggleIcon Clicked |> Html.map toMsg
+            , fBtn menuToggleIcon clickMsg
             , boolHtml isOpen forwardBtn
             ]
         ]
