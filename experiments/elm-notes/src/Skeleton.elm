@@ -95,6 +95,7 @@ viewMagicButton { mbClickedMsg, mbState } =
                 (if isOpen then
                     [ button [ onClick mbClickedMsg ] [ FeatherIcons.arrowLeft |> FeatherIcons.toHtml [] ]
                     , button [ onClick mbClickedMsg ] [ FeatherIcons.filePlus |> FeatherIcons.toHtml [] ]
+                    , button [ onClick mbClickedMsg ] [ FeatherIcons.arrowRight |> FeatherIcons.toHtml [] ]
                     ]
 
                  else
