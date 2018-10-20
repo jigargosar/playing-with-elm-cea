@@ -162,6 +162,7 @@ type Msg
     | AuthMsg Auth.Msg
     | NotesMsg Notes.Msg
     | NoteMsg Page.Note.Msg
+    | MBClicked
 
 
 subscriptions : Model -> Sub Msg
@@ -212,6 +213,9 @@ update message model =
                 _ ->
                     ( model, Cmd.none )
 
+        MBClicked ->
+            ( model, Cmd.none )
+
 
 stepAuth model ( authState, cmd ) =
     ( { model | authState = authState }, Cmd.map AuthMsg cmd )
@@ -226,7 +230,7 @@ view model =
     let
         config : Skeleton.AuthDetails Msg
         config =
-            { authState = model.authState, toAuthMsg = AuthMsg }
+            { authState = model.authState, toAuthMsg = AuthMsg, mbClickedMsg = MBClicked }
     in
     case model.page of
         NotFound _ ->

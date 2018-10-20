@@ -18,6 +18,7 @@ type alias Details msg =
 type alias AuthDetails msg =
     { authState : AuthState
     , toAuthMsg : Auth.Msg -> msg
+    , mbClickedMsg : msg
     }
 
 
