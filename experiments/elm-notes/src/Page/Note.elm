@@ -183,10 +183,11 @@ viewKids model =
                 [ row ""
                     []
                     [ spacer
-                    , button [ onClick <| Back ]
-                        [ FeatherIcons.slash
-                            |> FeatherIcons.toHtml []
-                        ]
+
+                    --                    , button [ onClick <| Back ]
+                    --                        [ FeatherIcons.slash
+                    --                            |> FeatherIcons.toHtml []
+                    --                        ]
                     ]
                 , noteEditor ""
                 ]
@@ -196,10 +197,11 @@ viewKids model =
                 [ row ""
                     []
                     [ spacer
-                    , button [ onClick <| View id ]
-                        [ FeatherIcons.fileText
-                            |> FeatherIcons.toHtml []
-                        ]
+
+                    --                    , button [ onClick <| View id ]
+                    --                        [ FeatherIcons.fileText
+                    --                            |> FeatherIcons.toHtml []
+                    --                        ]
                     ]
                 , noteEditor content
                 ]
@@ -209,10 +211,11 @@ viewKids model =
                 [ row ""
                     []
                     [ spacer
-                    , button [ onClick <| StartEditing id ]
-                        [ FeatherIcons.edit3
-                            |> FeatherIcons.toHtml []
-                        ]
+
+                    --                    , button [ onClick <| StartEditing id ]
+                    --                        [ FeatherIcons.edit3
+                    --                            |> FeatherIcons.toHtml []
+                    --                        ]
                     ]
                 , div [ class " pv2 " ] <| Markdown.toHtml Nothing content
                 ]
