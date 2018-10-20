@@ -25,6 +25,7 @@ type alias MainDetails msg =
     , mbClickedMsg : msg
     , back : msg
     , forward : msg
+    , home : msg
     , mbState : MBState
     }
 
@@ -86,7 +87,7 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
         ]
 
 
-viewMagicButton { mbClickedMsg, mbState, back, forward } =
+viewMagicButton { mbClickedMsg, mbState, back, forward, home } =
     let
         isOpen =
             mbState.open
@@ -96,6 +97,7 @@ viewMagicButton { mbClickedMsg, mbState, back, forward } =
                 []
                 (if isOpen then
                     [ button [ onClick back ] [ FeatherIcons.arrowLeft |> FeatherIcons.toHtml [] ]
+                    , button [ onClick home ] [ FeatherIcons.home |> FeatherIcons.toHtml [] ]
                     , button [ onClick mbClickedMsg ] [ FeatherIcons.filePlus |> FeatherIcons.toHtml [] ]
                     , button [ onClick forward ] [ FeatherIcons.arrowRight |> FeatherIcons.toHtml [] ]
                     ]

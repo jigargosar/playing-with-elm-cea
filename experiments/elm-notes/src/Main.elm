@@ -3,6 +3,7 @@ module Main exposing (Flags, Model, Msg(..), Page(..), exit, generator, init, ma
 import Auth exposing (AuthState)
 import Browser
 import Browser.Navigation as Nav
+import Href
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
@@ -167,6 +168,7 @@ type Msg
     | MBClicked
     | Back
     | Forward
+    | Home
 
 
 subscriptions : Model -> Sub Msg
@@ -226,6 +228,9 @@ update message model =
         Forward ->
             ( model, Nav.forward model.key 1 )
 
+        Home ->
+            ( model, Nav.pushUrl model.key Href.home )
+
 
 overMbState : (MBState -> MBState) -> Model -> Model
 overMbState updateFn model =
@@ -256,6 +261,7 @@ view model =
             , mbState = model.mbState
             , back = Back
             , forward = Forward
+            , home = Home
             }
     in
     case model.page of

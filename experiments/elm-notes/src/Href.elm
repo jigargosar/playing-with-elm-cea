@@ -1,4 +1,4 @@
-module Href exposing (..)
+module Href exposing (editNoteId, home, newNote, viewNoteId)
 
 import Url.Builder exposing (string)
 
@@ -13,3 +13,7 @@ editNoteId id =
 
 viewNoteId id =
     Url.Builder.absolute [ "notes", id ] []
+
+
+home =
+    Url.Builder.absolute [] []
