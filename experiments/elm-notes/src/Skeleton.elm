@@ -50,9 +50,9 @@ view config toMsg details =
     , body =
         [ viewHeader config
         , Html.map toMsg <|
-            div [ class "flex overflow-y-auto h-100 w-100" ]
+            div [ class "flex overflow-y-auto h-100 w-100 ph3 ph0-l" ]
                 [ div [ class "measure-wide center w-100" ]
-                    [ div [ class "ph3 ph0-l pb5" ] details.kids ]
+                    details.kids
                 ]
 
         --        , viewFooter
