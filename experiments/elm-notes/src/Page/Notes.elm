@@ -14,7 +14,7 @@ import NotesCollection exposing (NotesCollection)
 import Ports
 import Session exposing (Session)
 import Set exposing (Set)
-import Skeleton exposing (defaultSkeletonDetails)
+import Skeleton exposing (ActionConfig, defaultSkeletonDetails)
 import Task
 import UI exposing (link)
 
@@ -133,13 +133,24 @@ view model =
 
 
 getMMActions model =
-    [ { icon = FeatherIcons.filePlus, msg = New } ]
+    if isSelecting model then
+        [ ActionConfig FeatherIcons.checkSquare All
+        , ActionConfig FeatherIcons.slash Clear
+        , ActionConfig FeatherIcons.delete Delete
+        ]
+
+    else
+        [ ActionConfig FeatherIcons.filePlus New ]
+
+
+isSelecting model =
+    Set.isEmpty model.selection |> not
 
 
 viewKids model =
     let
         hasSelection =
-            Set.isEmpty model.selection |> not
+            isSelecting model
 
         viewItem note =
             let
