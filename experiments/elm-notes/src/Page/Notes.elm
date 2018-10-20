@@ -136,7 +136,7 @@ getMMActions model =
     if isSelecting model then
         [ ActionConfig FeatherIcons.checkSquare All
         , ActionConfig FeatherIcons.slash Clear
-        , ActionConfig FeatherIcons.delete Delete
+        , ActionConfig FeatherIcons.trash2 Delete
         ]
 
     else
@@ -177,35 +177,8 @@ viewKids model =
                   else
                     a [ href (Href.editNoteId note.id) ] [ button [] [ FeatherIcons.edit3 |> FeatherIcons.toHtml [] ] ]
                 ]
-
-        viewNotes =
-            div [ class "pv3" ] <| List.map viewItem (currentNoteList model)
     in
-    [ div [ class "flex items-center hs3" ]
-        (if hasSelection then
-            [ button [ onClick All ]
-                [ FeatherIcons.checkSquare
-                    |> FeatherIcons.toHtml []
-                ]
-            , button [ onClick Clear ]
-                [ FeatherIcons.slash
-                    |> FeatherIcons.toHtml []
-                ]
-            , div [ class "flex-auto" ] []
-            , button [ onClick Delete ]
-                [ FeatherIcons.trash2
-                    |> FeatherIcons.toHtml []
-                ]
-            ]
-
-         else
-            [ div [ class "flex-auto" ] []
-
-            --            , a [ href Href.newNote ] [ button [] [ FeatherIcons.filePlus |> FeatherIcons.toHtml [] ] ]
-            ]
-        )
-    , viewNotes
-    ]
+    [ div [ class "pv3" ] <| List.map viewItem (currentNoteList model) ]
 
 
 viewNoteContent hasSelection selected note =
