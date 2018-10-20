@@ -1,6 +1,5 @@
 module Skeleton exposing
     ( Details
-    , MBState
     , MainDetails
     , defaultSkeletonDetails
     , view
@@ -12,7 +11,7 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import MagicMenu exposing (MagicMenuDetails)
+import MagicMenu exposing (MBState, MagicMenuDetails)
 import UI exposing (fBtn)
 
 
@@ -35,10 +34,6 @@ defaultSkeletonDetails =
     , kids = []
     , mm = defaultMagicMenuConfig
     }
-
-
-type alias MBState =
-    { open : Bool }
 
 
 type alias MainDetails msg =

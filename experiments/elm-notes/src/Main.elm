@@ -1,4 +1,4 @@
-module Main exposing (Flags, Model, Msg(..), Page(..), exit, generator, init, main, route, setUrl, stepAuth, stepNote, stepNotes, stepUrl, subscriptions, update, view)
+module Main exposing (main)
 
 import Auth exposing (AuthState)
 import Browser
@@ -9,12 +9,13 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Json.Decode as D
 import Json.Encode as E
+import MagicMenu exposing (MBState)
 import Page.Note
 import Page.Notes as Notes
 import Ports
 import Random
 import Session exposing (Session)
-import Skeleton exposing (MBState, defaultSkeletonDetails)
+import Skeleton exposing (defaultSkeletonDetails)
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), (<?>), Parser, oneOf, s, string, top)
 import Url.Parser.Query as Query
