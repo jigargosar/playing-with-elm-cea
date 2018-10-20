@@ -56,7 +56,7 @@ view config toMsg details =
                 ]
 
         --        , viewFooter
-        , viewMagicButton config toMsg details
+        , viewMagicMenu config toMsg details
         ]
     }
 
@@ -108,7 +108,7 @@ boolHtml bool html_ =
         text ""
 
 
-viewMagicButton { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
+viewMagicMenu { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
     let
         isOpen =
             magicMenu.open
