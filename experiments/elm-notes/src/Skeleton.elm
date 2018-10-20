@@ -79,7 +79,7 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
 
 
 viewMagicButton =
-    button [ class "absolute" ] [ FeatherIcons.menu |> FeatherIcons.toHtml [] ]
+    button [ class "absolute bottom-1" ] [ FeatherIcons.menu |> FeatherIcons.toHtml [] ]
 
 
 
