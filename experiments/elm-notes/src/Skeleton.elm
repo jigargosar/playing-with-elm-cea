@@ -103,13 +103,13 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
 
 
 viewMagicMenu : MainDetails msg -> (a -> msg) -> Details a -> Html msg
-viewMagicMenu { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
+viewMagicMenu { magicMenu, magicMenuNavActions, toMagicMenuMsg } toMsg details =
     let
         actions =
             details.actions
                 |> List.map (\{ icon, msg } -> MagicMenu.Action icon (toMsg msg))
     in
-    MagicMenu.view actions { back = back, forward = forward, home = home } mbClickedMsg magicMenu
+    MagicMenu.view actions magicMenuNavActions toMagicMenuMsg magicMenu
 
 
 
