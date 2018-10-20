@@ -1,0 +1,54 @@
+{
+  "name": "elm-swipe-do",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "ramda": "^0.25.0",
+    "tachyons": "^4.11.1"
+  },
+  "now": {
+    "alias": [
+      "elm-swipe-do",
+      "https://elm-swipe-do.functional-programmer.com"
+    ],
+    "type": "static",
+    "static": {
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "start": "nodemon -w yarn.lock -w elm.json -x env ELM_DEBUGGER=true elm-app start",
+    "build": "elm-app build",
+    "deploy": "now && now alias"
+  },
+  "devDependencies": {
+    "husky": "^1.1.2",
+    "lint-staged": "^7.3.0",
+    "prettier": "^1.14.3"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "arrowParens": "avoid",
+    "singleQuote": true,
+    "semi": false,
+    "printWidth": 80
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "post-commit": "git update-index -g"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "prettier --config package.json --write",
+      "git add"
+    ]
+  }
+}
