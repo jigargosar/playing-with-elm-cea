@@ -1,4 +1,4 @@
-module MagicMenu exposing (ActionConfig, MagicMenu, MagicMenuDetails)
+module MagicMenu exposing (ActionConfig, MagicMenu, MagicMenuDetails, defaultMagicMenuConfig)
 
 import FeatherIcons
 
@@ -13,3 +13,7 @@ type alias ActionConfig msg =
 
 type alias MagicMenuDetails msg =
     { actions : List (ActionConfig msg) }
+
+
+defaultMagicMenuConfig =
+    { actions = [] }

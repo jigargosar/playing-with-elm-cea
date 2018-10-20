@@ -11,12 +11,8 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import MagicMenu exposing (MagicMenu, MagicMenuDetails)
+import MagicMenu exposing (MagicMenu, MagicMenuDetails, defaultMagicMenuConfig)
 import UI exposing (fBtn)
-
-
-defaultMagicMenuConfig =
-    { actions = [] }
 
 
 type alias Details msg =
