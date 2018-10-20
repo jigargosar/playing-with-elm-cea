@@ -128,11 +128,11 @@ view model =
     { defaultSkeletonDetails
         | title = "Notes"
         , kids = viewKids model
-        , mm = { actions = getMMActions model }
+        , mm = { actions = getActions model }
     }
 
 
-getMMActions model =
+getActions model =
     if isSelecting model then
         [ ActionConfig FeatherIcons.checkSquare All
         , ActionConfig FeatherIcons.slash Clear
