@@ -189,18 +189,8 @@ viewKids model =
                 ]
 
         Viewing id content ->
-            div []
-                [ row ""
-                    []
-                    [ spacer
-
-                    --                    , button [ onClick <| StartEditing id ]
-                    --                        [ FeatherIcons.edit3
-                    --                            |> FeatherIcons.toHtml []
-                    --                        ]
-                    ]
-                , div [ class " pv2 " ] <| Markdown.toHtml Nothing content
-                ]
+            div [] <|
+                Markdown.toHtml Nothing content
 
         NotFound id ->
             div [] [ text "Note Not Found" ]
