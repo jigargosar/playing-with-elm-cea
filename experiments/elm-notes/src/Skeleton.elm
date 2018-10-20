@@ -103,42 +103,9 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
 viewMagicMenu : MainDetails msg -> (a -> msg) -> Details a -> Html msg
 viewMagicMenu { mbClickedMsg, magicMenu, back, forward, home } toMsg details =
     let
-        isOpen =
-            magicMenu.open
-
-        actionButtons =
-            details.actions
-                |> List.map ((\{ icon, msg } -> UI.fBtn icon msg) >> Html.map toMsg)
-
         actions =
             details.actions
                 |> List.map (\{ icon, msg } -> MagicMenu.Action icon (toMsg msg))
-
-        backBtn =
-            UI.fBtn FeatherIcons.arrowLeft back
-
-        forwardBtn =
-            UI.fBtn FeatherIcons.arrowRight forward
-
-        homeBtn =
-            fBtn FeatherIcons.home home
-
-        buttonRow =
-            row "justify-center"
-                []
-                (if isOpen then
-                    actionButtons
-
-                 else
-                    []
-                )
-
-        menuToggleIcon =
-            if isOpen then
-                FeatherIcons.x
-
-            else
-                FeatherIcons.menu
     in
     MagicMenu.view actions { back = back, forward = forward, home = home } mbClickedMsg magicMenu
 
