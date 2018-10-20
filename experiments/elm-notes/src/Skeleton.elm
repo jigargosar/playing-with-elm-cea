@@ -34,6 +34,7 @@ view config toMsg details =
                 ]
 
         --        , viewFooter
+        , viewMagicButton
         ]
     }
 
@@ -75,6 +76,10 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
         [ txt textContent
         , avatar
         ]
+
+
+viewMagicButton =
+    button [ class "absolute" ] [ FeatherIcons.menu |> FeatherIcons.toHtml [] ]
 
 
 

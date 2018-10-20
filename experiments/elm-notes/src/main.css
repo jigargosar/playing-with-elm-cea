@@ -29,7 +29,7 @@ body,
   font-smoothing: antialiased;
 }
 
-body > :nth-child(3) {
+body > :nth-child(4) {
   width: fit-content !important;
   bottom: -5px !important;
   left: -1px !important;
