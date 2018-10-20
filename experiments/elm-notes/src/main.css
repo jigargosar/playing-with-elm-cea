@@ -30,8 +30,9 @@ body,
 }
 
 body > :nth-child(3) {
-  width: initial;
+  width: fit-content !important;
   bottom: -5px !important;
+  left: -1px !important;
   font-size: 0.5rem;
 }
 
