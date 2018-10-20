@@ -148,7 +148,7 @@ view model =
 getActions model =
     case model.edit of
         New ->
-            [ ActionConfig FeatherIcons.x Nop ]
+            []
 
         Editing id _ ->
             [ ActionConfig FeatherIcons.fileText (View id) ]
