@@ -221,10 +221,10 @@ update message model =
             ( model |> overMbState (overOpen not), Cmd.none )
 
         Back ->
-            ( model, Cmd.none )
+            ( model, Nav.back model.key 1 )
 
         Forward ->
-            ( model, Cmd.none )
+            ( model, Nav.forward model.key 1 )
 
 
 overMbState : (MBState -> MBState) -> Model -> Model

@@ -86,7 +86,7 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
         ]
 
 
-viewMagicButton { mbClickedMsg, mbState } =
+viewMagicButton { mbClickedMsg, mbState, back, forward } =
     let
         isOpen =
             mbState.open
@@ -95,9 +95,9 @@ viewMagicButton { mbClickedMsg, mbState } =
             row ""
                 []
                 (if isOpen then
-                    [ button [ onClick mbClickedMsg ] [ FeatherIcons.arrowLeft |> FeatherIcons.toHtml [] ]
+                    [ button [ onClick back ] [ FeatherIcons.arrowLeft |> FeatherIcons.toHtml [] ]
                     , button [ onClick mbClickedMsg ] [ FeatherIcons.filePlus |> FeatherIcons.toHtml [] ]
-                    , button [ onClick mbClickedMsg ] [ FeatherIcons.arrowRight |> FeatherIcons.toHtml [] ]
+                    , button [ onClick forward ] [ FeatherIcons.arrowRight |> FeatherIcons.toHtml [] ]
                     ]
 
                  else
