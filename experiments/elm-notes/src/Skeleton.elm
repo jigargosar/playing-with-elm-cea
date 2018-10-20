@@ -127,13 +127,19 @@ viewMagicButton { mbClickedMsg, mbState, back, forward, home } toMsg details =
             details.mm.actions
                 |> List.map ((\{ icon, msg } -> UI.fBtn icon msg) >> Html.map toMsg)
 
+        backBtn =
+            UI.fBtn FeatherIcons.arrowLeft back
+
+        forwardBtn =
+            UI.fBtn FeatherIcons.arrowRight forward
+
         buttonRow =
             row ""
                 []
                 (if isOpen then
-                    [ button [ onClick back ] [ FeatherIcons.arrowLeft |> FeatherIcons.toHtml [] ] ]
+                    [ backBtn ]
                         ++ actionButtons
-                        ++ [ button [ onClick forward ] [ FeatherIcons.arrowRight |> FeatherIcons.toHtml [] ] ]
+                        ++ [ forwardBtn ]
 
                  else
                     []
