@@ -205,6 +205,9 @@ update message model =
         AuthMsg msg ->
             stepAuth model (Auth.update msg model.authState)
 
+        MagicMenuMsg msg ->
+            stepMagicMenu model (MagicMenu.update msg model.magicMenu)
+
         NotesMsg msg ->
             case model.page of
                 Notes notes ->
@@ -220,9 +223,6 @@ update message model =
 
                 _ ->
                     ( model, Cmd.none )
-
-        MagicMenuMsg msg ->
-            ( model, Cmd.none )
 
         MBClicked ->
             ( model |> overMagicMenu (overOpen not), Cmd.none )
@@ -249,6 +249,10 @@ overOpen updateFn model =
 
 stepAuth model ( authState, cmd ) =
     ( { model | authState = authState }, Cmd.map AuthMsg cmd )
+
+
+stepMagicMenu model ( magicMenu, cmd ) =
+    ( { model | magicMenu = magicMenu }, Cmd.map MagicMenuMsg cmd )
 
 
 

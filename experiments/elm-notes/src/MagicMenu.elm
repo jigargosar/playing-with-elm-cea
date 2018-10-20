@@ -1,4 +1,4 @@
-module MagicMenu exposing (Action, Actions, MagicMenu, Msg, NavActions, view)
+module MagicMenu exposing (Action, Actions, MagicMenu, Msg, NavActions, update, view)
 
 import FeatherIcons
 import Html exposing (..)
