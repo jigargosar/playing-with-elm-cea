@@ -261,7 +261,12 @@ view model =
             , mbState = model.mbState
             , back = Back
             , forward = Forward
-            , home = Home
+            , home =
+                if model.url.path == "/" then
+                    NoOp
+
+                else
+                    Home
             }
     in
     case model.page of
