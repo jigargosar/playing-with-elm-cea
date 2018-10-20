@@ -1,4 +1,4 @@
-module MagicMenu exposing (Action, Actions, MagicMenu, Msg, Nav, view)
+module MagicMenu exposing (Action, Actions, MagicMenu, Msg, NavActions, view)
 
 import FeatherIcons
 import Html exposing (..)
@@ -22,12 +22,12 @@ type alias Actions msg =
     List (Action msg)
 
 
-type alias Nav msg =
+type alias NavActions msg =
     { home : msg, back : msg, forward : msg }
 
 
-view : Nav msg -> (Msg -> msg) -> MagicMenu -> Html msg
-view { back, forward, home } toMsg model =
+view : Actions msg -> NavActions msg -> (Msg -> msg) -> MagicMenu -> Html msg
+view actions { back, forward, home } toMsg model =
     let
         isOpen =
             model.open
@@ -41,15 +41,20 @@ view { back, forward, home } toMsg model =
         homeBtn =
             fBtn FeatherIcons.home home
 
-        --        buttonRow =
-        --            row "justify-center"
-        --                []
-        --                (if isOpen then
-        --                    actionButtons
-        --
-        --                 else
-        --                    []
-        --                )
+        actionButtons =
+            actions
+                |> List.map (\{ icon, msg } -> UI.fBtn icon msg {- >> Html.map toMsg -})
+
+        buttonRow =
+            row "justify-center"
+                []
+                (if isOpen then
+                    actionButtons
+
+                 else
+                    []
+                )
+
         menuToggleIcon =
             if isOpen then
                 FeatherIcons.x
@@ -58,10 +63,8 @@ view { back, forward, home } toMsg model =
                 FeatherIcons.menu
     in
     div [ class "flex flex-column absolute bottom-1 vs3" ]
-        [ {- buttonRow
-             ,
-          -}
-          row ""
+        [ buttonRow
+        , row ""
             []
             [ div [ class "absolute", style "left" "calc(-38px - var(--rem3) )" ] [ boolHtml isOpen homeBtn ]
             , boolHtml isOpen backBtn
