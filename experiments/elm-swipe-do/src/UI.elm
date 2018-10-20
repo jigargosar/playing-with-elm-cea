@@ -1,4 +1,4 @@
-module UI exposing (Disabled, boolHtml, fBtn, fDBtn, link, row, rowS3, spacer, txt)
+module UI exposing (Disabled, boolHtml, fBtn, fDBtn, link, row, rowS3, spacer, txt, txtC)
 
 import FeatherIcons
 import Html exposing (..)
@@ -46,3 +46,7 @@ boolHtml bool html_ =
 
 txt l =
     div [] [ text l ]
+
+
+txtC c l =
+    div [ class c ] [ text l ]
