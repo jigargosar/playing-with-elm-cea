@@ -1,4 +1,4 @@
-module UI exposing (link, row, spacer)
+module UI exposing (..)
 
 import FeatherIcons
 import Html exposing (..)

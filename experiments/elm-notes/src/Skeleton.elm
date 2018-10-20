@@ -14,6 +14,7 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import UI
 
 
 type alias ActionConfig msg =
@@ -73,7 +74,7 @@ view config toMsg details =
                 ]
 
         --        , viewFooter
-        , viewMagicButton config
+        , viewMagicButton config toMsg details
         ]
     }
 
@@ -117,20 +118,22 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
         ]
 
 
-viewMagicButton { mbClickedMsg, mbState, back, forward, home } =
+viewMagicButton { mbClickedMsg, mbState, back, forward, home } toMsg details =
     let
         isOpen =
             mbState.open
+
+        actionButtons =
+            details.mm.actions
+                |> List.map ((\{ icon, msg } -> UI.fBtn icon msg) >> Html.map toMsg)
 
         buttonRow =
             row ""
                 []
                 (if isOpen then
-                    [ button [ onClick back ] [ FeatherIcons.arrowLeft |> FeatherIcons.toHtml [] ]
-                    , button [ onClick home ] [ FeatherIcons.home |> FeatherIcons.toHtml [] ]
-                    , button [ onClick mbClickedMsg ] [ FeatherIcons.filePlus |> FeatherIcons.toHtml [] ]
-                    , button [ onClick forward ] [ FeatherIcons.arrowRight |> FeatherIcons.toHtml [] ]
-                    ]
+                    [ button [ onClick back ] [ FeatherIcons.arrowLeft |> FeatherIcons.toHtml [] ] ]
+                        ++ actionButtons
+                        ++ [ button [ onClick forward ] [ FeatherIcons.arrowRight |> FeatherIcons.toHtml [] ] ]
 
                  else
                     []
