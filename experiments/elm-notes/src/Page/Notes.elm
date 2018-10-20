@@ -26,6 +26,7 @@ type alias Model =
 type Msg
     = Nop
     | ViewNote Note
+    | New
     | Delete
     | SelectionDeleted ( NotesCollection, Cmd Msg )
     | NCC E.Value
@@ -97,6 +98,9 @@ update message model =
             , cmd
             )
 
+        New ->
+            ( model, Cmd.none )
+
         Delete ->
             ( model
             , NotesCollection.deleteAllWithIds model.selection (getNC model)
@@ -124,7 +128,12 @@ view model =
     { defaultSkeletonDetails
         | title = "Notes"
         , kids = viewKids model
+        , mm = { actions = getMMActions model }
     }
+
+
+getMMActions model =
+    [ { icon = FeatherIcons.filePlus, msg = New } ]
 
 
 viewKids model =
