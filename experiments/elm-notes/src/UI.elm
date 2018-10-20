@@ -22,15 +22,15 @@ spacer =
     div [ class "flex-auto" ] []
 
 
-fBtn : msg -> FeatherIcons.Icon -> Html msg
-fBtn =
-    fDBtn False
+fBtn : FeatherIcons.Icon -> msg -> Html msg
+fBtn icon =
+    fDBtn icon False
 
 
 type alias Disabled =
     Bool
 
 
-fDBtn : Disabled -> msg -> FeatherIcons.Icon -> Html msg
-fDBtn disabled_ msg fIcon =
+fDBtn : FeatherIcons.Icon -> Disabled -> msg -> Html msg
+fDBtn fIcon disabled_ msg =
     button [ disabled disabled_, onClick msg ] [ fIcon |> FeatherIcons.toHtml [] ]
