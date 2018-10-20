@@ -14,7 +14,7 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import UI
+import UI exposing (fBtn)
 
 
 type alias ActionConfig msg =
@@ -118,6 +118,14 @@ viewAuthAvatarBtn maybeOnClick maybePhotoUrl textContent =
         ]
 
 
+boolHtml bool html_ =
+    if bool then
+        html_
+
+    else
+        text ""
+
+
 viewMagicButton { mbClickedMsg, mbState, back, forward, home } toMsg details =
     let
         isOpen =
@@ -134,27 +142,29 @@ viewMagicButton { mbClickedMsg, mbState, back, forward, home } toMsg details =
             UI.fBtn FeatherIcons.arrowRight forward
 
         buttonRow =
-            row ""
+            row "justify-center"
                 []
                 (if isOpen then
-                    [ backBtn ]
-                        ++ actionButtons
-                        ++ [ forwardBtn ]
+                    actionButtons
 
                  else
                     []
                 )
+
+        menuToggleIcon =
+            if isOpen then
+                FeatherIcons.x
+
+            else
+                FeatherIcons.menu
     in
     div [ class "flex flex-column absolute bottom-1 vs3" ]
         [ buttonRow
-        , button [ onClick mbClickedMsg ]
-            [ (if isOpen then
-                FeatherIcons.x
-
-               else
-                FeatherIcons.menu
-              )
-                |> FeatherIcons.toHtml []
+        , row ""
+            []
+            [ boolHtml isOpen backBtn
+            , fBtn menuToggleIcon mbClickedMsg
+            , boolHtml isOpen forwardBtn
             ]
         ]
 
