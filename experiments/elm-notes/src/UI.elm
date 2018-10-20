@@ -1,5 +1,6 @@
 module UI exposing (link, row, spacer)
 
+import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -19,3 +20,8 @@ row =
 
 spacer =
     div [ class "flex-auto" ] []
+
+
+fBtn : msg -> FeatherIcons.Icon -> Html msg
+fBtn msg fIcon =
+    button [ onClick msg ] [ fIcon |> FeatherIcons.toHtml [] ]
