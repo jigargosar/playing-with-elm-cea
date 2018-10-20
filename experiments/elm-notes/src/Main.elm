@@ -216,7 +216,17 @@ update message model =
                     ( model, Cmd.none )
 
         MBClicked ->
-            ( model, Cmd.none )
+            ( model |> overMbState (overOpen not), Cmd.none )
+
+
+overMbState : (MBState -> MBState) -> Model -> Model
+overMbState updateFn model =
+    { model | mbState = updateFn model.mbState }
+
+
+overOpen : (Bool -> Bool) -> MBState -> MBState
+overOpen updateFn model =
+    { model | open = updateFn model.open }
 
 
 stepAuth model ( authState, cmd ) =
