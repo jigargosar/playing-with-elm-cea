@@ -1,8 +1,6 @@
 module Skeleton exposing
-    ( ActionConfig
-    , Details
+    ( Details
     , MBState
-    , MagicMenuConfig
     , MainDetails
     , defaultSkeletonDetails
     , view
@@ -14,15 +12,8 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import MagicMenu exposing (MagicMenuDetails)
 import UI exposing (fBtn)
-
-
-type alias ActionConfig msg =
-    { icon : FeatherIcons.Icon, msg : msg }
-
-
-type alias MagicMenuConfig msg =
-    { actions : List (ActionConfig msg) }
 
 
 defaultMagicMenuConfig =
@@ -33,7 +24,7 @@ type alias Details msg =
     { title : String
     , attrs : List (Html.Attribute msg)
     , kids : List (Html msg)
-    , mm : MagicMenuConfig msg
+    , mm : MagicMenuDetails msg
     }
 
 

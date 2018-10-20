@@ -5,11 +5,12 @@ import Href
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import MagicMenu exposing (ActionConfig)
 import Markdown
 import Note exposing (Note)
 import NotesCollection exposing (NotesCollection)
 import Session exposing (Session)
-import Skeleton exposing (ActionConfig, defaultSkeletonDetails)
+import Skeleton exposing (defaultSkeletonDetails)
 import Task
 import UI exposing (link, row, spacer)
 

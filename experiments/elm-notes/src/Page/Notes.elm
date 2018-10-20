@@ -9,12 +9,13 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
+import MagicMenu exposing (ActionConfig)
 import Note exposing (Note)
 import NotesCollection exposing (NotesCollection)
 import Ports
 import Session exposing (Session)
 import Set exposing (Set)
-import Skeleton exposing (ActionConfig, defaultSkeletonDetails)
+import Skeleton exposing (defaultSkeletonDetails)
 import Task
 import UI exposing (link)
 
