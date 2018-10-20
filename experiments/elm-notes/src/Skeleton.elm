@@ -19,7 +19,7 @@ type alias Details msg =
     { title : String
     , attrs : List (Html.Attribute msg)
     , kids : List (Html msg)
-    , mm : MagicMenuDetails msg
+    , mmConfig : MagicMenuDetails msg
     }
 
 
@@ -28,7 +28,7 @@ defaultSkeletonDetails =
     { title = "Elm Notes"
     , attrs = []
     , kids = []
-    , mm = defaultMagicMenuConfig
+    , mmConfig = defaultMagicMenuConfig
     }
 
 
@@ -114,7 +114,7 @@ viewMagicButton { mbClickedMsg, mbState, back, forward, home } toMsg details =
             mbState.open
 
         actionButtons =
-            details.mm.actions
+            details.mmConfig.actions
                 |> List.map ((\{ icon, msg } -> UI.fBtn icon msg) >> Html.map toMsg)
 
         backBtn =

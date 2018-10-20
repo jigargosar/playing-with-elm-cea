@@ -142,7 +142,7 @@ view model =
     { defaultSkeletonDetails
         | title = getPageTitle model
         , kids = [ viewKids model ]
-        , mm = { actions = getActions model }
+        , mmConfig = { actions = getActions model }
     }
 
 

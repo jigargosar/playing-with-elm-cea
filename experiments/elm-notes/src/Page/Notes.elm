@@ -129,7 +129,7 @@ view model =
     { defaultSkeletonDetails
         | title = "Notes"
         , kids = viewKids model
-        , mm = { actions = getActions model }
+        , mmConfig = { actions = getActions model }
     }
 
 
