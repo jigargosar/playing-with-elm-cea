@@ -1,4 +1,4 @@
-module MagicMenu exposing (Action, MagicMenu)
+module MagicMenu exposing (Action, Actions, MagicMenu, Msg, Nav, view)
 
 import FeatherIcons
 import Html exposing (..)
@@ -16,6 +16,10 @@ type Msg
 
 type alias Action msg =
     { icon : FeatherIcons.Icon, msg : msg }
+
+
+type alias Actions msg =
+    List (Action msg)
 
 
 type alias Nav msg =
