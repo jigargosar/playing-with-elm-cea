@@ -166,6 +166,7 @@ type Msg
     | AuthMsg Auth.Msg
     | NotesMsg Notes.Msg
     | NoteMsg Page.Note.Msg
+    | MagicMenuMsg MagicMenu.Msg
     | MBClicked
     | Back
     | Forward
@@ -220,8 +221,11 @@ update message model =
                 _ ->
                     ( model, Cmd.none )
 
+        MagicMenuMsg msg ->
+            ( model, Cmd.none )
+
         MBClicked ->
-            ( model |> overMbState (overOpen not), Cmd.none )
+            ( model |> overMagicMenu (overOpen not), Cmd.none )
 
         Back ->
             ( model, Nav.back model.key 1 )
@@ -233,8 +237,8 @@ update message model =
             ( model, Nav.pushUrl model.key Href.home )
 
 
-overMbState : (MagicMenu -> MagicMenu) -> Model -> Model
-overMbState updateFn model =
+overMagicMenu : (MagicMenu -> MagicMenu) -> Model -> Model
+overMagicMenu updateFn model =
     { model | magicMenu = updateFn model.magicMenu }
 
 

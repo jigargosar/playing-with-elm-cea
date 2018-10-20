@@ -26,6 +26,13 @@ type alias NavActions msg =
     { home : msg, back : msg, forward : msg }
 
 
+update : Msg -> MagicMenu -> ( MagicMenu, Cmd Msg )
+update message model =
+    case message of
+        Clicked ->
+            ( { model | open = not model.open }, Cmd.none )
+
+
 view : Actions msg -> NavActions msg -> msg -> MagicMenu -> Html msg
 view actions { back, forward, home } clickMsg model =
     let
