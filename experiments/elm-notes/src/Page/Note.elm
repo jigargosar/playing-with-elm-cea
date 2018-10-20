@@ -150,14 +150,14 @@ getActions model =
         New ->
             [ ActionConfig FeatherIcons.x Nop ]
 
-        Editing _ _ ->
-            [ ActionConfig FeatherIcons.x Nop ]
+        Editing id _ ->
+            [ ActionConfig FeatherIcons.fileText (View id) ]
 
-        Viewing _ _ ->
-            [ ActionConfig FeatherIcons.home Nop, ActionConfig FeatherIcons.edit2 Nop ]
+        Viewing id _ ->
+            [ ActionConfig FeatherIcons.edit3 (StartEditing id) ]
 
         NotFound _ ->
-            [ ActionConfig FeatherIcons.x Nop ]
+            []
 
 
 getPageTitle model =
