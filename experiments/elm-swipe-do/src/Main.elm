@@ -53,7 +53,8 @@ view model =
             , FeatherIcons.home
             , FeatherIcons.twitter
             , FeatherIcons.scissors
-            , FeatherIcons.shoppingCart
+            , FeatherIcons.edit
+            , FeatherIcons.trash2
             ]
         ]
 
@@ -124,7 +125,7 @@ viewMenuItems isOpen icons =
                     -0.25 + (0.5 / (ct - 1) * fIdx)
             in
             [ Rotate (Turn tn)
-            , Translate Zero (Rem -5)
+            , Translate Zero (Rem -3.5)
             , Rotate (Turn -tn)
             ]
 
