@@ -9,3 +9,9 @@ type alias MagicMenu =
 
 initial =
     MagicMenu False False
+
+
+type Msg
+    = NoOp
+    | Clicked
+    | Wheel
