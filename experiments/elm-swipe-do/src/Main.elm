@@ -74,8 +74,6 @@ type Msg
     = NoOp
     | MagicMenuMsg MagicMenu.Msg
     | TodoCMsg TodoCollection.Msg
-    | NewClicked
-    | NewAdded ( Todo, TodoCollection )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -91,15 +89,6 @@ update message model =
         TodoCMsg msg ->
             TodoCollection.update msg model.todoC
                 |> Tuple.mapBoth (flip setTodoC model) (Cmd.map TodoCMsg)
-
-        NewAdded ( todo, todoC ) ->
-            ( setTodoC todoC model, Cmd.none )
-
-        NewClicked ->
-            ( model
-            , Collection.createAndAdd (Todo.initWithContent "Todo XX") model.todoC
-                |> Task.perform NewAdded
-            )
 
 
 
