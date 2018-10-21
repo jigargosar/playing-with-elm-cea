@@ -14,7 +14,7 @@ import UI exposing (row, txtC)
 
 type Mode
     = List
-    | New Todo.Id Todo.Content
+    | Edit Todo.Id Todo.Content
 
 
 type alias TodoCollection =
@@ -63,7 +63,7 @@ update message model =
 
         NewAdded ( todo, collection ) ->
             ( setCollection collection model
-                |> setMode (New todo.id (Todo.getContent todo))
+                |> setMode (Edit todo.id (Todo.getContent todo))
             , Port.cacheTodoC (Collection.encode Todo.encode collection)
             )
 
@@ -75,23 +75,31 @@ update message model =
 
 
 view : Model -> Html msg
-view model =
-    case model.mode of
-        List ->
-            viewList model
-
-        New ->
-            viewList model
+view =
+    viewList
 
 
 viewList : Model -> Html msg
-viewList =
-    getTodoList >> List.map viewTodo >> div [ class "w-100 measure-narrow vs3" ]
+viewList model =
+    model |> getTodoList >> List.map (viewTodo model.mode) >> div [ class "w-100 measure-narrow vs3" ]
 
 
-viewTodo : Todo -> Html msg
-viewTodo todo =
-    row "" [] [ viewTodoContent (Todo.getContent todo) ]
+viewTodo : Mode -> Todo -> Html msg
+viewTodo mode todo =
+    let
+        defaultView =
+            row "" [] [ viewTodoContent (Todo.getContent todo) ]
+    in
+    case mode of
+        List ->
+            defaultView
+
+        Edit id content ->
+            if todo.id == id then
+                row "" [] [ input [ value content ] [] ]
+
+            else
+                defaultView
 
 
 viewTodoContent content =
