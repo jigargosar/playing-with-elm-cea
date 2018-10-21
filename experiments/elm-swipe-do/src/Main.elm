@@ -96,14 +96,6 @@ subscriptions model =
 ---- VIEW ----
 
 
-type alias Action msg =
-    { icon : FeatherIcons.Icon, msg : msg }
-
-
-type alias Actions msg =
-    List (Action msg)
-
-
 mockActions =
     [ FeatherIcons.facebook
     , FeatherIcons.home

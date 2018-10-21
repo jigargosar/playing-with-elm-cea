@@ -1,5 +1,6 @@
 module MagicMenu exposing (MagicMenu, initial)
 
+import FeatherIcons
 import Json.Decode as D
 import Json.Encode as E
 import Port
@@ -43,6 +44,14 @@ update message model =
         Wheel encoded ->
             D.decodeValue WheelEvent.decoder encoded
                 |> mapDecodeResult model (\{ deltaY } -> { model | hidden = deltaY > 0 })
+
+
+type alias Action msg =
+    { icon : FeatherIcons.Icon, msg : msg }
+
+
+type alias Actions msg =
+    List (Action msg)
 
 
 mapDecodeResult : model -> (answer -> model) -> Result D.Error answer -> ( model, Cmd msg )
