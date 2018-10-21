@@ -38,7 +38,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "flex flex-column w-100vw" ] [ viewToolbar ]
+    div [ class "flex flex-column w-100" ] [ viewToolbar ]
 
 
 viewToolbar =
