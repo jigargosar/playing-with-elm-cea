@@ -19,6 +19,15 @@ window.addEventListener('wheel', function(e) {
   send(data, 'wheel', app)
 })
 
+subscribe(
+  {
+    logR: data => {
+      console.warn(data)
+    },
+  },
+  app,
+)
+
 registerServiceWorker()
 
 // Helpers
@@ -42,6 +51,6 @@ function subscribe(options, app) {
       console.error('sub port not found', sub)
       return
     }
-    app.ports[sub].subscribe(fn(partialRight(send, [app])))
+    app.ports[sub].subscribe(data => fn(data, partialRight(send, [app])))
   })(options)
 }

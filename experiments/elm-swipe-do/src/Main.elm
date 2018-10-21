@@ -9,6 +9,7 @@ import Html.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
 import MagicMenu exposing (MagicMenu)
+import Port
 import Style exposing (Transform(..), Unit(..))
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
@@ -74,7 +75,7 @@ update msg model =
             ( D.decodeValue WheelEvent.decoder ev
                 |> Result.map (updateOnWheelEvent model)
                 |> Result.withDefault model
-            , Cmd.none
+            , Port.logR { err = "foo" }
             )
 
 
