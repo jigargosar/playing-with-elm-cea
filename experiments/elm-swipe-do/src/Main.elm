@@ -73,8 +73,7 @@ update msg model =
 
         Wheel ev ->
             ( D.decodeValue wheelDecoder ev
-                |> Result.mapError (Debug.log "err")
-                |> Result.map (updateOnWheelEvent model >> Debug.log "model")
+                |> Result.map (updateOnWheelEvent model)
                 |> Result.withDefault model
             , Cmd.none
             )
