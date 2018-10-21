@@ -104,15 +104,28 @@ transform =
                     "rotate(" ++ stringFromUnit unit ++ ")"
 
                 Translate unitX unitY ->
-                    "translate(" ++ stringFromUnit unitX ++ "," ++ stringFromUnit unitX ++ ")"
+                    "translate(" ++ stringFromUnit unitX ++ "," ++ stringFromUnit unitY ++ ")"
     in
-    List.map stringFromTransform >> String.join " , " >> style "transform"
+    List.map stringFromTransform >> String.join " " >> Debug.log "t" >> style "transform"
 
 
 viewMenuItems isOpen icons =
     let
         ct =
             List.length icons |> toFloat
+
+        transformForIdx idx =
+            let
+                fIdx =
+                    toFloat idx
+
+                tn =
+                    -0.25 + (0.5 / (ct - 1) * fIdx)
+            in
+            [ Rotate (Turn tn)
+            , Translate Zero (Rem -5)
+            , Rotate (Turn -tn)
+            ]
 
         tran idx =
             let
@@ -137,7 +150,7 @@ viewMenuItems isOpen icons =
             (\idx i ->
                 div
                     [ class "absolute"
-                    , style "transform" (ter isOpen (tran idx) "")
+                    , transform (ter isOpen (transformForIdx idx) [])
                     , style "transition" "all 0.3s ease-in"
                     ]
                     [ fBtn i NoOp ]
