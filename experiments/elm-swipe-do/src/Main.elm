@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import BasicX exposing (ter)
+import BasicX exposing (flip, ter)
 import Browser
 import Browser.Events
 import FeatherIcons
@@ -34,6 +34,11 @@ init =
     ( { isOpen = False, hideMenu = False, magicMenu = MagicMenu.initial }, Cmd.none )
 
 
+setMagicMenu : MagicMenu -> Model -> Model
+setMagicMenu magicMenu model =
+    { model | magicMenu = magicMenu }
+
+
 
 ---- UPDATE ----
 
@@ -42,11 +47,12 @@ type Msg
     = NoOp
     | Toggle
     | Wheel E.Value
+    | MagicMenuMsg MagicMenu.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
+update message model =
+    case message of
         NoOp ->
             ( model, Cmd.none )
 
@@ -59,6 +65,10 @@ update msg model =
                 |> Result.withDefault model
             , Cmd.none
             )
+
+        MagicMenuMsg msg ->
+            MagicMenu.update msg model.magicMenu
+                |> Tuple.mapBoth (flip setMagicMenu model) (Cmd.map MagicMenuMsg)
 
 
 updateOnWheelEvent : Model -> WheelEvent -> Model

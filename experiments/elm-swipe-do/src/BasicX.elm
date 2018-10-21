@@ -1,4 +1,4 @@
-module BasicX exposing (ter)
+module BasicX exposing (flip, ter)
 
 
 ter b t f =
@@ -7,3 +7,7 @@ ter b t f =
 
     else
         f
+
+
+flip fn a b =
+    fn b a
