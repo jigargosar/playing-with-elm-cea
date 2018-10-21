@@ -15,11 +15,12 @@ type alias Content =
 type alias Model =
     { id : Id
     , content : Content
+    , done : Bool
     }
 
 
 init id =
-    Model id ""
+    { id = id, content = "", done = False }
 
 
 generator =
