@@ -1,4 +1,4 @@
-module MagicMenu exposing (Action, Actions, MagicMenu, Msg, initial, update)
+module MagicMenu exposing (Action, Actions, MagicMenu, Msg, initial, subscriptions, update)
 
 import BasicX exposing (ter)
 import FeatherIcons

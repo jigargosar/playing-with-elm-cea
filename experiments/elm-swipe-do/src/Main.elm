@@ -81,7 +81,10 @@ updateOnWheelEvent model { deltaY } =
 
 
 subscriptions model =
-    Sub.batch [ Port.wheel Wheel ]
+    Sub.batch
+        [ Port.wheel Wheel
+        , MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
+        ]
 
 
 
