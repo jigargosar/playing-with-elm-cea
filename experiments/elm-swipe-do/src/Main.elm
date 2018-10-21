@@ -109,7 +109,7 @@ mockActions =
     , FeatherIcons.trash2
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
-        |> (::) (MagicMenu.Action FeatherIcons.alertOctagon (TodoCMsg Todos.Reset))
+        |> (::) (MagicMenu.Action FeatherIcons.trash2 (TodoCMsg Todos.Reset))
         |> (::) (MagicMenu.Action FeatherIcons.filePlus (TodoCMsg Todos.NewClicked))
 
 
