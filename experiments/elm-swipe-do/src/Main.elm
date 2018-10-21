@@ -121,7 +121,7 @@ view : Model -> Html Msg
 view model =
     UI.root
         [ viewToolbar
-        , viewMagicMenu model.isOpen Toggle mockActions
+        , boolHtml (not model.hideMenu) (viewMagicMenu model.isOpen Toggle mockActions)
         ]
 
 
