@@ -10,6 +10,18 @@ import UI exposing (..)
 
 
 
+--- Basics
+
+
+ter b t f =
+    if b then
+        t
+
+    else
+        f
+
+
+
 ---- MODEL ----
 
 
@@ -39,6 +51,14 @@ update msg model =
 
         Toggle ->
             ( { model | isOpen = not model.isOpen }, Cmd.none )
+
+
+
+---- Subscriptions
+
+
+subscriptions model =
+    Sub.batch []
 
 
 
@@ -124,14 +144,6 @@ viewMenuItems isOpen actions =
             )
 
 
-ter b t f =
-    if b then
-        t
-
-    else
-        f
-
-
 
 --- Toolbar
 
@@ -167,5 +179,5 @@ main =
         { view = view
         , init = \_ -> init
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         }
