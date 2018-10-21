@@ -1,4 +1,4 @@
-module Todos exposing (Msg(..), Todos, generator, update, viewList)
+module Todos exposing (Msg(..), Todos, generator, update, view)
 
 import Collection exposing (Collection)
 import Html exposing (..)
@@ -64,6 +64,11 @@ update message model =
             , Collection.createAndAdd (Todo.initWithContent "Todo XX") model.collection
                 |> Task.perform NewAdded
             )
+
+
+view : Model -> Html msg
+view =
+    getTodoList >> List.map viewTodo >> div [ class "w-100 measure-narrow vs3" ]
 
 
 viewList : Model -> Html msg

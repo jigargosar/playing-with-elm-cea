@@ -118,7 +118,7 @@ view model =
     UI.root
         [ viewToolbar
         , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
-            [ Todos.viewList model.todos ]
+            [ Todos.view model.todos ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         ]
