@@ -102,14 +102,14 @@ subscriptions model =
 
 
 mockActions =
-    [ FeatherIcons.facebook
-    , FeatherIcons.home
+    [ FeatherIcons.home
     , FeatherIcons.twitter
     , FeatherIcons.scissors
     , FeatherIcons.edit
     , FeatherIcons.trash2
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
+        |> (::) (MagicMenu.Action FeatherIcons.alertOctagon (TodoCMsg Todos.Reset))
         |> (::) (MagicMenu.Action FeatherIcons.filePlus (TodoCMsg Todos.NewClicked))
 
 
