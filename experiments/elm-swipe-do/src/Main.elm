@@ -17,13 +17,6 @@ import WheelEvent exposing (WheelEvent)
 
 
 
----- Port
-
-
-port wheel : (E.Value -> msg) -> Sub msg
-
-
-
 ---- MODEL ----
 
 
@@ -78,7 +71,7 @@ updateOnWheelEvent model { deltaY } =
 
 
 subscriptions model =
-    Sub.batch [ wheel Wheel ]
+    Sub.batch [ Port.wheel Wheel ]
 
 
 
