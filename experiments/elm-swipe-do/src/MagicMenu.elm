@@ -2,7 +2,9 @@ module MagicMenu exposing (MagicMenu, initial)
 
 
 type alias MagicMenu =
-    { open : Bool, hidden : Bool }
+    { open : Bool
+    , hidden : Bool
+    }
 
 
 initial =
