@@ -4,6 +4,7 @@ import Collection exposing (Collection)
 import Json.Decode as D
 import Json.Encode as E
 import Random
+import Task
 import Todo exposing (Todo)
 
 
@@ -18,3 +19,25 @@ type alias TodoCollection =
 generator : E.Value -> Random.Generator Model
 generator enc =
     Collection.generator Todo.decoder enc
+
+
+type Msg
+    = NoOp
+    | NewClicked
+    | NewAdded ( Todo, TodoCollection )
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update message model =
+    case message of
+        NoOp ->
+            ( model, Cmd.none )
+
+        NewAdded ( todo, newModel ) ->
+            ( newModel, Cmd.none )
+
+        NewClicked ->
+            ( model
+            , Collection.createAndAdd (Todo.initWithContent "Todo XX") model
+                |> Task.perform NewAdded
+            )
