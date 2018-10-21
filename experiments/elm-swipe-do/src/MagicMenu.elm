@@ -70,15 +70,15 @@ mapDecodeResult model mapper result =
             ( model, D.errorToString err |> Port.logS )
 
 
-viewMagicMenu : Bool -> msg -> Actions msg -> Html msg
-viewMagicMenu isOpen menuClickMsg actions =
+viewMagicMenu : Actions msg -> (Msg -> msg) -> Model -> Html msg
+viewMagicMenu actions toMsg model =
     div [ class "flex justify-center" ]
         [ div [ class "absolute bottom-1 flex flex-column items-center" ]
             ([ div [ class "bg-white z-1" ]
-                [ fBtn (ter isOpen FeatherIcons.x FeatherIcons.menu) menuClickMsg
+                [ fBtn (ter model.open FeatherIcons.x FeatherIcons.menu) (toMsg Clicked)
                 ]
              ]
-                ++ viewMenuItems isOpen actions
+                ++ viewMenuItems model.open actions
             )
         ]
 
