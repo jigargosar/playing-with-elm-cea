@@ -125,7 +125,7 @@ mockActions =
     , FeatherIcons.trash2
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
-        |> (::) (MagicMenu.Action FeatherIcons.filePlus NewClicked)
+        |> (::) (MagicMenu.Action FeatherIcons.filePlus (TodoCMsg TodoCollection.NewClicked))
 
 
 view : Model -> Html Msg

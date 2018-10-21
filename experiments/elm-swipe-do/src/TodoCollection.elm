@@ -1,4 +1,4 @@
-module TodoCollection exposing (Msg, TodoCollection, generator, update)
+module TodoCollection exposing (Msg(..), TodoCollection, generator, update)
 
 import Collection exposing (Collection)
 import Json.Decode as D
