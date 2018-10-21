@@ -140,7 +140,7 @@ viewMenuItems isOpen icons =
                     [ onClick NoOp
                     , class "flex items-center justify-center absolute pa0 ma0"
                     , transform (ter isOpen (transformForIdx idx) [])
-                    , style "transition" ("all 0.3s " ++ transitionDelayForIdx idx ++ " ease-in")
+                    , style "transition" ("transform 0.3s " ++ transitionDelayForIdx idx ++ " ease-in")
                     ]
                     [ i |> FeatherIcons.toHtml [] ]
             )
