@@ -2,6 +2,7 @@ module MagicMenu exposing (MagicMenu, initial)
 
 import Json.Decode as D
 import Json.Encode as E
+import Port
 import WheelEvent
 
 
@@ -23,6 +24,11 @@ type Msg
     = NoOp
     | Clicked
     | Wheel E.Value
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.batch [ Port.wheel Wheel ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
