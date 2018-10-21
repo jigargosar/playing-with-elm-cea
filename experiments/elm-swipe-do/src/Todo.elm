@@ -1,4 +1,4 @@
-module Todo exposing (Content, Id, Todo, generator, init)
+module Todo exposing (Content, Id, Todo, init)
 
 import Collection exposing (Millis)
 import IdX
