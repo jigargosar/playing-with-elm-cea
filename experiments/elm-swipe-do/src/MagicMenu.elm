@@ -52,14 +52,6 @@ update message model =
                 |> mapDecodeResult model (\{ deltaY } -> { model | hidden = deltaY > 0 })
 
 
-type alias Action msg =
-    { icon : FeatherIcons.Icon, msg : msg }
-
-
-type alias Actions msg =
-    List (Action msg)
-
-
 mapDecodeResult : model -> (answer -> model) -> Result D.Error answer -> ( model, Cmd msg )
 mapDecodeResult model mapper result =
     case result of
@@ -70,8 +62,16 @@ mapDecodeResult model mapper result =
             ( model, D.errorToString err |> Port.logS )
 
 
-viewMagicMenu : Actions msg -> (Msg -> msg) -> Model -> Html msg
-viewMagicMenu actions toMsg model =
+type alias Action msg =
+    { icon : FeatherIcons.Icon, msg : msg }
+
+
+type alias Actions msg =
+    List (Action msg)
+
+
+view : Actions msg -> (Msg -> msg) -> Model -> Html msg
+view actions toMsg model =
     div [ class "flex justify-center" ]
         [ div [ class "absolute bottom-1 flex flex-column items-center" ]
             ([ div [ class "bg-white z-1" ]
