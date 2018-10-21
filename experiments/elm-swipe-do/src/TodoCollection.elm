@@ -3,6 +3,7 @@ module TodoCollection exposing (TodoCollection, generator)
 import Collection exposing (Collection)
 import Json.Decode as D
 import Json.Encode as E
+import Port
 import Random
 import Task
 import Todo exposing (Todo)
@@ -34,7 +35,7 @@ update message model =
             ( model, Cmd.none )
 
         NewAdded ( todo, newModel ) ->
-            ( newModel, Cmd.none )
+            ( newModel, Port.cacheTodoC (Collection.encode Todo.encode newModel) )
 
         NewClicked ->
             ( model
