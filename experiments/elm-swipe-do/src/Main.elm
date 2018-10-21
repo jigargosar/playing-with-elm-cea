@@ -38,6 +38,10 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
+    div [] [ viewToolbar ]
+
+
+viewToolbar =
     div [ class "flex w-100 justify-center bg-black white" ]
         [ div [ class "flex w-100 measure-wide items-center" ]
             [ txtC "b ph3" "ELM Swipe Do"
