@@ -1,4 +1,4 @@
-module UI exposing (Disabled, boolHtml, fBtn, fDBtn, link, root, row, rowS3, spacer, toolbar, txt, txtC)
+module UI exposing (Disabled, boolHtml, fBtn, fDBtn, link, root, row, rowS3, spacer, toolbar, txt, txtC, txtCL)
 
 import FeatherIcons
 import Html exposing (..)
@@ -50,6 +50,10 @@ txt l =
 
 txtC c l =
     div [ class c ] [ text l ]
+
+
+txtCL cl l =
+    div [ classList cl ] [ text l ]
 
 
 root =

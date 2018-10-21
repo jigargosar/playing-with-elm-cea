@@ -50,11 +50,15 @@ viewToolbar =
         ]
 
 
+viewTab active l =
+    UI.txtCL [ ( "b ph3 pv2", True ), ( "bw2 bb b--blue", active ) ] l
+
+
 viewTabs =
     div [ class "flex bw2 bt b--transparent" ]
-        [ txtC "b ph3 pv2" "Scheduled"
-        , txtC "b ph3 pv2 bw2 bb b--blue" "Todo"
-        , txtC "b ph3 pv2" "Done"
+        [ viewTab False "Scheduled"
+        , viewTab True "Todo"
+        , viewTab False "Done"
         ]
 
 
