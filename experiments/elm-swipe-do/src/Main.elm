@@ -39,10 +39,10 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    UI.root [ viewToolbar, viewMagicMenu ]
+    UI.root [ viewToolbar, viewMagicMenu [ FeatherIcons.arrowLeft, FeatherIcons.home, FeatherIcons.arrowRight ] ]
 
 
-viewMagicMenu =
+viewMagicMenu icons =
     div [ class "flex justify-center" ]
         [ div [ class "absolute bottom-1" ]
             [ fBtn FeatherIcons.menu NoOp
