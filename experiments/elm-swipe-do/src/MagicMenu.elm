@@ -7,11 +7,3 @@ type alias MagicMenu =
 
 initial =
     MagicMenu False False
-
-
-setOpen open model =
-    { model | open = open }
-
-
-setHidden hidden model =
-    { model | hidden = hidden }
