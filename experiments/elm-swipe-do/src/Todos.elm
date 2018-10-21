@@ -1,4 +1,4 @@
-module Todos exposing (Msg(..), TodoCollection, generator, update, viewList)
+module Todos exposing (Msg(..), Todos, generator, update, viewList)
 
 import Collection exposing (Collection)
 import Html exposing (..)
@@ -12,15 +12,19 @@ import Todo exposing (Todo)
 import UI exposing (row, txtC)
 
 
+type alias TodoCollection =
+    Collection Todo
+
+
 type alias Model =
     { collection : Collection Todo }
 
 
-type alias TodoCollection =
+type alias Todos =
     Model
 
 
-setCollection : Collection Todo -> Model -> Model
+setCollection : TodoCollection -> Model -> Model
 setCollection collection model =
     { model | collection = collection }
 

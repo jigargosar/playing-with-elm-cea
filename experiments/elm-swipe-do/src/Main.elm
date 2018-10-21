@@ -17,7 +17,7 @@ import Random
 import Style exposing (Transform(..), Unit(..))
 import Task
 import Todo exposing (Todo)
-import Todos exposing (TodoCollection)
+import Todos exposing (Todos)
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
 
@@ -27,7 +27,7 @@ import WheelEvent exposing (WheelEvent)
 
 
 type alias Model =
-    { magicMenu : MagicMenu, todos : TodoCollection }
+    { magicMenu : MagicMenu, todos : Todos }
 
 
 type alias Mills =
@@ -57,7 +57,7 @@ setMagicMenu magicMenu model =
     { model | magicMenu = magicMenu }
 
 
-setTodoC : TodoCollection -> Model -> Model
+setTodoC : Todos -> Model -> Model
 setTodoC todos model =
     { model | todos = todos }
 
