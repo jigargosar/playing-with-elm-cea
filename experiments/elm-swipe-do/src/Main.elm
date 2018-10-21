@@ -1,4 +1,4 @@
-port module Main exposing (Model, Msg(..), init, main, update, view)
+port module Main exposing (Model, Msg(..), init, main, update, view, wheel)
 
 import Browser
 import Browser.Events
@@ -35,13 +35,21 @@ port wheel : (E.Value -> msg) -> Sub msg
 ---- MODEL ----
 
 
+type alias WheelEvent =
+    { deltaX : Float, deltaY : Float }
+
+
+wheelDecoder =
+    D.map2 WheelEvent (D.field "deltaX" D.float) (D.field "deltaY" D.float)
+
+
 type alias Model =
-    { isOpen : Bool }
+    { isOpen : Bool, hideMenu : Bool }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { isOpen = False }, Cmd.none )
+    ( { isOpen = False, hideMenu = False }, Cmd.none )
 
 
 
@@ -51,6 +59,7 @@ init =
 type Msg
     = NoOp
     | Toggle
+    | Wheel E.Value
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -62,13 +71,26 @@ update msg model =
         Toggle ->
             ( { model | isOpen = not model.isOpen }, Cmd.none )
 
+        Wheel ev ->
+            ( D.decodeValue wheelDecoder ev
+                |> Result.mapError (Debug.log "err")
+                |> Result.map (updateOnWheelEvent model >> Debug.log "model")
+                |> Result.withDefault model
+            , Cmd.none
+            )
+
+
+updateOnWheelEvent : Model -> WheelEvent -> Model
+updateOnWheelEvent model { deltaY } =
+    { model | hideMenu = deltaY > 0 }
+
 
 
 ---- Subscriptions
 
 
 subscriptions model =
-    Sub.batch []
+    Sub.batch [ wheel Wheel ]
 
 
 

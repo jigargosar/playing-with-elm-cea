@@ -13,8 +13,10 @@ const app = Elm.Main.init({
 })
 
 window.addEventListener('wheel', function(e) {
-  console.log(e)
-  send(pick(['deltaX', 'deltaZ'])(e), 'wheel', app)
+  // console.log(e)
+  let data = pick(['deltaX', 'deltaY'])(e)
+  console.log(data)
+  send(data, 'wheel', app)
 })
 
 registerServiceWorker()
