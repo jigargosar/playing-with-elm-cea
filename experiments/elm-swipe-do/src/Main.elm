@@ -29,8 +29,16 @@ type alias Model =
     { magicMenu : MagicMenu }
 
 
-init : ( Model, Cmd Msg )
-init =
+type alias Mills =
+    Int
+
+
+type alias Flags =
+    { now : Mills }
+
+
+init : Flags -> ( Model, Cmd Msg )
+init flags =
     ( { magicMenu = MagicMenu.initial }, Cmd.none )
 
 
@@ -122,11 +130,11 @@ viewTabs =
 ---- PROGRAM ----
 
 
-main : Program () Model Msg
+main : Program Flags Model Msg
 main =
     Browser.element
         { view = view
-        , init = \_ -> init
+        , init = init
         , update = update
         , subscriptions = subscriptions
         }
