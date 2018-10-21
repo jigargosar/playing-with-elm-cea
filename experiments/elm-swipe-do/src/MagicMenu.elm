@@ -9,7 +9,7 @@ import Json.Decode as D
 import Json.Encode as E
 import Port
 import Style exposing (Transform(..), Unit(..))
-import UI exposing (fBtn)
+import UI exposing (boolHtml, fBtn)
 import WheelEvent
 
 
@@ -72,6 +72,11 @@ type alias Actions msg =
 
 view : Actions msg -> (Msg -> msg) -> Model -> Html msg
 view actions toMsg model =
+    boolHtml (not model.hidden) (viewHelp actions toMsg model)
+
+
+viewHelp : Actions msg -> (Msg -> msg) -> Model -> Html msg
+viewHelp actions toMsg model =
     div [ class "flex justify-center" ]
         [ div [ class "absolute bottom-1 flex flex-column items-center" ]
             ([ div [ class "bg-white z-1" ]
