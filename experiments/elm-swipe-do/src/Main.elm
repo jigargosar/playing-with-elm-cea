@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import BasicX exposing (flip, ter)
+import BasicsX exposing (flip, ter)
 import Browser
 import Browser.Events
 import FeatherIcons

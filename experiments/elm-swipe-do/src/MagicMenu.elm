@@ -1,6 +1,6 @@
 module MagicMenu exposing (Action, Actions, MagicMenu, Msg, initial, subscriptions, update, view)
 
-import BasicX exposing (ter)
+import BasicsX exposing (ter)
 import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
