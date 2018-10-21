@@ -75,7 +75,7 @@ update msg model =
             ( D.decodeValue WheelEvent.decoder ev
                 |> Result.map (updateOnWheelEvent model)
                 |> Result.withDefault model
-            , Port.logR { err = "foo" }
+            , Cmd.none
             )
 
 

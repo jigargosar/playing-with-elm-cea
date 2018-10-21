@@ -21,7 +21,7 @@ window.addEventListener('wheel', function(e) {
 
 subscribe(
   {
-    logR: data => {
+    logS: data => {
       console.warn(data)
     },
   },
