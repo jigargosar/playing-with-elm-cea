@@ -43,7 +43,11 @@ view model =
 
 
 viewMagicMenu =
-    div [ class "absolute bottom-1", style "left" "calc(50% - 19px)" ] [ fBtn FeatherIcons.menu NoOp ]
+    div [ class "flex justify-center" ]
+        [ div [ class "absolute bottom-1" ]
+            [ fBtn FeatherIcons.menu NoOp
+            ]
+        ]
 
 
 
