@@ -36,9 +36,7 @@ fDBtn fIcon disabled_ msg =
     button
         [ disabled disabled_
         , onClick msg
-        , class "pa0 ma0"
-        , style "width" "24px"
-        , style "height" "24px"
+        , class "flex items-center justify-center pa0 ma0"
         ]
         [ fIcon |> FeatherIcons.toHtml [] ]
 
