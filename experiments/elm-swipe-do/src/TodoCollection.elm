@@ -13,22 +13,32 @@ import UI exposing (row, txtC)
 
 
 type alias Model =
-    Collection Todo
+    { collection : Collection Todo }
 
 
 type alias TodoCollection =
     Model
 
 
+setCollection : Collection Todo -> Model -> Model
+setCollection collection model =
+    { model | collection = collection }
+
+
+getTodoList =
+    .collection >> Collection.items
+
+
 generator : E.Value -> Random.Generator Model
 generator enc =
     Collection.generator Todo.decoder enc
+        |> Random.map Model
 
 
 type Msg
     = NoOp
     | NewClicked
-    | NewAdded ( Todo, TodoCollection )
+    | NewAdded ( Todo, Collection Todo )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -37,19 +47,19 @@ update message model =
         NoOp ->
             ( model, Cmd.none )
 
-        NewAdded ( todo, newModel ) ->
-            ( newModel, Port.cacheTodoC (Collection.encode Todo.encode newModel) )
+        NewAdded ( todo, collection ) ->
+            ( setCollection collection model, Port.cacheTodoC (Collection.encode Todo.encode collection) )
 
         NewClicked ->
             ( model
-            , Collection.createAndAdd (Todo.initWithContent "Todo XX") model
+            , Collection.createAndAdd (Todo.initWithContent "Todo XX") model.collection
                 |> Task.perform NewAdded
             )
 
 
 viewList : Model -> Html msg
 viewList =
-    Collection.items >> List.map viewTodo >> div [ class "w-100 measure-narrow vs3" ]
+    getTodoList >> List.map viewTodo >> div [ class "w-100 measure-narrow vs3" ]
 
 
 viewTodo : Todo -> Html msg
