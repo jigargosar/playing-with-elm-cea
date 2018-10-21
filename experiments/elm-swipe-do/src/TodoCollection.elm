@@ -1,4 +1,4 @@
-module TodoCollection exposing (Msg(..), TodoCollection, generator, update, viewTodoList)
+module TodoCollection exposing (Msg(..), TodoCollection, generator, update, view)
 
 import Collection exposing (Collection)
 import Html exposing (..)
@@ -47,9 +47,11 @@ update message model =
             )
 
 
-viewTodoList =
+view : Model -> Html msg
+view =
     Collection.items >> List.map viewTodo >> div [ class "w-100 measure-narrow vs3" ]
 
 
+viewTodo : Todo -> Html msg
 viewTodo todo =
     row "" [] [ txtC "flex-auto" <| Todo.getContent todo ]
