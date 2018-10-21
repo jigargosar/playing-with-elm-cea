@@ -15,6 +15,7 @@ import MagicMenu exposing (MagicMenu)
 import Port
 import Random
 import Style exposing (Transform(..), Unit(..))
+import Task
 import Todo exposing (Todo)
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
@@ -63,6 +64,11 @@ setMagicMenu magicMenu model =
     { model | magicMenu = magicMenu }
 
 
+setTodoC : TodoC -> Model -> Model
+setTodoC todoC model =
+    { model | todoC = todoC }
+
+
 
 ---- UPDATE ----
 
@@ -70,6 +76,8 @@ setMagicMenu magicMenu model =
 type Msg
     = NoOp
     | MagicMenuMsg MagicMenu.Msg
+    | NewClicked
+    | NewAdded ( Todo, TodoC )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -81,6 +89,15 @@ update message model =
         MagicMenuMsg msg ->
             MagicMenu.update msg model.magicMenu
                 |> Tuple.mapBoth (flip setMagicMenu model) (Cmd.map MagicMenuMsg)
+
+        NewAdded ( todo, todoC ) ->
+            ( setTodoC todoC model, Cmd.none )
+
+        NewClicked ->
+            ( model
+            , Collection.createAndAdd Todo.init model.todoC
+                |> Task.perform NewAdded
+            )
 
 
 
@@ -104,9 +121,9 @@ mockActions =
     , FeatherIcons.scissors
     , FeatherIcons.edit
     , FeatherIcons.trash2
-    , FeatherIcons.filePlus
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
+        |> (::) (MagicMenu.Action FeatherIcons.filePlus NewClicked)
 
 
 view : Model -> Html Msg
