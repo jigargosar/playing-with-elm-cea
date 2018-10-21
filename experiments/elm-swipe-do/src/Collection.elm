@@ -12,6 +12,7 @@ module Collection exposing
     , idList
     , items
     , replace
+    , reset
     , updateIdSetWith
     , updateWith
     )

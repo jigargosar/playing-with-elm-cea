@@ -75,7 +75,15 @@ update message model =
             )
 
         Reset ->
-            { model | collection = Collection.reset model.collection }
+            let
+                newCollection =
+                    Collection.reset model.collection
+            in
+            ( { model
+                | collection = newCollection
+              }
+            , Port.cacheTodoC (Collection.encode Todo.encode newCollection)
+            )
 
 
 view : Model -> Html msg
