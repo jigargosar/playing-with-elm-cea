@@ -138,7 +138,7 @@ view model =
 
 
 viewTodoList =
-    List.map viewTodo >> div [ class "w-100 measure " ]
+    List.map viewTodo >> div [ class "w-100 measure vs3" ]
 
 
 viewTodo todo =
