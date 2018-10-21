@@ -9,6 +9,7 @@ const app = Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
     now: Date.now(),
+    todoC: storageGetOr({}, 'todoC'),
   },
 })
 
@@ -23,6 +24,9 @@ subscribe(
   {
     logS: data => {
       console.warn(data)
+    },
+    cacheTodoC: todoC => {
+      storageSet('todoC', todoC)
     },
   },
   app,
@@ -53,4 +57,20 @@ function subscribe(options, app) {
     }
     app.ports[sub].subscribe(data => fn(data, partialRight(send, [app])))
   })(options)
+}
+
+function storageGetOr(or, key) {
+  try {
+    return JSON.parse(localStorage.getItem(key))
+  } catch (e) {
+    return or
+  }
+}
+
+function storageSet(key, value) {
+  if (isNil(value) || isNil(key)) {
+    console.warn('Invalid Args', 'storageSet', key, value)
+    return
+  }
+  localStorage.setItem(key, JSON.stringify(value))
 }
