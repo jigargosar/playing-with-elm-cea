@@ -14,7 +14,7 @@ import UI exposing (row, txtC)
 
 type Mode
     = List
-    | New
+    | New Todo.Id Todo.Content
 
 
 type alias TodoCollection =
