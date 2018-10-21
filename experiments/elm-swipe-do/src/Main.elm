@@ -95,7 +95,7 @@ update message model =
 
         NewClicked ->
             ( model
-            , Collection.createAndAdd Todo.init model.todoC
+            , Collection.createAndAdd (Todo.initWithContent "Todo XX") model.todoC
                 |> Task.perform NewAdded
             )
 

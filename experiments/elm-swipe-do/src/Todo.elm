@@ -1,4 +1,15 @@
-module Todo exposing (Content, Id, Todo, decoder, delete, encode, init, setContent, setDone)
+module Todo exposing
+    ( Content
+    , Id
+    , Todo
+    , decoder
+    , delete
+    , encode
+    , init
+    , initWithContent
+    , setContent
+    , setDone
+    )
 
 import Collection exposing (Millis)
 import IdX
