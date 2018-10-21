@@ -1,4 +1,4 @@
-port module Port exposing (wheel)
+port module Port exposing (log, wheel)
 
 import Json.Decode as D
 import Json.Encode as E
