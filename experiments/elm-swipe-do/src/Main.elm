@@ -26,12 +26,12 @@ overMagicMenu updateFn model =
 
 
 type alias Model =
-    { isOpen : Bool, hideMenu : Bool, magicMenu : MagicMenu }
+    { magicMenu : MagicMenu }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { isOpen = False, hideMenu = False, magicMenu = MagicMenu.initial }, Cmd.none )
+    ( { magicMenu = MagicMenu.initial }, Cmd.none )
 
 
 setMagicMenu : MagicMenu -> Model -> Model
@@ -45,8 +45,6 @@ setMagicMenu magicMenu model =
 
 type Msg
     = NoOp
-    | Toggle
-    | Wheel E.Value
     | MagicMenuMsg MagicMenu.Msg
 
 
@@ -56,24 +54,9 @@ update message model =
         NoOp ->
             ( model, Cmd.none )
 
-        Toggle ->
-            ( { model | isOpen = not model.isOpen }, Cmd.none )
-
-        Wheel ev ->
-            ( D.decodeValue WheelEvent.decoder ev
-                |> Result.map (updateOnWheelEvent model)
-                |> Result.withDefault model
-            , Cmd.none
-            )
-
         MagicMenuMsg msg ->
             MagicMenu.update msg model.magicMenu
                 |> Tuple.mapBoth (flip setMagicMenu model) (Cmd.map MagicMenuMsg)
-
-
-updateOnWheelEvent : Model -> WheelEvent -> Model
-updateOnWheelEvent model { deltaY } =
-    { model | hideMenu = deltaY > 0 }
 
 
 
@@ -82,8 +65,7 @@ updateOnWheelEvent model { deltaY } =
 
 subscriptions model =
     Sub.batch
-        [ Port.wheel Wheel
-        , MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
+        [ MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
         ]
 
 
@@ -107,59 +89,8 @@ view : Model -> Html Msg
 view model =
     UI.root
         [ viewToolbar
-        , boolHtml (not model.hideMenu) (viewMagicMenu model.isOpen Toggle mockActions)
+        , MagicMenu.view mockActions MagicMenuMsg model.magicMenu
         ]
-
-
-
---- Magic Menu View
-
-
-viewMagicMenu : Bool -> msg -> MagicMenu.Actions msg -> Html msg
-viewMagicMenu isOpen menuClickMsg actions =
-    div [ class "flex justify-center" ]
-        [ div [ class "absolute bottom-1 flex flex-column items-center" ]
-            ([ div [ class "bg-white z-1" ]
-                [ fBtn (ter isOpen FeatherIcons.x FeatherIcons.menu) menuClickMsg
-                ]
-             ]
-                ++ viewMenuItems isOpen actions
-            )
-        ]
-
-
-viewMenuItems isOpen actions =
-    let
-        ct =
-            List.length actions |> toFloat
-
-        transformForIdx idx =
-            let
-                fIdx =
-                    toFloat idx
-
-                tn =
-                    -0.25 + (0.5 / (ct - 1) * fIdx)
-            in
-            [ Rotate (Turn tn)
-            , TranslateY (Rem -3.5)
-            , Rotate (Turn -tn)
-            ]
-
-        transitionDelayForIdx idx =
-            (idx * 15 |> String.fromInt) ++ "ms"
-    in
-    actions
-        |> List.indexedMap
-            (\idx { icon, msg } ->
-                button
-                    [ onClick msg
-                    , class "flex items-center justify-center absolute pa0 ma0"
-                    , Style.transform (ter isOpen (transformForIdx idx) [])
-                    , style "transition" ("transform 0.3s " ++ transitionDelayForIdx idx ++ " ease-in")
-                    ]
-                    [ icon |> FeatherIcons.toHtml [] ]
-            )
 
 
 
