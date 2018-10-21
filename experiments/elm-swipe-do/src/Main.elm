@@ -17,6 +17,7 @@ import Random
 import Style exposing (Transform(..), Unit(..))
 import Task
 import Todo exposing (Todo)
+import TodoCollection exposing (TodoCollection)
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
 
@@ -25,12 +26,8 @@ import WheelEvent exposing (WheelEvent)
 ---- MODEL ----
 
 
-type alias TodoC =
-    Collection Todo
-
-
 type alias Model =
-    { magicMenu : MagicMenu, todoC : TodoC }
+    { magicMenu : MagicMenu, todoC : TodoCollection }
 
 
 type alias Mills =
@@ -49,7 +46,7 @@ init flags =
             E.dict identity Todo.encode Dict.empty
 
         todoC =
-            Random.step (Collection.generator Todo.decoder encTC) (Random.initialSeed flags.now)
+            Random.step (TodoCollection.generator encTC) (Random.initialSeed flags.now)
                 |> Tuple.first
     in
     ( { magicMenu = MagicMenu.initial
@@ -64,7 +61,7 @@ setMagicMenu magicMenu model =
     { model | magicMenu = magicMenu }
 
 
-setTodoC : TodoC -> Model -> Model
+setTodoC : TodoCollection -> Model -> Model
 setTodoC todoC model =
     { model | todoC = todoC }
 
@@ -77,7 +74,7 @@ type Msg
     = NoOp
     | MagicMenuMsg MagicMenu.Msg
     | NewClicked
-    | NewAdded ( Todo, TodoC )
+    | NewAdded ( Todo, TodoCollection )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
