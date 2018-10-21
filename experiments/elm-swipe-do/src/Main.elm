@@ -69,6 +69,46 @@ viewMagicMenu isOpen icons =
         ]
 
 
+type Transform
+    = Rotate Unit
+    | Translate Unit Unit
+
+
+type Unit
+    = Px Float
+    | Rem Float
+    | Turn Float
+    | Zero
+
+
+transform : List Transform -> Attribute msg
+transform =
+    let
+        stringFromUnit unit =
+            case unit of
+                Px val ->
+                    String.fromFloat val ++ "px"
+
+                Rem val ->
+                    String.fromFloat val ++ "rem"
+
+                Turn val ->
+                    String.fromFloat val ++ "turn"
+
+                Zero ->
+                    "0"
+
+        stringFromTransform t =
+            case t of
+                Rotate unit ->
+                    "rotate(" ++ stringFromUnit unit ++ ")"
+
+                Translate unitX unitY ->
+                    "translate(" ++ stringFromUnit unitX ++ "," ++ stringFromUnit unitX ++ ")"
+    in
+    List.map stringFromTransform >> String.join " , " >> style "transform"
+
+
 viewMenuItems isOpen icons =
     let
         ct =
