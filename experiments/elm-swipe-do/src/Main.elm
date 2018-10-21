@@ -131,18 +131,18 @@ view model =
     UI.root
         [ viewToolbar
         , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
-            [ div [ class "w-100 measure " ] (Collection.items model.todoC |> viewTodoList) ]
+            [ Collection.items model.todoC |> viewTodoList ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         ]
 
 
 viewTodoList =
-    List.map viewTodo
+    List.map viewTodo >> div [ class "w-100 measure " ]
 
 
 viewTodo todo =
-    row "" [] [ txt <| Todo.getContent todo ]
+    row "" [] [ txtC "flex-auto" <| Todo.getContent todo ]
 
 
 
