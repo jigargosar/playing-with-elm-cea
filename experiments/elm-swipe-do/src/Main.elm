@@ -35,6 +35,19 @@ port wheel : (E.Value -> msg) -> Sub msg
 ---- MODEL ----
 
 
+type alias MagicMenu =
+    { open : Bool, hidden : Bool }
+
+
+initMagicMenu =
+    MagicMenu False False
+
+
+overMagicMenu : (MagicMenu -> MagicMenu) -> Model -> Model
+overMagicMenu updateFn model =
+    { model | magicMenu = updateFn model.magicMenu }
+
+
 type alias WheelEvent =
     { deltaX : Float, deltaY : Float }
 
@@ -44,12 +57,12 @@ wheelDecoder =
 
 
 type alias Model =
-    { isOpen : Bool, hideMenu : Bool }
+    { isOpen : Bool, hideMenu : Bool, magicMenu : MagicMenu }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { isOpen = False, hideMenu = False }, Cmd.none )
+    ( { isOpen = False, hideMenu = False, magicMenu = initMagicMenu }, Cmd.none )
 
 
 
