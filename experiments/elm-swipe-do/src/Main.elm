@@ -55,6 +55,7 @@ view model =
             , FeatherIcons.scissors
             , FeatherIcons.edit
             , FeatherIcons.trash2
+            , FeatherIcons.filePlus
             ]
         ]
 
