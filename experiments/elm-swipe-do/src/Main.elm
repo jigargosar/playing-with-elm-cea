@@ -20,11 +20,6 @@ import WheelEvent exposing (WheelEvent)
 ---- MODEL ----
 
 
-overMagicMenu : (MagicMenu -> MagicMenu) -> Model -> Model
-overMagicMenu updateFn model =
-    { model | magicMenu = updateFn model.magicMenu }
-
-
 type alias Model =
     { magicMenu : MagicMenu }
 
