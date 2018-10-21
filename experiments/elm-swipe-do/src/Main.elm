@@ -81,7 +81,16 @@ viewMenuItems icons =
             ]
                 |> String.join ""
     in
-    icons |> List.indexedMap (\idx i -> div [ class "absolute", style "transform" (tran idx) ] [ fBtn i NoOp ])
+    icons
+        |> List.indexedMap
+            (\idx i ->
+                div
+                    [ class "absolute"
+                    , style "transform" (tran idx)
+                    , style "transition" "transform 0.3s ease-in"
+                    ]
+                    [ fBtn i NoOp ]
+            )
 
 
 
