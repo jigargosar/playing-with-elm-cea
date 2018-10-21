@@ -52,6 +52,7 @@ generator enc =
 type Msg
     = NoOp
     | NewClicked
+    | Reset
     | NewAdded ( Todo, Collection Todo )
 
 
@@ -72,6 +73,9 @@ update message model =
             , Collection.createAndAdd Todo.init model.collection
                 |> Task.perform NewAdded
             )
+
+        Reset ->
+            { model | collection = Collection.reset model.collection }
 
 
 view : Model -> Html msg

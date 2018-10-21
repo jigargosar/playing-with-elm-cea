@@ -51,6 +51,11 @@ overDict updateFn model =
     { model | dict = updateFn model.dict }
 
 
+reset : Collection item -> Collection item
+reset model =
+    { model | dict = Dict.empty }
+
+
 insert : Id -> item -> Model item -> Model item
 insert id item =
     overDict <| Dict.insert id item
