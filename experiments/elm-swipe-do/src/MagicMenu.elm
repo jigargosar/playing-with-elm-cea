@@ -1,5 +1,8 @@
 module MagicMenu exposing (MagicMenu, initial)
 
+import Json.Decode as D
+import Json.Encode as E
+
 
 type alias MagicMenu =
     { open : Bool
@@ -14,4 +17,17 @@ initial =
 type Msg
     = NoOp
     | Clicked
-    | Wheel
+    | Wheel E.Value
+
+
+update : Msg -> MagicMenu -> ( MagicMenu, Cmd Msg )
+update message model =
+    case message of
+        NoOp ->
+            ( model, Cmd.none )
+
+        Clicked ->
+            ( model, Cmd.none )
+
+        Wheel encoded ->
+            ( model, Cmd.none )
