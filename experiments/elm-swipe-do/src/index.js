@@ -2,7 +2,7 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { forEachObjIndexed, partialRight, pick } from 'ramda'
+import { forEachObjIndexed, isNil, partialRight, pick } from 'ramda'
 import pathOr from 'ramda/es/pathOr'
 
 const app = Elm.Main.init({

@@ -35,18 +35,14 @@ type alias Mills =
 
 
 type alias Flags =
-    { now : Mills }
+    { now : Mills, todoC : E.Value }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
-        encTC : E.Value
-        encTC =
-            E.dict identity Todo.encode Dict.empty
-
         todoC =
-            Random.step (TodoCollection.generator encTC) (Random.initialSeed flags.now)
+            Random.step (TodoCollection.generator flags.todoC) (Random.initialSeed flags.now)
                 |> Tuple.first
     in
     ( { magicMenu = MagicMenu.initial
