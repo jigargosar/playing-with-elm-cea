@@ -4,6 +4,7 @@ import Browser
 import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import UI exposing (..)
 
 
@@ -133,12 +134,13 @@ viewMenuItems isOpen icons =
     icons
         |> List.indexedMap
             (\idx i ->
-                div
-                    [ class "absolute"
+                button
+                    [ onClick NoOp
+                    , class "flex items-center justify-center absolute pa0 ma0"
                     , transform (ter isOpen (transformForIdx idx) [])
                     , style "transition" ("all 0.3s " ++ transitionDelayForIdx idx ++ " ease-in")
                     ]
-                    [ fBtn i NoOp ]
+                    [ i |> FeatherIcons.toHtml [] ]
             )
 
 

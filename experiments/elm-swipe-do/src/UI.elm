@@ -33,7 +33,14 @@ type alias Disabled =
 
 fDBtn : FeatherIcons.Icon -> Disabled -> msg -> Html msg
 fDBtn fIcon disabled_ msg =
-    button [ disabled disabled_, onClick msg ] [ fIcon |> FeatherIcons.toHtml [] ]
+    button
+        [ disabled disabled_
+        , onClick msg
+        , class "pa0 ma0"
+        , style "width" "24px"
+        , style "height" "24px"
+        ]
+        [ fIcon |> FeatherIcons.toHtml [] ]
 
 
 boolHtml bool html_ =
