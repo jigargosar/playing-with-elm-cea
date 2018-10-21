@@ -1,4 +1,4 @@
-module Todo exposing (Content, Id, Model)
+module Todo exposing (Content, Id, Todo, generator, init)
 
 import IdX
 import Random
@@ -10,6 +10,10 @@ type alias Id =
 
 type alias Content =
     String
+
+
+type alias Todo =
+    Model
 
 
 type alias Model =
