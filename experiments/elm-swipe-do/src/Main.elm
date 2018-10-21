@@ -8,6 +8,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
+import MagicMenu exposing (MagicMenu)
 import Style exposing (Transform(..), Unit(..))
 import UI exposing (..)
 
@@ -35,14 +36,6 @@ port wheel : (E.Value -> msg) -> Sub msg
 ---- MODEL ----
 
 
-type alias MagicMenu =
-    { open : Bool, hidden : Bool }
-
-
-initMagicMenu =
-    MagicMenu False False
-
-
 overMagicMenu : (MagicMenu -> MagicMenu) -> Model -> Model
 overMagicMenu updateFn model =
     { model | magicMenu = updateFn model.magicMenu }
@@ -62,7 +55,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { isOpen = False, hideMenu = False, magicMenu = initMagicMenu }, Cmd.none )
+    ( { isOpen = False, hideMenu = False, magicMenu = MagicMenu.initial }, Cmd.none )
 
 
 
