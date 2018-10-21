@@ -12,12 +12,17 @@ import Todo exposing (Todo)
 import UI exposing (row, txtC)
 
 
+type Mode
+    = List
+    | New
+
+
 type alias TodoCollection =
     Collection Todo
 
 
 type alias Model =
-    { collection : Collection Todo }
+    { mode : Mode, collection : TodoCollection }
 
 
 type alias Todos =
@@ -36,7 +41,7 @@ getTodoList =
 generator : E.Value -> Random.Generator Model
 generator enc =
     Collection.generator Todo.decoder enc
-        |> Random.map Model
+        |> Random.map (Model List)
 
 
 type Msg
