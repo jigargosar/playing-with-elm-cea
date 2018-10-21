@@ -41,8 +41,15 @@ update message model =
             ( { model | open = not model.open }, Cmd.none )
 
         Wheel encoded ->
-            ( D.decodeValue WheelEvent.decoder encoded
-                |> Result.map (\{ deltaY } -> { model | hidden = deltaY > 0 })
-                |> Result.withDefault model
-            , Cmd.none
-            )
+            D.decodeValue WheelEvent.decoder encoded
+                |> mapDecodeResult model (\{ deltaY } -> { model | hidden = deltaY > 0 })
+
+
+mapDecodeResult : model -> (answer -> model) -> Result D.Error answer -> ( model, Cmd msg )
+mapDecodeResult model mapper result =
+    case result of
+        Ok answer ->
+            ( mapper answer, Cmd.none )
+
+        Err err ->
+            ( model, D.errorToString err |> Port.logS )
