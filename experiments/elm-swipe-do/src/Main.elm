@@ -39,16 +39,49 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    UI.root [ viewToolbar, viewMagicMenu [ FeatherIcons.arrowLeft, FeatherIcons.home, FeatherIcons.arrowRight ] ]
+    UI.root
+        [ viewToolbar
+        , viewMagicMenu
+            [ FeatherIcons.facebook
+            , FeatherIcons.home
+            , FeatherIcons.twitter
+            , FeatherIcons.scissors
+            , FeatherIcons.shoppingCart
+            ]
+        ]
 
 
 viewMagicMenu icons =
     div [ class "flex justify-center" ]
         [ div [ class "absolute bottom-1 flex flex-column items-center" ]
-            [ div [] (icons |> List.map (\i -> fBtn i NoOp))
-            , fBtn FeatherIcons.menu NoOp
-            ]
+            ([ div [ class "bg-white z-1" ] [ fBtn FeatherIcons.menu NoOp ] ] ++ viewMenuItems icons)
         ]
+
+
+viewMenuItems icons =
+    let
+        ct =
+            List.length icons |> toFloat
+
+        tran idx =
+            let
+                fIdx =
+                    toFloat idx
+
+                tn =
+                    -0.25 + (0.5 / (ct - 1) * fIdx)
+            in
+            [ "rotate("
+            , tn |> String.fromFloat
+            , "turn) "
+            , "translate(0,-5rem) "
+            , "rotate("
+            , -tn |> String.fromFloat
+            , "turn) "
+            ]
+                |> String.join ""
+    in
+    icons |> List.indexedMap (\idx i -> div [ class "absolute", style "transform" (tran idx) ] [ fBtn i NoOp ])
 
 
 
