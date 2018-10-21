@@ -69,12 +69,16 @@ view : Model -> Html Msg
 view model =
     UI.root
         [ viewToolbar
-        , viewMagicMenu model.isOpen mockActions Toggle
+        , viewMagicMenu model.isOpen Toggle mockActions
         ]
 
 
-viewMagicMenu : Bool -> Actions msg -> msg -> Html msg
-viewMagicMenu isOpen actions menuClickMsg =
+
+--- Magic Menu View
+
+
+viewMagicMenu : Bool -> msg -> Actions msg -> Html msg
+viewMagicMenu isOpen menuClickMsg actions =
     div [ class "flex justify-center" ]
         [ div [ class "absolute bottom-1 flex flex-column items-center" ]
             ([ div [ class "bg-white z-1" ]
