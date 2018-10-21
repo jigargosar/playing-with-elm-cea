@@ -46,11 +46,13 @@ init flags =
         encTC : E.Value
         encTC =
             E.dict identity Todo.encode Dict.empty
-    in
-    ( { magicMenu = MagicMenu.initial
-      , todoC =
+
+        todoC =
             Random.step (Collection.generator Todo.decoder encTC) (Random.initialSeed flags.now)
                 |> Tuple.first
+    in
+    ( { magicMenu = MagicMenu.initial
+      , todoC = todoC
       }
     , Cmd.none
     )
