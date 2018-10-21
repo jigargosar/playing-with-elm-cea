@@ -1,4 +1,4 @@
-module UI exposing (Disabled, boolHtml, fBtn, fDBtn, link, row, rowS3, spacer, txt, txtC)
+module UI exposing (Disabled, boolHtml, fBtn, fDBtn, link, root, row, rowS3, spacer, txt, txtC)
 
 import FeatherIcons
 import Html exposing (..)
@@ -50,3 +50,7 @@ txt l =
 
 txtC c l =
     div [ class c ] [ text l ]
+
+
+root =
+    div [ class "flex flex-column w-100" ]
