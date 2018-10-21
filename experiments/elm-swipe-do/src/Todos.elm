@@ -67,8 +67,13 @@ update message model =
 
 
 view : Model -> Html msg
-view =
-    getTodoList >> List.map viewTodo >> div [ class "w-100 measure-narrow vs3" ]
+view model =
+    case model.mode of
+        List ->
+            viewList model
+
+        New ->
+            viewList model
 
 
 viewList : Model -> Html msg
