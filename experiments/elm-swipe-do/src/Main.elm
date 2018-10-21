@@ -45,8 +45,11 @@ type alias WheelEvent =
     { deltaX : Float, deltaY : Float }
 
 
+wheelDecoder : D.Decoder WheelEvent
 wheelDecoder =
-    D.map2 WheelEvent (D.field "deltaX" D.float) (D.field "deltaY" D.float)
+    D.map2 WheelEvent
+        (D.field "deltaX" D.float)
+        (D.field "deltaY" D.float)
 
 
 type alias Model =
