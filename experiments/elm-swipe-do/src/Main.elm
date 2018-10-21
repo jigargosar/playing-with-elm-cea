@@ -11,6 +11,7 @@ import Json.Encode as E
 import MagicMenu exposing (MagicMenu)
 import Style exposing (Transform(..), Unit(..))
 import UI exposing (..)
+import WheelEvent exposing (WheelEvent)
 
 
 
@@ -39,17 +40,6 @@ port wheel : (E.Value -> msg) -> Sub msg
 overMagicMenu : (MagicMenu -> MagicMenu) -> Model -> Model
 overMagicMenu updateFn model =
     { model | magicMenu = updateFn model.magicMenu }
-
-
-type alias WheelEvent =
-    { deltaX : Float, deltaY : Float }
-
-
-wheelDecoder : D.Decoder WheelEvent
-wheelDecoder =
-    D.map2 WheelEvent
-        (D.field "deltaX" D.float)
-        (D.field "deltaY" D.float)
 
 
 type alias Model =
@@ -81,7 +71,7 @@ update msg model =
             ( { model | isOpen = not model.isOpen }, Cmd.none )
 
         Wheel ev ->
-            ( D.decodeValue wheelDecoder ev
+            ( D.decodeValue WheelEvent.decoder ev
                 |> Result.map (updateOnWheelEvent model)
                 |> Result.withDefault model
             , Cmd.none

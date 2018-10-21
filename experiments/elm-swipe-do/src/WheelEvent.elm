@@ -1,4 +1,4 @@
-module WheelEvent exposing (WheelEvent)
+module WheelEvent exposing (WheelEvent, decoder)
 
 import Json.Decode as D
 import Json.Encode as E
