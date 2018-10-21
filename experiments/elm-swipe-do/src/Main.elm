@@ -128,7 +128,7 @@ viewMenuItems isOpen icons =
             ]
 
         transitionDelayForIdx idx =
-            (idx * 10 |> String.fromInt) ++ "ms"
+            (idx * 15 |> String.fromInt) ++ "ms"
     in
     icons
         |> List.indexedMap
