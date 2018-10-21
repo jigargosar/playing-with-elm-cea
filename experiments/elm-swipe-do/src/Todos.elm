@@ -34,6 +34,11 @@ setCollection collection model =
     { model | collection = collection }
 
 
+setMode : Mode -> Model -> Model
+setMode mode model =
+    { model | mode = mode }
+
+
 getTodoList =
     .collection >> Collection.items >> List.sortBy (.modifiedAt >> (*) -1)
 
@@ -57,7 +62,10 @@ update message model =
             ( model, Cmd.none )
 
         NewAdded ( todo, collection ) ->
-            ( setCollection collection model, Port.cacheTodoC (Collection.encode Todo.encode collection) )
+            ( setCollection collection model
+                |> setMode (New todo.id (Todo.getContent todo))
+            , Port.cacheTodoC (Collection.encode Todo.encode collection)
+            )
 
         NewClicked ->
             ( model
