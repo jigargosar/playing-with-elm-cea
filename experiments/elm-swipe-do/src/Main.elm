@@ -42,13 +42,11 @@ view model =
 
 
 viewToolbar =
-    div [ class "flex w-100 justify-center bg-black white" ]
-        [ div [ class "flex w-100 measure-wide items-center" ]
-            [ txtC "b ph3" "ELM Swipe Do"
-            , spacer
-            , viewTabs
-            , spacer
-            ]
+    UI.toolbar
+        [ txtC "b ph3" "ELM Swipe Do"
+        , spacer
+        , viewTabs
+        , spacer
         ]
 
 

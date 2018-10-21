@@ -1,4 +1,4 @@
-module UI exposing (Disabled, boolHtml, fBtn, fDBtn, link, root, row, rowS3, spacer, txt, txtC)
+module UI exposing (Disabled, boolHtml, fBtn, fDBtn, link, root, row, rowS3, spacer, toolbar, txt, txtC)
 
 import FeatherIcons
 import Html exposing (..)
@@ -54,3 +54,9 @@ txtC c l =
 
 root =
     div [ class "flex flex-column w-100" ]
+
+
+toolbar kids =
+    div [ class "flex w-100 justify-center bg-black white" ]
+        [ div [ class "flex w-100 measure-wide items-center" ] kids
+        ]
