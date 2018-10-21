@@ -12,12 +12,12 @@ import UI exposing (..)
 
 
 type alias Model =
-    {}
+    { isOpen : Bool }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {}, Cmd.none )
+    ( { isOpen = False }, Cmd.none )
 
 
 
@@ -26,11 +26,17 @@ init =
 
 type Msg
     = NoOp
+    | Toggle
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
+        Toggle ->
+            ( { model | isOpen = not model.isOpen }, Cmd.none )
 
 
 
@@ -41,7 +47,7 @@ view : Model -> Html Msg
 view model =
     UI.root
         [ viewToolbar
-        , viewMagicMenu
+        , viewMagicMenu model.isOpen
             [ FeatherIcons.facebook
             , FeatherIcons.home
             , FeatherIcons.twitter
@@ -51,14 +57,19 @@ view model =
         ]
 
 
-viewMagicMenu icons =
+viewMagicMenu isOpen icons =
     div [ class "flex justify-center" ]
         [ div [ class "absolute bottom-1 flex flex-column items-center" ]
-            ([ div [ class "bg-white z-1" ] [ fBtn FeatherIcons.menu NoOp ] ] ++ viewMenuItems icons)
+            ([ div [ class "bg-white z-1" ]
+                [ fBtn (ter isOpen FeatherIcons.x FeatherIcons.menu) Toggle
+                ]
+             ]
+                ++ viewMenuItems isOpen icons
+            )
         ]
 
 
-viewMenuItems icons =
+viewMenuItems isOpen icons =
     let
         ct =
             List.length icons |> toFloat
@@ -86,11 +97,19 @@ viewMenuItems icons =
             (\idx i ->
                 div
                     [ class "absolute"
-                    , style "transform" (tran idx)
+                    , style "transform" (ter isOpen (tran idx) "")
                     , style "transition" "all 0.3s ease-in"
                     ]
                     [ fBtn i NoOp ]
             )
+
+
+ter b t f =
+    if b then
+        t
+
+    else
+        f
 
 
 
