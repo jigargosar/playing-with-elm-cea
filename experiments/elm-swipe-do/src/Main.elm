@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), init, main, update, view)
+port module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
 import Browser.Events
@@ -6,6 +6,8 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Json.Decode as D
+import Json.Encode as E
 import Style exposing (Transform(..), Unit(..))
 import UI exposing (..)
 
@@ -20,6 +22,13 @@ ter b t f =
 
     else
         f
+
+
+
+---- Port
+
+
+port wheel : (E.Value -> msg) -> Sub msg
 
 
 
