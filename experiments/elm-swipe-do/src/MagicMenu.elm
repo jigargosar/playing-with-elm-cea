@@ -1,9 +1,15 @@
 module MagicMenu exposing (Action, Actions, MagicMenu, initial)
 
+import BasicX exposing (ter)
 import FeatherIcons
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
 import Port
+import Style exposing (Transform(..), Unit(..))
+import UI exposing (fBtn)
 import WheelEvent
 
 
@@ -62,3 +68,50 @@ mapDecodeResult model mapper result =
 
         Err err ->
             ( model, D.errorToString err |> Port.logS )
+
+
+viewMagicMenu : Bool -> msg -> Actions msg -> Html msg
+viewMagicMenu isOpen menuClickMsg actions =
+    div [ class "flex justify-center" ]
+        [ div [ class "absolute bottom-1 flex flex-column items-center" ]
+            ([ div [ class "bg-white z-1" ]
+                [ fBtn (ter isOpen FeatherIcons.x FeatherIcons.menu) menuClickMsg
+                ]
+             ]
+                ++ viewMenuItems isOpen actions
+            )
+        ]
+
+
+viewMenuItems isOpen actions =
+    let
+        ct =
+            List.length actions |> toFloat
+
+        transformForIdx idx =
+            let
+                fIdx =
+                    toFloat idx
+
+                tn =
+                    -0.25 + (0.5 / (ct - 1) * fIdx)
+            in
+            [ Rotate (Turn tn)
+            , TranslateY (Rem -3.5)
+            , Rotate (Turn -tn)
+            ]
+
+        transitionDelayForIdx idx =
+            (idx * 15 |> String.fromInt) ++ "ms"
+    in
+    actions
+        |> List.indexedMap
+            (\idx { icon, msg } ->
+                button
+                    [ onClick msg
+                    , class "flex items-center justify-center absolute pa0 ma0"
+                    , Style.transform (ter isOpen (transformForIdx idx) [])
+                    , style "transition" ("transform 0.3s " ++ transitionDelayForIdx idx ++ " ease-in")
+                    ]
+                    [ icon |> FeatherIcons.toHtml [] ]
+            )

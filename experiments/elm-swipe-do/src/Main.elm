@@ -1,5 +1,6 @@
 port module Main exposing (Model, Msg(..), init, main, update, view, wheel)
 
+import BasicX exposing (ter)
 import Browser
 import Browser.Events
 import FeatherIcons
@@ -13,18 +14,6 @@ import Port
 import Style exposing (Transform(..), Unit(..))
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
-
-
-
---- Basics
-
-
-ter b t f =
-    if b then
-        t
-
-    else
-        f
 
 
 
