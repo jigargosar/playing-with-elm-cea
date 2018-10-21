@@ -7,6 +7,7 @@ import Html.Attributes
 type Transform
     = Rotate Unit
     | Translate Unit Unit
+    | TranslateY Unit
 
 
 type Unit
@@ -40,5 +41,8 @@ transform =
 
                 Translate unitX unitY ->
                     "translate(" ++ stringFromUnit unitX ++ "," ++ stringFromUnit unitY ++ ")"
+
+                TranslateY unitY ->
+                    "translateY(" ++ stringFromUnit unitY ++ ")"
     in
     List.map stringFromTransform >> String.join " " >> Html.Attributes.style "transform"

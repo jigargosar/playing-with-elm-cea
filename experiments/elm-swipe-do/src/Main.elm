@@ -87,7 +87,7 @@ viewMenuItems isOpen icons =
                     -0.25 + (0.5 / (ct - 1) * fIdx)
             in
             [ Rotate (Turn tn)
-            , Translate Zero (Rem -3.5)
+            , TranslateY (Rem -3.5)
             , Rotate (Turn -tn)
             ]
 
