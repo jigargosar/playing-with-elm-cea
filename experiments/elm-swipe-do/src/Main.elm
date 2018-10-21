@@ -5,6 +5,7 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Style exposing (Transform(..), Unit(..))
 import UI exposing (..)
 
 
@@ -72,46 +73,6 @@ viewMagicMenu isOpen icons =
         ]
 
 
-type Transform
-    = Rotate Unit
-    | Translate Unit Unit
-
-
-type Unit
-    = Px Float
-    | Rem Float
-    | Turn Float
-    | Zero
-
-
-transform : List Transform -> Attribute msg
-transform =
-    let
-        stringFromUnit unit =
-            case unit of
-                Px val ->
-                    String.fromFloat val ++ "px"
-
-                Rem val ->
-                    String.fromFloat val ++ "rem"
-
-                Turn val ->
-                    String.fromFloat val ++ "turn"
-
-                Zero ->
-                    "0"
-
-        stringFromTransform t =
-            case t of
-                Rotate unit ->
-                    "rotate(" ++ stringFromUnit unit ++ ")"
-
-                Translate unitX unitY ->
-                    "translate(" ++ stringFromUnit unitX ++ "," ++ stringFromUnit unitY ++ ")"
-    in
-    List.map stringFromTransform >> String.join " " >> style "transform"
-
-
 viewMenuItems isOpen icons =
     let
         ct =
@@ -139,7 +100,7 @@ viewMenuItems isOpen icons =
                 button
                     [ onClick NoOp
                     , class "flex items-center justify-center absolute pa0 ma0"
-                    , transform (ter isOpen (transformForIdx idx) [])
+                    , Style.transform (ter isOpen (transformForIdx idx) [])
                     , style "transition" ("transform 0.3s " ++ transitionDelayForIdx idx ++ " ease-in")
                     ]
                     [ i |> FeatherIcons.toHtml [] ]
