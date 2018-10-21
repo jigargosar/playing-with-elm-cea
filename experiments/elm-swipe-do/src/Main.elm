@@ -126,24 +126,6 @@ viewMenuItems isOpen icons =
             , Translate Zero (Rem -5)
             , Rotate (Turn -tn)
             ]
-
-        tran idx =
-            let
-                fIdx =
-                    toFloat idx
-
-                tn =
-                    -0.25 + (0.5 / (ct - 1) * fIdx)
-            in
-            [ "rotate("
-            , tn |> String.fromFloat
-            , "turn) "
-            , "translate(0,-5rem) "
-            , "rotate("
-            , -tn |> String.fromFloat
-            , "turn) "
-            ]
-                |> String.join ""
     in
     icons
         |> List.indexedMap
