@@ -9,7 +9,7 @@ const app = Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
     now: Date.now(),
-    todoC: storageGetOr({}, 'todoC'),
+    todos: storageGetOr({}, 'todos'),
   },
 })
 
@@ -25,8 +25,8 @@ subscribe(
     logS: data => {
       console.warn(data)
     },
-    cacheTodoC: todoC => {
-      storageSet('todoC', todoC)
+    cacheTodoC: todos => {
+      storageSet('todos', todos)
     },
   },
   app,

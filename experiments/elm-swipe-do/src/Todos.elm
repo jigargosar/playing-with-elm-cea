@@ -1,4 +1,4 @@
-module TodoCollection exposing (Msg(..), TodoCollection, generator, update, viewList)
+module Todos exposing (Msg(..), TodoCollection, generator, update, viewList)
 
 import Collection exposing (Collection)
 import Html exposing (..)

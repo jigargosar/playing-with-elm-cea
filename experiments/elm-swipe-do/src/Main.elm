@@ -17,7 +17,7 @@ import Random
 import Style exposing (Transform(..), Unit(..))
 import Task
 import Todo exposing (Todo)
-import TodoCollection exposing (TodoCollection)
+import Todos exposing (TodoCollection)
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
 
@@ -27,7 +27,7 @@ import WheelEvent exposing (WheelEvent)
 
 
 type alias Model =
-    { magicMenu : MagicMenu, todoC : TodoCollection }
+    { magicMenu : MagicMenu, todos : TodoCollection }
 
 
 type alias Mills =
@@ -35,18 +35,18 @@ type alias Mills =
 
 
 type alias Flags =
-    { now : Mills, todoC : E.Value }
+    { now : Mills, todos : E.Value }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
-        todoC =
-            Random.step (TodoCollection.generator flags.todoC) (Random.initialSeed flags.now)
+        todos =
+            Random.step (Todos.generator flags.todos) (Random.initialSeed flags.now)
                 |> Tuple.first
     in
     ( { magicMenu = MagicMenu.initial
-      , todoC = todoC
+      , todos = todos
       }
     , Cmd.none
     )
@@ -58,8 +58,8 @@ setMagicMenu magicMenu model =
 
 
 setTodoC : TodoCollection -> Model -> Model
-setTodoC todoC model =
-    { model | todoC = todoC }
+setTodoC todos model =
+    { model | todos = todos }
 
 
 
@@ -69,7 +69,7 @@ setTodoC todoC model =
 type Msg
     = NoOp
     | MagicMenuMsg MagicMenu.Msg
-    | TodoCMsg TodoCollection.Msg
+    | TodoCMsg Todos.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -83,7 +83,7 @@ update message model =
                 |> Tuple.mapBoth (flip setMagicMenu model) (Cmd.map MagicMenuMsg)
 
         TodoCMsg msg ->
-            TodoCollection.update msg model.todoC
+            Todos.update msg model.todos
                 |> Tuple.mapBoth (flip setTodoC model) (Cmd.map TodoCMsg)
 
 
@@ -110,7 +110,7 @@ mockActions =
     , FeatherIcons.trash2
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
-        |> (::) (MagicMenu.Action FeatherIcons.filePlus (TodoCMsg TodoCollection.NewClicked))
+        |> (::) (MagicMenu.Action FeatherIcons.filePlus (TodoCMsg Todos.NewClicked))
 
 
 view : Model -> Html Msg
@@ -118,7 +118,7 @@ view model =
     UI.root
         [ viewToolbar
         , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
-            [ TodoCollection.viewList model.todoC ]
+            [ Todos.viewList model.todos ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         ]
