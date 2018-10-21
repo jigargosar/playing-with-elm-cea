@@ -3,6 +3,8 @@ module Main exposing (main)
 import BasicsX exposing (flip, ter)
 import Browser
 import Browser.Events
+import Collection exposing (Collection)
+import Dict
 import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -11,7 +13,9 @@ import Json.Decode as D
 import Json.Encode as E
 import MagicMenu exposing (MagicMenu)
 import Port
+import Random
 import Style exposing (Transform(..), Unit(..))
+import Todo exposing (Todo)
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
 
@@ -20,8 +24,12 @@ import WheelEvent exposing (WheelEvent)
 ---- MODEL ----
 
 
+type alias TodoC =
+    Collection Todo
+
+
 type alias Model =
-    { magicMenu : MagicMenu }
+    { magicMenu : MagicMenu, todoC : TodoC }
 
 
 type alias Mills =
@@ -34,7 +42,18 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { magicMenu = MagicMenu.initial }, Cmd.none )
+    let
+        encTC : E.Value
+        encTC =
+            E.dict identity Todo.encode Dict.empty
+    in
+    ( { magicMenu = MagicMenu.initial
+      , todoC =
+            Random.step (Collection.generator Todo.decoder encTC) (Random.initialSeed flags.now)
+                |> Tuple.first
+      }
+    , Cmd.none
+    )
 
 
 setMagicMenu : MagicMenu -> Model -> Model
