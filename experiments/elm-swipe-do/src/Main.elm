@@ -44,8 +44,9 @@ view model =
 
 viewMagicMenu icons =
     div [ class "flex justify-center" ]
-        [ div [ class "absolute bottom-1" ]
-            [ fBtn FeatherIcons.menu NoOp
+        [ div [ class "absolute bottom-1 flex flex-column items-center" ]
+            [ div [] (icons |> List.map (\i -> fBtn i NoOp))
+            , fBtn FeatherIcons.menu NoOp
             ]
         ]
 
