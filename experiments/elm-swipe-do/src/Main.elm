@@ -130,8 +130,19 @@ view : Model -> Html Msg
 view model =
     UI.root
         [ viewToolbar
-        , MagicMenu.view mockActions MagicMenuMsg model.magicMenu
+        , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
+            [ div [ class "w-100 measure " ] (Collection.items model.todoC |> viewTodoList) ]
+        , div [ class "w-100 flex flex-column justify-center items-center" ]
+            [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         ]
+
+
+viewTodoList =
+    List.map viewTodo
+
+
+viewTodo todo =
+    row "" [] [ txt <| Todo.getContent todo ]
 
 
 

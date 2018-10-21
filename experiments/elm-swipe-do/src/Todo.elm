@@ -5,6 +5,7 @@ module Todo exposing
     , decoder
     , delete
     , encode
+    , getContent
     , init
     , initWithContent
     , setContent
@@ -68,6 +69,10 @@ init =
 
 initWithContent content id now =
     { content = content, done = False, deleted = False, id = id, createdAt = now, modifiedAt = now }
+
+
+getContent =
+    .content
 
 
 setContent : Content -> Collection.Millis -> Model -> Model
