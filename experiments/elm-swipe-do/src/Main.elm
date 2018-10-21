@@ -1,6 +1,7 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
+import Browser.Events
 import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
