@@ -1,6 +1,7 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
+import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import UI exposing (..)
@@ -38,7 +39,15 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    UI.root [ viewToolbar ]
+    UI.root [ viewToolbar, viewMagicMenu ]
+
+
+viewMagicMenu =
+    div [ class "flex justify-center pa3" ] [ fBtn FeatherIcons.menu NoOp ]
+
+
+
+--- Toolbar
 
 
 viewToolbar =
@@ -46,6 +55,10 @@ viewToolbar =
         [ txtC "b ph3" "ELM Swipe Do"
         , spacer
         , viewTabs
+            [ viewTab False "Scheduled"
+            , viewTab True "Todo"
+            , viewTab False "Done"
+            ]
         , spacer
         ]
 
@@ -56,10 +69,6 @@ viewTab active l =
 
 viewTabs =
     div [ class "flex bw2 bt b--transparent" ]
-        [ viewTab False "Scheduled"
-        , viewTab True "Todo"
-        , viewTab False "Done"
-        ]
 
 
 
