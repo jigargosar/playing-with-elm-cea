@@ -45,38 +45,51 @@ update msg model =
 ---- VIEW ----
 
 
+type alias Action msg =
+    { icon : FeatherIcons.Icon, msg : msg }
+
+
+type alias Actions msg =
+    List (Action msg)
+
+
+mockActions =
+    [ FeatherIcons.facebook
+    , FeatherIcons.home
+    , FeatherIcons.twitter
+    , FeatherIcons.scissors
+    , FeatherIcons.edit
+    , FeatherIcons.trash2
+    , FeatherIcons.filePlus
+    ]
+        |> List.map (\icon -> Action icon NoOp)
+
+
 view : Model -> Html Msg
 view model =
     UI.root
         [ viewToolbar
-        , viewMagicMenu model.isOpen
-            [ FeatherIcons.facebook
-            , FeatherIcons.home
-            , FeatherIcons.twitter
-            , FeatherIcons.scissors
-            , FeatherIcons.edit
-            , FeatherIcons.trash2
-            , FeatherIcons.filePlus
-            ]
+        , viewMagicMenu model.isOpen mockActions Toggle
         ]
 
 
-viewMagicMenu isOpen icons =
+viewMagicMenu : Bool -> Actions msg -> msg -> Html msg
+viewMagicMenu isOpen actions menuClickMsg =
     div [ class "flex justify-center" ]
         [ div [ class "absolute bottom-1 flex flex-column items-center" ]
             ([ div [ class "bg-white z-1" ]
-                [ fBtn (ter isOpen FeatherIcons.x FeatherIcons.menu) Toggle
+                [ fBtn (ter isOpen FeatherIcons.x FeatherIcons.menu) menuClickMsg
                 ]
              ]
-                ++ viewMenuItems isOpen icons
+                ++ viewMenuItems isOpen actions
             )
         ]
 
 
-viewMenuItems isOpen icons =
+viewMenuItems isOpen actions =
     let
         ct =
-            List.length icons |> toFloat
+            List.length actions |> toFloat
 
         transformForIdx idx =
             let
@@ -94,16 +107,16 @@ viewMenuItems isOpen icons =
         transitionDelayForIdx idx =
             (idx * 15 |> String.fromInt) ++ "ms"
     in
-    icons
+    actions
         |> List.indexedMap
-            (\idx i ->
+            (\idx { icon, msg } ->
                 button
-                    [ onClick NoOp
+                    [ onClick msg
                     , class "flex items-center justify-center absolute pa0 ma0"
                     , Style.transform (ter isOpen (transformForIdx idx) [])
                     , style "transition" ("transform 0.3s " ++ transitionDelayForIdx idx ++ " ease-in")
                     ]
-                    [ i |> FeatherIcons.toHtml [] ]
+                    [ icon |> FeatherIcons.toHtml [] ]
             )
 
 
