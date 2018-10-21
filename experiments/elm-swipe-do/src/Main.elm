@@ -106,7 +106,7 @@ transform =
                 Translate unitX unitY ->
                     "translate(" ++ stringFromUnit unitX ++ "," ++ stringFromUnit unitY ++ ")"
     in
-    List.map stringFromTransform >> String.join " " >> Debug.log "t" >> style "transform"
+    List.map stringFromTransform >> String.join " " >> style "transform"
 
 
 viewMenuItems isOpen icons =
@@ -126,6 +126,9 @@ viewMenuItems isOpen icons =
             , Translate Zero (Rem -5)
             , Rotate (Turn -tn)
             ]
+
+        transitionDelayForIdx idx =
+            (idx * 10 |> String.fromInt) ++ "ms"
     in
     icons
         |> List.indexedMap
@@ -133,7 +136,7 @@ viewMenuItems isOpen icons =
                 div
                     [ class "absolute"
                     , transform (ter isOpen (transformForIdx idx) [])
-                    , style "transition" "all 0.3s ease-in"
+                    , style "transition" ("all 0.3s " ++ transitionDelayForIdx idx ++ " ease-in")
                     ]
                     [ fBtn i NoOp ]
             )
