@@ -59,8 +59,8 @@ initWithContent content id now =
     { content = content, done = False, deleted = False, id = id, createdAt = now, modifiedAt = now }
 
 
-updateContent : Content -> Collection.Millis -> Model -> Model
-updateContent content now model =
+setContent : Content -> Collection.Millis -> Model -> Model
+setContent content now model =
     if content == model.content then
         model
 
@@ -68,10 +68,19 @@ updateContent content now model =
         { model | content = content, modifiedAt = now }
 
 
-delete : Collection.Millis -> Model -> Model
+delete : Millis -> Model -> Model
 delete now model =
     if model.deleted then
         model
 
     else
         { model | deleted = True, modifiedAt = now }
+
+
+setDone : Bool -> Millis -> Model -> Model
+setDone done now model =
+    if done == model.done then
+        model
+
+    else
+        { model | done = done, modifiedAt = now }
