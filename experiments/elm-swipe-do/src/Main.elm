@@ -105,7 +105,7 @@ mockActions =
     , FeatherIcons.trash2
     , FeatherIcons.filePlus
     ]
-        |> List.map (\icon -> Action icon NoOp)
+        |> List.map (\icon -> MagicMenu.Action icon NoOp)
 
 
 view : Model -> Html Msg
@@ -120,7 +120,7 @@ view model =
 --- Magic Menu View
 
 
-viewMagicMenu : Bool -> msg -> Actions msg -> Html msg
+viewMagicMenu : Bool -> msg -> MagicMenu.Actions msg -> Html msg
 viewMagicMenu isOpen menuClickMsg actions =
     div [ class "flex justify-center" ]
         [ div [ class "absolute bottom-1 flex flex-column items-center" ]

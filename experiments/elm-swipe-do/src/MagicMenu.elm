@@ -1,4 +1,4 @@
-module MagicMenu exposing (MagicMenu, initial)
+module MagicMenu exposing (Action, Actions, MagicMenu, initial)
 
 import FeatherIcons
 import Json.Decode as D
