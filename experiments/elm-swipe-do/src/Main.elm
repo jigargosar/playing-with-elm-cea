@@ -87,7 +87,7 @@ viewMenuItems icons =
                 div
                     [ class "absolute"
                     , style "transform" (tran idx)
-                    , style "transition" "transform 0.3s ease-in"
+                    , style "transition" "all 0.3s ease-in"
                     ]
                     [ fBtn i NoOp ]
             )
