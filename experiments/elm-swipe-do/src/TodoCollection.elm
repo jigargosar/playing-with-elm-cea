@@ -1,12 +1,15 @@
-module TodoCollection exposing (Msg(..), TodoCollection, generator, update)
+module TodoCollection exposing (Msg(..), TodoCollection, generator, update, viewTodoList)
 
 import Collection exposing (Collection)
+import Html exposing (..)
+import Html.Attributes exposing (..)
 import Json.Decode as D
 import Json.Encode as E
 import Port
 import Random
 import Task
 import Todo exposing (Todo)
+import UI exposing (row, txtC)
 
 
 type alias Model =
@@ -42,3 +45,11 @@ update message model =
             , Collection.createAndAdd (Todo.initWithContent "Todo XX") model
                 |> Task.perform NewAdded
             )
+
+
+viewTodoList =
+    Collection.items >> List.map viewTodo >> div [ class "w-100 measure-narrow vs3" ]
+
+
+viewTodo todo =
+    row "" [] [ txtC "flex-auto" <| Todo.getContent todo ]
