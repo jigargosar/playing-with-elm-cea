@@ -61,7 +61,7 @@ update message model =
 
         NewClicked ->
             ( model
-            , Collection.createAndAdd (Todo.initWithContent "Todo XX") model.collection
+            , Collection.createAndAdd Todo.init model.collection
                 |> Task.perform NewAdded
             )
 
@@ -83,4 +83,12 @@ viewList =
 
 viewTodo : Todo -> Html msg
 viewTodo todo =
-    row "" [] [ txtC "flex-auto" <| Todo.getContent todo ]
+    row "" [] [ viewTodoContent (Todo.getContent todo) ]
+
+
+viewTodoContent content =
+    if String.isEmpty content then
+        txtC "flex-auto gray" "<empty>"
+
+    else
+        txtC "flex-auto" content
