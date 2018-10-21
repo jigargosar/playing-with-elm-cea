@@ -1,4 +1,4 @@
-port module Main exposing (Model, Msg(..), init, main, update, view, wheel)
+module Main exposing (main)
 
 import BasicX exposing (ter)
 import Browser
