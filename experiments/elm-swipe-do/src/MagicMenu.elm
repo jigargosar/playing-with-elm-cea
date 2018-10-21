@@ -27,7 +27,7 @@ update message model =
             ( model, Cmd.none )
 
         Clicked ->
-            ( model, Cmd.none )
+            ( { model | open = not model.open }, Cmd.none )
 
         Wheel encoded ->
             ( model, Cmd.none )
