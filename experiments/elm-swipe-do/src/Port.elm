@@ -1,4 +1,4 @@
-port module Port exposing (cacheTodoC, logS, wheel)
+port module Port exposing (cacheTodoC, focus, logS, wheel)
 
 import Json.Decode as D
 import Json.Encode as E
@@ -11,3 +11,6 @@ port logS : String -> Cmd msg
 
 
 port cacheTodoC : E.Value -> Cmd msg
+
+
+port focus : String -> Cmd msg

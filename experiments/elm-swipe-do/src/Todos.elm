@@ -67,8 +67,7 @@ update message model =
             ( setCollection collection model
                 |> setMode (Edit todo.id (Todo.getContent todo))
             , Cmd.batch
-                [ Browser.Dom.focus "todo-content-input"
-                    |> Task.attempt (\result -> NoOp)
+                [ Port.focus "#todo-content-input"
                 , Port.cacheTodoC (Collection.encode Todo.encode collection)
                 ]
             )
