@@ -320,7 +320,10 @@ viewTodo model atCursor cursor todo =
         defaultView =
             row " bb b--moon-gray lh-copy"
                 [ Html.Attributes.id <| todoItemDomId todo
-                , classList [ ( "hover-bg-yellow bg-light-yellow", atCursor ) ]
+                , classList
+                    [ ( "hover-bg-yellow bg-light-yellow", atCursor )
+                    , ( "strike", Todo.isDone todo )
+                    ]
                 , tabindex <| ter atCursor 0 -1
                 ]
                 [ viewTodoContent

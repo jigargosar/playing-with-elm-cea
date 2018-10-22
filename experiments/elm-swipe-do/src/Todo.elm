@@ -8,6 +8,7 @@ module Todo exposing
     , getContent
     , init
     , initWithContent
+    , isDone
     , setContent
     , setDone
     )
@@ -73,6 +74,10 @@ initWithContent content id now =
 
 getContent =
     .content
+
+
+isDone =
+    .done
 
 
 setContent : Content -> Collection.Millis -> Model -> Model
