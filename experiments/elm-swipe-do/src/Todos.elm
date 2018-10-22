@@ -84,6 +84,7 @@ type Msg
     | SetAndCacheCollection TodoCollection
     | ContentChanged Todo.Content
     | LogWarn (List String)
+    | SelectSingle Todo.Id
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -106,6 +107,9 @@ update message model =
 
         SetAndCacheCollection collection ->
             ( setCollection collection model, Port.cacheTodoC (Collection.encode Todo.encode collection) )
+
+        SelectSingle id ->
+            ( model, Cmd.none )
 
         StartEditing todoId ->
             case model.mode of
@@ -213,7 +217,12 @@ viewTodo : Mode -> Todo -> Html Msg
 viewTodo mode todo =
     let
         defaultView =
-            row "pa3 bb b--moon-gray lh-copy" [] [ viewTodoContent (StartEditing todo.id) (Todo.getContent todo) ]
+            row "pa3 bb b--moon-gray lh-copy"
+                []
+                [ viewTodoContent
+                    (SelectSingle todo.id)
+                    (Todo.getContent todo)
+                ]
     in
     case mode of
         ListMode ->
