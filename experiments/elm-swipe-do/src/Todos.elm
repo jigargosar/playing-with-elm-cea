@@ -1,7 +1,7 @@
 module Todos exposing (Msg(..), Todos, generator, subscriptions, update, view)
 
 import Array
-import BasicsX exposing (flip)
+import BasicsX exposing (flip, ter)
 import Browser.Dom
 import Browser.Events
 import Collection exposing (Collection)
@@ -301,7 +301,7 @@ viewTodo model atCursor index todo =
     let
         defaultView =
             row " bb b--moon-gray lh-copy"
-                [ classList [ ( "bg-yellow", atCursor ) ] ]
+                [ classList [ ( "hover-bg-yellow bg-washed-yellow", atCursor ) ], tabindex <| ter atCursor 0 -1 ]
                 [ viewTodoContent
                     (SetCursor index)
                     (Todo.getContent todo)
