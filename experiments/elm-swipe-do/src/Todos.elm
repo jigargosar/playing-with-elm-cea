@@ -202,7 +202,7 @@ viewTodo : Mode -> Todo -> Html Msg
 viewTodo mode todo =
     let
         defaultView =
-            row "pa3 bb b--moon-gray" [] [ viewTodoContent (StartEditing todo.id) (Todo.getContent todo) ]
+            row "pa3 bb b--moon-gray lh-copy" [] [ viewTodoContent (StartEditing todo.id) (Todo.getContent todo) ]
     in
     case mode of
         List ->
@@ -213,7 +213,7 @@ viewTodo mode todo =
                 flexV []
                     [ input
                         [ Html.Attributes.id <| todoInputDomId todo
-                        , class "pa3"
+                        , class "pa3 lh-copy"
                         , value content
                         , onInput ContentChanged
                         , onBlur <| EndEditing "blur"
