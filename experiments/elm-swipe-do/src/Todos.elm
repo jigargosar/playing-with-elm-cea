@@ -137,7 +137,7 @@ warn =
 
 startEditingAndFocus todoId model =
     let
-        result : Result Log.Messages Model
+        result : Log.Result Model
         result =
             setEditModeWithTodoId todoId model
     in
