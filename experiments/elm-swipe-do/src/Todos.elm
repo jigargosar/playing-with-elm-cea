@@ -20,8 +20,8 @@ import UI exposing (flexV, row, txtA, txtC)
 
 
 type Mode
-    = List
-    | Edit Todo.Id Todo.Content
+    = ListMode
+    | EditMode Todo.Id Todo.Content
 
 
 type alias TodoIds =
@@ -39,11 +39,17 @@ type alias TodoCollection =
 
 
 type alias Model =
-    { mode : Mode, collection : TodoCollection }
+    { mode : Mode, collection : TodoCollection, selection : Selection }
 
 
 type alias Todos =
     Model
+
+
+generator : E.Value -> Random.Generator Model
+generator enc =
+    Collection.generator Todo.decoder enc
+        |> Random.map (Model ListMode)
 
 
 setMode : Mode -> Model -> Model
@@ -66,12 +72,6 @@ getTodoList =
         >> Collection.items
         --        >> List.sortBy (.modifiedAt >> (*) -1)
         >> List.sortBy .createdAt
-
-
-generator : E.Value -> Random.Generator Model
-generator enc =
-    Collection.generator Todo.decoder enc
-        |> Random.map (Model List)
 
 
 type Msg
@@ -97,7 +97,7 @@ update message model =
 
         NewAdded ( todo, collection ) ->
             ( setCollection collection model
-                |> setMode (Edit todo.id (Todo.getContent todo))
+                |> setMode (EditMode todo.id (Todo.getContent todo))
             , Cmd.batch
                 [ Port.cacheTodoC (Collection.encode Todo.encode collection)
                 , focusTodo todo
@@ -109,19 +109,19 @@ update message model =
 
         StartEditing todoId ->
             case model.mode of
-                List ->
+                ListMode ->
                     startEditingAndFocus todoId model
 
-                Edit _ _ ->
+                EditMode _ _ ->
                     startEditingAndFocus todoId model
 
         EndEditing msg ->
             case model.mode of
-                List ->
+                ListMode ->
                     ( model, warn [ "EndEditing in List mode", msg ] )
 
-                Edit id content ->
-                    ( setMode List model
+                EditMode id content ->
+                    ( setMode ListMode model
                     , model.collection
                         |> Collection.updateWith id (Todo.setContent content)
                         |> Task.perform SetAndCacheCollection
@@ -129,11 +129,11 @@ update message model =
 
         ContentChanged newContent ->
             case model.mode of
-                List ->
+                ListMode ->
                     ( model, warn [ "ContentChanged in List mode" ] )
 
-                Edit id _ ->
-                    ( setMode (Edit id newContent) model
+                EditMode id _ ->
+                    ( setMode (EditMode id newContent) model
                     , model.collection
                         |> Collection.updateWith id (Todo.setContent newContent)
                         |> Task.perform SetAndCacheCollection
@@ -180,7 +180,7 @@ warn =
 
 
 initEditModeWithTodo todo =
-    Edit todo.id <| Todo.getContent todo
+    EditMode todo.id <| Todo.getContent todo
 
 
 startEditingAndFocus id model =
@@ -216,10 +216,10 @@ viewTodo mode todo =
             row "pa3 bb b--moon-gray lh-copy" [] [ viewTodoContent (StartEditing todo.id) (Todo.getContent todo) ]
     in
     case mode of
-        List ->
+        ListMode ->
             defaultView
 
-        Edit id content ->
+        EditMode id content ->
             if todo.id == id then
                 flexV []
                     [ input
