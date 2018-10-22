@@ -31,7 +31,6 @@ type alias TodoIds =
 type Selection
     = EmptySelection
     | SingleSelection Todo.Id
-    | MultiSelection TodoIds
 
 
 type alias TodoCollection =
@@ -50,6 +49,16 @@ generator : E.Value -> Random.Generator Model
 generator enc =
     Collection.generator Todo.decoder enc
         |> Random.map (Model ListMode EmptySelection)
+
+
+isSelected : Todo -> Model -> Bool
+isSelected todo model =
+    case model.selection of
+        EmptySelection ->
+            False
+
+        SingleSelection id ->
+            todo.id == id
 
 
 setMode : Mode -> Model -> Model
