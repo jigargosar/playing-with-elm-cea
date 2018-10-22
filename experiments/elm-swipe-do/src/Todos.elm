@@ -133,10 +133,10 @@ update message model =
                 ListMode ->
                     case key of
                         "ArrowDown" ->
-                            ( rotateCursorByAndFocus 1 model, Cmd.none )
+                            rotateCursorByAndFocus 1 model
 
                         "ArrowUp" ->
-                            ( rotateCursorByAndFocus -1 model, Cmd.none )
+                            rotateCursorByAndFocus -1 model
 
                         "Enter" ->
                             switchModeToEditTodoAtCursor model
@@ -214,16 +214,21 @@ rotateCursorByAndFocus offset model =
             getTodoList model
                 |> Tuple.mapSecond List.length
     in
-    if length == 0 then
+    (if length == 0 then
         model
 
-    else
+     else
         { model | cursor = modBy length (currentCursor + offset) }
+    )
+        |> rotateCursorAndFocusHelp
 
 
 rotateCursorAndFocusHelp model =
-    getTodoAtCursor model
+    ( model
+    , getTodoAtCursor model
         |> Maybe.map focusTodoItem
+        |> Maybe.withDefault Cmd.none
+    )
 
 
 warn : Log.Messages -> Cmd msg
