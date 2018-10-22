@@ -214,7 +214,7 @@ viewList : Model -> Html Msg
 viewList model =
     model
         |> getTodoList
-        >> List.map (\todo -> ( todo.id, viewTodo model.mode todo ))
+        >> List.map (\todo -> ( todo.id, viewTodo model todo ))
         >> Html.Keyed.node "div" [ class "w-100 measure-narrow vs3" ]
 
 
@@ -222,9 +222,12 @@ todoInputDomId todo =
     "todo-content-input-" ++ todo.id
 
 
-viewTodo : Mode -> Todo -> Html Msg
-viewTodo mode todo =
+viewTodo : Model -> Todo -> Html Msg
+viewTodo model todo =
     let
+        selected =
+            isSelected todo model
+
         defaultView =
             row "pa3 bb b--moon-gray lh-copy"
                 []
@@ -233,7 +236,7 @@ viewTodo mode todo =
                     (Todo.getContent todo)
                 ]
     in
-    case mode of
+    case model.mode of
         ListMode ->
             defaultView
 
