@@ -46,7 +46,7 @@ encode model =
     E.object
         [ ( "id", E.string model.id )
         , ( "content", E.string model.content )
-        , ( "done", E.bool model.deleted )
+        , ( "done", E.bool model.done )
         , ( "deleted", E.bool model.deleted )
         , ( "createdAt", E.int model.createdAt )
         , ( "modifiedAt", E.int model.modifiedAt )
