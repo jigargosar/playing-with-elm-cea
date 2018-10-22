@@ -72,7 +72,7 @@ type alias Actions msg =
 
 view : Actions msg -> (Msg -> msg) -> Model -> Html msg
 view actions toMsg model =
-    boolHtml (not model.hidden) (viewHelp actions toMsg model)
+    boolHtml (not model.hidden || model.open) (viewHelp actions toMsg model)
 
 
 viewHelp : Actions msg -> (Msg -> msg) -> Model -> Html msg
