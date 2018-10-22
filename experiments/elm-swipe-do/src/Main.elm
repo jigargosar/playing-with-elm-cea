@@ -106,7 +106,7 @@ mockActions =
     , FeatherIcons.twitter
     , FeatherIcons.scissors
     , FeatherIcons.edit
-    , FeatherIcons.trash2
+    , FeatherIcons.moon
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
         |> (::) (MagicMenu.Action FeatherIcons.trash2 (TodoCMsg Todos.Reset))
