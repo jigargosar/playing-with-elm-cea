@@ -148,6 +148,9 @@ update message model =
                 "ArrowUp" ->
                     ( rotateCursorBy -1 model, Cmd.none )
 
+                "Enter" ->
+                    ( rotateCursorBy -1 model, Cmd.none )
+
                 _ ->
                     ( model, Cmd.none )
 
@@ -260,7 +263,7 @@ viewTodo : Model -> Bool -> Int -> Todo -> Html Msg
 viewTodo model atCursor index todo =
     let
         defaultView =
-            row "pa3 bb b--moon-gray lh-copy"
+            row " bb b--moon-gray lh-copy"
                 [ classList [ ( "bg-yellow", atCursor ) ] ]
                 [ viewTodoContent
                     (SetCursor index)
@@ -302,7 +305,7 @@ viewTodo model atCursor index todo =
 
 viewTodoContent onClick_ content =
     if String.isEmpty content then
-        txtA [ onClick onClick_, class "flex-auto gray" ] "<empty>"
+        txtA [ onClick onClick_, class "flex-auto pa3 gray" ] "<empty>"
 
     else
-        txtA [ onClick onClick_, class "flex-auto" ] content
+        txtA [ onClick onClick_, class "flex-auto pa3" ] content
