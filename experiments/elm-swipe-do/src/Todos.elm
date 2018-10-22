@@ -56,7 +56,7 @@ type alias Todos =
 generator : E.Value -> Random.Generator Model
 generator enc =
     Collection.generator Todo.decoder enc
-        |> Random.map (Model ListMode 0 Done)
+        |> Random.map (Model ListMode 0 Todo)
 
 
 setMode : Mode -> Model -> Model
@@ -74,12 +74,24 @@ setCollection collection model =
     { model | collection = collection }
 
 
+filterPredicate model =
+    case model.filter of
+        Scheduled ->
+            always True
+
+        Todo ->
+            Todo.isDone >> not
+
+        Done ->
+            Todo.isDone
+
+
 getCursorTodoList model =
     model.cursor
         |> Cursor.get
             (model.collection
                 |> Collection.items
-                |> List.filter (Todo.isDone >> not)
+                |> List.filter (filterPredicate model)
                 |> List.sortBy .createdAt
             )
 
