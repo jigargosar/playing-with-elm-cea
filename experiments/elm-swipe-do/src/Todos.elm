@@ -5,6 +5,7 @@ import BasicsX exposing (flip, ter)
 import Browser.Dom
 import Browser.Events
 import Collection exposing (Collection)
+import Cursor exposing (Cursor)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -34,12 +35,8 @@ type alias TodoCollection =
     Collection Todo
 
 
-type alias Cursor =
-    Int
-
-
 type alias Model =
-    { mode : Mode, cursor : Int, collection : TodoCollection }
+    { mode : Mode, cursor : Cursor, collection : TodoCollection }
 
 
 type alias Todos =
@@ -68,18 +65,12 @@ setCollection collection model =
 
 
 getTodoList model =
-    let
-        list =
-            model
-                |> .collection
-                >> Collection.items
-                --        >> List.sortBy (.modifiedAt >> (*) -1)
-                >> List.sortBy .createdAt
-
-        currentCursor =
-            clamp 0 (List.length list) model.cursor
-    in
-    ( currentCursor, list )
+    model.cursor
+        |> Cursor.get
+            (model.collection
+                |> Collection.items
+                |> List.sortBy .createdAt
+            )
 
 
 type Msg
