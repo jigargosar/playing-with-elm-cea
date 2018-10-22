@@ -138,7 +138,15 @@ focusTodo todo =
             todoInputDomId todo
     in
     Browser.Dom.focus domId
-        |> Task.attempt (\_ -> LogWarn [ "Browser.Dom.focus", domId, "not found" ])
+        |> Task.attempt
+            (\result ->
+                case result of
+                    Ok _ ->
+                        NoOp
+
+                    Err _ ->
+                        LogWarn [ "Browser.Dom.focus", domId, "not found" ]
+            )
 
 
 warn : Log.Messages -> Cmd msg
@@ -190,6 +198,18 @@ viewTodo mode todo =
                         [ Html.Attributes.id <| todoInputDomId todo
                         , value content
                         , onInput ContentChanged
+                        , Html.Events.on "keydown"
+                            (D.map
+                                (\key ->
+                                    case key of
+                                        "Enter" ->
+                                            LogWarn [ "Enter" ]
+
+                                        _ ->
+                                            NoOp
+                                )
+                                (D.field "key" D.string)
+                            )
                         ]
                         []
                     ]
