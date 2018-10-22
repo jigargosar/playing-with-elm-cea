@@ -82,19 +82,6 @@ getTodoList model =
     ( currentCursor, list )
 
 
-rotateCursorBy offset model =
-    let
-        ( currentCursor, length ) =
-            getTodoList model
-                |> Tuple.mapSecond List.length
-    in
-    if length == 0 then
-        model
-
-    else
-        { model | cursor = modBy length (currentCursor + offset) }
-
-
 type Msg
     = NoOp
     | NewClicked
@@ -131,7 +118,7 @@ update message model =
                 |> setMode (EditMode todo.id (Todo.getContent todo))
             , Cmd.batch
                 [ Port.cacheTodoC (Collection.encode Todo.encode collection)
-                , focusTodo todo
+                , focusTodoInput todo
                 ]
             )
 
@@ -146,10 +133,10 @@ update message model =
                 ListMode ->
                     case key of
                         "ArrowDown" ->
-                            ( rotateCursorBy 1 model, Cmd.none )
+                            ( rotateCursorByAndFocus 1 model, Cmd.none )
 
                         "ArrowUp" ->
-                            ( rotateCursorBy -1 model, Cmd.none )
+                            ( rotateCursorByAndFocus -1 model, Cmd.none )
 
                         "Enter" ->
                             switchModeToEditTodoAtCursor model
@@ -205,21 +192,38 @@ update message model =
             )
 
 
-focusTodo todo =
-    let
-        domId =
-            todoInputDomId todo
-    in
+focusTodoInput =
+    todoInputDomId >> focusId
+
+
+focusTodoItem =
+    todoItemDomId >> focusId
+
+
+focusId domId =
     Browser.Dom.focus domId
         |> Task.attempt
-            (\result ->
-                case result of
-                    Ok _ ->
-                        NoOp
-
-                    Err _ ->
-                        LogWarn [ "Browser.Dom.focus", domId, "not found" ]
+            (Result.map (always NoOp)
+                >> Result.withDefault (LogWarn [ "Browser.Dom.focus", domId, "not found" ])
             )
+
+
+rotateCursorByAndFocus offset model =
+    let
+        ( currentCursor, length ) =
+            getTodoList model
+                |> Tuple.mapSecond List.length
+    in
+    if length == 0 then
+        model
+
+    else
+        { model | cursor = modBy length (currentCursor + offset) }
+
+
+rotateCursorAndFocusHelp model =
+    getTodoAtCursor model
+        |> Maybe.map focusTodoItem
 
 
 warn : Log.Messages -> Cmd msg
@@ -243,7 +247,7 @@ switchModeToEditTodoWithId id model =
 switchModeToEditTodo todo model =
     case model.mode of
         ListMode ->
-            ( model |> setMode (initEditModeWithTodo todo), focusTodo todo )
+            ( model |> setMode (initEditModeWithTodo todo), focusTodoInput todo )
 
         EditMode id oldContent ->
             ( model |> setMode (initEditModeWithTodo todo)
@@ -253,7 +257,7 @@ switchModeToEditTodo todo model =
 
                   else
                     Cmd.none
-                , focusTodo todo
+                , focusTodoInput todo
                 ]
             )
 
