@@ -230,7 +230,7 @@ viewTodo model todo =
 
         defaultView =
             row "pa3 bb b--moon-gray lh-copy"
-                []
+                [ classList [ ( "bg-yellow", selected ) ] ]
                 [ viewTodoContent
                     (SelectSingle todo.id)
                     (Todo.getContent todo)
