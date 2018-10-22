@@ -9,7 +9,7 @@ import Port
 import Random
 import Task
 import Todo exposing (Todo)
-import UI exposing (row, txtC)
+import UI exposing (flexV, row, txtC)
 
 
 type Mode
@@ -108,7 +108,7 @@ viewTodo mode todo =
 
         Edit id content ->
             if todo.id == id then
-                row "" [] [ input [ value content ] [] ]
+                flexV [] [ input [ value content ] [] ]
 
             else
                 defaultView
