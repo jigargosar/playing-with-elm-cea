@@ -106,7 +106,12 @@ update message model =
             )
 
         ContentChanged newContent ->
-            ( model, Cmd.none )
+            case model.mode of
+                List ->
+                    ( model, Cmd.none )
+
+                Edit _ _ ->
+                    ( model, Cmd.none )
 
         StartEditing todoId ->
             case model.mode of
