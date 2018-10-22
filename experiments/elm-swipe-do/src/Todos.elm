@@ -9,6 +9,7 @@ import Html.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
 import Port
+import Process
 import Random
 import Task
 import Todo exposing (Todo)
@@ -78,6 +79,7 @@ type Msg
     | StartEditing Todo.Id
     | Reset
     | NewAdded ( Todo, Collection Todo )
+    | LogWarn (List String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -86,12 +88,16 @@ update message model =
         NoOp ->
             ( model, Cmd.none )
 
+        LogWarn msg ->
+            ( model, Port.warn msg )
+
         NewAdded ( todo, collection ) ->
             ( setCollection collection model
                 |> setMode (Edit todo.id (Todo.getContent todo))
             , Cmd.batch
-                [ Port.focus "#todo-content-input"
-                , Port.cacheTodoC (Collection.encode Todo.encode collection)
+                [ Port.cacheTodoC (Collection.encode Todo.encode collection)
+                , Browser.Dom.focus "todo-content-input"
+                    |> Task.attempt (\_ -> LogWarn [ "Browser.Dom.focus", "#todo-content-input" ])
                 ]
             )
 
