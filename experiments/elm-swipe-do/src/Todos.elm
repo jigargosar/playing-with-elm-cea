@@ -22,11 +22,6 @@ type Mode
     | Edit Todo.Id Todo.Content
 
 
-initEditModeWithTodo : Todo -> Mode
-initEditModeWithTodo todo =
-    Edit todo.id (Todo.getContent todo)
-
-
 type alias TodoCollection =
     Collection Todo
 
@@ -42,18 +37,6 @@ type alias Todos =
 setMode : Mode -> Model -> Model
 setMode mode model =
     { model | mode = mode }
-
-
-setModeEditWithTodo : Todo -> Model -> Model
-setModeEditWithTodo todo =
-    setMode <| initEditModeWithTodo todo
-
-
-setEditModeWithTodoId : Todo.Id -> Model -> Log.Result Model
-setEditModeWithTodoId id model =
-    get id model
-        |> Maybe.map (\todo -> setModeEditWithTodo todo model)
-        |> Result.fromMaybe [ "setEditModeWithTodoId", id, "Todo Not Found" ]
 
 
 get : Todo.Id -> Model -> Maybe Todo
@@ -163,9 +146,17 @@ warn =
     Log.warn "Todos.elm"
 
 
-startEditingAndFocus todoId model =
-    setEditModeWithTodoId todoId model
-        |> Log.resultWithDefault model
+initEditModeWithTodo todo =
+    Edit todo.id <| Todo.getContent todo
+
+
+startEditingAndFocus id model =
+    case get id model of
+        Just todo ->
+            ( model |> setMode (initEditModeWithTodo todo), focusTodo todo )
+
+        Nothing ->
+            ( model, warn [ "startEditingAndFocus", id, "Todo Not Found" ] )
 
 
 view : Model -> Html Msg
