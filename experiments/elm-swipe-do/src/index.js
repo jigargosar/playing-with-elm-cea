@@ -33,6 +33,9 @@ subscribe(
     logS: data => {
       console.warn(data)
     },
+    warn: data => {
+      console.warn(data)
+    },
     cacheTodoC: todos => {
       storageSet('todos', todos)
     },

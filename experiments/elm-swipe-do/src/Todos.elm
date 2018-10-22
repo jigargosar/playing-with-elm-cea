@@ -102,7 +102,7 @@ update message model =
                         |> Maybe.map (\newModel -> ( newModel, Cmd.none ))
                         |> Maybe.withDefault
                             ( model
-                            , Port.logS ("WARN: StartEditing: todoId not found" ++ todoId)
+                            , Port.warn [ "StartEditing: todoId not found", todoId ]
                             )
 
                 Edit editingId content ->
