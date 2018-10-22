@@ -28,17 +28,16 @@ type alias TodoIds =
     Set Todo.Id
 
 
-type Selection
-    = EmptySelection
-    | SingleSelection Todo.Id
-
-
 type alias TodoCollection =
     Collection Todo
 
 
+type alias Cursor =
+    Int
+
+
 type alias Model =
-    { mode : Mode, selection : Selection, collection : TodoCollection }
+    { mode : Mode, cursor : Int, collection : TodoCollection }
 
 
 type alias Todos =
@@ -48,17 +47,7 @@ type alias Todos =
 generator : E.Value -> Random.Generator Model
 generator enc =
     Collection.generator Todo.decoder enc
-        |> Random.map (Model ListMode EmptySelection)
-
-
-isSelected : Todo -> Model -> Bool
-isSelected todo model =
-    case model.selection of
-        EmptySelection ->
-            False
-
-        SingleSelection id ->
-            todo.id == id
+        |> Random.map (Model ListMode 0)
 
 
 setMode : Mode -> Model -> Model
@@ -93,7 +82,7 @@ type Msg
     | SetAndCacheCollection TodoCollection
     | ContentChanged Todo.Content
     | LogWarn (List String)
-    | SelectSingle Todo.Id
+    | SetCursor Cursor
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -117,8 +106,8 @@ update message model =
         SetAndCacheCollection collection ->
             ( setCollection collection model, Port.cacheTodoC (Collection.encode Todo.encode collection) )
 
-        SelectSingle id ->
-            ( { model | selection = SingleSelection id }, Cmd.none )
+        SetCursor newCursor ->
+            ( { model | cursor = newCursor }, Cmd.none )
 
         StartEditing todoId ->
             case model.mode of
@@ -214,7 +203,7 @@ viewList : Model -> Html Msg
 viewList model =
     model
         |> getTodoList
-        >> List.map (\todo -> ( todo.id, viewTodo model todo ))
+        >> List.indexedMap (\index todo -> ( todo.id, viewTodo model index todo ))
         >> Html.Keyed.node "div" [ class "w-100 measure-narrow" ]
 
 
@@ -222,17 +211,14 @@ todoInputDomId todo =
     "todo-content-input-" ++ todo.id
 
 
-viewTodo : Model -> Todo -> Html Msg
-viewTodo model todo =
+viewTodo : Model -> Int -> Todo -> Html Msg
+viewTodo model index todo =
     let
-        selected =
-            isSelected todo model
-
         defaultView =
             row "pa3 bb b--moon-gray lh-copy"
-                [ classList [ ( "bg-yellow", selected ) ] ]
+                [ classList [ ( "bg-yellow", model.cursor == index ) ] ]
                 [ viewTodoContent
-                    (SelectSingle todo.id)
+                    (SetCursor index)
                     (Todo.getContent todo)
                 ]
     in
