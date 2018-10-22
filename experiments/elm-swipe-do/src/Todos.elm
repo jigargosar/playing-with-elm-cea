@@ -4,6 +4,7 @@ import Browser.Dom
 import Collection exposing (Collection)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
 import Port
@@ -94,21 +95,21 @@ update message model =
             )
 
 
-view : Model -> Html msg
+view : Model -> Html Msg
 view =
     viewList
 
 
-viewList : Model -> Html msg
+viewList : Model -> Html Msg
 viewList model =
     model |> getTodoList >> List.map (viewTodo model.mode) >> div [ class "w-100 measure-narrow vs3" ]
 
 
-viewTodo : Mode -> Todo -> Html msg
+viewTodo : Mode -> Todo -> Html Msg
 viewTodo mode todo =
     let
         defaultView =
-            row "" [] [ viewTodoContent (Todo.getContent todo) ]
+            row "" [] [ viewTodoContent (StartEditing todo.id) (Todo.getContent todo) ]
     in
     case mode of
         List ->
@@ -122,9 +123,9 @@ viewTodo mode todo =
                 defaultView
 
 
-viewTodoContent content =
+viewTodoContent onClick_ content =
     if String.isEmpty content then
-        txtA [ class "flex-auto gray" ] "<empty>"
+        txtA [ onClick onClick_, class "flex-auto gray" ] "<empty>"
 
     else
-        txtA [ class "flex-auto" ] content
+        txtA [ onClick onClick_, class "flex-auto" ] content
