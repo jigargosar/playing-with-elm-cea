@@ -191,7 +191,7 @@ viewList model =
 
 
 todoInputDomId todo =
-    "todo-content-input-"
+    "todo-content-input-" ++ todo.id
 
 
 viewTodo : Mode -> Todo -> Html Msg
