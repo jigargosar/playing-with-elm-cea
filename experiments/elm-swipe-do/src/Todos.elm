@@ -325,7 +325,7 @@ viewTodo model atCursor cursor todo =
                 [ Html.Attributes.id <| todoItemDomId todo
                 , classList
                     [ ( "hover-bg-yellow bg-light-yellow", atCursor )
-                    , ( "strike", Todo.isDone todo )
+                    , ( "strike gray", Todo.isDone todo )
                     ]
                 , tabindex <| ter atCursor 0 -1
                 ]
