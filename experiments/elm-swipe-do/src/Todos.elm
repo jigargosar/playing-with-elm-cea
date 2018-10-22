@@ -296,12 +296,19 @@ todoInputDomId todo =
     "todo-content-input-" ++ todo.id
 
 
+todoItemDomId todo =
+    "todo-item-" ++ todo.id
+
+
 viewTodo : Model -> Bool -> Int -> Todo -> Html Msg
 viewTodo model atCursor index todo =
     let
         defaultView =
             row " bb b--moon-gray lh-copy"
-                [ classList [ ( "hover-bg-yellow bg-light-yellow", atCursor ) ], tabindex <| ter atCursor 0 -1 ]
+                [ Html.Attributes.id <| todoItemDomId todo
+                , classList [ ( "hover-bg-yellow bg-light-yellow", atCursor ) ]
+                , tabindex <| ter atCursor 0 -1
+                ]
                 [ viewTodoContent
                     (SetCursor index)
                     (Todo.getContent todo)
