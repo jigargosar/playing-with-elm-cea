@@ -13,6 +13,7 @@ import Log
 import Port
 import Process
 import Random
+import Set exposing (Set)
 import Task exposing (Task)
 import Todo exposing (Todo)
 import UI exposing (flexV, row, txtA, txtC)
@@ -21,6 +22,16 @@ import UI exposing (flexV, row, txtA, txtC)
 type Mode
     = List
     | Edit Todo.Id Todo.Content
+
+
+type alias TodoIds =
+    Set Todo.Id
+
+
+type Selection
+    = EmptySelection
+    | SingleSelection Todo.Id
+    | MultiSelection TodoIds
 
 
 type alias TodoCollection =
