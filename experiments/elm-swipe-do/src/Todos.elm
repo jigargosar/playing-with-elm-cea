@@ -74,8 +74,13 @@ update message model =
                 ]
             )
 
-        StartEditing id ->
-            ( model, Cmd.none )
+        StartEditing todoId ->
+            case model.mode of
+                List ->
+                    ( model, Cmd.none )
+
+                Edit editingId content ->
+                    ( model, Cmd.none )
 
         NewClicked ->
             ( model
