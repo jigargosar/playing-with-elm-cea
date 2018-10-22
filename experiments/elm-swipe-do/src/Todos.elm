@@ -214,7 +214,7 @@ viewList model =
             getTodoList model
     in
     list
-        |> List.indexedMap (\index todo -> ( todo.id, viewTodo model computedCursor index todo ))
+        |> List.indexedMap (\index todo -> ( todo.id, viewTodo model (computedCursor == index) index todo ))
         >> Html.Keyed.node "div" [ class "w-100 measure-narrow" ]
 
 
@@ -222,12 +222,12 @@ todoInputDomId todo =
     "todo-content-input-" ++ todo.id
 
 
-viewTodo : Model -> Cursor -> Int -> Todo -> Html Msg
-viewTodo model index computedCursor todo =
+viewTodo : Model -> Bool -> Int -> Todo -> Html Msg
+viewTodo model atCursor index todo =
     let
         defaultView =
             row "pa3 bb b--moon-gray lh-copy"
-                [ classList [ ( "bg-yellow", computedCursor == index ) ] ]
+                [ classList [ ( "bg-yellow", atCursor ) ] ]
                 [ viewTodoContent
                     (SetCursor index)
                     (Todo.getContent todo)
