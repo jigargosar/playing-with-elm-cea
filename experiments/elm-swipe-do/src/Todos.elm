@@ -12,7 +12,7 @@ import Log
 import Port
 import Process
 import Random
-import Task
+import Task exposing (Task)
 import Todo exposing (Todo)
 import UI exposing (flexV, row, txtA, txtC)
 
@@ -39,16 +39,6 @@ type alias Todos =
     Model
 
 
-get : Todo.Id -> Model -> Maybe Todo
-get id =
-    .collection >> Collection.get id
-
-
-setCollection : TodoCollection -> Model -> Model
-setCollection collection model =
-    { model | collection = collection }
-
-
 setMode : Mode -> Model -> Model
 setMode mode model =
     { model | mode = mode }
@@ -64,6 +54,16 @@ setEditModeWithTodoId id model =
     get id model
         |> Maybe.map (\todo -> setModeEditWithTodo todo model)
         |> Result.fromMaybe [ "setEditModeWithTodoId", id, "Todo Not Found" ]
+
+
+get : Todo.Id -> Model -> Maybe Todo
+get id =
+    .collection >> Collection.get id
+
+
+setCollection : TodoCollection -> Model -> Model
+setCollection collection model =
+    { model | collection = collection }
 
 
 getTodoList =
@@ -82,6 +82,7 @@ type Msg
     | StartEditing Todo.Id
     | Reset
     | NewAdded ( Todo, Collection Todo )
+    | SetAndCacheCollection TodoCollection
     | ContentChanged Todo.Content
     | LogWarn (List String)
 
@@ -105,13 +106,24 @@ update message model =
                 ]
             )
 
+        SetAndCacheCollection collection ->
+            ( setCollection collection model, Port.cacheTodoC (Collection.encode Todo.encode collection) )
+
         ContentChanged newContent ->
             case model.mode of
                 List ->
-                    ( model, Cmd.none )
+                    ( model, warn [ "ContentChanged in List mode" ] )
 
-                Edit _ _ ->
-                    ( model, Cmd.none )
+                Edit id _ ->
+                    let
+                        newModel =
+                            setMode (Edit id newContent) model
+                    in
+                    ( newModel
+                    , newModel.collection
+                        |> Collection.updateWith id (Todo.setContent newContent)
+                        |> Task.perform SetAndCacheCollection
+                    )
 
         StartEditing todoId ->
             case model.mode of
