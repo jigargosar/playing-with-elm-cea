@@ -142,17 +142,22 @@ update message model =
             ( { model | cursor = newCursor }, Cmd.none )
 
         KeyDown key ->
-            case key of
-                "ArrowDown" ->
-                    ( rotateCursorBy 1 model, Cmd.none )
+            case model.mode of
+                ListMode ->
+                    case key of
+                        "ArrowDown" ->
+                            ( rotateCursorBy 1 model, Cmd.none )
 
-                "ArrowUp" ->
-                    ( rotateCursorBy -1 model, Cmd.none )
+                        "ArrowUp" ->
+                            ( rotateCursorBy -1 model, Cmd.none )
 
-                "Enter" ->
-                    switchModeToEditTodoAtCursor model
+                        "Enter" ->
+                            switchModeToEditTodoAtCursor model
 
-                _ ->
+                        _ ->
+                            ( model, Cmd.none )
+
+                EditMode _ _ ->
                     ( model, Cmd.none )
 
         StartEditing id ->
