@@ -115,12 +115,8 @@ update message model =
                     ( model, warn [ "ContentChanged in List mode" ] )
 
                 Edit id _ ->
-                    let
-                        newModel =
-                            setMode (Edit id newContent) model
-                    in
-                    ( newModel
-                    , newModel.collection
+                    ( setMode (Edit id newContent) model
+                    , model.collection
                         |> Collection.updateWith id (Todo.setContent newContent)
                         |> Task.perform SetAndCacheCollection
                     )
