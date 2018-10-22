@@ -1,7 +1,8 @@
-module Todos exposing (Msg(..), Todos, generator, update, view)
+module Todos exposing (Msg(..), Todos, generator, subscriptions, update, view)
 
 import BasicsX exposing (flip)
 import Browser.Dom
+import Browser.Events
 import Collection exposing (Collection)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -91,6 +92,15 @@ type Msg
     | ContentChanged Todo.Content
     | LogWarn (List String)
     | SetCursor Cursor
+    | KeyDown String
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ Browser.Events.onKeyDown
+            (D.map KeyDown (D.field "key" D.string))
+        ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -116,6 +126,9 @@ update message model =
 
         SetCursor newCursor ->
             ( { model | cursor = newCursor }, Cmd.none )
+
+        KeyDown key ->
+            ( model, Cmd.none )
 
         StartEditing todoId ->
             case model.mode of

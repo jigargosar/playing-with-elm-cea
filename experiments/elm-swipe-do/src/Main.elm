@@ -69,7 +69,7 @@ setTodoC todos model =
 type Msg
     = NoOp
     | MagicMenuMsg MagicMenu.Msg
-    | TodoCMsg Todos.Msg
+    | TodosMsg Todos.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -82,9 +82,9 @@ update message model =
             MagicMenu.update msg model.magicMenu
                 |> Tuple.mapBoth (flip setMagicMenu model) (Cmd.map MagicMenuMsg)
 
-        TodoCMsg msg ->
+        TodosMsg msg ->
             Todos.update msg model.todos
-                |> Tuple.mapBoth (flip setTodoC model) (Cmd.map TodoCMsg)
+                |> Tuple.mapBoth (flip setTodoC model) (Cmd.map TodosMsg)
 
 
 
@@ -94,6 +94,7 @@ update message model =
 subscriptions model =
     Sub.batch
         [ MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
+        , Todos.subscriptions model.todos |> Sub.map TodosMsg
         ]
 
 
@@ -109,15 +110,15 @@ mockActions =
     , FeatherIcons.moon
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
-        |> (::) (MagicMenu.Action FeatherIcons.trash2 (TodoCMsg Todos.Reset))
-        |> (::) (MagicMenu.Action FeatherIcons.filePlus (TodoCMsg Todos.NewClicked))
+        |> (::) (MagicMenu.Action FeatherIcons.trash2 (TodosMsg Todos.Reset))
+        |> (::) (MagicMenu.Action FeatherIcons.filePlus (TodosMsg Todos.NewClicked))
 
 
 view : Model -> Html Msg
 view model =
     UI.root
         [ viewToolbar
-        , Html.map TodoCMsg <|
+        , Html.map TodosMsg <|
             div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
                 [ Todos.view model.todos ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
