@@ -148,9 +148,12 @@ update message model =
 
                 EditMode id content ->
                     ( setMode ListMode model
-                    , model.collection
-                        |> Collection.updateWith id (Todo.setContent content)
-                        |> Task.perform SetAndCacheCollection
+                    , Cmd.batch
+                        [ model.collection
+                            |> Collection.updateWith id (Todo.setContent content)
+                            |> Task.perform SetAndCacheCollection
+                        , focusId <| todoItemDomIdWithTodoId id
+                        ]
                     )
 
         ContentChanged newContent ->
@@ -291,7 +294,11 @@ todoInputDomId todo =
 
 
 todoItemDomId todo =
-    "todo-item-" ++ todo.id
+    todoItemDomIdWithTodoId todo.id
+
+
+todoItemDomIdWithTodoId id =
+    "todo-item-" ++ id
 
 
 viewTodo : Model -> Bool -> Cursor -> Todo -> Html Msg
