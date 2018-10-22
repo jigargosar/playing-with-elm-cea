@@ -67,7 +67,10 @@ setCollection collection model =
 
 
 getTodoList =
-    .collection >> Collection.items >> List.sortBy (.modifiedAt >> (*) -1)
+    .collection
+        >> Collection.items
+        --        >> List.sortBy (.modifiedAt >> (*) -1)
+        >> List.sortBy .createdAt
 
 
 generator : E.Value -> Random.Generator Model
