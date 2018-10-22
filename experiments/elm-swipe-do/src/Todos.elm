@@ -82,6 +82,7 @@ type Msg
     | StartEditing Todo.Id
     | Reset
     | NewAdded ( Todo, Collection Todo )
+    | ContentChanged Todo.Content
     | LogWarn (List String)
 
 
@@ -103,6 +104,9 @@ update message model =
                     |> Task.attempt (\_ -> LogWarn [ "Browser.Dom.focus", "todo-content-input" ])
                 ]
             )
+
+        ContentChanged newContent ->
+            ( model, Cmd.none )
 
         StartEditing todoId ->
             case model.mode of
@@ -162,7 +166,7 @@ viewTodo mode todo =
 
         Edit id content ->
             if todo.id == id then
-                flexV [] [ input [ Html.Attributes.id "todo-content-input", value content ] [] ]
+                flexV [] [ input [ Html.Attributes.id "todo-content-input", value content, onInput ContentChanged ] [] ]
 
             else
                 defaultView
