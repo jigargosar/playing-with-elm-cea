@@ -198,7 +198,7 @@ viewTodo : Mode -> Todo -> Html Msg
 viewTodo mode todo =
     let
         defaultView =
-            row "" [] [ viewTodoContent (StartEditing todo.id) (Todo.getContent todo) ]
+            row "pa3" [] [ viewTodoContent (StartEditing todo.id) (Todo.getContent todo) ]
     in
     case mode of
         List ->
