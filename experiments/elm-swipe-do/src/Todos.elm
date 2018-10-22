@@ -10,7 +10,7 @@ import Port
 import Random
 import Task
 import Todo exposing (Todo)
-import UI exposing (flexV, row, txtC)
+import UI exposing (flexV, row, txtA, txtC)
 
 
 type Mode
@@ -53,6 +53,7 @@ generator enc =
 type Msg
     = NoOp
     | NewClicked
+    | StartEditing Todo.Id
     | Reset
     | NewAdded ( Todo, Collection Todo )
 
@@ -71,6 +72,9 @@ update message model =
                 , Port.cacheTodoC (Collection.encode Todo.encode collection)
                 ]
             )
+
+        StartEditing id ->
+            ( model, Cmd.none )
 
         NewClicked ->
             ( model
@@ -120,7 +124,7 @@ viewTodo mode todo =
 
 viewTodoContent content =
     if String.isEmpty content then
-        txtC "flex-auto gray" "<empty>"
+        txtA [ class "flex-auto gray" ] "<empty>"
 
     else
-        txtC "flex-auto" content
+        txtA [ class "flex-auto" ] content

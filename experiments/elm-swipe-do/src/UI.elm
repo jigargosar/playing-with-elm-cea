@@ -11,6 +11,7 @@ module UI exposing
     , spacer
     , toolbar
     , txt
+    , txtA
     , txtC
     , txtCL
     )
@@ -70,6 +71,10 @@ txt l =
 
 txtC c l =
     div [ class c ] [ text l ]
+
+
+txtA attrs l =
+    div attrs [ text l ]
 
 
 txtCL cl l =
