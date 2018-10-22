@@ -148,6 +148,9 @@ update message model =
                 "ArrowUp" ->
                     ( rotateCursorBy -1 model, Cmd.none )
 
+                _ ->
+                    ( model, Cmd.none )
+
         StartEditing todoId ->
             case model.mode of
                 ListMode ->
