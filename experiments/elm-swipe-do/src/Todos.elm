@@ -136,19 +136,8 @@ warn =
 
 
 startEditingAndFocus todoId model =
-    let
-        result : Log.Result Model
-        result =
-            setEditModeWithTodoId todoId model
-    in
-    case result of
-        Ok newModel ->
-            ( newModel, Cmd.none )
-
-        Err errorMsgs ->
-            ( model
-            , warn errorMsgs
-            )
+    setEditModeWithTodoId todoId model
+        |> Log.handle model
 
 
 view : Model -> Html Msg
