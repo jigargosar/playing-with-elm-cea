@@ -1,4 +1,4 @@
-module Cursor exposing (Cursor, get)
+module Cursor exposing (Cursor, cycleByOffset, get)
 
 
 type alias Cursor =
@@ -12,3 +12,15 @@ get list cursor =
             clamp 0 (List.length list) cursor
     in
     ( newCursor, list )
+
+
+cycleByOffset offset list cursor =
+    let
+        length =
+            List.length list
+    in
+    if length == 0 then
+        cursor
+
+    else
+        modBy length (cursor + offset)

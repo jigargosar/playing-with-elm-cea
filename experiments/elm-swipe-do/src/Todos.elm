@@ -124,10 +124,10 @@ update message model =
                 ListMode ->
                     case key of
                         "ArrowDown" ->
-                            rotateCursorByAndFocus 1 model
+                            cycleCursorByOffsetAndFocus 1 model
 
                         "ArrowUp" ->
-                            rotateCursorByAndFocus -1 model
+                            cycleCursorByOffsetAndFocus -1 model
 
                         "Enter" ->
                             switchModeToEditTodoAtCursor model
@@ -199,23 +199,16 @@ focusId domId =
             )
 
 
-rotateCursorByAndFocus offset model =
+cycleCursorByOffsetAndFocus offset model =
     let
         ( currentCursor, list ) =
             getCursorTodoList model
-
-        length =
-            List.length list
     in
-    rotateCursorAndFocusHelp <|
-        if length == 0 then
-            model
-
-        else
-            { model | cursor = modBy length (currentCursor + offset) }
+    cycleCursorByOffsetAndFocusHelp <|
+        { model | cursor = Cursor.cycleByOffset offset list currentCursor }
 
 
-rotateCursorAndFocusHelp model =
+cycleCursorByOffsetAndFocusHelp model =
     ( model
     , getTodoAtCursor model
         |> Maybe.map focusTodoItem
