@@ -8,6 +8,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
+import Log
 import Port
 import Process
 import Random
@@ -58,9 +59,11 @@ setModeEditWithTodo todo =
     setMode <| initEditModeWithTodo todo
 
 
-setEditModeWithTodoId : Todo.Id -> Model -> Maybe Model
+setEditModeWithTodoId : Todo.Id -> Model -> Result (List String) Model
 setEditModeWithTodoId id model =
-    get id model |> Maybe.map (\todo -> setModeEditWithTodo todo model)
+    get id model
+        |> Maybe.map (\todo -> setModeEditWithTodo todo model)
+        |> Result.fromMaybe [ "setEditModeWithTodoId", id, "Todo Not Found" ]
 
 
 getTodoList =
@@ -89,7 +92,7 @@ update message model =
             ( model, Cmd.none )
 
         LogWarn strList ->
-            ( model, Port.warn ("Todos.elm" :: strList) )
+            ( model, warn strList )
 
         NewAdded ( todo, collection ) ->
             ( setCollection collection model
@@ -127,16 +130,24 @@ update message model =
             )
 
 
+warn : List String -> Cmd msg
 warn =
-    (::) "Todos.elm" >> Port.warn
+    Log.warn "Todos.elm"
 
 
 startEditingAndFocus todoId model =
-    setEditModeWithTodoId todoId model
-        |> Maybe.map (\newModel -> ( newModel, Cmd.none ))
-        |> Maybe.withDefault
+    let
+        result : Result (List String) Model
+        result =
+            setEditModeWithTodoId todoId model
+    in
+    case result of
+        Ok newModel ->
+            ( newModel, Cmd.none )
+
+        Err errorMsgs ->
             ( model
-            , Port.warn [ "StartEditing: todoId not found", todoId ]
+            , warn errorMsgs
             )
 
 
