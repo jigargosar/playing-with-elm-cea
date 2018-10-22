@@ -81,6 +81,19 @@ getTodoList model =
     ( currentCursor, list )
 
 
+rotateCursorBy offset model =
+    let
+        ( currentCursor, length ) =
+            getTodoList model
+                |> Tuple.mapSecond List.length
+    in
+    if length == 0 then
+        model
+
+    else
+        { model | cursor = modBy length (currentCursor + offset) model.cursor }
+
+
 type Msg
     = NoOp
     | NewClicked
@@ -128,7 +141,12 @@ update message model =
             ( { model | cursor = newCursor }, Cmd.none )
 
         KeyDown key ->
-            ( model, Cmd.none )
+            case key of
+                "ArrowDown" ->
+                    ( rotateCursorBy 1 model, Cmd.none )
+
+                "ArrowUp" ->
+                    ( rotateCursorBy -1 model, Cmd.none )
 
         StartEditing todoId ->
             case model.mode of
