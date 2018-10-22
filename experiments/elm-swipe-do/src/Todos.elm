@@ -88,8 +88,8 @@ update message model =
         NoOp ->
             ( model, Cmd.none )
 
-        LogWarn msg ->
-            ( model, Port.warn msg )
+        LogWarn strList ->
+            ( model, Port.warn ("Todos.elm" :: strList) )
 
         NewAdded ( todo, collection ) ->
             ( setCollection collection model
@@ -97,7 +97,7 @@ update message model =
             , Cmd.batch
                 [ Port.cacheTodoC (Collection.encode Todo.encode collection)
                 , Browser.Dom.focus "todo-content-input"
-                    |> Task.attempt (\_ -> LogWarn [ "Browser.Dom.focus", "#todo-content-input" ])
+                    |> Task.attempt (\_ -> LogWarn [ "Browser.Dom.focus", "todo-content-input" ])
                 ]
             )
 
