@@ -127,6 +127,10 @@ update message model =
             )
 
 
+warn =
+    (::) "Todos.elm" >> Port.warn
+
+
 startEditingAndFocus todoId model =
     setEditModeWithTodoId todoId model
         |> Maybe.map (\newModel -> ( newModel, Cmd.none ))
