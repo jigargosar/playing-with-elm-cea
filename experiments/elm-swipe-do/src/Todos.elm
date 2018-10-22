@@ -104,20 +104,10 @@ update message model =
         StartEditing todoId ->
             case model.mode of
                 List ->
-                    setEditModeWithTodoId todoId model
-                        |> Maybe.map (\newModel -> ( newModel, Cmd.none ))
-                        |> Maybe.withDefault
-                            ( model
-                            , Port.warn [ "StartEditing: todoId not found", todoId ]
-                            )
+                    startEditingAndFocus todoId model
 
                 Edit _ _ ->
-                    setEditModeWithTodoId todoId model
-                        |> Maybe.map (\newModel -> ( newModel, Cmd.none ))
-                        |> Maybe.withDefault
-                            ( model
-                            , Port.warn [ "StartEditing: todoId not found", todoId ]
-                            )
+                    startEditingAndFocus todoId model
 
         NewClicked ->
             ( model
@@ -134,6 +124,15 @@ update message model =
                 | collection = newCollection
               }
             , Port.cacheTodoC (Collection.encode Todo.encode newCollection)
+            )
+
+
+startEditingAndFocus todoId model =
+    setEditModeWithTodoId todoId model
+        |> Maybe.map (\newModel -> ( newModel, Cmd.none ))
+        |> Maybe.withDefault
+            ( model
+            , Port.warn [ "StartEditing: todoId not found", todoId ]
             )
 
 
