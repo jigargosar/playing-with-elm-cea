@@ -91,7 +91,7 @@ rotateCursorBy offset model =
         model
 
     else
-        { model | cursor = modBy length (currentCursor + offset) model.cursor }
+        { model | cursor = modBy length (currentCursor + offset) }
 
 
 type Msg
