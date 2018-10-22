@@ -166,7 +166,14 @@ viewTodo mode todo =
 
         Edit id content ->
             if todo.id == id then
-                flexV [] [ input [ Html.Attributes.id "todo-content-input", value content, onInput ContentChanged ] [] ]
+                flexV []
+                    [ input
+                        [ Html.Attributes.id "todo-content-input"
+                        , value content
+                        , onInput ContentChanged
+                        ]
+                        []
+                    ]
 
             else
                 defaultView
