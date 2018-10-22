@@ -109,7 +109,7 @@ update message model =
             ( setCollection collection model, Port.cacheTodoC (Collection.encode Todo.encode collection) )
 
         SelectSingle id ->
-            ( model, Cmd.none )
+            ( { model | selection = SingleSelection id }, Cmd.none )
 
         StartEditing todoId ->
             case model.mode of
