@@ -301,7 +301,7 @@ viewTodo model atCursor index todo =
     let
         defaultView =
             row " bb b--moon-gray lh-copy"
-                [ classList [ ( "hover-bg-yellow bg-washed-yellow", atCursor ) ], tabindex <| ter atCursor 0 -1 ]
+                [ classList [ ( "hover-bg-yellow bg-light-yellow", atCursor ) ], tabindex <| ter atCursor 0 -1 ]
                 [ viewTodoContent
                     (SetCursor index)
                     (Todo.getContent todo)
