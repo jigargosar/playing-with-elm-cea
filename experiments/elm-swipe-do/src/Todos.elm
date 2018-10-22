@@ -6,6 +6,7 @@ import Collection exposing (Collection)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Html.Keyed
 import Json.Decode as D
 import Json.Encode as E
 import Log
@@ -187,7 +188,10 @@ view =
 
 viewList : Model -> Html Msg
 viewList model =
-    model |> getTodoList >> List.map (viewTodo model.mode) >> div [ class "w-100 measure-narrow vs3" ]
+    model
+        |> getTodoList
+        >> List.map (\todo -> ( todo.id, viewTodo model.mode todo ))
+        >> Html.Keyed.node "div" [ class "w-100 measure-narrow vs3" ]
 
 
 todoInputDomId todo =
@@ -198,7 +202,7 @@ viewTodo : Mode -> Todo -> Html Msg
 viewTodo mode todo =
     let
         defaultView =
-            row "pa3" [] [ viewTodoContent (StartEditing todo.id) (Todo.getContent todo) ]
+            row "pa3 bb b--moon-gray" [] [ viewTodoContent (StartEditing todo.id) (Todo.getContent todo) ]
     in
     case mode of
         List ->
