@@ -1,5 +1,6 @@
 module Todos exposing (Msg(..), Todos, generator, update, view)
 
+import Browser.Dom
 import Collection exposing (Collection)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -65,7 +66,11 @@ update message model =
         NewAdded ( todo, collection ) ->
             ( setCollection collection model
                 |> setMode (Edit todo.id (Todo.getContent todo))
-            , Port.cacheTodoC (Collection.encode Todo.encode collection)
+            , Cmd.batch
+                [ Browser.Dom.focus "todo-content-input"
+                    |> Task.attempt (\result -> NoOp)
+                , Port.cacheTodoC (Collection.encode Todo.encode collection)
+                ]
             )
 
         NewClicked ->
@@ -108,7 +113,7 @@ viewTodo mode todo =
 
         Edit id content ->
             if todo.id == id then
-                flexV [] [ input [ value content ] [] ]
+                flexV [] [ input [ Html.Attributes.id "todo-content-input", value content ] [] ]
 
             else
                 defaultView
