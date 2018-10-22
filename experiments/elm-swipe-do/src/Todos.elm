@@ -245,8 +245,17 @@ switchModeToEditTodo todo model =
         ListMode ->
             ( model |> setMode (initEditModeWithTodo todo), focusTodo todo )
 
-        EditMode _ _ ->
-            ( model |> setMode (initEditModeWithTodo todo), focusTodo todo )
+        EditMode id oldContent ->
+            ( model |> setMode (initEditModeWithTodo todo)
+            , Cmd.batch
+                [ if id == todo.id then
+                    warn [ "Reediting todo", todo.id, "with content", Todo.getContent todo, "oldContent", oldContent ]
+
+                  else
+                    Cmd.none
+                , focusTodo todo
+                ]
+            )
 
 
 switchModeToEditTodoAtCursor model =
