@@ -69,6 +69,7 @@ getCursorTodoList model =
         |> Cursor.get
             (model.collection
                 |> Collection.items
+                |> List.filter (Todo.isDone >> not)
                 |> List.sortBy .createdAt
             )
 
