@@ -154,13 +154,8 @@ update message model =
                 _ ->
                     ( model, Cmd.none )
 
-        StartEditing todoId ->
-            case model.mode of
-                ListMode ->
-                    startEditingAndFocus todoId model
-
-                EditMode _ _ ->
-                    startEditingAndFocus todoId model
+        StartEditing id ->
+            startEditingTodoId id model
 
         EndEditing msg ->
             case model.mode of
@@ -237,6 +232,19 @@ startEditingAndFocus id model =
 
         Nothing ->
             ( model, warn [ "startEditingAndFocus", id, "Todo Not Found" ] )
+
+
+startEditingTodoId id model =
+    case model.mode of
+        ListMode ->
+            startEditingAndFocus id model
+
+        EditMode _ _ ->
+            startEditingAndFocus id model
+
+
+
+--- View
 
 
 view : Model -> Html Msg
