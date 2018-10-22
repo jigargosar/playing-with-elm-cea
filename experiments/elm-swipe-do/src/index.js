@@ -2,8 +2,16 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { forEachObjIndexed, isNil, partialRight, pick } from 'ramda'
+import {
+  forEachObjIndexed,
+  ifElse,
+  isNil,
+  partial,
+  partialRight,
+  pick,
+} from 'ramda'
 import pathOr from 'ramda/es/pathOr'
+import invoker from 'ramda/es/invoker'
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
@@ -28,6 +36,7 @@ subscribe(
     cacheTodoC: todos => {
       storageSet('todos', todos)
     },
+    focus,
   },
   app,
 )
@@ -73,4 +82,10 @@ function storageSet(key, value) {
     return
   }
   localStorage.setItem(key, JSON.stringify(value))
+}
+
+function focus(selector) {
+  ifElse(isNil)(
+    partial(console.warn, ['[focus] selector', selector, 'not found']),
+  )(invoker(0, 'focus'))(document.querySelector(selector))
 }
