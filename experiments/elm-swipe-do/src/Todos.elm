@@ -66,6 +66,7 @@ type Msg
     = NoOp
     | NewClicked
     | StartEditing Todo.Id
+    | EndEditing String
     | Reset
     | NewAdded ( Todo, Collection Todo )
     | SetAndCacheCollection TodoCollection
@@ -94,6 +95,26 @@ update message model =
         SetAndCacheCollection collection ->
             ( setCollection collection model, Port.cacheTodoC (Collection.encode Todo.encode collection) )
 
+        StartEditing todoId ->
+            case model.mode of
+                List ->
+                    startEditingAndFocus todoId model
+
+                Edit _ _ ->
+                    startEditingAndFocus todoId model
+
+        EndEditing msg ->
+            case model.mode of
+                List ->
+                    ( model, warn [ "EndEditing in List mode", msg ] )
+
+                Edit id content ->
+                    ( setMode List model
+                    , model.collection
+                        |> Collection.updateWith id (Todo.setContent content)
+                        |> Task.perform SetAndCacheCollection
+                    )
+
         ContentChanged newContent ->
             case model.mode of
                 List ->
@@ -105,14 +126,6 @@ update message model =
                         |> Collection.updateWith id (Todo.setContent newContent)
                         |> Task.perform SetAndCacheCollection
                     )
-
-        StartEditing todoId ->
-            case model.mode of
-                List ->
-                    startEditingAndFocus todoId model
-
-                Edit _ _ ->
-                    startEditingAndFocus todoId model
 
         NewClicked ->
             ( model
@@ -196,14 +209,16 @@ viewTodo mode todo =
                 flexV []
                     [ input
                         [ Html.Attributes.id <| todoInputDomId todo
+                        , class "pa3"
                         , value content
                         , onInput ContentChanged
+                        , onBlur <| EndEditing "blur"
                         , Html.Events.on "keydown"
                             (D.map
                                 (\key ->
                                     case key of
                                         "Enter" ->
-                                            LogWarn [ "Enter" ]
+                                            EndEditing "enter"
 
                                         _ ->
                                             NoOp
