@@ -150,7 +150,7 @@ update message model =
                     ( rotateCursorBy -1 model, Cmd.none )
 
                 "Enter" ->
-                    ( rotateCursorBy -1 model, Cmd.none )
+                    switchModeToEditTodoAtCursor model
 
                 _ ->
                     ( model, Cmd.none )
