@@ -214,13 +214,12 @@ rotateCursorByAndFocus offset model =
             getTodoList model
                 |> Tuple.mapSecond List.length
     in
-    (if length == 0 then
-        model
+    rotateCursorAndFocusHelp <|
+        if length == 0 then
+            model
 
-     else
-        { model | cursor = modBy length (currentCursor + offset) }
-    )
-        |> rotateCursorAndFocusHelp
+        else
+            { model | cursor = modBy length (currentCursor + offset) }
 
 
 rotateCursorAndFocusHelp model =
