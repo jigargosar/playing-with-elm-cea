@@ -83,6 +83,22 @@ getTodoList =
         >> List.sortBy .createdAt
 
 
+getTodoListWithSelection model =
+    let
+        todoList =
+            getTodoList model
+
+        selectedIds =
+            case model.selection of
+                EmptySelection ->
+                    Set.empty
+
+                SingleSelection id ->
+                    Set.singleton id
+    in
+    todoList
+
+
 type Msg
     = NoOp
     | NewClicked
