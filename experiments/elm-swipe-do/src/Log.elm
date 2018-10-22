@@ -1,4 +1,4 @@
-module Log exposing (Messages, Result, handle, warn)
+module Log exposing (Messages, Result, resultWithDefault, warn)
 
 import Port
 
@@ -16,8 +16,8 @@ warn moduleName =
     (::) moduleName >> Port.warn
 
 
-handle : a -> Result a -> ( a, Cmd msg )
-handle default result =
+resultWithDefault : a -> Result a -> ( a, Cmd msg )
+resultWithDefault default result =
     case result of
         Ok value ->
             ( value, Cmd.none )

@@ -137,7 +137,7 @@ warn =
 
 startEditingAndFocus todoId model =
     setEditModeWithTodoId todoId model
-        |> Log.handle model
+        |> Log.resultWithDefault model
 
 
 view : Model -> Html Msg
