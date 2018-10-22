@@ -210,9 +210,11 @@ focusId domId =
 
 rotateCursorByAndFocus offset model =
     let
-        ( currentCursor, length ) =
+        ( currentCursor, list ) =
             getTodoList model
-                |> Tuple.mapSecond List.length
+
+        length =
+            List.length list
     in
     rotateCursorAndFocusHelp <|
         if length == 0 then
