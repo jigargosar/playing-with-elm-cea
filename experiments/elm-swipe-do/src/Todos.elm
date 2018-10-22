@@ -104,8 +104,7 @@ update message model =
                 |> setMode (Edit todo.id (Todo.getContent todo))
             , Cmd.batch
                 [ Port.cacheTodoC (Collection.encode Todo.encode collection)
-                , Browser.Dom.focus "todo-content-input"
-                    |> Task.attempt (\_ -> LogWarn [ "Browser.Dom.focus", "todo-content-input" ])
+                , focusTodo todo
                 ]
             )
 
@@ -150,6 +149,15 @@ update message model =
             )
 
 
+focusTodo todo =
+    let
+        domId =
+            todoInputDomId todo
+    in
+    Browser.Dom.focus domId
+        |> Task.attempt (\_ -> LogWarn [ "Browser.Dom.focus", domId, "not found" ])
+
+
 warn : Log.Messages -> Cmd msg
 warn =
     Log.warn "Todos.elm"
@@ -170,6 +178,10 @@ viewList model =
     model |> getTodoList >> List.map (viewTodo model.mode) >> div [ class "w-100 measure-narrow vs3" ]
 
 
+todoInputDomId todo =
+    "todo-content-input-" ++ todo.id
+
+
 viewTodo : Mode -> Todo -> Html Msg
 viewTodo mode todo =
     let
@@ -184,7 +196,7 @@ viewTodo mode todo =
             if todo.id == id then
                 flexV []
                     [ input
-                        [ Html.Attributes.id "todo-content-input"
+                        [ Html.Attributes.id <| todoInputDomId todo
                         , value content
                         , onInput ContentChanged
                         ]
