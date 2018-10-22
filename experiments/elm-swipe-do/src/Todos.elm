@@ -65,11 +65,19 @@ setCollection collection model =
     { model | collection = collection }
 
 
-getTodoList =
-    .collection
-        >> Collection.items
-        --        >> List.sortBy (.modifiedAt >> (*) -1)
-        >> List.sortBy .createdAt
+getTodoList model =
+    let
+        list =
+            model
+                |> .collection
+                >> Collection.items
+                --        >> List.sortBy (.modifiedAt >> (*) -1)
+                >> List.sortBy .createdAt
+
+        currentCursor =
+            clamp 0 (List.length list) model.cursor
+    in
+    ( currentCursor, list )
 
 
 type Msg
@@ -201,9 +209,12 @@ view =
 
 viewList : Model -> Html Msg
 viewList model =
-    model
-        |> getTodoList
-        >> List.indexedMap (\index todo -> ( todo.id, viewTodo model index todo ))
+    let
+        ( computedCursor, list ) =
+            getTodoList model
+    in
+    list
+        |> List.indexedMap (\index todo -> ( todo.id, viewTodo model index computedCursor todo ))
         >> Html.Keyed.node "div" [ class "w-100 measure-narrow" ]
 
 
@@ -211,12 +222,12 @@ todoInputDomId todo =
     "todo-content-input-" ++ todo.id
 
 
-viewTodo : Model -> Int -> Todo -> Html Msg
-viewTodo model index todo =
+viewTodo : Model -> Int -> Cursor -> Todo -> Html Msg
+viewTodo model index computedCursor todo =
     let
         defaultView =
             row "pa3 bb b--moon-gray lh-copy"
-                [ classList [ ( "bg-yellow", model.cursor == index ) ] ]
+                [ classList [ ( "bg-yellow", computedCursor == index ) ] ]
                 [ viewTodoContent
                     (SetCursor index)
                     (Todo.getContent todo)
