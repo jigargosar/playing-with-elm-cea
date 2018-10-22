@@ -301,8 +301,8 @@ todoItemDomId todo =
     "todo-item-" ++ todo.id
 
 
-viewTodo : Model -> Bool -> Int -> Todo -> Html Msg
-viewTodo model atCursor index todo =
+viewTodo : Model -> Bool -> Cursor -> Todo -> Html Msg
+viewTodo model atCursor cursor todo =
     let
         defaultView =
             row " bb b--moon-gray lh-copy"
@@ -311,7 +311,7 @@ viewTodo model atCursor index todo =
                 , tabindex <| ter atCursor 0 -1
                 ]
                 [ viewTodoContent
-                    (SetCursor index)
+                    (SetCursor cursor)
                     (Todo.getContent todo)
                 ]
     in
