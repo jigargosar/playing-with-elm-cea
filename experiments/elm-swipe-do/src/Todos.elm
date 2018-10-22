@@ -39,7 +39,7 @@ type alias TodoCollection =
 
 
 type alias Model =
-    { mode : Mode, collection : TodoCollection, selection : Selection }
+    { mode : Mode, selection : Selection, collection : TodoCollection }
 
 
 type alias Todos =
@@ -49,7 +49,7 @@ type alias Todos =
 generator : E.Value -> Random.Generator Model
 generator enc =
     Collection.generator Todo.decoder enc
-        |> Random.map (Model ListMode)
+        |> Random.map (Model ListMode EmptySelection)
 
 
 setMode : Mode -> Model -> Model
