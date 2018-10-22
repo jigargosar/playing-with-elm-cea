@@ -111,8 +111,13 @@ update message model =
                             , Port.warn [ "StartEditing: todoId not found", todoId ]
                             )
 
-                Edit editingId content ->
-                    ( model, Cmd.none )
+                Edit _ _ ->
+                    setEditModeWithTodoId todoId model
+                        |> Maybe.map (\newModel -> ( newModel, Cmd.none ))
+                        |> Maybe.withDefault
+                            ( model
+                            , Port.warn [ "StartEditing: todoId not found", todoId ]
+                            )
 
         NewClicked ->
             ( model
