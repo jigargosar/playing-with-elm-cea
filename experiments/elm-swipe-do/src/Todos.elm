@@ -1,5 +1,6 @@
 module Todos exposing (Msg(..), Todos, generator, update, view)
 
+import BasicsX exposing (flip)
 import Browser.Dom
 import Collection exposing (Collection)
 import Html exposing (..)
@@ -19,6 +20,11 @@ type Mode
     | Edit Todo.Id Todo.Content
 
 
+initEditModeWithTodo : Todo -> Mode
+initEditModeWithTodo todo =
+    Edit todo.id (Todo.getContent todo)
+
+
 type alias TodoCollection =
     Collection Todo
 
@@ -31,6 +37,11 @@ type alias Todos =
     Model
 
 
+get : Todo.Id -> Model -> Maybe Todo
+get id =
+    .collection >> Collection.get id
+
+
 setCollection : TodoCollection -> Model -> Model
 setCollection collection model =
     { model | collection = collection }
@@ -39,6 +50,16 @@ setCollection collection model =
 setMode : Mode -> Model -> Model
 setMode mode model =
     { model | mode = mode }
+
+
+setModeEditWithTodo : Todo -> Model -> Model
+setModeEditWithTodo todo =
+    setMode <| initEditModeWithTodo todo
+
+
+setEditModeWithTodoId : Todo.Id -> Model -> Maybe Model
+setEditModeWithTodoId id model =
+    get id model |> Maybe.map (flip setModeEditWithTodo model)
 
 
 getTodoList =
@@ -77,7 +98,12 @@ update message model =
         StartEditing todoId ->
             case model.mode of
                 List ->
-                    ( model, Cmd.none )
+                    setEditModeWithTodoId todoId model
+                        |> Maybe.map (\newModel -> ( newModel, Cmd.none ))
+                        |> Maybe.withDefault
+                            ( model
+                            , Port.logS ("WARN: StartEditing: todoId not found" ++ todoId)
+                            )
 
                 Edit editingId content ->
                     ( model, Cmd.none )
