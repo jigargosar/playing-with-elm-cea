@@ -108,6 +108,7 @@ type Msg
     | LogWarn (List String)
     | SetCursor Cursor
     | KeyDown String
+    | SetFilter Filter
 
 
 subscriptions : Model -> Sub Msg
@@ -211,6 +212,9 @@ update message model =
               }
             , Port.cacheTodoC (Collection.encode Todo.encode newCollection)
             )
+
+        SetFilter newFilter ->
+            ( { model | filter = newFilter }, Cmd.none )
 
 
 updateTodo id fn model =
