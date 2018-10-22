@@ -319,16 +319,17 @@ viewTodo model atCursor index todo =
                         , class "pa3 lh-copy"
                         , value content
                         , onInput ContentChanged
-                        , onBlur <| EndEditing "blur"
-                        , Html.Events.on "keydown"
+
+                        --                        , onBlur <| EndEditing "blur"
+                        , Html.Events.stopPropagationOn "keydown"
                             (D.map
                                 (\key ->
                                     case key of
                                         "Enter" ->
-                                            EndEditing "enter"
+                                            ( EndEditing "enter", True )
 
                                         _ ->
-                                            NoOp
+                                            ( NoOp, False )
                                 )
                                 (D.field "key" D.string)
                             )
