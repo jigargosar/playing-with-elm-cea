@@ -64,7 +64,7 @@ setCollection collection model =
     { model | collection = collection }
 
 
-getTodoList model =
+todoListWithCursor model =
     model.cursor
         |> Cursor.get
             (model.collection
@@ -202,7 +202,7 @@ focusId domId =
 rotateCursorByAndFocus offset model =
     let
         ( currentCursor, list ) =
-            getTodoList model
+            todoListWithCursor model
 
         length =
             List.length list
@@ -268,7 +268,7 @@ switchModeToEditTodoAtCursor model =
 getTodoAtCursor model =
     let
         ( c, l ) =
-            getTodoList model
+            todoListWithCursor model
     in
     Array.fromList l |> Array.get c
 
@@ -286,7 +286,7 @@ viewList : Model -> Html Msg
 viewList model =
     let
         ( computedCursor, list ) =
-            getTodoList model
+            todoListWithCursor model
     in
     list
         |> List.indexedMap (\index todo -> ( todo.id, viewTodo model (computedCursor == index) index todo ))
