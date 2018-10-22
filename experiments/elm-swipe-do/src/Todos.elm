@@ -129,6 +129,9 @@ update message model =
                         "ArrowUp" ->
                             cycleCursorByOffsetAndFocus -1 model
 
+                        "ArrowRight" ->
+                            ( model, markTodoAtCursorDone model )
+
                         "Enter" ->
                             switchModeToEditTodoAtCursor model
 
@@ -149,9 +152,7 @@ update message model =
                 EditMode id content ->
                     ( setMode ListMode model
                     , Cmd.batch
-                        [ model.collection
-                            |> Collection.updateWith id (Todo.setContent content)
-                            |> Task.perform SetAndCacheCollection
+                        [ updateTodo id (Todo.setContent content) model
                         , focusId <| todoItemDomIdWithTodoId id
                         ]
                     )
@@ -184,6 +185,12 @@ update message model =
               }
             , Port.cacheTodoC (Collection.encode Todo.encode newCollection)
             )
+
+
+updateTodo id fn model =
+    model.collection
+        |> Collection.updateWith id fn
+        |> Task.perform SetAndCacheCollection
 
 
 focusTodoInput =
@@ -267,6 +274,12 @@ getTodoAtCursor model =
             getCursorTodoList model
     in
     Array.fromList l |> Array.get c
+
+
+markTodoAtCursorDone model =
+    getTodoAtCursor model
+        |> Maybe.map (\todo -> updateTodo todo.id (Todo.setDone True) model)
+        |> Maybe.withDefault Cmd.none
 
 
 
