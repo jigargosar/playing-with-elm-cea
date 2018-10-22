@@ -59,7 +59,7 @@ setModeEditWithTodo todo =
 
 setEditModeWithTodoId : Todo.Id -> Model -> Maybe Model
 setEditModeWithTodoId id model =
-    get id model |> Maybe.map (flip setModeEditWithTodo model)
+    get id model |> Maybe.map (\todo -> setModeEditWithTodo todo model)
 
 
 getTodoList =
