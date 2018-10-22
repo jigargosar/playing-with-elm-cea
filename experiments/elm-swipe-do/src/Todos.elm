@@ -215,7 +215,7 @@ viewList model =
     model
         |> getTodoList
         >> List.map (\todo -> ( todo.id, viewTodo model todo ))
-        >> Html.Keyed.node "div" [ class "w-100 measure-narrow vs3" ]
+        >> Html.Keyed.node "div" [ class "w-100 measure-narrow" ]
 
 
 todoInputDomId todo =
