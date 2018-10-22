@@ -27,6 +27,12 @@ type Mode
     | EditMode Todo.Id Todo.Content
 
 
+type Filter
+    = Scheduled
+    | Todo
+    | Done
+
+
 type alias TodoIds =
     Set Todo.Id
 
@@ -36,7 +42,11 @@ type alias TodoCollection =
 
 
 type alias Model =
-    { mode : Mode, cursor : Cursor, collection : TodoCollection }
+    { mode : Mode
+    , cursor : Cursor
+    , filter : Filter
+    , collection : TodoCollection
+    }
 
 
 type alias Todos =
@@ -46,7 +56,7 @@ type alias Todos =
 generator : E.Value -> Random.Generator Model
 generator enc =
     Collection.generator Todo.decoder enc
-        |> Random.map (Model ListMode 0)
+        |> Random.map (Model ListMode 0 Done)
 
 
 setMode : Mode -> Model -> Model
