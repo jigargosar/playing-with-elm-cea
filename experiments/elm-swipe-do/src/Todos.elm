@@ -1,5 +1,6 @@
 module Todos exposing (Msg(..), Todos, generator, subscriptions, update, view)
 
+import Array
 import BasicsX exposing (flip)
 import Browser.Dom
 import Browser.Events
@@ -155,7 +156,7 @@ update message model =
                     ( model, Cmd.none )
 
         StartEditing id ->
-            startEditingTodoId id model
+            switchModeToEditTodoWithId id model
 
         EndEditing msg ->
             case model.mode of
@@ -225,22 +226,36 @@ initEditModeWithTodo todo =
     EditMode todo.id <| Todo.getContent todo
 
 
-startEditingAndFocus id model =
+switchModeToEditTodoWithId id model =
     case get id model of
         Just todo ->
-            ( model |> setMode (initEditModeWithTodo todo), focusTodo todo )
+            switchModeToEditTodo todo model
 
         Nothing ->
             ( model, warn [ "startEditingAndFocus", id, "Todo Not Found" ] )
 
 
-startEditingTodoId id model =
+switchModeToEditTodo todo model =
     case model.mode of
         ListMode ->
-            startEditingAndFocus id model
+            ( model |> setMode (initEditModeWithTodo todo), focusTodo todo )
 
         EditMode _ _ ->
-            startEditingAndFocus id model
+            ( model |> setMode (initEditModeWithTodo todo), focusTodo todo )
+
+
+switchModeToEditTodoAtCursor model =
+    getTodoAtCursor model
+        |> Maybe.map (\todo -> switchModeToEditTodo todo model)
+        |> Maybe.withDefault ( model, Cmd.none )
+
+
+getTodoAtCursor model =
+    let
+        ( c, l ) =
+            getTodoList model
+    in
+    Array.fromList l |> Array.get c
 
 
 
