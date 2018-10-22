@@ -1,8 +1,16 @@
-module Log exposing (warn)
+module Log exposing (Messages, Result, warn)
 
 import Port
 
 
-warn : String -> List String -> Cmd msg
+type alias Messages =
+    List String
+
+
+type alias Result a =
+    Result.Result Messages a
+
+
+warn : String -> Messages -> Cmd msg
 warn moduleName =
     (::) moduleName >> Port.warn

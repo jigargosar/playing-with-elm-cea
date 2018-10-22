@@ -59,7 +59,7 @@ setModeEditWithTodo todo =
     setMode <| initEditModeWithTodo todo
 
 
-setEditModeWithTodoId : Todo.Id -> Model -> Result (List String) Model
+setEditModeWithTodoId : Todo.Id -> Model -> Log.Result Model
 setEditModeWithTodoId id model =
     get id model
         |> Maybe.map (\todo -> setModeEditWithTodo todo model)
@@ -130,14 +130,14 @@ update message model =
             )
 
 
-warn : List String -> Cmd msg
+warn : Log.Messages -> Cmd msg
 warn =
     Log.warn "Todos.elm"
 
 
 startEditingAndFocus todoId model =
     let
-        result : Result (List String) Model
+        result : Result Log.Messages Model
         result =
             setEditModeWithTodoId todoId model
     in
