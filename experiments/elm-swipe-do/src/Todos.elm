@@ -57,10 +57,10 @@ type alias Todos =
     Model
 
 
-generator : E.Value -> Random.Generator Model
+generator : E.Value -> Random.Generator ( Model, Cmd msg )
 generator enc =
     Collection.generator Todo.decoder enc
-        |> Random.map (Model ListMode 0 Done)
+        |> Random.map (Tuple.mapFirst <| Model ListMode 0 Done)
 
 
 setMode : Mode -> Model -> Model

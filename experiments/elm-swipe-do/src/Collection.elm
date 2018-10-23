@@ -21,6 +21,8 @@ import Dict exposing (Dict)
 import IdX
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
+import Log
+import Port
 import Random
 import Set exposing (Set)
 import Task exposing (Task)
@@ -104,18 +106,23 @@ encode encodeItem model =
     model.dict |> E.dict identity encodeItem
 
 
-generator : Decoder item -> E.Value -> Random.Generator (Model item)
+generator : Decoder item -> E.Value -> Random.Generator ( Model item, Cmd msg )
 generator itemDecoder encodedDict =
     Random.map (Model Dict.empty) Random.independentSeed
         |> Random.map (replace itemDecoder encodedDict)
 
 
-replace : Decoder item -> E.Value -> Model item -> Model item
+replace : Decoder item -> E.Value -> Model item -> ( Model item, Cmd msg )
 replace itemDecoder encodedDict model =
     D.decodeValue (D.dict itemDecoder) encodedDict
-        |> Result.map (\dict -> overDict (always dict) model)
-        |> Result.mapError identity
-        |> Result.withDefault model
+        |> (\result ->
+                case result of
+                    Ok dict ->
+                        ( overDict (always dict) model, Cmd.none )
+
+                    Err err ->
+                        ( model, Log.warn "Collection" [ " decode", D.errorToString err ] )
+           )
 
 
 items =

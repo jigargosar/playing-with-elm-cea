@@ -41,14 +41,14 @@ type alias Flags =
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
-        todos =
+        ( todos, cmd ) =
             Random.step (Todos.generator flags.todos) (Random.initialSeed flags.now)
                 |> Tuple.first
     in
     ( { magicMenu = MagicMenu.initial
       , todos = todos
       }
-    , Cmd.none
+    , cmd
     )
 
 
