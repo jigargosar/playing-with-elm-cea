@@ -420,7 +420,7 @@ viewScheduleOverlay model =
     case model.mode of
         EditScheduleMode id ->
             div [ class "z-2 absolute absolute--fill bg-black-30  flex items-center justify-center" ]
-                [ div [ class "bg-white shadow-1 flex flex-column" ]
+                [ div [ class "bg-white shadow-1 br4 flex flex-column" ]
                     [ div [ class "flex" ]
                         [ box "bn" (Schedule.Minutes 10) "10 Min"
                         , box "bl br" (Schedule.Minutes 15) "15 Min"
