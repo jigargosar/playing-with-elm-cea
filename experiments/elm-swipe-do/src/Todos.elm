@@ -229,7 +229,7 @@ andThenFocusTodoAtCursor oldModel ( newModel, cmd ) =
         ( newModel, Cmd.batch [ cmd, focusTodoAtCursor newModel ] )
 
     else
-        ( newModel, Cmd.none )
+        ( newModel, cmd )
 
 
 focusTodoAtCursor model =
