@@ -26,6 +26,7 @@ import UI exposing (flexV, row, txtA, txtC)
 type Mode
     = ListMode
     | EditContentMode Todo.Id Todo.Content
+    | EditScheduleMode Todo.Id
 
 
 type alias TodoIds =
@@ -168,6 +169,9 @@ update message model =
                         _ ->
                             ( model, Cmd.none )
 
+                _ ->
+                    ( model, Cmd.none )
+
         StartEditingContent id ->
             switchModeToEditTodoWithId id model
 
@@ -184,17 +188,20 @@ update message model =
                         ]
                     )
 
+                EditScheduleMode id ->
+                    Debug.todo "Implement end editing for schedule"
+
         ContentChanged newContent ->
             case model.mode of
-                ListMode ->
-                    ( model, warn [ "ContentChanged in List mode" ] )
-
                 EditContentMode id _ ->
                     ( setMode (EditContentMode id newContent) model
                     , model.collection
                         |> Collection.updateWith id (Todo.setContent newContent)
                         |> Task.perform SetAndCacheCollection
                     )
+
+                _ ->
+                    ( model, warn [ "ContentChanged in Non Edit Mode" ] )
 
         NewClicked ->
             ( model
@@ -284,10 +291,6 @@ warn =
     Log.warn "Todos.elm"
 
 
-initEditContentModeWithTodo todo =
-    EditContentMode todo.id <| Todo.getContent todo
-
-
 switchModeToEditTodoWithId id model =
     case get id model of
         Just todo ->
@@ -300,19 +303,19 @@ switchModeToEditTodoWithId id model =
 switchModeToEditTodo todo model =
     case model.mode of
         ListMode ->
-            ( model |> setMode (initEditContentModeWithTodo todo), focusTodoInput todo )
+            ( model |> setMode (EditContentMode todo.id <| Todo.getContent todo), focusTodoInput todo )
 
-        EditContentMode id oldContent ->
-            ( model |> setMode (initEditContentModeWithTodo todo)
-            , Cmd.batch
-                [ if id == todo.id then
-                    warn [ "Reediting todo", todo.id, "with content", Todo.getContent todo, "oldContent", oldContent ]
+        _ ->
+            ( model, warn [ "Invalid mode for switchModeToEditTodo" ] )
 
-                  else
-                    Cmd.none
-                , focusTodoInput todo
-                ]
-            )
+
+switchModeToEditSchedule todo model =
+    case model.mode of
+        ListMode ->
+            ( model |> setMode (EditScheduleMode todo.id), focusTodoInput todo )
+
+        _ ->
+            ( model, warn [ "Invalid mode for switchModeToEditSchedule" ] )
 
 
 switchModeToEditTodoAtCursor model =
@@ -361,12 +364,12 @@ onChangeStateRequest direction model =
                     nextState =
                         computeNextState direction (Todo.getState todo)
                 in
-                startChangeState nextState todo model
+                startStateChange nextState todo model
             )
         |> Maybe.withDefault ( model, Cmd.none )
 
 
-startChangeState nextState todo model =
+startStateChange nextState todo model =
     if nextState == Todo.Scheduled then
         ( model, updateTodo todo.id (Todo.changeStateTo nextState) model )
 
@@ -435,9 +438,6 @@ viewTodo model atCursor cursor todo =
                 ]
     in
     case model.mode of
-        ListMode ->
-            defaultView
-
         EditContentMode id content ->
             if todo.id == id then
                 flexV []
@@ -465,6 +465,9 @@ viewTodo model atCursor cursor todo =
 
             else
                 defaultView
+
+        _ ->
+            defaultView
 
 
 viewTodoContent onClick_ content =
