@@ -9,7 +9,7 @@ get : List a -> Cursor -> ( Cursor, List a )
 get list cursor =
     let
         newCursor =
-            clamp 0 (List.length list) cursor
+            clamp 0 (List.length list - 1) cursor
     in
     ( newCursor, list )
 
