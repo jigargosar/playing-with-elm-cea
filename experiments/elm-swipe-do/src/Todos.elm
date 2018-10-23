@@ -89,7 +89,7 @@ getCursorTodoList model =
 type Msg
     = NoOp
     | NewClicked
-    | StartEditing Todo.Id
+    | StartEditingContent Todo.Id
     | EndEditing String
     | Reset
     | NewAdded ( Todo, Collection Todo )
@@ -168,7 +168,7 @@ update message model =
                         _ ->
                             ( model, Cmd.none )
 
-        StartEditing id ->
+        StartEditingContent id ->
             switchModeToEditTodoWithId id model
 
         EndEditing msg ->
@@ -367,7 +367,11 @@ onChangeStateRequest direction model =
 
 
 startChangeState nextState todo model =
-    ( model, updateTodo todo.id (Todo.changeStateTo nextState) model )
+    if nextState == Todo.Scheduled then
+        ( model, updateTodo todo.id (Todo.changeStateTo nextState) model )
+
+    else
+        ( model, updateTodo todo.id (Todo.changeStateTo nextState) model )
 
 
 onChangeFilterRequest direction model =
@@ -423,7 +427,7 @@ viewTodo model atCursor cursor todo =
                     , ( "strike gray", Todo.isCompleted todo )
                     ]
                 , tabindex <| ter atCursor 0 -1
-                , onDoubleClick <| StartEditing todo.id
+                , onDoubleClick <| StartEditingContent todo.id
                 ]
                 [ viewTodoContent
                     (SetCursor cursor)
