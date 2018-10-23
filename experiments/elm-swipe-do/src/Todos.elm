@@ -411,6 +411,7 @@ box border scheduleKind lbl =
         , style "width" "100px"
         , style "height" "100px"
         , onClick <| ScheduleKindChanged scheduleKind
+        , tabindex 0
         ]
         [ text lbl ]
 
