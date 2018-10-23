@@ -3,6 +3,7 @@ module Todo exposing
     , Id
     , State(..)
     , Todo
+    , changeStateTo
     , decoder
     , delete
     , encode
@@ -10,7 +11,6 @@ module Todo exposing
     , init
     , initWithContent
     , isCompleted
-    , markComplete
     , setContent
     , stateEq
     )
@@ -150,10 +150,20 @@ delete now model =
         { model | deleted = True, modifiedAt = now }
 
 
-markComplete : Millis -> Model -> Model
-markComplete now model =
-    if isCompleted model then
+
+--markComplete : Millis -> Model -> Model
+--markComplete now model =
+--    if isCompleted model then
+--        model
+--
+--    else
+--        { model | state = Completed, modifiedAt = now }
+
+
+changeStateTo : State -> Millis -> Model -> Model
+changeStateTo newState now model =
+    if stateEq newState model then
         model
 
     else
-        { model | state = Completed, modifiedAt = now }
+        { model | state = newState, modifiedAt = now }
