@@ -1,4 +1,4 @@
-module Todos exposing (Msg(..), Todos, generator, subscriptions, update, view)
+module Todos exposing (Filter(..), Msg(..), Todos, generator, getFilter, subscriptions, update, view)
 
 import Array
 import BasicsX exposing (flip, ter)
@@ -47,6 +47,10 @@ type alias Model =
     , filter : Filter
     , collection : TodoCollection
     }
+
+
+getFilter =
+    .filter
 
 
 type alias Todos =

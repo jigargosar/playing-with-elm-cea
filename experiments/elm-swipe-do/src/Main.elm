@@ -117,7 +117,7 @@ mockActions =
 view : Model -> Html Msg
 view model =
     UI.root
-        [ viewToolbar
+        [ viewToolbar model
         , Html.map TodosMsg <|
             div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
                 [ Todos.view model.todos ]
@@ -130,14 +130,18 @@ view model =
 --- Toolbar
 
 
-viewToolbar =
+viewToolbar model =
+    let
+        activeFilter =
+            Todos.getFilter model.todos
+    in
     UI.toolbar
         [ txtC "b ph3" "ELM Swipe Do"
         , spacer
         , viewTabs
-            [ viewTab False "Scheduled"
-            , viewTab True "Todo"
-            , viewTab False "Done"
+            [ viewTab (activeFilter == Todos.Scheduled) "Scheduled"
+            , viewTab (activeFilter == Todos.Todo) "Todo"
+            , viewTab (activeFilter == Todos.Done) "Done"
             ]
         , spacer
         ]
