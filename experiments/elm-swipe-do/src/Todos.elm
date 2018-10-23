@@ -387,7 +387,19 @@ cmdSetStateAtCursorTo state model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "w-100 measure-narrow" ] [ viewList model ]
+    div [ class "w-100 measure-narrow" ]
+        [ viewList model
+        , viewScheduleOverlay model
+        ]
+
+
+viewScheduleOverlay model =
+    case model.mode of
+        EditScheduleMode id ->
+            div [] []
+
+        _ ->
+            text ""
 
 
 viewList : Model -> Html Msg
