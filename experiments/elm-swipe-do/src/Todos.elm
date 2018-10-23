@@ -475,7 +475,7 @@ todoItemDomIdWithTodoId id =
     "todo-item-" ++ id
 
 
-viewTodo : Model -> Bool -> Cursor -> Todo -> Html Msg
+viewTodo : Model -> Bool -> Int -> Todo -> Html Msg
 viewTodo model atCursor index todo =
     let
         defaultView =
