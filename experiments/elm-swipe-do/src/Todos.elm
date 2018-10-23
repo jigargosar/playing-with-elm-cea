@@ -306,7 +306,7 @@ switchModeToEditTodo todo model =
 switchModeToEditSchedule todo model =
     case model.mode of
         ListMode ->
-            ( model |> setMode (EditScheduleMode todo.id), focusTodoInput todo )
+            ( model |> setMode (EditScheduleMode todo.id), Cmd.none )
 
         _ ->
             ( model, warn [ "Invalid mode for switchModeToEditSchedule" ] )
@@ -365,7 +365,7 @@ onChangeStateRequest direction model =
 
 startStateChange nextState todo model =
     if nextState == Todo.Scheduled then
-        ( model, updateTodo todo.id (Todo.changeStateTo nextState) model )
+        switchModeToEditSchedule todo model
 
     else
         ( model, updateTodo todo.id (Todo.changeStateTo nextState) model )
