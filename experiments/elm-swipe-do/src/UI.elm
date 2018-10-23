@@ -13,7 +13,6 @@ module UI exposing
     , txt
     , txtA
     , txtC
-    , txtCL
     )
 
 import FeatherIcons
@@ -75,10 +74,6 @@ txtC c l =
 
 txtA attrs l =
     div attrs [ text l ]
-
-
-txtCL cl l =
-    div [ classList cl ] [ text l ]
 
 
 root =

@@ -139,16 +139,25 @@ viewToolbar model =
         [ txtC "b ph3" "ELM Swipe Do"
         , spacer
         , viewTabs
-            [ viewTab (activeFilter == Todos.Scheduled) "Scheduled"
-            , viewTab (activeFilter == Todos.Todo) "Todo"
-            , viewTab (activeFilter == Todos.Done) "Done"
+            [ viewTab activeFilter Todos.Scheduled "Scheduled"
+            , viewTab activeFilter Todos.Todo "Todo"
+            , viewTab activeFilter Todos.Done "Done"
             ]
         , spacer
         ]
 
 
-viewTab active l =
-    UI.txtCL [ ( "b ph3 pv2", True ), ( "bw2 bb b--blue", active ) ] l
+onClickFilter =
+    Todos.SetFilter >> TodosMsg >> onClick
+
+
+viewTab activeFilter filter labelText =
+    txtA
+        [ onClickFilter filter
+        , class "pointer b ph3 pv2"
+        , classList [ ( "bw2 bb b--blue", activeFilter == filter ) ]
+        ]
+        labelText
 
 
 viewTabs =
