@@ -419,21 +419,21 @@ viewScheduleOverlay model =
     case model.mode of
         EditScheduleMode id ->
             div [ class "z-2 absolute absolute--fill bg-black-30  flex items-center justify-center" ]
-                [ div [ class "bg-white shadow-1 flex flex-wrap" ]
-                    [ div []
+                [ div [ class "bg-white shadow-1 flex flex-column" ]
+                    [ div [ class "flex" ]
                         [ box ( Schedule.Minutes 10, "10 Min" )
-                        , box ( Schedule.Minutes 10, "10 Min" )
-                        , box ( Schedule.Minutes 10, "10 Min" )
+                        , box ( Schedule.Minutes 15, "15 Min" )
+                        , box ( Schedule.Minutes 30, "30 Min" )
                         ]
-                    , div []
-                        [ box ( Schedule.Minutes 10, "10 Min" )
-                        , box ( Schedule.Minutes 10, "10 Min" )
-                        , box ( Schedule.Minutes 10, "10 Min" )
+                    , div [ class "flex" ]
+                        [ box ( Schedule.Hours 1, "1 Hours" )
+                        , box ( Schedule.Hours 2, "2 Hours" )
+                        , box ( Schedule.LaterToday, "LaterToday" )
                         ]
-                    , div []
-                        [ box ( Schedule.Minutes 10, "10 Min" )
-                        , box ( Schedule.Minutes 10, "10 Min" )
-                        , box ( Schedule.Minutes 10, "10 Min" )
+                    , div [ class "flex" ]
+                        [ box ( Schedule.Tomorrow, "Tomorrow" )
+                        , box ( Schedule.NextWeek, "NextWeek" )
+                        , box ( Schedule.Someday, "Someday" )
                         ]
                     ]
                 ]
