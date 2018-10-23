@@ -99,7 +99,7 @@ decoder =
         (D.field "content" D.string)
         (D.field "done" D.bool)
         (D.field "deleted" D.bool)
-        (D.maybe (D.field "state" stateDecoder) |> D.map (Maybe.withDefault Active))
+        (D.field "state" stateDecoder)
         (D.field "id" D.string)
         (D.field "createdAt" D.int)
         (D.field "modifiedAt" D.int)
