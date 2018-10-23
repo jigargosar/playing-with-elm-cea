@@ -110,7 +110,7 @@ subscriptions model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
-    case message of
+    (case message of
         NoOp ->
             ( model, Cmd.none )
 
@@ -210,6 +210,8 @@ update message model =
 
         SetFilter newFilter ->
             changeFilterTo newFilter model
+    )
+        |> andThenFocusTodoAtCursor model
 
 
 changeFilterTo newFilter model =
@@ -220,6 +222,20 @@ updateTodo id fn model =
     model.collection
         |> Collection.updateWith id fn
         |> Task.perform SetAndCacheCollection
+
+
+andThenFocusTodoAtCursor oldModel ( newModel, cmd ) =
+    if oldModel /= newModel then
+        ( newModel, Cmd.batch [ cmd, focusTodoAtCursor newModel ] )
+
+    else
+        ( newModel, Cmd.none )
+
+
+focusTodoAtCursor model =
+    getTodoAtCursor model
+        |> Maybe.map focusTodoItem
+        |> Maybe.withDefault Cmd.none
 
 
 focusTodoInput =
@@ -249,9 +265,7 @@ cycleCursorByOffsetAndFocus offset model =
 
 cycleCursorByOffsetAndFocusHelp model =
     ( model
-    , getTodoAtCursor model
-        |> Maybe.map focusTodoItem
-        |> Maybe.withDefault Cmd.none
+    , focusTodoAtCursor model
     )
 
 
