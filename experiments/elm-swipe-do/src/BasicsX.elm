@@ -1,4 +1,4 @@
-module BasicsX exposing (eq0, eqs, flip, ifElse, optionalOr, ter, tsDecoder, unless, when)
+module BasicsX exposing (eq0, eqs, flip, ifElse, maybeBool, optionalOr, ter, tsDecoder, unless, when)
 
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
@@ -30,6 +30,14 @@ eqs =
 
 eq0 =
     eqs 0
+
+
+maybeBool bool value =
+    if bool then
+        Just value
+
+    else
+        Nothing
 
 
 

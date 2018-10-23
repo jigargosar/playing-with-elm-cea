@@ -1,7 +1,7 @@
 module Todos exposing (Msg(..), Todos, generator, getFilters, subscriptions, update, view)
 
 import Array
-import BasicsX exposing (flip, ter)
+import BasicsX exposing (flip, maybeBool, ter)
 import Browser.Dom
 import Browser.Events
 import Collection exposing (Collection)
@@ -473,14 +473,6 @@ todoItemDomId todo =
 
 todoItemDomIdWithTodoId id =
     "todo-item-" ++ id
-
-
-maybeBool bool value =
-    if bool then
-        Just value
-
-    else
-        Nothing
 
 
 viewTodo : Model -> Bool -> Int -> Todo -> Html Msg
