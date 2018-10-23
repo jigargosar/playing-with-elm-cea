@@ -432,8 +432,7 @@ viewTodo model atCursor cursor todo =
                         , class "pa3 lh-copy"
                         , value content
                         , onInput ContentChanged
-
-                        --                        , onBlur <| EndEditing "blur"
+                        , onBlur <| EndEditing "blur"
                         , Html.Events.stopPropagationOn "keydown"
                             (D.map
                                 (\key ->
