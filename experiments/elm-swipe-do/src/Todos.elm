@@ -393,11 +393,26 @@ view model =
         ]
 
 
+box =
+    div [ class "flex items-center justify-center ba w-33" ] [ text "BOX" ]
+
+
 viewScheduleOverlay model =
     case model.mode of
         EditScheduleMode id ->
             div [ class "z-2 absolute absolute--fill bg-black-30 flex items-center justify-center" ]
-                [ div [ class " w-75 vh-75 bg-white" ] [ text "hw" ] ]
+                [ div [ class "w-50 vh-50 bg-white flex flex-wrap" ]
+                    [ box
+                    , box
+                    , box
+                    , box
+                    , box
+                    , box
+                    , box
+                    , box
+                    , box
+                    ]
+                ]
 
         _ ->
             text ""
