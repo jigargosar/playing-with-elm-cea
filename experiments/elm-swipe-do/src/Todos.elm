@@ -412,7 +412,7 @@ box ( scheduleKind, lbl ) =
         , style "height" "100px"
         , onClick <| ScheduleKindChanged scheduleKind
         ]
-        [ text "lbl" ]
+        [ text lbl ]
 
 
 viewScheduleOverlay model =
