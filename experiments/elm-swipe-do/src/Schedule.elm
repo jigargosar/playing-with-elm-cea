@@ -25,11 +25,10 @@ type Kind
     | Tomorrow
     | NextWeek
     | Someday
-    | None
 
 
 none =
-    Model 0 None
+    Model 0 Someday
 
 
 encodeKind kind =
@@ -51,9 +50,6 @@ encodeKind kind =
 
         Someday ->
             E.string "Someday"
-
-        None ->
-            E.string "None"
 
 
 encode model =
@@ -79,11 +75,8 @@ kindDecoder =
                 "Someday" ->
                     Someday
 
-                "None" ->
-                    None
-
                 _ ->
-                    None
+                    Someday
 
         minutesDecoder =
             D.map Minutes (D.field "Minutes" D.int)

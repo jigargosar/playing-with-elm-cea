@@ -179,3 +179,11 @@ changeStateTo newState now model =
 
     else
         { model | state = newState, modifiedAt = now }
+
+
+setSchedule schedule now model =
+    if stateEq Scheduled model && model.schedule == schedule then
+        model
+
+    else
+        { model | state = Scheduled, schedule = schedule, modifiedAt = now }
