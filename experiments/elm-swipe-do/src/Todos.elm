@@ -145,11 +145,11 @@ update message model =
                         ( [], "ArrowLeft" ) ->
                             onChangeStateRequest Left model
 
-                        ( [ Meta ], "ArrowLeft" ) ->
-                            onChangeFilterRequest Left model
-
                         ( [], "ArrowRight" ) ->
                             onChangeStateRequest Right model
+
+                        ( [ Meta ], "ArrowLeft" ) ->
+                            onChangeFilterRequest Left model
 
                         ( [ Meta ], "ArrowRight" ) ->
                             onChangeFilterRequest Right model
