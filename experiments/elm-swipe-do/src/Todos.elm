@@ -402,18 +402,14 @@ box =
         [ text "BOX" ]
 
 
-boxRow =
-    div [] [ box, box, box ]
-
-
 viewScheduleOverlay model =
     case model.mode of
         EditScheduleMode id ->
             div [ class "z-2 absolute absolute--fill bg-black-30  flex items-center justify-center" ]
                 [ div [ class "bg-white shadow-1 flex flex-wrap" ]
-                    [ boxRow
-                    , boxRow
-                    , boxRow
+                    [ div [] [ box, box, box ]
+                    , div [] [ box, box, box ]
+                    , div [] [ box, box, box ]
                     ]
                 ]
 
