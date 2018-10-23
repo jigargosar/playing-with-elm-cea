@@ -453,11 +453,11 @@ viewList model =
         |> List.indexedMap
             (\index todo ->
                 let
-                    atCursor =
+                    isAtCursor =
                         computedCursor == index
                 in
                 ( todo.id
-                , viewTodo model atCursor index todo
+                , viewTodo model isAtCursor index todo
                 )
             )
         >> Html.Keyed.node "div" [ class "" ]
@@ -476,16 +476,16 @@ todoItemDomIdWithTodoId id =
 
 
 viewTodo : Model -> Bool -> Int -> Todo -> Html Msg
-viewTodo model atCursor index todo =
+viewTodo model isAtCursor index todo =
     let
         defaultView =
             row " bb b--moon-gray lh-copy"
                 [ Html.Attributes.id <| todoItemDomId todo
                 , classList
-                    [ ( "hover-bg-yellow bg-light-yellow", atCursor )
+                    [ ( "hover-bg-yellow bg-light-yellow", isAtCursor )
                     , ( "strike gray", Todo.isCompleted todo )
                     ]
-                , tabindex <| ter atCursor 0 -1
+                , tabindex <| ter isAtCursor 0 -1
                 , onDoubleClick <| StartEditingContent todo.id
                 , Html.Events.on "keydown"
                     (D.map
@@ -504,38 +504,46 @@ viewTodo model atCursor index todo =
                     (SetCursor index)
                     (Todo.getContent todo)
                 ]
-    in
-    case model.mode of
-        EditContentMode id content ->
-            if todo.id == id then
-                flexV []
-                    [ input
-                        [ Html.Attributes.id <| todoInputDomId todo
-                        , class "pa3 lh-copy"
-                        , value content
-                        , onInput ContentChanged
-                        , onBlur <| EndEditing "blur"
-                        , Html.Events.stopPropagationOn "keydown"
-                            (D.map
-                                (\key ->
-                                    case key of
-                                        "Enter" ->
-                                            ( EndEditing "enter", False )
 
-                                        _ ->
-                                            ( NoOp, False )
-                                )
-                                (D.field "key" D.string)
+        maybeEditingContent =
+            case model.mode of
+                EditContentMode id content ->
+                    if todo.id == id then
+                        Just content
+
+                    else
+                        Nothing
+
+                _ ->
+                    Nothing
+
+        viewEditingContent content =
+            flexV []
+                [ input
+                    [ Html.Attributes.id <| todoInputDomId todo
+                    , class "pa3 lh-copy"
+                    , value content
+                    , onInput ContentChanged
+                    , onBlur <| EndEditing "blur"
+                    , Html.Events.stopPropagationOn "keydown"
+                        (D.map
+                            (\key ->
+                                case key of
+                                    "Enter" ->
+                                        ( EndEditing "enter", False )
+
+                                    _ ->
+                                        ( NoOp, False )
                             )
-                        ]
-                        []
+                            (D.field "key" D.string)
+                        )
                     ]
-
-            else
-                defaultView
-
-        _ ->
-            defaultView
+                    []
+                ]
+    in
+    maybeEditingContent
+        |> Maybe.map viewEditingContent
+        |> Maybe.withDefault defaultView
 
 
 viewTodoContent onClick_ content =
