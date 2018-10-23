@@ -32,10 +32,49 @@ type alias Todo =
     Model
 
 
+type State
+    = Scheduled
+    | Active
+    | Completed
+
+
+stringFromState state =
+    case state of
+        Scheduled ->
+            "Scheduled"
+
+        Active ->
+            "Active"
+
+        Completed ->
+            "Completed"
+
+
+stateDecoder : Decoder State
+stateDecoder =
+    D.map stateFromString D.string
+
+
+stateFromString stateString =
+    case stateString of
+        "Scheduled" ->
+            Scheduled
+
+        "Active" ->
+            Active
+
+        "Completed" ->
+            Completed
+
+        _ ->
+            Active
+
+
 type alias Model =
     { content : Content
     , done : Bool
     , deleted : Bool
+    , state : State
     , id : Collection.Id
     , createdAt : Int
     , modifiedAt : Int
@@ -44,10 +83,11 @@ type alias Model =
 
 encode model =
     E.object
-        [ ( "id", E.string model.id )
-        , ( "content", E.string model.content )
+        [ ( "content", E.string model.content )
         , ( "done", E.bool model.done )
         , ( "deleted", E.bool model.deleted )
+        , ( "state", E.string (stringFromState model.state) )
+        , ( "id", E.string model.id )
         , ( "createdAt", E.int model.createdAt )
         , ( "modifiedAt", E.int model.modifiedAt )
         ]
@@ -55,21 +95,31 @@ encode model =
 
 decoder : Decoder Model
 decoder =
-    D.map6 Model
+    D.map7 Model
         (D.field "content" D.string)
         (D.field "done" D.bool)
         (D.field "deleted" D.bool)
+        (D.field "state" stateDecoder)
         (D.field "id" D.string)
         (D.field "createdAt" D.int)
         (D.field "modifiedAt" D.int)
 
 
+init : Id -> Millis -> Model
 init =
     initWithContent ""
 
 
+initWithContent : Content -> Id -> Millis -> Model
 initWithContent content id now =
-    { content = content, done = False, deleted = False, id = id, createdAt = now, modifiedAt = now }
+    { content = content
+    , done = False
+    , deleted = False
+    , state = Active
+    , id = id
+    , createdAt = now
+    , modifiedAt = now
+    }
 
 
 getContent =
