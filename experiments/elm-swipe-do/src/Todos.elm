@@ -132,23 +132,23 @@ update message model =
         SetCursor newCursor ->
             ( { model | cursor = newCursor }, Cmd.none )
 
-        KeyDown ( softKeys, key ) ->
+        KeyDown ke ->
             case model.mode of
                 ListMode ->
-                    case key of
-                        "ArrowDown" ->
+                    case ke of
+                        ( [], "ArrowDown" ) ->
                             cycleCursorByOffsetAndFocus 1 model
 
-                        "ArrowUp" ->
+                        ( [], "ArrowUp" ) ->
                             cycleCursorByOffsetAndFocus -1 model
 
-                        "ArrowRight" ->
+                        ( [], "ArrowRight" ) ->
                             onChangeStateRequest Todo.Right model
 
-                        "ArrowLeft" ->
+                        ( [], "ArrowLeft" ) ->
                             onChangeStateRequest Todo.Left model
 
-                        "Enter" ->
+                        ( [], "Enter" ) ->
                             switchModeToEditTodoAtCursor model
 
                         _ ->

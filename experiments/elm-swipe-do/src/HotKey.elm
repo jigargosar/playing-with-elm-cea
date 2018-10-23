@@ -1,35 +1,34 @@
-module HotKey exposing (Event, decoder)
+module HotKey exposing (Event, SoftKey(..), decoder)
 
 import BasicsX exposing (ter)
 import Json.Decode as D
 import Json.Encode as E
 
 
-shift =
-    2
-
-
-alt =
-    4
-
-
-ctrl =
-    8
-
-
-meta =
-    16
+type SoftKey
+    = Shift
+    | Alt
+    | Ctrl
+    | Meta
 
 
 type alias Event =
-    ( Int, String )
+    ( List SoftKey, String )
+
+
+singletonBool bool value =
+    if bool then
+        [ value ]
+
+    else
+        []
 
 
 initEvent shift_ alt_ ctrl_ meta_ key =
-    ( ter shift_ shift 0
-        + ter alt_ alt 0
-        + ter ctrl_ ctrl 0
-        + ter meta_ meta 0
+    ( singletonBool shift_ Shift
+        ++ singletonBool alt_ Alt
+        ++ singletonBool ctrl_ Ctrl
+        ++ singletonBool meta_ Meta
     , key
     )
 
