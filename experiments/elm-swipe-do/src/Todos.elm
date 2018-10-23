@@ -361,9 +361,13 @@ onChangeStateRequest direction model =
                     nextState =
                         computeNextState direction (Todo.getState todo)
                 in
-                ( model, updateTodo todo.id (Todo.changeStateTo nextState) model )
+                startChangeState nextState todo model
             )
         |> Maybe.withDefault ( model, Cmd.none )
+
+
+startChangeState nextState todo model =
+    ( model, updateTodo todo.id (Todo.changeStateTo nextState) model )
 
 
 onChangeFilterRequest direction model =
