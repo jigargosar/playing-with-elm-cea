@@ -36,9 +36,9 @@ type alias Model =
     { content : Content
     , done : Bool
     , deleted : Bool
+    , id : Collection.Id
     , createdAt : Int
     , modifiedAt : Int
-    , id : Collection.Id
     }
 
 
@@ -59,9 +59,9 @@ decoder =
         (D.field "content" D.string)
         (D.field "done" D.bool)
         (D.field "deleted" D.bool)
+        (D.field "id" D.string)
         (D.field "createdAt" D.int)
         (D.field "modifiedAt" D.int)
-        (D.field "id" D.string)
 
 
 init =
