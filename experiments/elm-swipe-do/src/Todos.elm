@@ -17,6 +17,7 @@ import Log
 import Port
 import Process
 import Random
+import Schedule exposing (Schedule)
 import Set exposing (Set)
 import Task exposing (Task)
 import Todo exposing (Todo)
@@ -100,6 +101,7 @@ type Msg
     | SetCursor Cursor
     | KeyDown HotKey.Event
     | SetFilter Todo.State
+    | ScheduleKindChanged Schedule.Kind
 
 
 subscriptions : Model -> Sub Msg
@@ -216,6 +218,16 @@ update message model =
 
         SetFilter newFilter ->
             changeFilterTo newFilter model
+
+        ScheduleKindChanged scheduleKind ->
+            case model.mode of
+                EditScheduleMode id ->
+                    ( setMode ListMode model
+                    , updateTodo id (Todo.setScheduleKind scheduleKind) model
+                    )
+
+                _ ->
+                    ( model, warn [ "ScheduleChanged in non EditSchedule Mode" ] )
     )
         |> andThenFocusTodoAtCursor model
 
@@ -393,13 +405,14 @@ view model =
         ]
 
 
-box =
+box ( scheduleKind, lbl ) =
     div
         [ class "flex items-center justify-center ba b--moon-gray"
         , style "width" "100px"
         , style "height" "100px"
+        , onClick <| ScheduleKindChanged scheduleKind
         ]
-        [ text "BOX" ]
+        [ text "lbl" ]
 
 
 viewScheduleOverlay model =
@@ -407,9 +420,21 @@ viewScheduleOverlay model =
         EditScheduleMode id ->
             div [ class "z-2 absolute absolute--fill bg-black-30  flex items-center justify-center" ]
                 [ div [ class "bg-white shadow-1 flex flex-wrap" ]
-                    [ div [] [ box, box, box ]
-                    , div [] [ box, box, box ]
-                    , div [] [ box, box, box ]
+                    [ div []
+                        [ box ( Schedule.Minutes 10, "10 Min" )
+                        , box ( Schedule.Minutes 10, "10 Min" )
+                        , box ( Schedule.Minutes 10, "10 Min" )
+                        ]
+                    , div []
+                        [ box ( Schedule.Minutes 10, "10 Min" )
+                        , box ( Schedule.Minutes 10, "10 Min" )
+                        , box ( Schedule.Minutes 10, "10 Min" )
+                        ]
+                    , div []
+                        [ box ( Schedule.Minutes 10, "10 Min" )
+                        , box ( Schedule.Minutes 10, "10 Min" )
+                        , box ( Schedule.Minutes 10, "10 Min" )
+                        ]
                     ]
                 ]
 

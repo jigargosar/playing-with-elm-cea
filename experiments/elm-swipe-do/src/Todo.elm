@@ -13,6 +13,7 @@ module Todo exposing
     , initWithContent
     , isCompleted
     , setContent
+    , setScheduleKind
     , stateEq
     )
 
@@ -181,9 +182,13 @@ changeStateTo newState now model =
         { model | state = newState, modifiedAt = now }
 
 
-setSchedule schedule now model =
-    if stateEq Scheduled model && model.schedule == schedule then
+setScheduleKind scheduleKind now model =
+    let
+        newSchedule =
+            { at = now, kind = scheduleKind }
+    in
+    if stateEq Scheduled model && model.schedule == newSchedule then
         model
 
     else
-        { model | state = Scheduled, schedule = schedule, modifiedAt = now }
+        { model | state = Scheduled, schedule = newSchedule, modifiedAt = now }
