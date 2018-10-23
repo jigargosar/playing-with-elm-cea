@@ -6,6 +6,7 @@ import Browser.Dom
 import Browser.Events
 import Collection exposing (Collection)
 import Cursor exposing (Cursor)
+import HotKey
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -96,15 +97,14 @@ type Msg
     | ContentChanged Todo.Content
     | LogWarn (List String)
     | SetCursor Cursor
-    | KeyDown String
+    | KeyDown HotKey.Event
     | SetFilter Todo.State
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Browser.Events.onKeyDown
-            (D.map KeyDown (D.field "key" D.string))
+        [ Browser.Events.onKeyDown (D.map KeyDown HotKey.decoder)
         ]
 
 
@@ -132,7 +132,7 @@ update message model =
         SetCursor newCursor ->
             ( { model | cursor = newCursor }, Cmd.none )
 
-        KeyDown key ->
+        KeyDown { key } ->
             case model.mode of
                 ListMode ->
                     case key of
