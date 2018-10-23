@@ -24,7 +24,7 @@ import UI exposing (flexV, row, txtA, txtC)
 
 type Mode
     = ListMode
-    | EditMode Todo.Id Todo.Content
+    | EditContentMode Todo.Id Todo.Content
 
 
 type alias TodoIds =
@@ -119,7 +119,7 @@ update message model =
 
         NewAdded ( todo, collection ) ->
             ( setCollection collection model
-                |> setMode (EditMode todo.id (Todo.getContent todo))
+                |> setMode (EditContentMode todo.id (Todo.getContent todo))
             , Cmd.batch
                 [ Port.cacheTodoC (Collection.encode Todo.encode collection)
                 , focusTodoInput todo
@@ -143,10 +143,10 @@ update message model =
                             cycleCursorByOffsetAndFocus -1 model
 
                         "ArrowRight" ->
-                            ( model, changeStateAtCursor Todo.Completed model )
+                            ( model, cmdSetStateAtCursorTo Todo.Completed model )
 
                         "ArrowLeft" ->
-                            ( model, changeStateAtCursor Todo.Scheduled model )
+                            ( model, cmdSetStateAtCursorTo Todo.Scheduled model )
 
                         "Enter" ->
                             switchModeToEditTodoAtCursor model
@@ -154,7 +154,7 @@ update message model =
                         _ ->
                             ( model, Cmd.none )
 
-                EditMode _ _ ->
+                EditContentMode _ _ ->
                     ( model, Cmd.none )
 
         StartEditing id ->
@@ -165,7 +165,7 @@ update message model =
                 ListMode ->
                     ( model, warn [ "EndEditing in List mode", msg ] )
 
-                EditMode id content ->
+                EditContentMode id content ->
                     ( setMode ListMode model
                     , Cmd.batch
                         [ updateTodo id (Todo.setContent content) model
@@ -178,8 +178,8 @@ update message model =
                 ListMode ->
                     ( model, warn [ "ContentChanged in List mode" ] )
 
-                EditMode id _ ->
-                    ( setMode (EditMode id newContent) model
+                EditContentMode id _ ->
+                    ( setMode (EditContentMode id newContent) model
                     , model.collection
                         |> Collection.updateWith id (Todo.setContent newContent)
                         |> Task.perform SetAndCacheCollection
@@ -250,8 +250,8 @@ warn =
     Log.warn "Todos.elm"
 
 
-initEditModeWithTodo todo =
-    EditMode todo.id <| Todo.getContent todo
+initEditContentModeWithTodo todo =
+    EditContentMode todo.id <| Todo.getContent todo
 
 
 switchModeToEditTodoWithId id model =
@@ -266,10 +266,10 @@ switchModeToEditTodoWithId id model =
 switchModeToEditTodo todo model =
     case model.mode of
         ListMode ->
-            ( model |> setMode (initEditModeWithTodo todo), focusTodoInput todo )
+            ( model |> setMode (initEditContentModeWithTodo todo), focusTodoInput todo )
 
-        EditMode id oldContent ->
-            ( model |> setMode (initEditModeWithTodo todo)
+        EditContentMode id oldContent ->
+            ( model |> setMode (initEditContentModeWithTodo todo)
             , Cmd.batch
                 [ if id == todo.id then
                     warn [ "Reediting todo", todo.id, "with content", Todo.getContent todo, "oldContent", oldContent ]
@@ -295,7 +295,7 @@ getTodoAtCursor model =
     Array.fromList l |> Array.get c
 
 
-changeStateAtCursor state model =
+cmdSetStateAtCursorTo state model =
     getTodoAtCursor model
         |> Maybe.map (\todo -> updateTodo todo.id (Todo.changeStateTo state) model)
         |> Maybe.withDefault Cmd.none
@@ -354,7 +354,7 @@ viewTodo model atCursor cursor todo =
         ListMode ->
             defaultView
 
-        EditMode id content ->
+        EditContentMode id content ->
             if todo.id == id then
                 flexV []
                     [ input
