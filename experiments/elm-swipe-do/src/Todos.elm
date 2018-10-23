@@ -422,19 +422,19 @@ viewScheduleOverlay model =
             div [ class "z-2 absolute absolute--fill bg-black-30  flex items-center justify-center" ]
                 [ div [ class "bg-white shadow-1 flex flex-column" ]
                     [ div [ class "flex" ]
-                        [ box "ba" (Schedule.Minutes 10) "10 Min"
-                        , box "ba" (Schedule.Minutes 15) "15 Min"
-                        , box "ba" (Schedule.Minutes 30) "30 Min"
+                        [ box "bn" (Schedule.Minutes 10) "10 Min"
+                        , box "bl br" (Schedule.Minutes 15) "15 Min"
+                        , box "bn" (Schedule.Minutes 30) "30 Min"
                         ]
                     , div [ class "flex" ]
-                        [ box "ba" (Schedule.Hours 1) "1 Hrs"
+                        [ box "bt bb" (Schedule.Hours 1) "1 Hrs"
                         , box "ba" Schedule.LaterToday "Later Today"
-                        , box "ba" Schedule.Tomorrow "Tomorrow"
+                        , box "bt bb" Schedule.Tomorrow "Tomorrow"
                         ]
                     , div [ class "flex" ]
-                        [ box "ba" Schedule.WeakEnd "Weak End"
-                        , box "ba" Schedule.NextWeek "Next Week"
-                        , box "ba" Schedule.Someday "Someday"
+                        [ box "bn" Schedule.WeakEnd "Weak End"
+                        , box "bl br" Schedule.NextWeek "Next Week"
+                        , box "bn" Schedule.Someday "Someday"
                         ]
                     ]
                 ]
