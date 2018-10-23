@@ -132,7 +132,7 @@ update message model =
         SetCursor newCursor ->
             ( { model | cursor = newCursor }, Cmd.none )
 
-        KeyDown { key } ->
+        KeyDown ( softKeys, key ) ->
             case model.mode of
                 ListMode ->
                     case key of
