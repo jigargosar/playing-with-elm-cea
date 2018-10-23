@@ -2,8 +2,10 @@ module Todo exposing
     ( Content
     , Id
     , State(..)
+    , StateDirection(..)
     , Todo
     , changeStateTo
+    , computeNextState
     , decoder
     , delete
     , encode
@@ -15,6 +17,7 @@ module Todo exposing
     , stateEq
     )
 
+import Array
 import Collection exposing (Millis)
 import IdX
 import Json.Decode as D exposing (Decoder)
@@ -38,6 +41,30 @@ type State
     = Scheduled
     | Active
     | Completed
+
+
+type StateDirection
+    = Left
+    | Right
+
+
+computeNextState direction todo =
+    case direction of
+        Left ->
+            case todo.state of
+                Completed ->
+                    Active
+
+                _ ->
+                    Scheduled
+
+        Right ->
+            case todo.state of
+                Scheduled ->
+                    Active
+
+                _ ->
+                    Completed
 
 
 stringFromState state =

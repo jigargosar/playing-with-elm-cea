@@ -143,10 +143,10 @@ update message model =
                             cycleCursorByOffsetAndFocus -1 model
 
                         "ArrowRight" ->
-                            onChangeStateRequestAtCursorBy 1 model
+                            onChangeStateRequest Todo.Right model
 
                         "ArrowLeft" ->
-                            onChangeStateRequestAtCursorBy -1 model
+                            onChangeStateRequest Todo.Left model
 
                         "Enter" ->
                             switchModeToEditTodoAtCursor model
@@ -295,18 +295,17 @@ getTodoAtCursor model =
     Array.fromList l |> Array.get c
 
 
-onChangeStateRequestAtCursorBy ct model =
+onChangeStateRequest direction model =
     getTodoAtCursor model
-        |> Maybe.map (onChangeStateRequestBy ct model)
+        |> Maybe.map
+            (\todo ->
+                let
+                    nextState =
+                        Todo.computeNextState direction todo
+                in
+                ( model, updateTodo todo.id (Todo.changeStateTo nextState) model )
+            )
         |> Maybe.withDefault ( model, Cmd.none )
-
-
-getNewStateBy ct todo =
-    todo.state
-
-
-onChangeStateRequestBy ct model todo =
-    ( model, updateTodo todo.id (Todo.changeStateTo <| getNewStateBy ct todo) model )
 
 
 cmdSetStateAtCursorTo state model =
