@@ -405,9 +405,9 @@ view model =
         ]
 
 
-box ( scheduleKind, lbl ) =
+box border scheduleKind lbl =
     div
-        [ class "flex items-center justify-center ba b--moon-gray"
+        [ class <| "flex items-center justify-center b--moon-gray " ++ border
         , style "width" "100px"
         , style "height" "100px"
         , onClick <| ScheduleKindChanged scheduleKind
@@ -421,19 +421,19 @@ viewScheduleOverlay model =
             div [ class "z-2 absolute absolute--fill bg-black-30  flex items-center justify-center" ]
                 [ div [ class "bg-white shadow-1 flex flex-column" ]
                     [ div [ class "flex" ]
-                        [ box ( Schedule.Minutes 10, "10 Min" )
-                        , box ( Schedule.Minutes 15, "15 Min" )
-                        , box ( Schedule.Minutes 30, "30 Min" )
+                        [ box "ba" (Schedule.Minutes 10) "10 Min"
+                        , box "ba" (Schedule.Minutes 15) "15 Min"
+                        , box "ba" (Schedule.Minutes 30) "30 Min"
                         ]
                     , div [ class "flex" ]
-                        [ box ( Schedule.Hours 1, "1 Hours" )
-                        , box ( Schedule.Hours 2, "2 Hours" )
-                        , box ( Schedule.LaterToday, "LaterToday" )
+                        [ box "ba" (Schedule.Hours 1) "1 Hrs"
+                        , box "ba" Schedule.LaterToday "Later Today"
+                        , box "ba" Schedule.Tomorrow "Tomorrow"
                         ]
                     , div [ class "flex" ]
-                        [ box ( Schedule.Tomorrow, "Tomorrow" )
-                        , box ( Schedule.NextWeek, "NextWeek" )
-                        , box ( Schedule.Someday, "Someday" )
+                        [ box "ba" Schedule.WeakEnd "Weak End"
+                        , box "ba" Schedule.NextWeek "Next Week"
+                        , box "ba" Schedule.Someday "Someday"
                         ]
                     ]
                 ]

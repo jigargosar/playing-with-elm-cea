@@ -23,6 +23,7 @@ type Kind
     | Hours Int
     | LaterToday
     | Tomorrow
+    | WeakEnd
     | NextWeek
     | Someday
 
@@ -44,6 +45,9 @@ encodeKind kind =
 
         Tomorrow ->
             E.string "Tomorrow"
+
+        WeakEnd ->
+            E.string "WeakEnd"
 
         NextWeek ->
             E.string "NextWeek"
@@ -68,6 +72,9 @@ kindDecoder =
 
                 "Tomorrow" ->
                     Tomorrow
+
+                "WeakEnd" ->
+                    WeakEnd
 
                 "NextWeek" ->
                     NextWeek
