@@ -155,17 +155,11 @@ update message model =
                         ( [ Meta ], "ArrowRight" ) ->
                             onChangeFilterRequest Right model
 
-                        ( [], "Enter" ) ->
-                            switchModeToEditTodoAtCursor model
-
                         _ ->
                             ( model, Cmd.none )
 
                 EditContentMode _ _ ->
                     case ke of
-                        ( [], "Enter" ) ->
-                            switchModeToEditTodoAtCursor model
-
                         _ ->
                             ( model, Cmd.none )
 
@@ -431,6 +425,18 @@ viewTodo model atCursor cursor todo =
                     ]
                 , tabindex <| ter atCursor 0 -1
                 , onDoubleClick <| StartEditingContent todo.id
+                , Html.Events.on "keydown"
+                    (D.map
+                        (\ke ->
+                            case ke of
+                                ( [], "Enter" ) ->
+                                    StartEditingContent todo.id
+
+                                _ ->
+                                    NoOp
+                        )
+                        HotKey.decoder
+                    )
                 ]
                 [ viewTodoContent
                     (SetCursor cursor)
