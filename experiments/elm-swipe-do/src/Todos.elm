@@ -161,7 +161,12 @@ update message model =
                             ( model, Cmd.none )
 
                 EditContentMode _ _ ->
-                    ( model, Cmd.none )
+                    case ke of
+                        ( [], "Enter" ) ->
+                            switchModeToEditTodoAtCursor model
+
+                        _ ->
+                            ( model, Cmd.none )
 
         StartEditing id ->
             switchModeToEditTodoWithId id model
