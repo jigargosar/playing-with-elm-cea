@@ -2,14 +2,13 @@ module Todo exposing
     ( Content
     , Id
     , State(..)
-    , StateDirection(..)
     , Todo
     , changeStateTo
-    , computeNextState
     , decoder
     , delete
     , encode
     , getContent
+    , getState
     , init
     , initWithContent
     , isCompleted
@@ -43,28 +42,8 @@ type State
     | Completed
 
 
-type StateDirection
-    = Left
-    | Right
-
-
-computeNextState direction todo =
-    case direction of
-        Left ->
-            case todo.state of
-                Completed ->
-                    Active
-
-                _ ->
-                    Scheduled
-
-        Right ->
-            case todo.state of
-                Scheduled ->
-                    Active
-
-                _ ->
-                    Completed
+getState =
+    .state
 
 
 stringFromState state =

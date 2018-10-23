@@ -6,7 +6,7 @@ import Browser.Dom
 import Browser.Events
 import Collection exposing (Collection)
 import Cursor exposing (Cursor)
-import HotKey
+import HotKey exposing (SoftKey(..))
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -142,11 +142,17 @@ update message model =
                         ( [], "ArrowUp" ) ->
                             cycleCursorByOffsetAndFocus -1 model
 
-                        ( [], "ArrowRight" ) ->
-                            onChangeStateRequest Todo.Right model
-
                         ( [], "ArrowLeft" ) ->
-                            onChangeStateRequest Todo.Left model
+                            onChangeStateRequest Left model
+
+                        ( [ Meta ], "ArrowLeft" ) ->
+                            onChangeFilterRequest Left model
+
+                        ( [], "ArrowRight" ) ->
+                            onChangeStateRequest Right model
+
+                        ( [ Meta ], "ArrowRight" ) ->
+                            onChangeFilterRequest Right model
 
                         ( [], "Enter" ) ->
                             switchModeToEditTodoAtCursor model
@@ -203,7 +209,11 @@ update message model =
             )
 
         SetFilter newFilter ->
-            ( { model | filter = newFilter }, Cmd.none )
+            changeFilterTo newFilter model
+
+
+changeFilterTo newFilter model =
+    ( { model | filter = newFilter }, Cmd.none )
 
 
 updateTodo id fn model =
@@ -295,17 +305,45 @@ getTodoAtCursor model =
     Array.fromList l |> Array.get c
 
 
+type StateDirection
+    = Left
+    | Right
+
+
+computeNextState direction state =
+    case direction of
+        Left ->
+            case state of
+                Todo.Completed ->
+                    Todo.Active
+
+                _ ->
+                    Todo.Scheduled
+
+        Right ->
+            case state of
+                Todo.Scheduled ->
+                    Todo.Active
+
+                _ ->
+                    Todo.Completed
+
+
 onChangeStateRequest direction model =
     getTodoAtCursor model
         |> Maybe.map
             (\todo ->
                 let
                     nextState =
-                        Todo.computeNextState direction todo
+                        computeNextState direction (Todo.getState todo)
                 in
                 ( model, updateTodo todo.id (Todo.changeStateTo nextState) model )
             )
         |> Maybe.withDefault ( model, Cmd.none )
+
+
+onChangeFilterRequest direction model =
+    changeFilterTo (computeNextState direction model.filter) model
 
 
 cmdSetStateAtCursorTo state model =
