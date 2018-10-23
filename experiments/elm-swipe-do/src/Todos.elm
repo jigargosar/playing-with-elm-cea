@@ -1,4 +1,4 @@
-module Todos exposing (Filter(..), Msg(..), Todos, generator, getFilter, subscriptions, update, view)
+module Todos exposing (Msg(..), Todos, generator, getFilters, subscriptions, update, view)
 
 import Array
 import BasicsX exposing (flip, ter)
@@ -27,12 +27,6 @@ type Mode
     | EditMode Todo.Id Todo.Content
 
 
-type Filter
-    = Scheduled
-    | Todo
-    | Done
-
-
 type alias TodoIds =
     Set Todo.Id
 
@@ -44,13 +38,16 @@ type alias TodoCollection =
 type alias Model =
     { mode : Mode
     , cursor : Cursor
-    , filter : Filter
+    , filter : Todo.State
     , collection : TodoCollection
     }
 
 
-getFilter =
-    .filter
+getFilters model =
+    [ ( Todo.Scheduled == model.filter, Todo.Scheduled, "Scheduled" )
+    , ( Todo.Active == model.filter, Todo.Active, "Active" )
+    , ( Todo.Completed == model.filter, Todo.Completed, "Completed" )
+    ]
 
 
 type alias Todos =
@@ -60,7 +57,7 @@ type alias Todos =
 generator : E.Value -> Random.Generator ( Model, Cmd msg )
 generator enc =
     Collection.generator Todo.decoder enc
-        |> Random.map (Tuple.mapFirst <| Model ListMode 0 Todo)
+        |> Random.map (Tuple.mapFirst <| Model ListMode 0 Todo.Active)
 
 
 setMode : Mode -> Model -> Model
@@ -78,24 +75,12 @@ setCollection collection model =
     { model | collection = collection }
 
 
-filterPredicate model =
-    case model.filter of
-        Scheduled ->
-            always True
-
-        Todo ->
-            Todo.isDone >> not
-
-        Done ->
-            Todo.isDone
-
-
 getCursorTodoList model =
     model.cursor
         |> Cursor.get
             (model.collection
                 |> Collection.items
-                |> List.filter (filterPredicate model)
+                |> List.filter (Todo.stateEq model.filter)
                 |> List.sortBy .createdAt
             )
 
@@ -112,7 +97,7 @@ type Msg
     | LogWarn (List String)
     | SetCursor Cursor
     | KeyDown String
-    | SetFilter Filter
+    | SetFilter Todo.State
 
 
 subscriptions : Model -> Sub Msg
@@ -312,7 +297,7 @@ getTodoAtCursor model =
 
 setDoneAtCursor isDone model =
     getTodoAtCursor model
-        |> Maybe.map (\todo -> updateTodo todo.id (Todo.setDone isDone) model)
+        |> Maybe.map (\todo -> updateTodo todo.id (Todo.markComplete isDone) model)
         |> Maybe.withDefault Cmd.none
 
 
@@ -356,7 +341,7 @@ viewTodo model atCursor cursor todo =
                 [ Html.Attributes.id <| todoItemDomId todo
                 , classList
                     [ ( "hover-bg-yellow bg-light-yellow", atCursor )
-                    , ( "strike gray", Todo.isDone todo )
+                    , ( "strike gray", Todo.isCompleted todo )
                     ]
                 , tabindex <| ter atCursor 0 -1
                 ]

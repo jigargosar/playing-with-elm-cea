@@ -131,18 +131,10 @@ view model =
 
 
 viewToolbar model =
-    let
-        activeFilter =
-            Todos.getFilter model.todos
-    in
     UI.toolbar
         [ txtC "b ph3" "ELM Swipe Do"
         , spacer
-        , viewTabs
-            [ viewTab activeFilter Todos.Scheduled "Scheduled"
-            , viewTab activeFilter Todos.Todo "Todo"
-            , viewTab activeFilter Todos.Done "Done"
-            ]
+        , viewTabs (Todos.getFilters model.todos |> List.map viewTab)
         , spacer
         ]
 
@@ -151,11 +143,11 @@ onClickFilter =
     Todos.SetFilter >> TodosMsg >> onClick
 
 
-viewTab activeFilter filter labelText =
+viewTab ( active, filter, labelText ) =
     txtA
         [ onClickFilter filter
         , class "pointer b ph3 pv2"
-        , classList [ ( "bw2 bb b--blue", activeFilter == filter ) ]
+        , classList [ ( "bw2 bb b--blue", active ) ]
         ]
         labelText
 

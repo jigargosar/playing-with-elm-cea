@@ -1,6 +1,7 @@
 module Todo exposing
     ( Content
     , Id
+    , State(..)
     , Todo
     , decoder
     , delete
@@ -8,9 +9,10 @@ module Todo exposing
     , getContent
     , init
     , initWithContent
-    , isDone
+    , isCompleted
+    , markComplete
     , setContent
-    , setDone
+    , stateEq
     )
 
 import Collection exposing (Millis)
@@ -50,6 +52,10 @@ stringFromState state =
             "Completed"
 
 
+stateEq state todo =
+    state == todo.state
+
+
 stateDecoder : Decoder State
 stateDecoder =
     D.map stateFromString D.string
@@ -72,7 +78,6 @@ stateFromString stateString =
 
 type alias Model =
     { content : Content
-    , done : Bool
     , deleted : Bool
     , state : State
     , id : Collection.Id
@@ -84,7 +89,6 @@ type alias Model =
 encode model =
     E.object
         [ ( "content", E.string model.content )
-        , ( "done", E.bool model.done )
         , ( "deleted", E.bool model.deleted )
         , ( "state", E.string (stringFromState model.state) )
         , ( "id", E.string model.id )
@@ -95,9 +99,8 @@ encode model =
 
 decoder : Decoder Model
 decoder =
-    D.map7 Model
+    D.map6 Model
         (D.field "content" D.string)
-        (D.field "done" D.bool)
         (D.field "deleted" D.bool)
         (D.field "state" stateDecoder)
         (D.field "id" D.string)
@@ -113,7 +116,6 @@ init =
 initWithContent : Content -> Id -> Millis -> Model
 initWithContent content id now =
     { content = content
-    , done = False
     , deleted = False
     , state = Active
     , id = id
@@ -126,8 +128,8 @@ getContent =
     .content
 
 
-isDone =
-    .done
+isCompleted =
+    stateEq Completed
 
 
 setContent : Content -> Collection.Millis -> Model -> Model
@@ -148,10 +150,10 @@ delete now model =
         { model | deleted = True, modifiedAt = now }
 
 
-setDone : Bool -> Millis -> Model -> Model
-setDone done now model =
-    if done == model.done then
+markComplete : Bool -> Millis -> Model -> Model
+markComplete done now model =
+    if isCompleted model then
         model
 
     else
-        { model | done = done, modifiedAt = now }
+        { model | state = Completed, modifiedAt = now }
