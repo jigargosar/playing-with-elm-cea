@@ -150,8 +150,8 @@ delete now model =
         { model | deleted = True, modifiedAt = now }
 
 
-markComplete : Bool -> Millis -> Model -> Model
-markComplete done now model =
+markComplete : Millis -> Model -> Model
+markComplete now model =
     if isCompleted model then
         model
 
