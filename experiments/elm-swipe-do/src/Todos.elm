@@ -238,9 +238,14 @@ andThenFocusTodoAtCursor oldModel ( newModel, cmd ) =
 
 
 focusTodoAtCursor model =
-    getTodoAtCursor model
-        |> Maybe.map focusTodoItem
-        |> Maybe.withDefault Cmd.none
+    case model.mode of
+        ListMode ->
+            getTodoAtCursor model
+                |> Maybe.map focusTodoItem
+                |> Maybe.withDefault Cmd.none
+
+        _ ->
+            Cmd.none
 
 
 focusTodoInput =
