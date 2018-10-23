@@ -386,8 +386,8 @@ cmdSetStateAtCursorTo state model =
 
 
 view : Model -> Html Msg
-view =
-    viewList
+view model =
+    div [ class "w-100 measure-narrow" ] [ viewList model ]
 
 
 viewList : Model -> Html Msg
@@ -398,7 +398,7 @@ viewList model =
     in
     list
         |> List.indexedMap (\index todo -> ( todo.id, viewTodo model (computedCursor == index) index todo ))
-        >> Html.Keyed.node "div" [ class "w-100 measure-narrow" ]
+        >> Html.Keyed.node "div" [ class "" ]
 
 
 todoInputDomId todo =
