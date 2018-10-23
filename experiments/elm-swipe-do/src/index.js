@@ -13,6 +13,10 @@ import {
 import pathOr from 'ramda/es/pathOr'
 import invoker from 'ramda/es/invoker'
 
+var myWorker = new Worker('/worker.js', {})
+
+myWorker.postMessage('foo')
+
 const app = Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
