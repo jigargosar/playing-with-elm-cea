@@ -396,7 +396,8 @@ view model =
 viewScheduleOverlay model =
     case model.mode of
         EditScheduleMode id ->
-            div [ class "absolute absolute--fill bg-yellow" ] [ text "hw" ]
+            div [ class "z-2 absolute absolute--fill bg-black-30 flex items-center justify-center" ]
+                [ div [ class " w-75 vh-75 bg-white" ] [ text "hw" ] ]
 
         _ ->
             text ""
