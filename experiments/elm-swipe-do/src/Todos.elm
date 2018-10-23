@@ -419,6 +419,7 @@ viewTodo model atCursor cursor todo =
                     , ( "strike gray", Todo.isCompleted todo )
                     ]
                 , tabindex <| ter atCursor 0 -1
+                , onDoubleClick <| StartEditing todo.id
                 ]
                 [ viewTodoContent
                     (SetCursor cursor)
@@ -443,7 +444,7 @@ viewTodo model atCursor cursor todo =
                                 (\key ->
                                     case key of
                                         "Enter" ->
-                                            ( EndEditing "enter", True )
+                                            ( EndEditing "enter", False )
 
                                         _ ->
                                             ( NoOp, False )
