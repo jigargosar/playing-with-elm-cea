@@ -475,75 +475,56 @@ todoItemDomIdWithTodoId id =
     "todo-item-" ++ id
 
 
+maybeBool bool value =
+    if bool then
+        Just value
+
+    else
+        Nothing
+
+
 viewTodo : Model -> Bool -> Int -> Todo -> Html Msg
 viewTodo model isAtCursor index todo =
     let
-        defaultView =
-            row " bb b--moon-gray lh-copy"
-                [ Html.Attributes.id <| todoItemDomId todo
-                , classList
-                    [ ( "hover-bg-yellow bg-light-yellow", isAtCursor )
-                    , ( "strike gray", Todo.isCompleted todo )
-                    ]
-                , tabindex <| ter isAtCursor 0 -1
-                , onDoubleClick <| StartEditingContent todo.id
-                , Html.Events.on "keydown"
-                    (D.map
-                        (\ke ->
-                            case ke of
-                                ( [], "Enter" ) ->
-                                    StartEditingContent todo.id
-
-                                _ ->
-                                    NoOp
-                        )
-                        HotKey.decoder
-                    )
-                ]
-                [ viewTodoContent
-                    (SetCursor index)
-                    (Todo.getContent todo)
-                ]
-
         maybeEditingContent =
             case model.mode of
                 EditContentMode id content ->
-                    if todo.id == id then
-                        Just content
-
-                    else
-                        Nothing
+                    maybeBool (todo.id == id) content
 
                 _ ->
                     Nothing
-
-        viewEditingContent content =
-            flexV []
-                [ input
-                    [ Html.Attributes.id <| todoInputDomId todo
-                    , class "pa3 lh-copy"
-                    , value content
-                    , onInput ContentChanged
-                    , onBlur <| EndEditing "blur"
-                    , Html.Events.stopPropagationOn "keydown"
-                        (D.map
-                            (\key ->
-                                case key of
-                                    "Enter" ->
-                                        ( EndEditing "enter", False )
-
-                                    _ ->
-                                        ( NoOp, False )
-                            )
-                            (D.field "key" D.string)
-                        )
-                    ]
-                    []
-                ]
     in
     maybeEditingContent
-        |> Maybe.map viewEditingContent
-        |> Maybe.withDefault defaultView
+        |> Maybe.map (viewEditingContent todo)
+        |> Maybe.withDefault (defaultView isAtCursor index todo)
+
+
+defaultView isAtCursor index todo =
+    row " bb b--moon-gray lh-copy"
+        [ Html.Attributes.id <| todoItemDomId todo
+        , classList
+            [ ( "hover-bg-yellow bg-light-yellow", isAtCursor )
+            , ( "strike gray", Todo.isCompleted todo )
+            ]
+        , tabindex <| ter isAtCursor 0 -1
+        , onDoubleClick <| StartEditingContent todo.id
+        , Html.Events.on "keydown"
+            (D.map
+                (\ke ->
+                    case ke of
+                        ( [], "Enter" ) ->
+                            StartEditingContent todo.id
+
+                        _ ->
+                            NoOp
+                )
+                HotKey.decoder
+            )
+        ]
+        [ viewTodoContent
+            (SetCursor index)
+            (Todo.getContent todo)
+        ]
 
 
 viewTodoContent onClick_ content =
@@ -552,3 +533,28 @@ viewTodoContent onClick_ content =
 
     else
         txtA [ onClick onClick_, class "flex-auto pa3" ] content
+
+
+viewEditingContent todo content =
+    flexV []
+        [ input
+            [ Html.Attributes.id <| todoInputDomId todo
+            , class "pa3 lh-copy"
+            , value content
+            , onInput ContentChanged
+            , onBlur <| EndEditing "blur"
+            , Html.Events.stopPropagationOn "keydown"
+                (D.map
+                    (\key ->
+                        case key of
+                            "Enter" ->
+                                ( EndEditing "enter", False )
+
+                            _ ->
+                                ( NoOp, False )
+                    )
+                    (D.field "key" D.string)
+                )
+            ]
+            []
+        ]
