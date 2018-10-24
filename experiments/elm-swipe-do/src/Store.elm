@@ -1,7 +1,7 @@
 module Store exposing (Id, Store, insert)
 
 import Dict exposing (Dict)
-import Json.Decode as D exposing (Decoder)
+import Json.Decode as D exposing (Decoder, decodeValue)
 import Json.Encode as E exposing (Value)
 import Random exposing (Generator, Seed)
 
@@ -36,6 +36,11 @@ encode itemEncoder model =
         [ ( "cacheName", E.string model.cacheName )
         , ( "dict", E.dict identity itemEncoder model.dict )
         ]
+
+
+load : Decoder item -> Value -> Result D.Error (Model item)
+load =
+    decoder >> decodeValue
 
 
 insert : ( Id, item ) -> Model item -> Model item
