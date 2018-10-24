@@ -71,6 +71,7 @@ init flags =
 type Msg
     = NoOp
     | MagicMenuMsg MagicMenu.Msg
+    | AddClicked
 
 
 
@@ -81,11 +82,14 @@ update : Msg -> Model -> Step Model Msg a
 update message model =
     case message of
         NoOp ->
-            Step.to model
+            Step.stay
 
         MagicMenuMsg msg ->
             MagicMenu.update msg model.magicMenu
                 |> Step.within (\w -> { model | magicMenu = w }) MagicMenuMsg
+
+        AddClicked ->
+            Step.stay
 
 
 
@@ -122,7 +126,7 @@ view model =
     UI.root
         [ viewToolbar model
         , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
-            [ button [] [ text "add" ]
+            [ button [ onClick AddClicked ] [ text "add" ]
             , viewTodoList model
             ]
 
