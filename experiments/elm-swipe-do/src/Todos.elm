@@ -21,6 +21,7 @@ import Schedule exposing (Schedule)
 import Set exposing (Set)
 import Task exposing (Task)
 import Todo exposing (Todo)
+import TodoCollection exposing (TodoCollection)
 import UI exposing (flexV, row, txtA, txtC)
 
 
@@ -28,14 +29,6 @@ type Mode
     = ListMode
     | EditContentMode Todo.Id Todo.Content
     | EditScheduleMode Todo.Id
-
-
-type alias TodoIds =
-    Set Todo.Id
-
-
-type alias TodoCollection =
-    Collection Todo
 
 
 type alias Model =
@@ -303,7 +296,7 @@ switchModeToEditTodoWithId id model =
             switchModeToEditTodo todo model
 
         Nothing ->
-            ( model, warn [ "startEditingAndFocus", id, "Todo Not Found" ] )
+            ( model, warn [ "switchModeToEditTodoWithId", id, "Todo Not Found" ] )
 
 
 switchModeToEditTodo todo model =
