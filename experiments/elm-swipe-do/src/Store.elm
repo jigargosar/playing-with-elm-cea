@@ -10,18 +10,24 @@ type alias Id =
     String
 
 
+type alias CacheName =
+    String
+
+
 type alias Model item =
-    { dict : Dict Id item }
+    { cacheName : CacheName, dict : Dict Id item }
 
 
-init : Dict Id item -> Model item
-init dict =
-    { dict = dict }
+init : CacheName -> Dict Id item -> Model item
+init cacheName dict =
+    { cacheName = cacheName, dict = dict }
 
 
 decoder : Decoder item -> Decoder (Model item)
 decoder itemDecoder =
-    D.map init (D.dict itemDecoder)
+    D.map2 init
+        (D.field "cacheName" D.string)
+        (D.dict itemDecoder)
 
 
 type alias Encoder a =
