@@ -5,16 +5,16 @@ import registerServiceWorker from './registerServiceWorker'
 import {
   forEachObjIndexed,
   ifElse,
+  invoker,
   isNil,
   partial,
   partialRight,
+  pathOr,
   pick,
 } from 'ramda'
-import pathOr from 'ramda/es/pathOr'
-import invoker from 'ramda/es/invoker'
 
 let initialTodos = storageGetOr({}, 'todos')
-console.log('initialTodos', initialTodos)
+// console.log("initialTodos",initialTodos)
 const app = Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
