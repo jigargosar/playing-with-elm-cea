@@ -23,7 +23,7 @@ import Step exposing (Step)
 import Store exposing (Item)
 import Store.Item
 import Task
-import Todo exposing (Todo)
+import Todo exposing (TodoAttr)
 import TodoStore exposing (TodoStore)
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
@@ -35,7 +35,7 @@ import WheelEvent exposing (WheelEvent)
 
 type Mode
     = ListTodoMode
-    | NewTodoMode (Item Todo)
+    | NewTodoMode (Item TodoAttr)
 
 
 type alias Model =
@@ -80,8 +80,9 @@ init flags =
 type Msg
     = Stay
     | MagicMenuMsg MagicMenu.Msg
+    | TodoStoreMsg (Store.Msg TodoAttr)
     | AddClicked
-    | TodoStoreMsg (Store.Msg Todo)
+    | ContentChanged Todo.Content
 
 
 
@@ -115,6 +116,14 @@ update message model =
                     Todo.init ""
             in
             update (TodoStoreMsg <| Store.CreateNew todo) model
+
+        ContentChanged content ->
+            case model.mode of
+                NewTodoMode todo ->
+                    Step.stay
+
+                ListTodoMode ->
+                    Step.stay
 
 
 focusId domId =
@@ -196,6 +205,7 @@ viewNewTodoModal todo =
                     [ id newTodoInputDomId
                     , class "flex-auto pa3"
                     , value todo.attrs.content
+                    , onInput ContentChanged
                     ]
                     []
                 ]
@@ -214,7 +224,7 @@ viewTodoList model =
     Html.Keyed.node "div" [] todoList
 
 
-viewTodoItem : Store.Id -> Store.Item Todo -> Html Msg
+viewTodoItem : Store.Id -> Store.Item TodoAttr -> Html Msg
 viewTodoItem id todo =
     div [] [ text todo.attrs.content ]
 
