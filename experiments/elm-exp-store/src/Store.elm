@@ -5,6 +5,7 @@ import Dict exposing (Dict)
 import Json.Decode as D exposing (Decoder, decodeValue)
 import Json.Encode as E exposing (Value)
 import Random exposing (Generator, Seed)
+import Step exposing (Step)
 import Store.Item as Item exposing (Item)
 import Task exposing (Task)
 
@@ -66,6 +67,25 @@ toIdItemPairList =
 newItem : attrs -> Task x (Item attrs)
 newItem =
     Item.new
+
+
+type Msg attrs
+    = NoOp
+    | CreateNew attrs
+    | NewCreated attrs
+
+
+update : Msg attrs -> Model attrs -> Step (Model attrs) (Msg attrs) a
+update message model =
+    case message of
+        NoOp ->
+            Step.stay
+
+        CreateNew attrs ->
+            Step.stay
+
+        NewCreated attrs ->
+            Step.stay
 
 
 

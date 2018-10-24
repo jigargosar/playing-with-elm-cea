@@ -91,7 +91,8 @@ update message model =
         AddClicked ->
             let
                 _ =
-                    Store.newItem <| Todo.init "Hard Coded Todo"
+                    Todo.init "Hard Coded Todo"
+                        |> Store.newItem
             in
             Step.stay
 
