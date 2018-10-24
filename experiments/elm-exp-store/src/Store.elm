@@ -75,7 +75,11 @@ type Msg attrs
     | NewCreated (Item attrs)
 
 
-update : Msg attrs -> Model attrs -> Step (Model attrs) (Msg attrs) a
+type Exit attrs
+    = ExitNewCreated ( Item attrs, Model attrs )
+
+
+update : Msg attrs -> Model attrs -> Step (Model attrs) (Msg attrs) (Exit attrs)
 update message model =
     case message of
         NoOp ->
@@ -85,7 +89,7 @@ update message model =
             Step.to model |> Step.withCmd (newItem attrs |> Task.perform NewCreated)
 
         NewCreated item ->
-            Step.stay
+            Step.exit <| ExitNewCreated ( item, model )
 
 
 
