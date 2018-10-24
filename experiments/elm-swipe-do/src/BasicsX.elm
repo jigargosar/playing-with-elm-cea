@@ -1,4 +1,16 @@
-module BasicsX exposing (eq0, eqs, flip, ifElse, maybeBool, optionalOr, ter, tsDecoder, unless, when)
+module BasicsX exposing
+    ( eq0
+    , eqs
+    , flip
+    , ifElse
+    , maybeBool
+    , optionalOr
+    , ter
+    , tsDecoder
+    , unless
+    , unwrapMaybe
+    , when
+    )
 
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
@@ -38,6 +50,10 @@ maybeBool bool value =
 
     else
         Nothing
+
+
+unwrapMaybe dv fn =
+    Maybe.map fn >> Maybe.withDefault dv
 
 
 

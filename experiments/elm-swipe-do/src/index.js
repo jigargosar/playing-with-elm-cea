@@ -13,11 +13,13 @@ import {
 import pathOr from 'ramda/es/pathOr'
 import invoker from 'ramda/es/invoker'
 
+let initialTodos = storageGetOr({}, 'todos')
+console.log('initialTodos', initialTodos)
 const app = Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
     now: Date.now(),
-    todos: storageGetOr({}, 'todos'),
+    todos: initialTodos,
   },
 })
 
@@ -71,11 +73,13 @@ function subscribe(options, app) {
   })(options)
 }
 
-function storageGetOr(or, key) {
+function storageGetOr(defaultValue, key) {
   try {
-    return JSON.parse(localStorage.getItem(key))
+    let item = localStorage.getItem(key)
+    if (isNil(item)) return defaultValue
+    return JSON.parse(item)
   } catch (e) {
-    return or
+    return defaultValue
   }
 }
 

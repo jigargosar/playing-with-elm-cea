@@ -1,7 +1,7 @@
 module Todos exposing (Msg(..), Todos, generator, getFilters, subscriptions, update, view)
 
 import Array
-import BasicsX exposing (flip, maybeBool, ter)
+import BasicsX exposing (flip, maybeBool, ter, unwrapMaybe)
 import Browser.Dom
 import Browser.Events
 import Collection exposing (Collection)
@@ -475,20 +475,19 @@ todoItemDomIdWithTodoId id =
     "todo-item-" ++ id
 
 
+maybeEditingContent todo model =
+    case model.mode of
+        EditContentMode id content ->
+            maybeBool (todo.id == id) content
+
+        _ ->
+            Nothing
+
+
 viewTodo : Model -> Bool -> Int -> Todo -> Html Msg
 viewTodo model isAtCursor index todo =
-    let
-        maybeEditingContent =
-            case model.mode of
-                EditContentMode id content ->
-                    maybeBool (todo.id == id) content
-
-                _ ->
-                    Nothing
-    in
-    maybeEditingContent
-        |> Maybe.map (viewEditingContent todo)
-        |> Maybe.withDefault (defaultView isAtCursor index todo)
+    maybeEditingContent todo model
+        |> unwrapMaybe (defaultView isAtCursor index todo) (viewEditingContent todo)
 
 
 defaultView isAtCursor index todo =
