@@ -16,6 +16,7 @@ import Json.Decode as D
 import Json.Encode as E
 import MagicMenu exposing (MagicMenu)
 import Random
+import Step exposing (Step)
 import Task
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
@@ -76,15 +77,16 @@ type Msg
 --    | TodosMsg Todos.Msg
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> Step Model Msg a
 update message model =
     case message of
         NoOp ->
-            ( model, Cmd.none )
+            Step.to model
 
         MagicMenuMsg msg ->
             MagicMenu.update msg model.magicMenu
-                |> Tuple.mapBoth (flip setMagicMenu model) (Cmd.map MagicMenuMsg)
+                |> Step.fromUpdate
+                |> Step.within (flip setMagicMenu model) MagicMenuMsg
 
 
 
@@ -169,6 +171,6 @@ main =
     Browser.element
         { view = view
         , init = init
-        , update = update
+        , update = Step.asUpdateFunction update
         , subscriptions = subscriptions
         }

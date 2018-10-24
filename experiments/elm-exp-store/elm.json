@@ -10,7 +10,8 @@
       "elm/json": "1.0.0",
       "elm/random": "1.0.0",
       "elm/time": "1.0.0",
-      "feathericons/elm-feather": "1.0.0"
+      "feathericons/elm-feather": "1.0.0",
+      "xilnocas/step": "4.1.4"
     },
     "indirect": {
       "elm/svg": "1.0.1",
