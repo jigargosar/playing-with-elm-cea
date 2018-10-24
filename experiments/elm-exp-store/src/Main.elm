@@ -141,7 +141,7 @@ viewTodoList model =
     let
         todoList =
             model.todoStore
-                |> Store.toList
+                |> Store.toIdItemPairList
                 |> List.map (\( id, todo ) -> ( id, viewTodoItem id todo ))
     in
     Html.Keyed.ul [] todoList
