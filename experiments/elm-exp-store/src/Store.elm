@@ -1,4 +1,4 @@
-module Store exposing (Id, Store, insert)
+module Store exposing (Id, Store, insert, load)
 
 import BasicsX exposing (Encoder)
 import Dict exposing (Dict)
@@ -44,7 +44,7 @@ encode attrsEncoder model =
         ]
 
 
-load : Decoder item -> Value -> Result D.Error (Model item)
+load : Decoder attrs -> Value -> Result D.Error (Model attrs)
 load =
     decoder >> decodeValue
 
