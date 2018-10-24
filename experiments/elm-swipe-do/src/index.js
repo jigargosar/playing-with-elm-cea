@@ -41,7 +41,7 @@ subscribe(
     cacheTodoC: todos => {
       storageSet('todos', todos)
     },
-    focusSelector,
+    // focusSelector,
   },
   app,
 )
@@ -91,7 +91,7 @@ function storageSet(key, value) {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
-function focus(selector) {
+function focusSelector(selector) {
   ifElse(isNil)(
     partial(console.warn, ['[focus] selector', selector, 'not found']),
   )(invoker(0, 'focus'))(document.querySelector(selector))
