@@ -1,8 +1,10 @@
-module Store.Item exposing (Item, Meta, Milli, decoder, encoder, init)
+module Store.Item exposing (Item, Meta, Milli, decoder, encoder, init, new)
 
 import BasicsX exposing (Encoder)
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
+import Task exposing (Task)
+import Time
 
 
 type alias Milli =
@@ -39,12 +41,17 @@ type alias Item attrs =
     }
 
 
-mockMeta =
+defaultMeta =
     { createdAt = 0, modifiedAt = 0, deleted = False }
 
 
 init attrs =
-    { meta = mockMeta, attrs = attrs }
+    { meta = defaultMeta, attrs = attrs }
+
+
+initWithNow : attrs -> Milli -> Item attrs
+initWithNow attrs now =
+    { meta = { defaultMeta | createdAt = now, modifiedAt = now }, attrs = attrs }
 
 
 decoder : Decoder attrs -> Decoder (Item attrs)
@@ -60,3 +67,8 @@ encoder attrsEncoder model =
         [ ( "meta", metaEncoder model.meta )
         , ( "attrs", attrsEncoder model.attrs )
         ]
+
+
+new : attrs -> Task x (Item attrs)
+new attrs =
+    Time.now |> Task.map (Time.posixToMillis >> initWithNow attrs)

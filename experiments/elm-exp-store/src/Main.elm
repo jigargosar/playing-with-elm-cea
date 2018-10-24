@@ -89,6 +89,10 @@ update message model =
                 |> Step.within (\w -> { model | magicMenu = w }) MagicMenuMsg
 
         AddClicked ->
+            let
+                _ =
+                    Store.newItem <| Todo.init "Hard Coded Todo"
+            in
             Step.stay
 
 

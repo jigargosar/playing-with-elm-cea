@@ -1,11 +1,12 @@
-module Store exposing (Id, Item, Store, initEmpty, insert, load, toIdItemPairList)
+module Store exposing (Id, Item, Store, initEmpty, insert, load, newItem, toIdItemPairList)
 
 import BasicsX exposing (Encoder)
 import Dict exposing (Dict)
 import Json.Decode as D exposing (Decoder, decodeValue)
 import Json.Encode as E exposing (Value)
 import Random exposing (Generator, Seed)
-import Store.Item exposing (Item)
+import Store.Item as Item exposing (Item)
+import Task exposing (Task)
 
 
 type alias Id =
@@ -37,13 +38,13 @@ init dict =
 decoder : Decoder attrs -> Decoder (Model attrs)
 decoder attrsDecoder =
     D.map init
-        (D.dict (Store.Item.decoder attrsDecoder))
+        (D.dict (Item.decoder attrsDecoder))
 
 
 encode : Encoder attrs -> Encoder (Model attrs)
 encode attrsEncoder model =
     E.object
-        [ ( "dict", E.dict identity (Store.Item.encoder attrsEncoder) model.dict )
+        [ ( "dict", E.dict identity (Item.encoder attrsEncoder) model.dict )
         ]
 
 
@@ -62,6 +63,11 @@ toIdItemPairList =
     .dict >> Dict.toList
 
 
+newItem : attrs -> Task x (Item attrs)
+newItem =
+    Item.new
+
+
 
 ---- External
 
@@ -71,4 +77,4 @@ type alias Store item =
 
 
 type alias Item attrs =
-    Store.Item.Item attrs
+    Item.Item attrs
