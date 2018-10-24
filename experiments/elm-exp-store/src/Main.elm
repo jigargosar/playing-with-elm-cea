@@ -135,12 +135,8 @@ update message model =
 
         ContentChanged newContent ->
             case model.mode of
-                NewTodoMode id oldContent ->
-                    if oldContent /= newContent then
-                        model |> update (TSMsg <| Store.overItemAttrs id (Todo.setContent newContent) model.todoStore)
-
-                    else
-                        Step.stay
+                NewTodoMode id _ ->
+                    model |> update (TSMsg <| Store.overItemAttrs id (Todo.setContent newContent) model.todoStore)
 
                 ListTodoMode ->
                     Step.stay
