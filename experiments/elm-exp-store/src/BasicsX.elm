@@ -1,5 +1,6 @@
 module BasicsX exposing
-    ( eq0
+    ( Encoder
+    , eq0
     , eqs
     , flip
     , ifElse
@@ -14,7 +15,7 @@ module BasicsX exposing
     )
 
 import Json.Decode as D exposing (Decoder)
-import Json.Encode as E
+import Json.Encode as E exposing (Value)
 
 
 ter b t f =
@@ -66,6 +67,10 @@ recoverErr fn result =
             fn error
 
 
+flip fn a b =
+    fn b a
+
+
 
 ---- CODECS ----
 
@@ -78,5 +83,5 @@ optionalOr propName propDecoder defaultValue =
     D.oneOf [ D.field propName propDecoder, D.succeed defaultValue ]
 
 
-flip fn a b =
-    fn b a
+type alias Encoder a =
+    a -> Value
