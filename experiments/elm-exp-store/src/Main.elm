@@ -72,6 +72,7 @@ type Msg
     = Stay
     | MagicMenuMsg MagicMenu.Msg
     | AddClicked
+    | TodoStoreMsg (Store.Msg Todo)
 
 
 
@@ -88,13 +89,22 @@ update message model =
             MagicMenu.update msg model.magicMenu
                 |> Step.within (\w -> { model | magicMenu = w }) MagicMenuMsg
 
+        TodoStoreMsg msg ->
+            Store.update msg model.todoStore
+                |> Step.within (\w -> { model | todoStore = w }) TodoStoreMsg
+                |> Step.onExit
+                    (\exit ->
+                        case exit of
+                            Store.ExitNewCreated ( todo, todoStore ) ->
+                                Step.to { model | todoStore = todoStore }
+                    )
+
         AddClicked ->
             let
-                _ =
+                todo =
                     Todo.init "Hard Coded Todo"
-                        |> Store.newItem
             in
-            Step.stay
+            update (TodoStoreMsg <| Store.CreateNew todo) model
 
 
 

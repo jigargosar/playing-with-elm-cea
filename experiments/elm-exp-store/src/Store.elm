@@ -1,4 +1,4 @@
-module Store exposing (Id, Item, Store, initEmpty, insert, load, newItem, toIdItemPairList)
+module Store exposing (Exit(..), Id, Item, Msg(..), Store, initEmpty, insert, load, toIdItemPairList, update)
 
 import BasicsX exposing (Encoder)
 import Dict exposing (Dict)
