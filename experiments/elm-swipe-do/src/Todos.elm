@@ -4,7 +4,6 @@ import Array
 import BasicsX exposing (flip, maybeBool, ter, unwrapMaybe)
 import Browser.Dom
 import Browser.Events
-import Collection exposing (Collection)
 import Cursor exposing (Cursor)
 import HotKey exposing (SoftKey(..))
 import Html exposing (..)
@@ -51,9 +50,9 @@ type alias Todos =
 
 
 generator : E.Value -> Random.Generator ( Model, Cmd msg )
-generator enc =
-    Collection.generator Todo.decoder enc
-        |> Random.map (Tuple.mapFirst <| Model ListMode 0 Todo.Active)
+generator =
+    TodoCollection.generator
+        >> Random.map (Tuple.mapFirst <| Model ListMode 0 Todo.Active)
 
 
 setMode : Mode -> Model -> Model
@@ -63,7 +62,7 @@ setMode mode model =
 
 get : Todo.Id -> Model -> Maybe Todo
 get id =
-    .collection >> Collection.get id
+    .collection >> TodoCollection.get id
 
 
 setCollection : TodoCollection -> Model -> Model
@@ -75,7 +74,7 @@ getCursorTodoList model =
     model.cursor
         |> Cursor.get
             (model.collection
-                |> Collection.items
+                |> TodoCollection.items
                 |> List.filter (Todo.stateEq model.filter)
                 |> List.sortBy .createdAt
             )
@@ -87,7 +86,7 @@ type Msg
     | StartEditingContent Todo.Id
     | EndEditing String
     | Reset
-    | NewAdded ( Todo, Collection Todo )
+    | NewAdded ( Todo, TodoCollection )
     | SetAndCacheCollection TodoCollection
     | ContentChanged Todo.Content
     | LogWarn (List String)
@@ -117,13 +116,13 @@ update message model =
             ( setCollection collection model
                 |> setMode (EditContentMode todo.id (Todo.getContent todo))
             , Cmd.batch
-                [ Port.cacheTodoC (Collection.encode Todo.encode collection)
+                [ TodoCollection.cacheCmd collection
                 , focusTodoInput todo
                 ]
             )
 
         SetAndCacheCollection collection ->
-            ( setCollection collection model, Port.cacheTodoC (Collection.encode Todo.encode collection) )
+            ( setCollection collection model, TodoCollection.cacheCmd collection )
 
         SetCursor newCursor ->
             ( { model | cursor = newCursor }, Cmd.none )
@@ -184,8 +183,7 @@ update message model =
             case model.mode of
                 EditContentMode id _ ->
                     ( setMode (EditContentMode id newContent) model
-                    , model.collection
-                        |> Collection.updateWith id (Todo.setContent newContent)
+                    , TodoCollection.setContent id newContent model.collection
                         |> Task.perform SetAndCacheCollection
                     )
 
@@ -194,19 +192,18 @@ update message model =
 
         NewClicked ->
             ( model
-            , Collection.createAndAdd Todo.init model.collection
-                |> Task.perform NewAdded
+            , TodoCollection.addNew model.collection |> Task.perform NewAdded
             )
 
         Reset ->
             let
                 newCollection =
-                    Collection.reset model.collection
+                    TodoCollection.reset model.collection
             in
             ( { model
                 | collection = newCollection
               }
-            , Port.cacheTodoC (Collection.encode Todo.encode newCollection)
+            , TodoCollection.cacheCmd newCollection
             )
 
         SetFilter newFilter ->
