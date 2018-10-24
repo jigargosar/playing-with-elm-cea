@@ -103,7 +103,7 @@ update message model =
                     (\exit ->
                         case exit of
                             Store.ExitNewCreated ( todo, todoStore ) ->
-                                Step.to { model | todoStore = todoStore }
+                                Step.to { model | todoStore = todoStore, mode = NewTodo todo }
                     )
 
         AddClicked ->
