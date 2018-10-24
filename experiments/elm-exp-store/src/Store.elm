@@ -1,4 +1,16 @@
-module Store exposing (Exit(..), Id, Item, Msg(..), Store, initEmpty, insert, load, toIdItemPairList, update)
+module Store exposing
+    ( Exit(..)
+    , Id
+    , Item
+    , Msg
+    , Store
+    , createAndInsert
+    , initEmpty
+    , insert
+    , load
+    , toIdItemPairList
+    , update
+    )
 
 import BasicsX exposing (Encoder)
 import Dict exposing (Dict)
@@ -71,12 +83,16 @@ newItem =
 
 type Msg attrs
     = NoOp
-    | CreateNew attrs
-    | NewCreated (Item attrs)
+    | CreateAndInsert attrs
+    | NewInserted (Item attrs)
 
 
 type Exit attrs
-    = ExitNewCreated ( Item attrs, Model attrs )
+    = ExitNewInserted ( Item attrs, Model attrs )
+
+
+createAndInsert =
+    CreateAndInsert
 
 
 update : Msg attrs -> Model attrs -> Step (Model attrs) (Msg attrs) (Exit attrs)
@@ -85,11 +101,11 @@ update message model =
         NoOp ->
             Step.stay
 
-        CreateNew attrs ->
-            Step.to model |> Step.withCmd (newItem attrs |> Task.perform NewCreated)
+        CreateAndInsert attrs ->
+            Step.to model |> Step.withCmd (newItem attrs |> Task.perform NewInserted)
 
-        NewCreated item ->
-            Step.exit <| ExitNewCreated ( item, model )
+        NewInserted item ->
+            Step.exit <| ExitNewInserted ( item, model )
 
 
 

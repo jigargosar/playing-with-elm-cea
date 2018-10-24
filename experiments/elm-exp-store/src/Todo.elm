@@ -1,4 +1,4 @@
-module Todo exposing (Content, TodoAttr, decoder, init, setContent)
+module Todo exposing (Content, TodoAttr, decoder, init, initEmpty, setContent)
 
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
@@ -20,6 +20,10 @@ type alias TodoItem =
 
 init =
     TodoAttr
+
+
+initEmpty =
+    init ""
 
 
 decoder : Decoder TodoAttr

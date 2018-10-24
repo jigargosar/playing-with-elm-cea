@@ -80,7 +80,7 @@ init flags =
 type Msg
     = Stay
     | MagicMenuMsg MagicMenu.Msg
-    | TodoStoreMsg (Store.Msg TodoAttr)
+    | TSMsg (Store.Msg TodoAttr)
     | AddClicked
     | ContentChanged Todo.Content
 
@@ -99,23 +99,19 @@ update message model =
             MagicMenu.update msg model.magicMenu
                 |> Step.within (\w -> { model | magicMenu = w }) MagicMenuMsg
 
-        TodoStoreMsg msg ->
+        TSMsg msg ->
             Store.update msg model.todoStore
-                |> Step.within (\w -> { model | todoStore = w }) TodoStoreMsg
+                |> Step.within (\w -> { model | todoStore = w }) TSMsg
                 |> Step.onExit
                     (\exit ->
                         case exit of
-                            Store.ExitNewCreated ( todo, todoStore ) ->
+                            Store.ExitNewInserted ( todo, todoStore ) ->
                                 Step.to { model | todoStore = todoStore, mode = NewTodoMode todo }
                                     |> focusId newTodoInputDomId
                     )
 
         AddClicked ->
-            let
-                todo =
-                    Todo.init ""
-            in
-            update (TodoStoreMsg <| Store.CreateNew todo) model
+            update (TSMsg <| Store.createAndInsert Todo.initEmpty) model
 
         ContentChanged content ->
             case model.mode of
