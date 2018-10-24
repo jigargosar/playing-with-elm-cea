@@ -124,13 +124,7 @@ update message model =
         ContentChanged content ->
             case model.mode of
                 NewTodoMode id oldContent ->
-                    let
-                        Todo
-                        msg =
-                            Store.overItemAttrs id (Todo.setContent oldContent)
-                                |> TSMsg
-                    in
-                    update msg model
+                    model |> update (TSMsg <| Store.overItemAttrs id (Todo.setContent oldContent) model.todoStore)
 
                 ListTodoMode ->
                     Step.stay
