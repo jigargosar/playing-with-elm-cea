@@ -61,11 +61,6 @@ init flags =
     )
 
 
-setMagicMenu : MagicMenu -> Model -> Model
-setMagicMenu magicMenu model =
-    { model | magicMenu = magicMenu }
-
-
 
 --setTodoC : Todos -> Model -> Model
 --setTodoC todos model =
@@ -90,7 +85,7 @@ update message model =
 
         MagicMenuMsg msg ->
             MagicMenu.update msg model.magicMenu
-                |> Step.within (flip setMagicMenu model) MagicMenuMsg
+                |> Step.within (\w -> { model | magicMenu = w }) MagicMenuMsg
 
 
 
