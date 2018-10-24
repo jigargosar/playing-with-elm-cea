@@ -1,4 +1,4 @@
-module Store exposing (Id, Store, initEmpty, insert, load, toList)
+module Store exposing (Id, Item, Store, initEmpty, insert, load, toList)
 
 import BasicsX exposing (Encoder)
 import Dict exposing (Dict)
@@ -68,3 +68,7 @@ toList =
 
 type alias Store item =
     Model item
+
+
+type alias Item attrs =
+    Store.Item.Item attrs

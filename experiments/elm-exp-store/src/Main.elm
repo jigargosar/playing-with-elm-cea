@@ -19,7 +19,9 @@ import MagicMenu exposing (MagicMenu)
 import Random
 import Step exposing (Step)
 import Store
+import Store.Item
 import Task
+import Todo exposing (Todo)
 import TodoStore exposing (TodoStore)
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
@@ -124,7 +126,7 @@ view : Model -> Html Msg
 view model =
     UI.root
         [ viewToolbar model
-        , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ] [ viewTodoList ]
+        , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ] [ viewTodoList model ]
 
         --        , Html.map TodosMsg <|
         --            div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
@@ -134,6 +136,7 @@ view model =
         ]
 
 
+viewTodoList : Model -> Html Msg
 viewTodoList model =
     let
         todoList =
@@ -144,6 +147,7 @@ viewTodoList model =
     Html.Keyed.ul [] todoList
 
 
+viewTodoItem : Store.Id -> Store.Item Todo -> Html Msg
 viewTodoItem id todo =
     div [] [ text todo.attrs.content ]
 
