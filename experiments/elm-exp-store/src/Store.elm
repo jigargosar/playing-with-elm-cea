@@ -21,31 +21,29 @@ type alias Dict_ attrs =
 
 
 type alias Model attrs =
-    { cacheName : CacheName, dict : Dict_ attrs }
+    { dict : Dict_ attrs }
 
 
-initEmpty : CacheName -> Model attrs
-initEmpty cacheName =
-    init cacheName Dict.empty
+initEmpty : Model attrs
+initEmpty =
+    init Dict.empty
 
 
-init : CacheName -> Dict_ attrs -> Model attrs
-init cacheName dict =
-    { cacheName = cacheName, dict = dict }
+init : Dict_ attrs -> Model attrs
+init dict =
+    { dict = dict }
 
 
 decoder : Decoder attrs -> Decoder (Model attrs)
 decoder attrsDecoder =
-    D.map2 init
-        (D.field "cacheName" D.string)
+    D.map init
         (D.dict (Store.Item.decoder attrsDecoder))
 
 
 encode : Encoder attrs -> Encoder (Model attrs)
 encode attrsEncoder model =
     E.object
-        [ ( "cacheName", E.string model.cacheName )
-        , ( "dict", E.dict identity (Store.Item.encoder attrsEncoder) model.dict )
+        [ ( "dict", E.dict identity (Store.Item.encoder attrsEncoder) model.dict )
         ]
 
 

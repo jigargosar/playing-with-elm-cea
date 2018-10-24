@@ -51,7 +51,7 @@ init flags =
             1
     in
     ( { magicMenu = MagicMenu.initial
-      , todoStore = TodoStore.empty
+      , todoStore = TodoStore.load flags.todos
       }
     , Cmd.none
     )
