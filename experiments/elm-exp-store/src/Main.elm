@@ -18,7 +18,7 @@ import Json.Encode as E
 import MagicMenu exposing (MagicMenu)
 import Random
 import Step exposing (Step)
-import Store
+import Store exposing (Item)
 import Store.Item
 import Task
 import Todo exposing (Todo)
@@ -31,9 +31,15 @@ import WheelEvent exposing (WheelEvent)
 ---- MODEL ----
 
 
+type Mode
+    = TodoList
+    | NewTodo (Item Todo)
+
+
 type alias Model =
     { magicMenu : MagicMenu
     , todoStore : TodoStore
+    , mode : Mode
     }
 
 
@@ -56,6 +62,7 @@ init flags =
     in
     ( { magicMenu = MagicMenu.initial
       , todoStore = TodoStore.load flags.todos
+      , mode = TodoList
       }
     , Cmd.none
     )
