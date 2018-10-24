@@ -32,8 +32,8 @@ import WheelEvent exposing (WheelEvent)
 
 
 type Mode
-    = TodoList
-    | NewTodo (Item Todo)
+    = ListTodoMode
+    | NewTodoMode (Item Todo)
 
 
 type alias Model =
@@ -62,7 +62,7 @@ init flags =
     in
     ( { magicMenu = MagicMenu.initial
       , todoStore = TodoStore.load flags.todos
-      , mode = TodoList
+      , mode = ListTodoMode
       }
     , Cmd.none
     )
@@ -103,7 +103,7 @@ update message model =
                     (\exit ->
                         case exit of
                             Store.ExitNewCreated ( todo, todoStore ) ->
-                                Step.to { model | todoStore = todoStore, mode = NewTodo todo }
+                                Step.to { model | todoStore = todoStore, mode = NewTodoMode todo }
                     )
 
         AddClicked ->
@@ -151,12 +151,29 @@ view model =
             [ button [ onClick AddClicked ] [ text "add" ]
             , viewTodoList model
             ]
+        , viewModal model
 
         --        , Html.map TodosMsg <|
         --            div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
         --                [ Todos.view model.todos ]
         --        , div [ class "w-100 flex flex-column justify-center items-center" ]
         --            [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
+        ]
+
+
+viewModal model =
+    case model.mode of
+        NewTodoMode todo ->
+            viewNewTodoModal todo
+
+        ListTodoMode ->
+            text ""
+
+
+viewNewTodoModal todo =
+    div [ class "absolute absolute--fill bg-black-40 flex items-center justify-center" ]
+        [ div [ class "bg-white br4 shadow-1 pa3", style "min-width" "200px", style "min-height" "200px" ]
+            [ text "HW" ]
         ]
 
 
