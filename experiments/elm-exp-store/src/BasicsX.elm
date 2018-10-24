@@ -5,6 +5,7 @@ module BasicsX exposing
     , ifElse
     , maybeBool
     , optionalOr
+    , recoverErr
     , ter
     , tsDecoder
     , unless
@@ -54,6 +55,15 @@ maybeBool bool value =
 
 unwrapMaybe dv fn =
     Maybe.map fn >> Maybe.withDefault dv
+
+
+recoverErr fn result =
+    case result of
+        Ok answer ->
+            answer
+
+        Err error ->
+            fn error
 
 
 

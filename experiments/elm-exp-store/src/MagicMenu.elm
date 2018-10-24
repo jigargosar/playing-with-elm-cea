@@ -1,6 +1,6 @@
 module MagicMenu exposing (Action, Actions, MagicMenu, Msg, initial, subscriptions, update, view)
 
-import BasicsX exposing (ter)
+import BasicsX exposing (recoverErr, ter)
 import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -50,17 +50,19 @@ update message model =
 
         Wheel encoded ->
             D.decodeValue WheelEvent.decoder encoded
-                |> mapDecodeResult model (\{ deltaY } -> { model | hidden = deltaY > 0 })
+                |> (\result ->
+                        case result of
+                            Ok { deltaY } ->
+                                { model | hidden = deltaY > 0 } |> Step.to
+
+                            Err error ->
+                                Step.to model |> Step.withCmd (Port.logS <| D.errorToString error)
+                   )
 
 
-mapDecodeResult : model -> (answer -> model) -> Result D.Error answer -> Step model msg a
-mapDecodeResult model mapper result =
-    case result of
-        Ok answer ->
-            Step.to (mapper answer)
 
-        Err err ->
-            Step.to model |> Step.withCmd (Port.logS <| D.errorToString err)
+--                |> Result.map (\{ deltaY } -> { model | hidden = deltaY > 0 } |> Step.to)
+--                |> recoverErr (\err -> Step.to model |> Step.withCmd (Port.logS <| D.errorToString err))
 
 
 type alias Action msg =
