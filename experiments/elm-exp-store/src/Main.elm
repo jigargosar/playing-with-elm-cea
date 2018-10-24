@@ -85,7 +85,6 @@ update message model =
 
         MagicMenuMsg msg ->
             MagicMenu.update msg model.magicMenu
-                |> Step.fromUpdate
                 |> Step.within (flip setMagicMenu model) MagicMenuMsg
 
 

@@ -8,6 +8,7 @@ import Html.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
 import Port
+import Step exposing (Step)
 import Style exposing (Transform(..), Unit(..))
 import UI exposing (boolHtml, fBtn)
 import WheelEvent
@@ -38,28 +39,28 @@ subscriptions model =
     Sub.batch [ Port.wheel Wheel ]
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> Step Model Msg a
 update message model =
     case message of
         NoOp ->
-            ( model, Cmd.none )
+            Step.to model
 
         Clicked ->
-            ( { model | open = not model.open }, Cmd.none )
+            Step.to { model | open = not model.open }
 
         Wheel encoded ->
             D.decodeValue WheelEvent.decoder encoded
                 |> mapDecodeResult model (\{ deltaY } -> { model | hidden = deltaY > 0 })
 
 
-mapDecodeResult : model -> (answer -> model) -> Result D.Error answer -> ( model, Cmd msg )
+mapDecodeResult : model -> (answer -> model) -> Result D.Error answer -> Step model msg a
 mapDecodeResult model mapper result =
     case result of
         Ok answer ->
-            ( mapper answer, Cmd.none )
+            Step.to (mapper answer)
 
         Err err ->
-            ( model, D.errorToString err |> Port.logS )
+            Step.to model |> Step.withCmd (Port.logS <| D.errorToString err)
 
 
 type alias Action msg =
