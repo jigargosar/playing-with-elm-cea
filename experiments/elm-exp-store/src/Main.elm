@@ -6,6 +6,7 @@ module Main exposing (main)
 
 import BasicsX exposing (flip, ter)
 import Browser
+import Browser.Dom
 import Browser.Events
 import Dict
 import FeatherIcons
@@ -16,6 +17,7 @@ import Html.Keyed
 import Json.Decode as D
 import Json.Encode as E
 import MagicMenu exposing (MagicMenu)
+import Port
 import Random
 import Step exposing (Step)
 import Store exposing (Item)
@@ -104,17 +106,27 @@ update message model =
                         case exit of
                             Store.ExitNewCreated ( todo, todoStore ) ->
                                 Step.to { model | todoStore = todoStore, mode = NewTodoMode todo }
+                                    |> focusId newTodoInputDomId
                     )
 
         AddClicked ->
             let
                 todo =
-                    Todo.init "Hard Coded Todo"
+                    Todo.init ""
             in
             update (TodoStoreMsg <| Store.CreateNew todo) model
 
 
+focusId domId =
+    Browser.Dom.focus domId
+        |> Step.attempt (\_ -> Stay)
 
+
+
+--        |> Task.attempt
+--            (Result.map (always Stay)
+--                >> Result.withDefault (LogWarn [ "Browser.Dom.focus", domId, "not found" ])
+--            )
 --        TodosMsg msg ->
 --            Todos.update msg model.todos
 --                |> Tuple.mapBoth (flip setTodoC model) (Cmd.map TodosMsg)
@@ -170,12 +182,24 @@ viewModal model =
             text ""
 
 
+newTodoInputDomId =
+    "new-todo-content-input"
+
+
 viewNewTodoModal todo =
     div [ class "absolute absolute--fill bg-black-40 flex items-center justify-center" ]
         [ div
             [ class "bg-white br4 shadow-1 pa3 measure w-100"
             ]
-            [ div [ class "w-100 flex" ] [ input [ class "flex-auto pa3", value todo.attrs.content ] [] ] ]
+            [ div [ class "w-100 flex" ]
+                [ input
+                    [ id newTodoInputDomId
+                    , class "flex-auto pa3"
+                    , value todo.attrs.content
+                    ]
+                    []
+                ]
+            ]
         ]
 
 
