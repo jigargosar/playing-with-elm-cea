@@ -7,6 +7,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
+import Log
 import Port
 import Step exposing (Step)
 import Style exposing (Transform(..), Unit(..))
@@ -55,7 +56,7 @@ update message model =
         Wheel encoded ->
             D.decodeValue WheelEvent.decoder encoded
                 |> Result.map (setVisibilityFromWheelEventIn model)
-                |> Result.mapError (Port.logS << D.errorToString)
+                |> Result.mapError (Log.warn "MagicMenu" << List.singleton << D.errorToString)
                 |> (\result ->
                         case result of
                             Ok newModel ->
@@ -64,19 +65,6 @@ update message model =
                             Err cmd ->
                                 Step.to model |> Step.withCmd cmd
                    )
-
-
-
---          |> (\result ->
---                        case result of
---                            Ok { deltaY } ->
---                                { model | hidden = deltaY > 0 } |> Step.to
---
---                            Err error ->
---                                Step.to model |> Step.withCmd (Port.logS <| D.errorToString error)
---                   )
---                |> Result.map (\{ deltaY } -> { model | hidden = deltaY > 0 } |> Step.to)
---                |> recoverErr (\err -> Step.to model |> Step.withCmd (Port.logS <| D.errorToString err))
 
 
 type alias Action msg =
