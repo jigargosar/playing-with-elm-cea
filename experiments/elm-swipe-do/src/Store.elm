@@ -37,7 +37,8 @@ type alias Encoder a =
 encode : Encoder item -> Model item -> Value
 encode itemEncoder model =
     E.object
-        [ ( "dict", E.dict identity itemEncoder model.dict )
+        [ ( "cacheName", E.string model.cacheName )
+        , ( "dict", E.dict identity itemEncoder model.dict )
         ]
 
 
