@@ -41,7 +41,7 @@ subscribe(
     cacheTodoC: todos => {
       storageSet('todos', todos)
     },
-    focus,
+    focusSelector,
   },
   app,
 )

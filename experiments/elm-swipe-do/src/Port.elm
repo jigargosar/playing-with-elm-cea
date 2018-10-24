@@ -1,4 +1,4 @@
-port module Port exposing (cacheTodoC, focus, logS, warn, wheel)
+port module Port exposing (cacheTodoC, focusSelector, logS, warn, wheel)
 
 import Json.Decode as D
 import Json.Encode as E
@@ -16,4 +16,4 @@ port warn : List String -> Cmd msg
 port cacheTodoC : E.Value -> Cmd msg
 
 
-port focus : String -> Cmd msg
+port focusSelector : String -> Cmd msg
