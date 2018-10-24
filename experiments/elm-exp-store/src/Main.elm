@@ -69,7 +69,7 @@ init flags =
 
 
 type Msg
-    = NoOp
+    = Stay
     | MagicMenuMsg MagicMenu.Msg
     | AddClicked
 
@@ -81,7 +81,7 @@ type Msg
 update : Msg -> Model -> Step Model Msg a
 update message model =
     case message of
-        NoOp ->
+        Stay ->
             Step.stay
 
         MagicMenuMsg msg ->
