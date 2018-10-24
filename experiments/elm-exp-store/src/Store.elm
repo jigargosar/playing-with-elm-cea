@@ -72,7 +72,7 @@ newItem =
 type Msg attrs
     = NoOp
     | CreateNew attrs
-    | NewCreated attrs
+    | NewCreated (Item attrs)
 
 
 update : Msg attrs -> Model attrs -> Step (Model attrs) (Msg attrs) a
@@ -82,9 +82,9 @@ update message model =
             Step.stay
 
         CreateNew attrs ->
-            Step.stay
+            Step.to model |> Step.withCmd (newItem attrs |> Task.perform NewCreated)
 
-        NewCreated attrs ->
+        NewCreated item ->
             Step.stay
 
 
