@@ -30,10 +30,6 @@ decoder itemDecoder =
         (D.dict itemDecoder)
 
 
-type alias Encoder a =
-    a -> Value
-
-
 encode : Encoder item -> Model item -> Value
 encode itemEncoder model =
     E.object
@@ -53,3 +49,7 @@ insert ( id, item ) model =
 
 type alias Store item =
     Model item
+
+
+type alias Encoder a =
+    a -> Value
