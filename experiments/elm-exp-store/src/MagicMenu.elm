@@ -39,6 +39,10 @@ subscriptions model =
     Sub.batch [ Port.wheel Wheel ]
 
 
+setVisibilityFromWheelEventIn model { deltaY } =
+    { model | hidden = deltaY > 0 }
+
+
 update : Msg -> Model -> Step Model Msg a
 update message model =
     case message of
@@ -50,17 +54,27 @@ update message model =
 
         Wheel encoded ->
             D.decodeValue WheelEvent.decoder encoded
+                |> Result.map (setVisibilityFromWheelEventIn model)
+                |> Result.mapError (Port.logS << D.errorToString)
                 |> (\result ->
                         case result of
-                            Ok { deltaY } ->
-                                { model | hidden = deltaY > 0 } |> Step.to
+                            Ok newModel ->
+                                Step.to newModel
 
-                            Err error ->
-                                Step.to model |> Step.withCmd (Port.logS <| D.errorToString error)
+                            Err cmd ->
+                                Step.to model |> Step.withCmd cmd
                    )
 
 
 
+--          |> (\result ->
+--                        case result of
+--                            Ok { deltaY } ->
+--                                { model | hidden = deltaY > 0 } |> Step.to
+--
+--                            Err error ->
+--                                Step.to model |> Step.withCmd (Port.logS <| D.errorToString error)
+--                   )
 --                |> Result.map (\{ deltaY } -> { model | hidden = deltaY > 0 } |> Step.to)
 --                |> recoverErr (\err -> Step.to model |> Step.withCmd (Port.logS <| D.errorToString err))
 
