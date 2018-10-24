@@ -14,6 +14,7 @@ module Store exposing
 
 import BasicsX exposing (Encoder)
 import Dict exposing (Dict)
+import IdX
 import Json.Decode as D exposing (Decoder, decodeValue)
 import Json.Encode as E exposing (Value)
 import Random exposing (Generator, Seed)
@@ -84,7 +85,8 @@ newItem =
 type Msg attrs
     = NoOp
     | CreateAndInsert attrs
-    | NewInserted (Item attrs)
+    | NewCreated (Item attrs)
+    | NewWithIdCreated (Item attrs) Id
 
 
 type Exit attrs
@@ -102,10 +104,13 @@ update message model =
             Step.stay
 
         CreateAndInsert attrs ->
-            Step.to model |> Step.withCmd (newItem attrs |> Task.perform NewInserted)
+            Step.to model |> Step.withCmd (newItem attrs |> Task.perform NewCreated)
 
-        NewInserted item ->
-            Step.exit <| ExitNewInserted ( item, model )
+        NewCreated item ->
+            Step.to model |> Step.withCmd (Random.generate (NewWithIdCreated item) IdX.stringIdGenerator)
+
+        NewWithIdCreated item id ->
+            Step.exit <| ExitNewInserted ( item, insert ( id, item ) model )
 
 
 
