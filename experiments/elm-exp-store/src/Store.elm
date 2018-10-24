@@ -110,7 +110,7 @@ update message model =
             Step.to model |> Step.withCmd (Random.generate (NewWithIdCreated item) IdX.stringIdGenerator)
 
         NewWithIdCreated item id ->
-            Step.exit <| ExitNewInserted ( item, insert ( id, item ) model )
+            Step.exit (ExitNewInserted ( item, insert ( id, item ) model ))
 
 
 
