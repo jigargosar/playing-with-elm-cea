@@ -3,11 +3,13 @@ module TodoCollection exposing
     , TodoIds
     , addNew
     , cacheCmd
+    , changeStateTo
     , generator
     , get
     , items
     , reset
     , setContent
+    , setScheduleKind
     )
 
 import Collection exposing (Collection)
@@ -63,3 +65,11 @@ addNew =
 
 reset =
     Collection.reset
+
+
+changeStateTo id state =
+    Collection.updateWith id (Todo.changeStateTo state)
+
+
+setScheduleKind id kind =
+    Collection.updateWith id (Todo.setScheduleKind kind)

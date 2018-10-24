@@ -171,7 +171,8 @@ update message model =
                 EditContentMode id content ->
                     ( setMode ListMode model
                     , Cmd.batch
-                        [ updateTodo id (Todo.setContent content) model
+                        [ TodoCollection.setContent id content model.collection
+                            |> Task.perform SetAndCacheCollection
                         , focusId <| todoItemDomIdWithTodoId id
                         ]
                     )
@@ -213,7 +214,8 @@ update message model =
             case model.mode of
                 EditScheduleMode id ->
                     ( setMode ListMode model
-                    , updateTodo id (Todo.setScheduleKind scheduleKind) model
+                    , TodoCollection.setScheduleKind id scheduleKind model.collection
+                        |> Task.perform SetAndCacheCollection
                     )
 
                 _ ->
@@ -224,12 +226,6 @@ update message model =
 
 changeFilterTo newFilter model =
     ( { model | filter = newFilter }, Cmd.none )
-
-
-updateTodo id fn model =
-    model.collection
-        |> Collection.updateWith id fn
-        |> Task.perform SetAndCacheCollection
 
 
 andThenFocusTodoAtCursor oldModel ( newModel, cmd ) =
@@ -370,7 +366,7 @@ startStateChange nextState todo model =
         switchModeToEditSchedule todo model
 
     else
-        ( model, updateTodo todo.id (Todo.changeStateTo nextState) model )
+        ( model, TodoCollection.changeStateTo todo.id nextState model.collection |> Task.perform SetAndCacheCollection )
 
 
 onChangeFilterRequest direction model =
@@ -379,7 +375,7 @@ onChangeFilterRequest direction model =
 
 cmdSetStateAtCursorTo state model =
     getTodoAtCursor model
-        |> Maybe.map (\todo -> updateTodo todo.id (Todo.changeStateTo state) model)
+        |> Maybe.map (\todo -> TodoCollection.changeStateTo todo.id state model.collection |> Task.perform SetAndCacheCollection)
         |> Maybe.withDefault Cmd.none
 
 
