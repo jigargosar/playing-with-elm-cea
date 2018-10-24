@@ -90,7 +90,7 @@ type Msg attrs
 
 
 type Exit attrs
-    = ExitNewInserted ( Item attrs, Model attrs )
+    = ExitNewInserted ( ( Id, Item attrs ), Model attrs )
 
 
 createAndInsert =
@@ -110,7 +110,11 @@ update message model =
             Step.to model |> Step.withCmd (Random.generate (NewWithIdCreated item) IdX.stringIdGenerator)
 
         NewWithIdCreated item id ->
-            Step.exit (ExitNewInserted ( item, insert ( id, item ) model ))
+            let
+                idItemTuple =
+                    ( id, item )
+            in
+            Step.exit (ExitNewInserted ( idItemTuple, insert idItemTuple model ))
 
 
 

@@ -35,7 +35,7 @@ import WheelEvent exposing (WheelEvent)
 
 type Mode
     = ListTodoMode
-    | NewTodoMode (Item TodoAttr)
+    | NewTodoMode Store.Id Todo.Content
 
 
 type alias Model =
@@ -89,6 +89,10 @@ type Msg
 --    | TodosMsg Todos.Msg
 
 
+createNewTodoMode ( id, todo ) =
+    NewTodoMode id todo.attrs.content
+
+
 update : Msg -> Model -> Step Model Msg a
 update message model =
     case message of
@@ -105,8 +109,8 @@ update message model =
                 |> Step.onExit
                     (\exit ->
                         case exit of
-                            Store.ExitNewInserted ( todo, todoStore ) ->
-                                Step.to { model | todoStore = todoStore, mode = NewTodoMode todo }
+                            Store.ExitNewInserted ( idTodoPair, todoStore ) ->
+                                Step.to { model | todoStore = todoStore, mode = createNewTodoMode idTodoPair }
                                     |> focusId newTodoInputDomId
                     )
 
@@ -115,7 +119,7 @@ update message model =
 
         ContentChanged content ->
             case model.mode of
-                NewTodoMode todo ->
+                NewTodoMode id oldContent ->
                     Step.stay
 
                 ListTodoMode ->
@@ -180,8 +184,8 @@ view model =
 
 viewModal model =
     case model.mode of
-        NewTodoMode todo ->
-            viewNewTodoModal todo
+        NewTodoMode id content ->
+            viewNewTodoModal id content
 
         ListTodoMode ->
             text ""
@@ -191,7 +195,7 @@ newTodoInputDomId =
     "new-todo-content-input"
 
 
-viewNewTodoModal todo =
+viewNewTodoModal todoId content =
     div [ class "absolute absolute--fill bg-black-40 flex items-center justify-center" ]
         [ div
             [ class "bg-white br4 shadow-1 pa3 measure w-100"
@@ -200,7 +204,7 @@ viewNewTodoModal todo =
                 [ input
                     [ id newTodoInputDomId
                     , class "flex-auto pa3"
-                    , value todo.attrs.content
+                    , value content
                     , onInput ContentChanged
                     ]
                     []
