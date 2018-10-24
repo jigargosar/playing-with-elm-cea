@@ -1,4 +1,4 @@
-module Store exposing (Id, Store, initEmpty, insert, load)
+module Store exposing (Id, Store, initEmpty, insert, load, toList)
 
 import BasicsX exposing (Encoder)
 import Dict exposing (Dict)
@@ -55,6 +55,11 @@ load =
 insert : ( Id, Item attrs ) -> Model attrs -> Model attrs
 insert ( id, item ) model =
     { model | dict = Dict.insert id item model.dict }
+
+
+toList : Model attrs -> List ( Id, Item attrs )
+toList =
+    .dict >> Dict.toList
 
 
 

@@ -12,11 +12,13 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Html.Keyed
 import Json.Decode as D
 import Json.Encode as E
 import MagicMenu exposing (MagicMenu)
 import Random
 import Step exposing (Step)
+import Store
 import Task
 import TodoStore exposing (TodoStore)
 import UI exposing (..)
@@ -122,6 +124,7 @@ view : Model -> Html Msg
 view model =
     UI.root
         [ viewToolbar model
+        , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ] [ viewTodoList ]
 
         --        , Html.map TodosMsg <|
         --            div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
@@ -129,6 +132,20 @@ view model =
         --        , div [ class "w-100 flex flex-column justify-center items-center" ]
         --            [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         ]
+
+
+viewTodoList model =
+    let
+        todoList =
+            model.todoStore
+                |> Store.toList
+                |> List.map (\( id, todo ) -> ( id, viewTodoItem id todo ))
+    in
+    Html.Keyed.ul [] todoList
+
+
+viewTodoItem id todo =
+    div [] [ text todo.attrs.content ]
 
 
 
