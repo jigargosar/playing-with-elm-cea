@@ -1,4 +1,4 @@
-module TodoStore exposing (TodoStore)
+module TodoStore exposing (TodoStore, empty)
 
 import Json.Decode as D
 import Json.Encode as E exposing (Value)
@@ -13,3 +13,8 @@ type alias TodoStore =
 load : Value -> Result D.Error TodoStore
 load =
     Store.load Todo.decoder
+
+
+empty : TodoStore
+empty =
+    Store.initEmpty "todoStore"

@@ -18,6 +18,7 @@ import MagicMenu exposing (MagicMenu)
 import Random
 import Step exposing (Step)
 import Task
+import TodoStore exposing (TodoStore)
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
 
@@ -28,8 +29,7 @@ import WheelEvent exposing (WheelEvent)
 
 type alias Model =
     { magicMenu : MagicMenu
-
-    --    , todos : Todos
+    , todoStore : TodoStore
     }
 
 
@@ -43,14 +43,15 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    --    let
-    --        ( todos, cmd ) =
-    --            Random.step (Todos.generator flags.todos) (Random.initialSeed flags.now)
-    --                |> Tuple.first
-    --    in
+    let
+        --        ( todos, cmd ) =
+        --            Random.step (Todos.generator flags.todos) (Random.initialSeed flags.now)
+        --                |> Tuple.first
+        _ =
+            1
+    in
     ( { magicMenu = MagicMenu.initial
-
-      --      , todos = todos
+      , todoStore = TodoStore.empty
       }
     , Cmd.none
     )

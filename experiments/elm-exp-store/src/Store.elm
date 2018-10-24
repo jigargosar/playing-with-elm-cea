@@ -1,4 +1,4 @@
-module Store exposing (Id, Store, insert, load)
+module Store exposing (Id, Store, initEmpty, insert, load)
 
 import BasicsX exposing (Encoder)
 import Dict exposing (Dict)
@@ -24,7 +24,12 @@ type alias Model attrs =
     { cacheName : CacheName, dict : Dict_ attrs }
 
 
-init : CacheName -> Dict_ attrs -> Model item
+initEmpty : CacheName -> Model attrs
+initEmpty cacheName =
+    init cacheName Dict.empty
+
+
+init : CacheName -> Dict_ attrs -> Model attrs
 init cacheName dict =
     { cacheName = cacheName, dict = dict }
 
@@ -49,7 +54,7 @@ load =
     decoder >> decodeValue
 
 
-insert : ( Id, item ) -> Model item -> Model item
+insert : ( Id, Item attrs ) -> Model attrs -> Model attrs
 insert ( id, item ) model =
     { model | dict = Dict.insert id item model.dict }
 
