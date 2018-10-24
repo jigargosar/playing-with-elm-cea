@@ -121,7 +121,10 @@ view : Model -> Html Msg
 view model =
     UI.root
         [ viewToolbar model
-        , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ] [ viewTodoList model ]
+        , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
+            [ button [] [ text "add" ]
+            , viewTodoList model
+            ]
 
         --        , Html.map TodosMsg <|
         --            div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
@@ -139,7 +142,7 @@ viewTodoList model =
                 |> Store.toIdItemPairList
                 |> List.map (\( id, todo ) -> ( id, viewTodoItem id todo ))
     in
-    Html.Keyed.ul [] todoList
+    Html.Keyed.node "div" [] todoList
 
 
 viewTodoItem : Store.Id -> Store.Item Todo -> Html Msg
