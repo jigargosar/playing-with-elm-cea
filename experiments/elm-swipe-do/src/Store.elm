@@ -29,6 +29,11 @@ decoder =
     D.dict >> D.map init
 
 
+insert : ( Id, item ) -> Model item -> Model item
+insert ( id, item ) model =
+    { model | dict = Dict.insert id item model.dict }
+
+
 
 ---- External
 
