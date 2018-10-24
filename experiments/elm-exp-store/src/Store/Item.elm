@@ -1,4 +1,4 @@
-module Store.Item exposing (Item, Meta, Milli, decoder, encoder)
+module Store.Item exposing (Item, Meta, Milli, decoder, encoder, init)
 
 import BasicsX exposing (Encoder)
 import Json.Decode as D exposing (Decoder)
@@ -37,6 +37,14 @@ type alias Item attrs =
     { meta : Meta
     , attrs : attrs
     }
+
+
+mockMeta =
+    { createdAt = 0, modifiedAt = 0, deleted = False }
+
+
+init attrs =
+    { meta = mockMeta, attrs = attrs }
 
 
 decoder : Decoder attrs -> Decoder (Item attrs)
