@@ -8,6 +8,7 @@ module Store exposing
     , initEmpty
     , insert
     , load
+    , overItemAttrs
     , toIdItemPairList
     , update
     )
@@ -89,22 +90,28 @@ type Msg attrs
     | NewCreated (Item attrs)
     | NewWithIdCreated (Item attrs) Id
     | UpdateModifiedAtOnAttributeChange Id (Item attrs)
+    | ModifiedAtChanged Id (Item attrs)
 
 
 type Exit attrs
     = ExitNewInserted ( ( Id, Item attrs ), Model attrs )
+    | ExitItemUpdated ( ( Id, Item attrs ), Model attrs )
 
 
 createAndInsert =
     CreateAndInsert
 
 
-setItemAttrs id attrs =
+overItemAttrs id updateAttrFn =
     .dict
         >> Dict.get id
         >> Maybe.andThen
             (\item ->
-                maybeBool (item.attrs /= attrs) { item | attrs = attrs }
+                let
+                    newAttrs =
+                        updateAttrFn item.attrs
+                in
+                maybeBool (item.attrs /= newAttrs) { item | attrs = newAttrs }
             )
         >> Maybe.map (UpdateModifiedAtOnAttributeChange id)
         >> Maybe.withDefault NoOp
@@ -130,7 +137,19 @@ update message model =
             Step.exit (ExitNewInserted ( idItemTuple, insert idItemTuple model ))
 
         UpdateModifiedAtOnAttributeChange id item ->
-            Step.to model |> Step.withCmd (Time.now |> Task.map (Time.posixToMillis >> Item.setModifiedAt item))
+            Step.to model
+                |> Step.withCmd
+                    (Time.now
+                        |> Task.map (Time.posixToMillis >> Item.setModifiedAt item)
+                        >> Task.perform (ModifiedAtChanged id)
+                    )
+
+        ModifiedAtChanged id item ->
+            let
+                idItemTuple =
+                    ( id, item )
+            in
+            Step.exit (ExitItemUpdated ( idItemTuple, insert idItemTuple model ))
 
 
 
