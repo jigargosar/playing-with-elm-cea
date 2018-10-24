@@ -135,7 +135,7 @@ view model =
 
 viewToolbar model =
     UI.toolbar
-        [ txtC "b ph3" "ELM Experiment Store"
+        [ txtC "b pa3" "ELM Experiment Store"
         , spacer
 
         --        , viewTabs (Todos.getFilters model.todos |> List.map viewTab)
