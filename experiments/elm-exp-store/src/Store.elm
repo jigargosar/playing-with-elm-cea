@@ -12,7 +12,7 @@ module Store exposing
     , update
     )
 
-import BasicsX exposing (Encoder)
+import BasicsX exposing (Encoder, maybeBool)
 import Dict exposing (Dict)
 import IdX
 import Json.Decode as D exposing (Decoder, decodeValue)
@@ -21,6 +21,7 @@ import Random exposing (Generator, Seed)
 import Step exposing (Step)
 import Store.Item as Item exposing (Item)
 import Task exposing (Task)
+import Time
 
 
 type alias Id =
@@ -87,6 +88,7 @@ type Msg attrs
     | CreateAndInsert attrs
     | NewCreated (Item attrs)
     | NewWithIdCreated (Item attrs) Id
+    | UpdateModifiedAtOnAttributeChange Id (Item attrs)
 
 
 type Exit attrs
@@ -95,6 +97,17 @@ type Exit attrs
 
 createAndInsert =
     CreateAndInsert
+
+
+setItemAttrs id attrs =
+    .dict
+        >> Dict.get id
+        >> Maybe.andThen
+            (\item ->
+                maybeBool (item.attrs /= attrs) { item | attrs = attrs }
+            )
+        >> Maybe.map (UpdateModifiedAtOnAttributeChange id)
+        >> Maybe.withDefault NoOp
 
 
 update : Msg attrs -> Model attrs -> Step (Model attrs) (Msg attrs) (Exit attrs)
@@ -115,6 +128,9 @@ update message model =
                     ( id, item )
             in
             Step.exit (ExitNewInserted ( idItemTuple, insert idItemTuple model ))
+
+        UpdateModifiedAtOnAttributeChange id item ->
+            Step.to model |> Step.withCmd (Time.now |> Task.map (Time.posixToMillis >> Item.setModifiedAt item))
 
 
 

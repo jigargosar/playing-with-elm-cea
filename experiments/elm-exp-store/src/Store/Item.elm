@@ -1,4 +1,4 @@
-module Store.Item exposing (Item, Meta, Milli, decoder, encoder, init, new)
+module Store.Item exposing (Item, Meta, Milli, decoder, encoder, init, new, setModifiedAt)
 
 import BasicsX exposing (Encoder)
 import Json.Decode as D exposing (Decoder)
@@ -72,3 +72,11 @@ encoder attrsEncoder model =
 new : attrs -> Task x (Item attrs)
 new attrs =
     Time.now |> Task.map (Time.posixToMillis >> initWithNow attrs)
+
+
+setModifiedAt model now =
+    let
+        meta =
+            model.meta
+    in
+    { model | meta = { meta | modifiedAt = now } }
