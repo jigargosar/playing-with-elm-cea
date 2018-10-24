@@ -325,10 +325,10 @@ switchModeToEditTodoAtCursor model =
 
 getTodoAtCursor model =
     let
-        ( c, l ) =
+        ( cursor, todoList ) =
             getCursorTodoList model
     in
-    Array.fromList l |> Array.get c
+    Array.fromList todoList |> Array.get cursor
 
 
 type StateDirection
