@@ -172,8 +172,12 @@ viewModal model =
 
 viewNewTodoModal todo =
     div [ class "absolute absolute--fill bg-black-40 flex items-center justify-center" ]
-        [ div [ class "bg-white br4 shadow-1 pa3", style "min-width" "200px", style "min-height" "200px" ]
-            [ text "HW" ]
+        [ div
+            [ class "bg-white br4 shadow-1 pa3 measure w-100"
+            , style "min-width" "300px"
+            , style "min-height" "200px"
+            ]
+            [ div [ class "w-100 flex" ] [ input [ class "flex-auto pa3", value todo.attrs.content ] [] ] ]
         ]
 
 
