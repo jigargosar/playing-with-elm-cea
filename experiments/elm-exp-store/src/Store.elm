@@ -88,8 +88,8 @@ type Msg attrs
 
 
 type Exit attrs
-    = ExitNewInserted ( ( Id, Item attrs ), Model attrs )
-    | ExitItemUpdated ( ( Id, Item attrs ), Model attrs )
+    = ExitNewInserted ( Item attrs, Model attrs )
+    | ExitItemUpdated ( Item attrs, Model attrs )
 
 
 createAndInsert =
@@ -137,7 +137,7 @@ update message model =
                 newId =
                     meta.id
             in
-            Step.exit (ExitNewInserted ( ( newId, newItem ), insert newItem model ))
+            Step.exit (ExitNewInserted ( newItem, insert newItem model ))
 
         UpdateModifiedAtOnAttributeChange id item ->
             Step.to model
@@ -148,7 +148,7 @@ update message model =
                     )
 
         ModifiedAtChanged id item ->
-            Step.exit (ExitItemUpdated ( ( id, item ), insert item model ))
+            Step.exit (ExitItemUpdated ( item, insert item model ))
 
 
 

@@ -84,8 +84,8 @@ type Msg
 --    | TodosMsg Todos.Msg
 
 
-editContentMode ( id, todo ) =
-    EditContentMode id todo.attrs.content
+editContentMode todo =
+    EditContentMode todo.meta.id todo.attrs.content
 
 
 update : Msg -> Model -> Step Model Msg a
@@ -104,17 +104,17 @@ update message model =
                 |> Step.onExit
                     (\exit ->
                         case exit of
-                            Store.ExitNewInserted ( idTodoPair, todoStore ) ->
-                                Step.to { model | todoStore = todoStore, mode = editContentMode idTodoPair }
+                            Store.ExitNewInserted ( newTodo, todoStore ) ->
+                                Step.to { model | todoStore = todoStore, mode = editContentMode newTodo }
                                     |> focusId newTodoInputDomId
 
-                            Store.ExitItemUpdated ( idTodoPair, todoStore ) ->
+                            Store.ExitItemUpdated ( updatedTodo, todoStore ) ->
                                 let
                                     newMode =
                                         case model.mode of
                                             EditContentMode id content ->
-                                                if Tuple.first idTodoPair == id then
-                                                    editContentMode idTodoPair
+                                                if updatedTodo.meta.id == id then
+                                                    editContentMode updatedTodo
 
                                                 else
                                                     model.mode
