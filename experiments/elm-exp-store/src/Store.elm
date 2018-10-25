@@ -137,6 +137,7 @@ type alias Config msg attrs =
     { update : msg -> attrs -> Maybe attrs
     , encoder : Encoder attrs
     , decoder : Decoder attrs
+    , toCacheCmd : Value -> Cmd msg
     , defaultValue : attrs
     }
 

@@ -10,6 +10,7 @@ module TodoAttrs exposing
 import BasicsX exposing (Encoder, maybeBool)
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
+import Port
 import Store exposing (Item)
 
 
@@ -71,5 +72,6 @@ storeConfig =
     { update = update
     , encoder = encoder
     , decoder = decoder
+    , toCacheCmd = Port.cacheTodoC
     , defaultValue = defaultValue
     }
