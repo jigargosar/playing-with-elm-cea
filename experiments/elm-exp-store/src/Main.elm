@@ -98,6 +98,38 @@ handleMagicMenuMessage =
     Update2.lift getMagicMenu setMagicMenu MagicMenuMsg MagicMenu.update
 
 
+handleTodoStoreMsg =
+    Update3.lift .todoStore
+        (\sub m -> { m | todoStore = sub })
+        TodoStoreMsg
+        Store.update
+
+
+handleTodoStoreOutMsg outMsg model =
+    case outMsg of
+        Store.NoOutMsg ->
+            pure model
+
+        Store.NewInsertedOutMsg newTodo ->
+            ( { model | model = editContentMode newTodo }, focusId newTodoInputDomId )
+
+        Store.ItemModifiedOutMsg updatedTodo ->
+            let
+                newMode =
+                    case model.mode of
+                        EditContentMode id content ->
+                            if updatedTodo.meta.id == id then
+                                editContentMode updatedTodo
+
+                            else
+                                model.mode
+
+                        ListTodoMode ->
+                            model.mode
+            in
+            pure { model | mode = newMode }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -108,12 +140,7 @@ update message model =
             handleMagicMenuMessage msg model
 
         TodoStoreMsg msg ->
-            Update3.lift .todoStore
-                (\sub m -> { m | todoStore = sub })
-                TodoStoreMsg
-                Store.update
-                msg
-                model
+            handleTodoStoreMsg msg model
                 |> Update3.eval (\out m -> pure m)
 
         --                |> Step.within (\w -> { model | todoStore = w }) TodoStoreMsg
