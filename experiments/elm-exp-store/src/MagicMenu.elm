@@ -14,6 +14,7 @@ import Style exposing (Transform(..), Unit(..))
 import Tuple exposing (pair)
 import UI exposing (boolHtml, fBtn)
 import Update2
+import UpdateReturn exposing (pure)
 import WheelEvent exposing (WheelEvent)
 
 
@@ -59,7 +60,7 @@ update message model =
             ( model, Log.warn "MagicMenu" logMessages )
 
         ToggleOpen ->
-            update NoOp { model | open = not model.open }
+            pure { model | open = not model.open }
 
         Clicked ->
             update ToggleOpen model
@@ -70,7 +71,7 @@ update message model =
                 |> flip update model
 
         UpdateVisibilityFromWheelEvent { deltaY } ->
-            update NoOp { model | hidden = deltaY > 0 }
+            pure { model | hidden = deltaY > 0 }
 
 
 type alias Action msg =
