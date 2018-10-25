@@ -4,13 +4,13 @@ module BasicsX exposing
     , eqs
     , flip
     , ifElse
-    , mapMaybeWithDefault
     , maybeBool
     , optionalOr
     , ter
     , tsDecoder
     , unless
     , unpackResult
+    , unwrapMaybe
     , when
     )
 
@@ -54,7 +54,7 @@ maybeBool bool value =
         Nothing
 
 
-mapMaybeWithDefault dv fn =
+unwrapMaybe dv fn =
     Maybe.map fn >> Maybe.withDefault dv
 
 

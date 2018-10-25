@@ -16,7 +16,7 @@ module Store exposing
     , updateItem
     )
 
-import BasicsX exposing (Encoder, mapMaybeWithDefault, maybeBool)
+import BasicsX exposing (Encoder, maybeBool, unwrapMaybe)
 import Dict exposing (Dict)
 import IdX
 import Json.Decode as D exposing (Decoder, decodeValue)
@@ -128,7 +128,7 @@ updateItem config id msg =
     .dict
         >> Dict.get id
         >> Maybe.andThen (updateItemAttrsMaybe <| config.update msg)
-        >> mapMaybeWithDefault NoOp UpdateModifiedAtOnAttributeChange
+        >> unwrapMaybe NoOp UpdateModifiedAtOnAttributeChange
 
 
 type alias Config msg attrs =
