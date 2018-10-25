@@ -22,6 +22,7 @@ import Task
 import TodoAttrs exposing (TodoAttrs)
 import UI exposing (..)
 import Update2
+import UpdateReturn exposing (pure)
 import WheelEvent exposing (WheelEvent)
 
 
@@ -100,13 +101,7 @@ update message model =
             ( model, Cmd.none )
 
         MagicMenuMsg msg ->
-            Update2.lift
-                getMagicMenu
-                setMagicMenu
-                MagicMenuMsg
-                MagicMenu.update
-                msg
-                model
+            Update2.lift getMagicMenu setMagicMenu MagicMenuMsg MagicMenu.update msg model
 
         TodoStoreMsg msg ->
             Store.update msg model.todoStore
@@ -153,7 +148,7 @@ update message model =
                         model
 
                 ListTodoMode ->
-                    ( model, Cmd.none )
+                    pure model
 
         EndEditMode ->
             case model.mode of
@@ -161,7 +156,7 @@ update message model =
                     ( { model | mode = ListTodoMode }, Cmd.none )
 
                 ListTodoMode ->
-                    ( model, Cmd.none )
+                    pure model
 
 
 focusId domId =
