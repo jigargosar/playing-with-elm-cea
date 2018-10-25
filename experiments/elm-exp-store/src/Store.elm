@@ -64,9 +64,9 @@ encode attrsEncoder model =
         ]
 
 
-load : Decoder attrs -> Value -> Result D.Error (Model attrs)
-load =
-    decoder >> decodeValue
+load : Config msg attrs -> Value -> Result D.Error (Model attrs)
+load config =
+    decodeValue (decoder config.decoder)
 
 
 insert : Item attrs -> Model attrs -> ( Item attrs, Model attrs )

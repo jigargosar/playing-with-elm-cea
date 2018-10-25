@@ -60,7 +60,7 @@ init flags =
     ( { magicMenu = MagicMenu.initial
       , todoStore =
             flags.todos
-                |> Store.load TodoAttrs.decoder
+                |> Store.load TodoAttrs.storeConfig
                 >> Result.withDefault Store.initEmpty
       , mode = ListTodoMode
       }

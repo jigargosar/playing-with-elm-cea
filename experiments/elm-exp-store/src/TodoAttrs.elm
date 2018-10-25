@@ -1,11 +1,10 @@
 module TodoAttrs exposing
     ( Content
     , TodoAttrs
-    , decoder
     , init
     , initEmpty
     , setContent
-    , todoStoreConfig
+    , storeConfig
     )
 
 import BasicsX exposing (Encoder, maybeBool)
@@ -67,8 +66,8 @@ update message model =
             maybeBool (model.content /= newContent) { model | content = newContent }
 
 
-todoStoreConfig : Store.Config Msg TodoAttrs
-todoStoreConfig =
+storeConfig : Store.Config Msg TodoAttrs
+storeConfig =
     { update = update
     , encoder = encoder
     , decoder = decoder
