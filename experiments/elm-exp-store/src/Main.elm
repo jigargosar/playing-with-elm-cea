@@ -20,6 +20,7 @@ import Random
 import Store exposing (Item, Store)
 import Task
 import Toasty
+import Toasty.Defaults
 import Todo exposing (TodoAttrs, TodoStore)
 import UI exposing (..)
 import Update2
@@ -143,7 +144,7 @@ update message model =
 
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
-                |> Toasty.addToast Toasty.config ToastyMsg logMessages
+                |> Toasty.addPersistentToast Toasty.config ToastyMsg ("Main" :: logMessages)
 
         ToastyMsg msg ->
             Toasty.update Toasty.config ToastyMsg msg model
@@ -233,7 +234,15 @@ view model =
         --                [ Todos.view model.todos ]
         --        , div [ class "w-100 flex flex-column justify-center items-center" ]
         --            [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
+        , Toasty.view Toasty.config renderToast ToastyMsg model.toasties
+
+        --        , Toasty.view Toasty.config Toasty.Defaults.view ToastyMsg model.toasties
         ]
+
+
+renderToast : Log.Messages -> Html Msg
+renderToast toast =
+    div [] [ text (toast |> String.join " ") ]
 
 
 viewModal model =
