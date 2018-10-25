@@ -1,4 +1,12 @@
-module TodoAttrs exposing (Content, TodoAttrs, decoder, init, initEmpty, setContent)
+module TodoAttrs exposing
+    ( Content
+    , TodoAttrs
+    , decoder
+    , init
+    , initEmpty
+    , setContent
+    , todoStoreConfig
+    )
 
 import BasicsX exposing (Encoder, maybeBool)
 import Json.Decode as D exposing (Decoder)
