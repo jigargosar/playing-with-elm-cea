@@ -24,8 +24,7 @@ import Json.Encode as E exposing (Value)
 import Random exposing (Generator, Seed)
 import Task exposing (Task)
 import Time
-import Update3
-import UpdateReturn exposing (addOutMsg, andThen3, andThenAddOutMsg, pure)
+import UpdateReturn exposing (andThen3, pure)
 
 
 type alias Id =
@@ -144,14 +143,14 @@ type alias Config msg attrs =
     }
 
 
-update : Config msg attrs -> Msg attrs -> Model attrs -> ( Model attrs, Cmd (Msg attrs), OutMsg attrs )
+update : Config msg attrs -> Msg attrs -> Model attrs -> ( Model attrs, Cmd (Msg attrs), List (OutMsg attrs) )
 update config message model =
     case message of
         NoOp ->
             pure model |> withNoOutMsg
 
         Cache ->
-            ( model, config.toCacheCmd <| encode config.encoder model ) |> withNoOutMsg
+            ( model, config.toCacheCmd <| encode config.encoder model, [] )
 
         InsertItemAndCache item ->
             pure (insert item model)
@@ -159,16 +158,15 @@ update config message model =
                 |> andThen3 (update config Cache)
 
         CreateAndInsert attrs ->
-            ( model, Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator )
-                |> withNoOutMsg
+            ( model, Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator, [] )
 
         CreateAndInsertWithId attrs id ->
             ( model
             , Time.now
                 |> Task.map (Time.posixToMillis >> initMeta id)
                 |> Task.perform (CreateAndInsertWithMeta attrs)
+            , []
             )
-                |> withNoOutMsg
 
         CreateAndInsertWithMeta attrs meta ->
             let
@@ -178,15 +176,14 @@ update config message model =
                 newModel =
                     insert newItem model
             in
-            ( newModel, config.toCacheCmd <| encode config.encoder newModel )
-                |> addOutMsg (InsertedOutMsg newItem)
+            ( newModel, config.toCacheCmd <| encode config.encoder newModel, [ InsertedOutMsg newItem ] )
 
         InsertModified item ->
             ( model
             , Time.now
                 |> Task.map Time.posixToMillis
                 |> Task.perform (InsertModifiedWithNow item)
-            , NoOutMsg
+            , []
             )
 
         InsertModifiedWithNow item now ->
@@ -197,12 +194,11 @@ update config message model =
                 newModel =
                     insert newItem model
             in
-            ( newModel, config.toCacheCmd <| encode config.encoder newModel )
-                |> addOutMsg (ModifiedOutMsg newItem)
+            ( newModel, config.toCacheCmd <| encode config.encoder newModel, [ ModifiedOutMsg newItem ] )
 
 
-withNoOutMsg =
-    Update3.addOutMsg NoOutMsg
+withNoOutMsg ( m, c ) =
+    ( m, c, [] )
 
 
 

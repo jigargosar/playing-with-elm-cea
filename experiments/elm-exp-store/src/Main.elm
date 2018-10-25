@@ -107,30 +107,40 @@ handleTodoStoreMsg =
         (Store.update TodoAttrs.storeConfig)
 
 
-handleTodoStoreOutMsg outMsg model =
-    case outMsg of
-        Store.NoOutMsg ->
-            pure model
+handleTodoStoreOutMsgList outMsgList model_ =
+    let
+        foo outMsg model =
+            case outMsg of
+                Store.NoOutMsg ->
+                    pure model
 
-        Store.InsertedOutMsg newTodo ->
-            update (SetMode <| editContentMode newTodo) model
-                |> andThen (update <| FocusDomId newTodoInputDomId)
+                Store.InsertedOutMsg newTodo ->
+                    update (SetMode <| editContentMode newTodo) model
+                        |> andThen (update <| FocusDomId newTodoInputDomId)
 
-        Store.ModifiedOutMsg updatedTodo ->
-            let
-                newMode =
-                    case model.mode of
-                        EditContentMode id content ->
-                            if updatedTodo.meta.id == id then
-                                editContentMode updatedTodo
+                Store.ModifiedOutMsg updatedTodo ->
+                    let
+                        newMode =
+                            case model.mode of
+                                EditContentMode id content ->
+                                    if updatedTodo.meta.id == id then
+                                        editContentMode updatedTodo
 
-                            else
-                                model.mode
+                                    else
+                                        model.mode
 
-                        ListTodoMode ->
-                            model.mode
-            in
-            update (SetMode newMode) model
+                                ListTodoMode ->
+                                    model.mode
+                    in
+                    update (SetMode newMode) model
+    in
+    outMsgList
+        |> List.foldl
+            (\o1 ( m, c1 ) ->
+                foo o1 m
+                    |> Tuple.mapSecond (\c2 -> Cmd.batch [ c1, c2 ])
+            )
+            ( model_, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
