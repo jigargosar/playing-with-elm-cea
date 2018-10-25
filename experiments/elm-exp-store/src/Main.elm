@@ -114,7 +114,7 @@ handleTodoStoreOutMsg outMsg model =
 
         Store.NewInsertedOutMsg newTodo ->
             update (SetMode <| editContentMode newTodo) model
-                |> andThenUpdate (FocusDomId newTodoInputDomId)
+                |> andThen2 (update <| FocusDomId newTodoInputDomId)
 
         Store.ItemModifiedOutMsg updatedTodo ->
             let
@@ -131,10 +131,6 @@ handleTodoStoreOutMsg outMsg model =
                             model.mode
             in
             update (SetMode newMode) model
-
-
-andThenUpdate msg =
-    andThen2 <| update msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
