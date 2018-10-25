@@ -35,7 +35,7 @@ import WheelEvent exposing (WheelEvent)
 
 type Mode
     = ListTodoMode
-    | NewTodoMode Store.Id Todo.Content
+    | EditContentMode Store.Id Todo.Content
 
 
 type alias Model =
@@ -89,8 +89,8 @@ type Msg
 --    | TodosMsg Todos.Msg
 
 
-createNewTodoMode ( id, todo ) =
-    NewTodoMode id todo.attrs.content
+editContentMode ( id, todo ) =
+    EditContentMode id todo.attrs.content
 
 
 update : Msg -> Model -> Step Model Msg a
@@ -110,16 +110,16 @@ update message model =
                     (\exit ->
                         case exit of
                             Store.ExitNewInserted ( idTodoPair, todoStore ) ->
-                                Step.to { model | todoStore = todoStore, mode = createNewTodoMode idTodoPair }
+                                Step.to { model | todoStore = todoStore, mode = editContentMode idTodoPair }
                                     |> focusId newTodoInputDomId
 
                             Store.ExitItemUpdated ( idTodoPair, todoStore ) ->
                                 let
                                     newMode =
                                         case model.mode of
-                                            NewTodoMode id content ->
+                                            EditContentMode id content ->
                                                 if Tuple.first idTodoPair == id then
-                                                    createNewTodoMode idTodoPair
+                                                    editContentMode idTodoPair
 
                                                 else
                                                     model.mode
@@ -135,7 +135,7 @@ update message model =
 
         ContentChanged newContent ->
             case model.mode of
-                NewTodoMode id _ ->
+                EditContentMode id _ ->
                     model
                         |> update (TSMsg <| Store.overItemAttrs id (Todo.setContent newContent) model.todoStore)
 
@@ -201,7 +201,7 @@ view model =
 
 viewModal model =
     case model.mode of
-        NewTodoMode id content ->
+        EditContentMode id content ->
             viewNewTodoModal id content
 
         ListTodoMode ->
