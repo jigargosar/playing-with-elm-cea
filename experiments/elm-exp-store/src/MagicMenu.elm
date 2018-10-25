@@ -11,7 +11,9 @@ import Log
 import Port
 import Step exposing (Step)
 import Style exposing (Transform(..), Unit(..))
+import Tuple exposing (pair)
 import UI exposing (boolHtml, fBtn)
+import Update2
 import WheelEvent
 
 
@@ -31,6 +33,7 @@ initial =
 
 type Msg
     = NoOp
+    | ToggleOpen
     | Clicked
     | Wheel E.Value
 
@@ -49,6 +52,9 @@ update message model =
     case message of
         NoOp ->
             ( model, Cmd.none )
+
+        ToggleOpen ->
+            update NoOp { model | open = not model.open }
 
         Clicked ->
             ( { model | open = not model.open }, Cmd.none )
