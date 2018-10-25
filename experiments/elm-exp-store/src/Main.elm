@@ -306,7 +306,7 @@ viewTodoItem id todo =
         content =
             when String.isEmpty (\_ -> "<empty>") todo.attrs.content
     in
-    txtA [] content
+    txtA [ class "pv3" ] content
 
 
 
