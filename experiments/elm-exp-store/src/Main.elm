@@ -79,6 +79,8 @@ init flags =
 
 type Msg
     = NoOp
+    | SetMode Mode
+    | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)
     | AddClicked
@@ -111,7 +113,8 @@ handleTodoStoreOutMsg outMsg model =
             pure model
 
         Store.NewInsertedOutMsg newTodo ->
-            ( { model | model = editContentMode newTodo }, focusId newTodoInputDomId )
+            update (SetMode <| editContentMode newTodo) model
+                |> Update2.eval (update <| FocusDomId newTodoInputDomId)
 
         Store.ItemModifiedOutMsg updatedTodo ->
             let
@@ -127,7 +130,7 @@ handleTodoStoreOutMsg outMsg model =
                         ListTodoMode ->
                             model.mode
             in
-            pure { model | mode = newMode }
+            update (SetMode newMode) model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -136,6 +139,15 @@ update message model =
         NoOp ->
             ( model, Cmd.none )
 
+        SetMode mode ->
+            pure { model | mode = mode }
+
+        FocusDomId domId ->
+            ( model
+            , Browser.Dom.focus domId
+                |> Task.attempt (\_ -> NoOp)
+            )
+
         MagicMenuMsg msg ->
             handleMagicMenuMessage msg model
 
@@ -143,32 +155,6 @@ update message model =
             handleTodoStoreMsg msg model
                 |> Update3.eval (\out m -> pure m)
 
-        --                |> Step.within (\w -> { model | todoStore = w }) TodoStoreMsg
-        --                |> Step.onExit
-        --                    (\exit ->
-        --                        case exit of
-        --                            Store.NewInsertedOutMsg ( newTodo, todoStore ) ->
-        --                                Step.to { model | todoStore = todoStore, mode = editContentMode newTodo }
-        --                                    |> focusId newTodoInputDomId
-        --
-        --                            Store.ItemModifiedOutMsg ( updatedTodo, todoStore ) ->
-        --                                let
-        --                                    newMode =
-        --                                        case model.mode of
-        --                                            EditContentMode id content ->
-        --                                                if updatedTodo.meta.id == id then
-        --                                                    editContentMode updatedTodo
-        --
-        --                                                else
-        --                                                    model.mode
-        --
-        --                                            ListTodoMode ->
-        --                                                model.mode
-        --                                in
-        --                                Step.to { model | todoStore = todoStore, mode = newMode }
-        --                    )
-        --                |> Step.run
-        --                |> Maybe.withDefault ( model, Cmd.none )
         AddClicked ->
             update (TodoStoreMsg <| Store.createAndInsert TodoAttrs.defaultValue) model
 
@@ -194,11 +180,6 @@ update message model =
 
                 ListTodoMode ->
                     pure model
-
-
-focusId domId =
-    Browser.Dom.focus domId
-        |> Task.attempt (\_ -> NoOp)
 
 
 
