@@ -22,7 +22,7 @@ import TodoAttrs exposing (TodoAttrs)
 import UI exposing (..)
 import Update2
 import Update3
-import UpdateReturn exposing (andThen, pure)
+import UpdateReturn exposing (andThen, foldlOutMsgList, pure)
 import WheelEvent exposing (WheelEvent)
 
 
@@ -100,44 +100,47 @@ handleMagicMenuMessage =
     Update2.lift getMagicMenu setMagicMenu MagicMenuMsg MagicMenu.update
 
 
-handleTodoStoreMsg =
+handleTodoStoreMsg msg model =
     Update3.lift .todoStore
         (\sub m -> { m | todoStore = sub })
         TodoStoreMsg
         (Store.update TodoAttrs.storeConfig)
+        msg
+        model
+        |> foldlOutMsgList handleTodStoreOutMsg
 
 
-handleTodoStoreOutMsgList outMsgList model_ =
-    let
-        foo outMsg model =
-            case outMsg of
-                Store.InsertedOutMsg newTodo ->
-                    update (SetMode <| editContentMode newTodo) model
-                        |> andThen (update <| FocusDomId newTodoInputDomId)
+handleTodStoreOutMsg outMsg model =
+    case outMsg of
+        Store.InsertedOutMsg newTodo ->
+            update (SetMode <| editContentMode newTodo) model
+                |> andThen (update <| FocusDomId newTodoInputDomId)
 
-                Store.ModifiedOutMsg updatedTodo ->
-                    let
-                        newMode =
-                            case model.mode of
-                                EditContentMode id content ->
-                                    if updatedTodo.meta.id == id then
-                                        editContentMode updatedTodo
+        Store.ModifiedOutMsg updatedTodo ->
+            let
+                newMode =
+                    case model.mode of
+                        EditContentMode id content ->
+                            if updatedTodo.meta.id == id then
+                                editContentMode updatedTodo
 
-                                    else
-                                        model.mode
+                            else
+                                model.mode
 
-                                ListTodoMode ->
-                                    model.mode
-                    in
-                    update (SetMode newMode) model
-    in
+                        ListTodoMode ->
+                            model.mode
+            in
+            update (SetMode newMode) model
+
+
+handleTodoStoreOutMsgList outMsgList model =
     outMsgList
         |> List.foldl
             (\o1 ( m, c1 ) ->
-                foo o1 m
+                handleTodStoreOutMsg o1 m
                     |> Tuple.mapSecond (\c2 -> Cmd.batch [ c1, c2 ])
             )
-            ( model_, Cmd.none )
+            ( model, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -160,7 +163,6 @@ update message model =
 
         TodoStoreMsg msg ->
             handleTodoStoreMsg msg model
-                |> Update3.eval handleTodoStoreOutMsgList
 
         AddClicked ->
             update (TodoStoreMsg <| Store.createAndInsert TodoAttrs.defaultValue) model
