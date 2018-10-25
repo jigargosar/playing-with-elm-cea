@@ -141,15 +141,12 @@ update message model =
                     ( model, Cmd.none )
 
         EndEditMode ->
-            (case model.mode of
+            case model.mode of
                 EditContentMode id _ ->
-                    Step.to { model | mode = ListTodoMode }
+                    ( { model | mode = ListTodoMode }, Cmd.none )
 
                 ListTodoMode ->
-                    Step.stay
-            )
-                |> Step.run
-                |> Maybe.withDefault ( model, Cmd.none )
+                    ( model, Cmd.none )
 
 
 focusId domId =
