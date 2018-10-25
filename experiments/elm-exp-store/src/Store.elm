@@ -8,6 +8,7 @@ module Store exposing
     , createAndInsert
     , initEmpty
     , insert
+    , load
     , loadWithDefaultEmpty
     , modifyItemWithId
     , toIdItemPairList
