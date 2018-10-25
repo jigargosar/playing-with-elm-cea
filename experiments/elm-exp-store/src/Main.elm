@@ -50,6 +50,10 @@ setMagicMenu magicMenu model =
     { model | magicMenu = magicMenu }
 
 
+getMagicMenu =
+    .magicMenu
+
+
 type alias Mills =
     Int
 
@@ -97,7 +101,7 @@ update message model =
 
         MagicMenuMsg msg ->
             Update2.lift
-                .magicMenu
+                getMagicMenu
                 setMagicMenu
                 MagicMenuMsg
                 MagicMenu.update
