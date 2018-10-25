@@ -134,16 +134,6 @@ handleTodStoreOutMsg outMsg model =
             update (SetMode newMode) model
 
 
-handleTodoStoreOutMsgList outMsgList model =
-    outMsgList
-        |> List.foldl
-            (\o1 ( m, c1 ) ->
-                handleTodStoreOutMsg o1 m
-                    |> Tuple.mapSecond (\c2 -> Cmd.batch [ c1, c2 ])
-            )
-            ( model, Cmd.none )
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
