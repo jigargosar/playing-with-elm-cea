@@ -11,6 +11,7 @@ module Store exposing
     , load
     , loadWithDefaultEmpty
     , modifyItemWithId
+    , resetCache
     , toIdItemPairList
     , update
     , updateItem
@@ -99,6 +100,7 @@ toIdItemPairList =
 type Msg attrs
     = NoOp
     | Cache
+    | ResetCache
     | InsertItemAndCache (Item attrs)
     | CreateAndInsert attrs
     | CreateAndInsertWithId attrs Id
@@ -114,6 +116,10 @@ type OutMsg attrs
 
 createAndInsert =
     CreateAndInsert
+
+
+resetCache =
+    ResetCache
 
 
 modifyItemWithId id updateAttrFn =
@@ -161,6 +167,9 @@ update config message model =
 
         Cache ->
             ( model, config.toCacheCmd <| encode config.encoder model, [] )
+
+        ResetCache ->
+            ( initEmpty, config.toCacheCmd <| encode config.encoder initEmpty, [] )
 
         InsertItemAndCache item ->
             pure3 (insert item model)

@@ -17,7 +17,7 @@ import Log
 import MagicMenu exposing (MagicMenu)
 import Port
 import Random
-import Store exposing (Item, Store)
+import Store exposing (Item, Store, resetCache)
 import Task
 import Toasty
 import Toasty.Defaults
@@ -217,7 +217,7 @@ mockActions =
     , FeatherIcons.moon
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
-        |> (::) (MagicMenu.Action FeatherIcons.trash2 NoOp)
+        |> (::) (MagicMenu.Action FeatherIcons.trash2 (TodoStoreMsg resetCache))
         |> (::) (MagicMenu.Action FeatherIcons.filePlus AddClicked)
 
 
