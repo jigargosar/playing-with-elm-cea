@@ -124,8 +124,11 @@ update message model =
         ContentChanged newContent ->
             case model.mode of
                 EditContentMode id _ ->
-                    model
-                        |> update (TSMsg <| Store.modifyItemWithId id (TodoAttrs.setContent newContent) model.todoStore)
+                    update
+                        (TSMsg <|
+                            Store.modifyItemWithId id (TodoAttrs.setContent newContent) model.todoStore
+                        )
+                        model
 
                 ListTodoMode ->
                     Step.stay
