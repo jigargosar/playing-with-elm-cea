@@ -146,11 +146,11 @@ update message model =
     case message of
         NoOp ->
             pure model
-                |> Update3.addOutMsg NoOutMsg
+                |> withNoOutMsg
 
         CreateAndInsert attrs ->
             ( model, Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator )
-                |> Update3.addOutMsg NoOutMsg
+                |> withNoOutMsg
 
         CreateAndInsertWithId attrs id ->
             ( model
@@ -158,17 +158,14 @@ update message model =
                 |> Task.map (Time.posixToMillis >> initMeta id)
                 |> Task.perform (CreateAndInsertWithMeta attrs)
             )
-                |> Update3.addOutMsg NoOutMsg
+                |> withNoOutMsg
 
         CreateAndInsertWithMeta attrs meta ->
             let
                 newItem =
                     Item meta attrs
-
-                newId =
-                    meta.id
             in
-            pure (insert newItem model) |> Update3.addOutMsg (NewInsertedOutMsg newItem)
+            pure (insert newItem model) |> addOutMsg (NewInsertedOutMsg newItem)
 
         UpdateModifiedAtOnAttributeChange item ->
             ( model
@@ -179,7 +176,15 @@ update message model =
             )
 
         ModifiedAtChanged item ->
-            pure (insert item model) |> Update3.addOutMsg (ItemModifiedOutMsg item)
+            pure (insert item model) |> addOutMsg (ItemModifiedOutMsg item)
+
+
+addOutMsg =
+    Update3.addOutMsg
+
+
+withNoOutMsg =
+    Update3.addOutMsg NoOutMsg
 
 
 
