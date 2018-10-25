@@ -168,7 +168,8 @@ update config message model =
                 newModel =
                     insert newItem model
             in
-            ( newModel, config.toCacheCmd <| encode config.encoder newModel ) |> addOutMsg (InsertedOutMsg newItem)
+            ( newModel, config.toCacheCmd <| encode config.encoder newModel )
+                |> addOutMsg (InsertedOutMsg newItem)
 
         InsertModified item ->
             ( model
@@ -182,8 +183,12 @@ update config message model =
             let
                 newItem =
                     setModifiedAt now item
+
+                newModel =
+                    insert newItem model
             in
-            pure (insert newItem model) |> addOutMsg (ModifiedOutMsg newItem)
+            ( newModel, config.toCacheCmd <| encode config.encoder newModel )
+                |> addOutMsg (ModifiedOutMsg newItem)
 
 
 withNoOutMsg =
