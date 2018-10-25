@@ -113,13 +113,13 @@ update message model =
                                 Step.to { model | todoStore = todoStore, mode = createNewTodoMode idTodoPair }
                                     |> focusId newTodoInputDomId
 
-                            Store.ExitItemUpdated ( ( updatedId, updatedTodo ), todoStore ) ->
+                            Store.ExitItemUpdated ( idTodoPair, todoStore ) ->
                                 let
                                     newMode =
                                         case model.mode of
                                             NewTodoMode id content ->
-                                                if updatedId == id then
-                                                    NewTodoMode id updatedTodo.attrs.content
+                                                if Tuple.first idTodoPair == id then
+                                                    createNewTodoMode idTodoPair
 
                                                 else
                                                     model.mode
@@ -136,7 +136,8 @@ update message model =
         ContentChanged newContent ->
             case model.mode of
                 NewTodoMode id _ ->
-                    model |> update (TSMsg <| Store.overItemAttrs id (Todo.setContent newContent) model.todoStore)
+                    model
+                        |> update (TSMsg <| Store.overItemAttrs id (Todo.setContent newContent) model.todoStore)
 
                 ListTodoMode ->
                     Step.stay
