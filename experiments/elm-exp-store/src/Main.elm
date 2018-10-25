@@ -18,7 +18,7 @@ import Port
 import Random
 import Store exposing (Item, Store)
 import Task
-import TodoAttrs exposing (TodoAttrs)
+import TodoAttrs exposing (TodoAttrs, TodoStore)
 import UI exposing (..)
 import Update2
 import Update3
@@ -28,10 +28,6 @@ import WheelEvent exposing (WheelEvent)
 
 
 ---- MODEL ----
-
-
-type alias TodoStore =
-    Store TodoAttrs
 
 
 type Mode

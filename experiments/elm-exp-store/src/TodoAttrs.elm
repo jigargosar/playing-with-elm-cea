@@ -2,6 +2,7 @@ module TodoAttrs exposing
     ( Content
     , Msg(..)
     , TodoAttrs
+    , TodoStore
     , defaultValue
     , storeConfig
     )
@@ -10,7 +11,7 @@ import BasicsX exposing (Encoder, maybeBool)
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
 import Port
-import Store exposing (Item)
+import Store exposing (Item, Store)
 
 
 type alias Content =
@@ -24,6 +25,10 @@ type alias TodoAttrs =
 
 type alias TodoItem =
     Item TodoAttrs
+
+
+type alias TodoStore =
+    Store TodoAttrs
 
 
 init =
