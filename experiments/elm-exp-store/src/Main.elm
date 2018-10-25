@@ -123,7 +123,7 @@ update message model =
                     )
 
         AddClicked ->
-            update (TSMsg <| Store.createAndInsert TodoAttrs.initEmpty) model
+            update (TSMsg <| Store.createAndInsert TodoAttrs.defaultValue) model
 
         ContentChanged newContent ->
             case model.mode of

@@ -1,7 +1,7 @@
 module TodoAttrs exposing
     ( Content
     , TodoAttrs
-    , initEmpty
+    , defaultValue
     , setContent
     , storeConfig
     )
@@ -29,7 +29,7 @@ init =
     TodoAttrs
 
 
-initEmpty =
+defaultValue =
     init ""
 
 
@@ -70,4 +70,5 @@ storeConfig =
     { update = update
     , encoder = encoder
     , decoder = decoder
+    , defaultValue = defaultValue
     }

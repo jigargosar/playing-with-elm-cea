@@ -121,6 +121,7 @@ type alias Config msg attrs =
     { update : msg -> attrs -> Maybe attrs
     , encoder : Encoder attrs
     , decoder : Decoder attrs
+    , defaultValue : attrs
     }
 
 
