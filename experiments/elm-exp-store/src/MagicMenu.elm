@@ -35,9 +35,9 @@ initial =
 type Msg
     = NoOp
     | Warn Log.Messages
+    | WheelEvent E.Value
     | ToggleOpen
     | Clicked
-    | WheelEvent E.Value
     | UpdateVisibilityFromWheelEvent WheelEvent
 
 
