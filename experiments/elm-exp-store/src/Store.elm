@@ -117,6 +117,20 @@ modifyItemWithId id updateAttrFn =
         >> Maybe.withDefault NoOp
 
 
+updateItemAttrsMaybe : (attrs -> Maybe attrs) -> Item attrs -> Maybe (Item attrs)
+updateItemAttrsMaybe updateFn model =
+    updateFn model.attrs |> Maybe.map (\attrs -> { model | attrs = attrs })
+
+
+updateItem : Config msg attrs -> Id -> msg -> Store attrs -> Msg attrs
+updateItem config id msg =
+    .dict
+        >> Dict.get id
+        >> Maybe.andThen (updateItemAttrsMaybe <| config.update msg)
+        >> Maybe.map UpdateModifiedAtOnAttributeChange
+        >> Maybe.withDefault NoOp
+
+
 type alias Config msg attrs =
     { update : msg -> attrs -> Maybe attrs
     , encoder : Encoder attrs
