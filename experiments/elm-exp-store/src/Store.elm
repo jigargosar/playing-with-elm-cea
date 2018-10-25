@@ -97,8 +97,8 @@ type Msg attrs
 
 type OutMsg attrs
     = NoOutMsg
-    | NewInsertedOutMsg (Item attrs)
-    | ItemModifiedOutMsg (Item attrs)
+    | InsertedOutMsg (Item attrs)
+    | ModifiedOutMsg (Item attrs)
 
 
 createAndInsert =
@@ -164,7 +164,7 @@ update message model =
                 newItem =
                     Item meta attrs
             in
-            pure (insert newItem model) |> addOutMsg (NewInsertedOutMsg newItem)
+            pure (insert newItem model) |> addOutMsg (InsertedOutMsg newItem)
 
         UpdateModifiedAtOnAttributeChange item ->
             ( model
@@ -175,7 +175,7 @@ update message model =
             )
 
         ModifiedAtChanged item ->
-            pure (insert item model) |> addOutMsg (ItemModifiedOutMsg item)
+            pure (insert item model) |> addOutMsg (ModifiedOutMsg item)
 
 
 withNoOutMsg =

@@ -112,11 +112,11 @@ handleTodoStoreOutMsg outMsg model =
         Store.NoOutMsg ->
             pure model
 
-        Store.NewInsertedOutMsg newTodo ->
+        Store.InsertedOutMsg newTodo ->
             update (SetMode <| editContentMode newTodo) model
                 |> andThen (update <| FocusDomId newTodoInputDomId)
 
-        Store.ItemModifiedOutMsg updatedTodo ->
+        Store.ModifiedOutMsg updatedTodo ->
             let
                 newMode =
                     case model.mode of
