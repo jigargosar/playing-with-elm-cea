@@ -54,13 +54,6 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    let
-        --        ( todos, cmd ) =
-        --            Random.step (Todos.generator flags.todos) (Random.initialSeed flags.now)
-        --                |> Tuple.first
-        _ =
-            1
-    in
     ( { magicMenu = MagicMenu.initial
       , todoStore = TodoStore.load flags.todos
       , mode = ListTodoMode
@@ -70,9 +63,6 @@ init flags =
 
 
 
---setTodoC : Todos -> Model -> Model
---setTodoC todos model =
---    { model | todos = todos }
 ---- UPDATE ----
 
 
@@ -148,21 +138,12 @@ focusId domId =
 
 
 
---        |> Task.attempt
---            (Result.map (always Stay)
---                >> Result.withDefault (LogWarn [ "Browser.Dom.focus", domId, "not found" ])
---            )
---        TodosMsg msg ->
---            Todos.update msg model.todos
---                |> Tuple.mapBoth (flip setTodoC model) (Cmd.map TodosMsg)
 ---- Subscriptions
 
 
 subscriptions model =
     Sub.batch
         [ MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
-
-        --        , Todos.subscriptions model.todos |> Sub.map TodosMsg
         ]
 
 
