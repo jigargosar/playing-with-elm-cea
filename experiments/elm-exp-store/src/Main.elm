@@ -111,9 +111,6 @@ handleTodoStoreOutMsgList outMsgList model_ =
     let
         foo outMsg model =
             case outMsg of
-                Store.NoOutMsg ->
-                    pure model
-
                 Store.InsertedOutMsg newTodo ->
                     update (SetMode <| editContentMode newTodo) model
                         |> andThen (update <| FocusDomId newTodoInputDomId)

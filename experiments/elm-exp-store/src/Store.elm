@@ -97,8 +97,7 @@ type Msg attrs
 
 
 type OutMsg attrs
-    = NoOutMsg
-    | InsertedOutMsg (Item attrs)
+    = InsertedOutMsg (Item attrs)
     | ModifiedOutMsg (Item attrs)
 
 
