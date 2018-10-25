@@ -50,7 +50,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
         NoOp ->
-            ( model, Cmd.none )
+            pure model
 
         Warn logMessages ->
             ( model, Log.warn "MagicMenu" logMessages )
