@@ -138,7 +138,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
         NoOp ->
-            ( model, Cmd.none )
+            pure model
 
         SetMode mode ->
             pure { model | mode = mode }
