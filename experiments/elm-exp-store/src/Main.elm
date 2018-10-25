@@ -207,16 +207,18 @@ subscriptions model =
 
 
 ---- VIEW ----
---mockActions =
---    [ FeatherIcons.home
---    , FeatherIcons.twitter
---    , FeatherIcons.scissors
---    , FeatherIcons.edit
---    , FeatherIcons.moon
---    ]
---        |> List.map (\icon -> MagicMenu.Action icon NoOp)
---        |> (::) (MagicMenu.Action FeatherIcons.trash2 (TodosMsg Todos.Reset))
---        |> (::) (MagicMenu.Action FeatherIcons.filePlus (TodosMsg Todos.NewClicked))
+
+
+mockActions =
+    [ FeatherIcons.home
+    , FeatherIcons.twitter
+    , FeatherIcons.scissors
+    , FeatherIcons.edit
+    , FeatherIcons.moon
+    ]
+        |> List.map (\icon -> MagicMenu.Action icon NoOp)
+        |> (::) (MagicMenu.Action FeatherIcons.trash2 NoOp)
+        |> (::) (MagicMenu.Action FeatherIcons.filePlus AddClicked)
 
 
 view : Model -> Html Msg
@@ -232,11 +234,9 @@ view model =
         --        , Html.map TodosMsg <|
         --            div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
         --                [ Todos.view model.todos ]
-        --        , div [ class "w-100 flex flex-column justify-center items-center" ]
-        --            [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
+        , div [ class "w-100 flex flex-column justify-center items-center" ]
+            [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         , Toasty.view Toasty.config renderToast ToastyMsg model.toasties
-
-        --        , Toasty.view Toasty.config Toasty.Defaults.view ToastyMsg model.toasties
         ]
 
 
