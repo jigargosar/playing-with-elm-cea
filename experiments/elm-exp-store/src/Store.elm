@@ -54,8 +54,8 @@ init dict =
     { dict = dict }
 
 
-decoder : Decoder attrs -> Decoder (Model attrs)
-decoder attrsDecoder =
+storeDecoder : Decoder attrs -> Decoder (Model attrs)
+storeDecoder attrsDecoder =
     D.map init
         (D.field "dict" (D.dict <| itemDecoder attrsDecoder))
 
@@ -67,13 +67,21 @@ encode attrsEncoder model =
         ]
 
 
-load : Config msg attrs -> Value -> Result Log.Messages (Model attrs)
+load : Config msg attrs -> Value -> ( Maybe Log.Messages, Model attrs )
 load config =
-    decodeValue (decoder config.decoder) >> Result.mapError (D.errorToString >> List.singleton)
+    decodeValue (storeDecoder config.decoder)
+        >> (\result ->
+                case result of
+                    Ok todoStore ->
+                        ( Nothing, todoStore )
+
+                    Err error ->
+                        ( Just [ D.errorToString error ], initEmpty )
+           )
 
 
 loadWithDefaultEmpty config =
-    decodeValue (decoder config.decoder)
+    decodeValue (storeDecoder config.decoder)
         --        >> Result.mapError (Debug.log "ER")
         >> Result.withDefault initEmpty
 

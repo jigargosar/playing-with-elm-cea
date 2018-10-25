@@ -61,8 +61,12 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
+    let
+        ( maybeWarn, todoStore ) =
+            Store.load Todo.storeConfig flags.todos
+    in
     ( { magicMenu = MagicMenu.initial
-      , todoStore = flags.todos |> Store.loadWithDefaultEmpty Todo.storeConfig
+      , todoStore = todoStore
       , mode = ListTodoMode
       }
     , Cmd.none
