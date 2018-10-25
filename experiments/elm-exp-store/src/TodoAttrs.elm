@@ -3,7 +3,6 @@ module TodoAttrs exposing
     , Msg(..)
     , TodoAttrs
     , defaultValue
-    , setContent
     , storeConfig
     )
 
@@ -35,23 +34,6 @@ defaultValue =
     init ""
 
 
-decoder : Decoder TodoAttrs
-decoder =
-    D.map TodoAttrs (D.field "content" D.string)
-
-
-encoder : Encoder TodoAttrs
-encoder model =
-    E.object
-        [ ( "content", E.string model.content )
-        ]
-
-
-setContent : Content -> TodoAttrs -> TodoAttrs
-setContent content model =
-    { model | content = content }
-
-
 type Msg
     = NoOp
     | SetContent Content
@@ -69,6 +51,17 @@ update message model =
 
 storeConfig : Store.Config Msg TodoAttrs
 storeConfig =
+    let
+        decoder : Decoder TodoAttrs
+        decoder =
+            D.map TodoAttrs (D.field "content" D.string)
+
+        encoder : Encoder TodoAttrs
+        encoder model =
+            E.object
+                [ ( "content", E.string model.content )
+                ]
+    in
     { update = update
     , encoder = encoder
     , decoder = decoder
