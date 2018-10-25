@@ -8,7 +8,6 @@ module Store exposing
     , createAndInsert
     , initEmpty
     , insert
-    , load
     , loadWithDefaultEmpty
     , modifyItemWithId
     , toIdItemPairList
@@ -72,7 +71,7 @@ load config =
 
 
 loadWithDefaultEmpty config =
-    load config >> Result.withDefault initEmpty
+    decodeValue (decoder config.decoder) >> Result.withDefault initEmpty
 
 
 insert : Item attrs -> Model attrs -> Model attrs
