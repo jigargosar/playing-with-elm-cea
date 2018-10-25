@@ -6,6 +6,7 @@ module BasicsX exposing
     , ifElse
     , maybeBool
     , optionalOr
+    , swap
     , ter
     , tsDecoder
     , unless
@@ -81,6 +82,10 @@ unwrapDecodeResult errFn okFn result =
 
 flip fn a b =
     fn b a
+
+
+swap ( a, b ) =
+    ( b, a )
 
 
 

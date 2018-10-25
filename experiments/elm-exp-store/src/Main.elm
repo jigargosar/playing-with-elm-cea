@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import BasicsX exposing (flip, ter, unpackResult)
+import BasicsX exposing (flip, ter, unpackResult, unwrapMaybe)
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -66,12 +66,16 @@ init flags =
         ( maybeWarn, todoStore ) =
             Store.load Todo.storeConfig flags.todos
     in
-    ( { magicMenu = MagicMenu.initial
-      , todoStore = todoStore
-      , mode = ListTodoMode
-      }
-    , maybeWarn |> BasicsX.unwrapMaybe Cmd.none (Log.warn "Main")
-    )
+    pure
+        { magicMenu = MagicMenu.initial
+        , todoStore = todoStore
+        , mode = ListTodoMode
+        }
+        |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
+
+
+andThenUpdate msg =
+    andThen (update msg)
 
 
 
