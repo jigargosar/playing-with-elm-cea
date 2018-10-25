@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import BasicsX exposing (flip, ter, unpackResult, unwrapMaybe)
+import BasicsX exposing (flip, ter, unpackResult, unwrapMaybe, when)
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -301,7 +301,12 @@ viewTodoList model =
 
 viewTodoItem : Store.Id -> Store.Item TodoAttrs -> Html Msg
 viewTodoItem id todo =
-    div [] [ text todo.attrs.content ]
+    let
+        content : String
+        content =
+            when String.isEmpty (\_ -> "<empty>") todo.attrs.content
+    in
+    txtA [] content
 
 
 

@@ -33,7 +33,8 @@ ifElse b t f v =
     ter (b v) (t v) (f v)
 
 
-when b t v =
+when : (a -> Bool) -> (a -> a) -> a -> a
+when b t =
     ifElse b t identity
 
 
