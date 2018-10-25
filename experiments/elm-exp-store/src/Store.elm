@@ -91,8 +91,8 @@ type Msg attrs
     | CreateAndInsert attrs
     | CreateAndInsertWithId attrs Id
     | CreateAndInsertWithMeta attrs Meta
-    | UpdateModifiedAtOnAttributeChange (Item attrs)
-    | ModifiedAtChanged (Item attrs)
+    | InsertModified (Item attrs)
+    | InsertModifiedWithNow (Item attrs) Milli
 
 
 type OutMsg attrs
@@ -116,7 +116,7 @@ modifyItemWithId id updateAttrFn =
                 in
                 maybeBool (item.attrs /= newAttrs) { item | attrs = newAttrs }
             )
-        >> Maybe.map UpdateModifiedAtOnAttributeChange
+        >> Maybe.map InsertModified
         >> Maybe.withDefault NoOp
 
 
@@ -130,7 +130,7 @@ updateItem config id msg =
     .dict
         >> Dict.get id
         >> Maybe.andThen (updateItemAttrsMaybe <| config.update msg)
-        >> unwrapMaybe NoOp UpdateModifiedAtOnAttributeChange
+        >> unwrapMaybe NoOp InsertModified
 
 
 type alias Config msg attrs =
@@ -166,16 +166,20 @@ update message model =
             in
             pure (insert newItem model) |> addOutMsg (InsertedOutMsg newItem)
 
-        UpdateModifiedAtOnAttributeChange item ->
+        InsertModified item ->
             ( model
             , Time.now
-                |> Task.map (Time.posixToMillis >> setModifiedAt item)
-                >> Task.perform ModifiedAtChanged
+                |> Task.map Time.posixToMillis
+                |> Task.perform (InsertModifiedWithNow item)
             , NoOutMsg
             )
 
-        ModifiedAtChanged item ->
-            pure (insert item model) |> addOutMsg (ModifiedOutMsg item)
+        InsertModifiedWithNow item now ->
+            let
+                newItem =
+                    setModifiedAt now item
+            in
+            pure (insert newItem model) |> addOutMsg (ModifiedOutMsg newItem)
 
 
 withNoOutMsg =
@@ -260,7 +264,7 @@ newItemTask attrs =
     Time.now |> Task.map (Time.posixToMillis >> initItem attrs)
 
 
-setModifiedAt model now =
+setModifiedAt now model =
     let
         meta =
             model.meta
