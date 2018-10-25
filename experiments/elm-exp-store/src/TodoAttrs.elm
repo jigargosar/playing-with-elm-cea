@@ -1,5 +1,6 @@
 module TodoAttrs exposing
     ( Content
+    , Msg(..)
     , TodoAttrs
     , defaultValue
     , setContent
