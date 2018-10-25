@@ -62,9 +62,12 @@ update message model =
             update ToggleOpen model
 
         WheelEvent encoded ->
-            D.decodeValue WheelEvent.decoder encoded
-                |> unwrapDecodeResult Warn UpdateVisibilityFromWheelEvent
-                |> flip update model
+            pure model
+                |> Update2.eval
+                    (D.decodeValue WheelEvent.decoder encoded
+                        |> unwrapDecodeResult Warn UpdateVisibilityFromWheelEvent
+                        |> update
+                    )
 
         UpdateVisibilityFromWheelEvent { deltaY } ->
             pure { model | hidden = deltaY > 0 }
