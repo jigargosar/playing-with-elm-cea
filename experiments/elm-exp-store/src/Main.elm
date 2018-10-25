@@ -1,9 +1,5 @@
 module Main exposing (main)
 
---import Style exposing (Transform(..), Unit(..))
---import TodoAttrs exposing (TodoAttrs)
---import Todos exposing (Todos)
-
 import BasicsX exposing (flip, ter)
 import Browser
 import Browser.Dom
