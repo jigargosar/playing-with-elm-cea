@@ -1,10 +1,14 @@
-module UpdateReturn exposing (andThen, andThen3, foldlOutMsgList, pure)
+module UpdateReturn exposing (andThen, andThen3, foldlOutMsgList, pure, pure3)
 
 import Update3
 
 
 pure model =
     ( model, Cmd.none )
+
+
+pure3 model =
+    ( model, Cmd.none, [] )
 
 
 andThen f ( m1, c1 ) =
