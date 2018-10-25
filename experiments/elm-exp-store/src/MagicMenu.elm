@@ -1,6 +1,6 @@
 module MagicMenu exposing (Action, Actions, MagicMenu, Msg, initial, subscriptions, update, view)
 
-import BasicsX exposing (recoverErr, ter)
+import BasicsX exposing (flip, recoverErr, ter)
 import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -14,7 +14,7 @@ import Style exposing (Transform(..), Unit(..))
 import Tuple exposing (pair)
 import UI exposing (boolHtml, fBtn)
 import Update2
-import WheelEvent
+import WheelEvent exposing (WheelEvent)
 
 
 type alias MagicMenu =
@@ -33,14 +33,16 @@ initial =
 
 type Msg
     = NoOp
+    | Warn Log.Messages
     | ToggleOpen
     | Clicked
-    | Wheel E.Value
+    | WheelEvent E.Value
+    | UpdateVisibilityFromWheelEvent WheelEvent
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch [ Port.wheel Wheel ]
+    Sub.batch [ Port.wheel WheelEvent ]
 
 
 setVisibilityFromWheelEventIn model { deltaY } =
@@ -53,24 +55,27 @@ update message model =
         NoOp ->
             ( model, Cmd.none )
 
+        Warn logMessages ->
+            ( model, Log.warn "MagicMenu" logMessages )
+
         ToggleOpen ->
             update NoOp { model | open = not model.open }
 
         Clicked ->
-            ( { model | open = not model.open }, Cmd.none )
+            update ToggleOpen model
 
-        Wheel encoded ->
+        WheelEvent encoded ->
+            let
+                updateMsg msg =
+                    update msg model
+            in
             D.decodeValue WheelEvent.decoder encoded
-                |> Result.map (setVisibilityFromWheelEventIn model)
-                |> Result.mapError (Log.warn "MagicMenu" << List.singleton << D.errorToString)
-                |> (\result ->
-                        case result of
-                            Ok newModel ->
-                                ( newModel, Cmd.none )
+                |> recoverErr
+                    (updateMsg << Warn << List.singleton << D.errorToString)
+                    (updateMsg << UpdateVisibilityFromWheelEvent)
 
-                            Err cmd ->
-                                ( model, cmd )
-                   )
+        UpdateVisibilityFromWheelEvent { deltaY } ->
+            update NoOp { model | hidden = deltaY > 0 }
 
 
 type alias Action msg =

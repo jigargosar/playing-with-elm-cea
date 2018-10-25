@@ -58,13 +58,13 @@ mapMaybeWithDefault dv fn =
     Maybe.map fn >> Maybe.withDefault dv
 
 
-recoverErr fn result =
+recoverErr errFn okFn result =
     case result of
         Ok answer ->
-            answer
+            okFn answer
 
         Err error ->
-            fn error
+            errFn error
 
 
 flip fn a b =
