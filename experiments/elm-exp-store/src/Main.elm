@@ -176,7 +176,7 @@ update message model =
         EndEditMode ->
             case model.mode of
                 EditContentMode id _ ->
-                    ( { model | mode = ListTodoMode }, Cmd.none )
+                    pure { model | mode = ListTodoMode }
 
                 ListTodoMode ->
                     pure model
