@@ -81,6 +81,7 @@ toIdItemPairList =
 type Msg attrs
     = NoOp
     | CreateAndInsert attrs
+    | CreateAndInsertWithMeta Meta attrs
     | NewCreated (Item attrs)
     | NewWithIdCreated (Item attrs) Id
     | UpdateModifiedAtOnAttributeChange Id (Item attrs)
@@ -119,6 +120,16 @@ update message model =
 
         CreateAndInsert attrs ->
             Step.to model |> Step.withCmd (newItemTask attrs |> Task.perform NewCreated)
+
+        CreateAndInsertWithMeta meta attrs ->
+            let
+                newItem =
+                    Item meta attrs
+
+                newId =
+                    meta.id
+            in
+            Step.exit (ExitNewInserted ( ( newId, newItem ), insert ( newId, newItem ) model ))
 
         NewCreated item ->
             Step.to model |> Step.withCmd (Random.generate (NewWithIdCreated item) IdX.stringIdGenerator)
@@ -163,7 +174,8 @@ type alias Milli =
 
 
 type alias Meta =
-    { createdAt : Milli
+    { id : Id
+    , createdAt : Milli
     , modifiedAt : Milli
     , deleted : Bool
     }
@@ -171,7 +183,8 @@ type alias Meta =
 
 metaDecoder : Decoder Meta
 metaDecoder =
-    D.map3 Meta
+    D.map4 Meta
+        (D.field "id" D.string)
         (D.field "createdAt" D.int)
         (D.field "modifiedAt" D.int)
         (D.field "deleted" D.bool)
@@ -180,7 +193,8 @@ metaDecoder =
 metaEncoder : Encoder Meta
 metaEncoder model =
     E.object
-        [ ( "createdAt", E.int model.createdAt )
+        [ ( "id", E.string model.id )
+        , ( "createdAt", E.int model.createdAt )
         , ( "modifiedAt", E.int model.modifiedAt )
         , ( "deleted", E.bool model.deleted )
         ]
@@ -194,7 +208,7 @@ type alias Item attrs =
 
 initItem : attrs -> Milli -> Item attrs
 initItem attrs now =
-    { meta = { createdAt = now, modifiedAt = now, deleted = False }, attrs = attrs }
+    { meta = { id = "dummyId", createdAt = now, modifiedAt = now, deleted = False }, attrs = attrs }
 
 
 itemDecoder : Decoder attrs -> Decoder (Item attrs)
