@@ -44,14 +44,14 @@ setVisibilityFromWheelEventIn model { deltaY } =
     { model | hidden = deltaY > 0 }
 
 
-update : Msg -> Model -> Step Model Msg a
+update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
         NoOp ->
-            Step.to model
+            ( model, Cmd.none )
 
         Clicked ->
-            Step.to { model | open = not model.open }
+            ( { model | open = not model.open }, Cmd.none )
 
         Wheel encoded ->
             D.decodeValue WheelEvent.decoder encoded
@@ -60,10 +60,10 @@ update message model =
                 |> (\result ->
                         case result of
                             Ok newModel ->
-                                Step.to newModel
+                                ( newModel, Cmd.none )
 
                             Err cmd ->
-                                Step.to model |> Step.withCmd cmd
+                                ( model, cmd )
                    )
 
 

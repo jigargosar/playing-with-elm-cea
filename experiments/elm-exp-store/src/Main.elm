@@ -83,15 +83,15 @@ editContentMode todo =
     EditContentMode todo.meta.id todo.attrs.content
 
 
-update : Msg -> Model -> Step Model Msg a
+update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
         NoOp ->
-            Step.stay
+            ( model, Cmd.none )
 
         MagicMenuMsg msg ->
             MagicMenu.update msg model.magicMenu
-                |> Step.within (\w -> { model | magicMenu = w }) MagicMenuMsg
+                |> Tuple.mapBoth (\w -> { model | magicMenu = w }) (Cmd.map MagicMenuMsg)
 
         TodoStoreMsg msg ->
             Store.update msg model.todoStore
@@ -119,6 +119,8 @@ update message model =
                                 in
                                 Step.to { model | todoStore = todoStore, mode = newMode }
                     )
+                |> Step.run
+                |> Maybe.withDefault ( model, Cmd.none )
 
         AddClicked ->
             update (TodoStoreMsg <| Store.createAndInsert TodoAttrs.defaultValue) model
@@ -136,15 +138,18 @@ update message model =
                         model
 
                 ListTodoMode ->
-                    Step.stay
+                    ( model, Cmd.none )
 
         EndEditMode ->
-            case model.mode of
+            (case model.mode of
                 EditContentMode id _ ->
                     Step.to { model | mode = ListTodoMode }
 
                 ListTodoMode ->
                     Step.stay
+            )
+                |> Step.run
+                |> Maybe.withDefault ( model, Cmd.none )
 
 
 focusId domId =
@@ -293,6 +298,6 @@ main =
     Browser.element
         { view = view
         , init = init
-        , update = Step.asUpdateFunction update
+        , update = {- Step.asUpdateFunction -} update
         , subscriptions = subscriptions
         }
