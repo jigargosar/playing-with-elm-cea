@@ -1,5 +1,6 @@
 module UI exposing
     ( Disabled
+    , backdrop
     , boolHtml
     , fBtn
     , fDBtn
@@ -88,3 +89,7 @@ toolbar kids =
 
 flexV attrs =
     div (class "flex flex-column" :: attrs)
+
+
+backdrop attrs =
+    div (class "z-2 absolute absolute--fill bg-black-40 flex items-center justify-center" :: attrs)
