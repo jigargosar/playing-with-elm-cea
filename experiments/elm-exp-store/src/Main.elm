@@ -16,12 +16,12 @@ import Json.Encode as E
 import MagicMenu exposing (MagicMenu)
 import Port
 import Random
-import Step exposing (Step)
 import Store exposing (Item, Store)
 import Task
 import TodoAttrs exposing (TodoAttrs)
 import UI exposing (..)
 import Update2
+import Update3
 import UpdateReturn exposing (pure)
 import WheelEvent exposing (WheelEvent)
 
@@ -108,34 +108,40 @@ update message model =
             handleMagicMenuMessage msg model
 
         TodoStoreMsg msg ->
-            Store.update msg model.todoStore
-                |> Step.within (\w -> { model | todoStore = w }) TodoStoreMsg
-                |> Step.onExit
-                    (\exit ->
-                        case exit of
-                            Store.ExitNewInserted ( newTodo, todoStore ) ->
-                                Step.to { model | todoStore = todoStore, mode = editContentMode newTodo }
-                                    |> focusId newTodoInputDomId
+            Update3.lift .todoStore
+                (\sub m -> { m | todoStore = sub })
+                TodoStoreMsg
+                Store.update
+                msg
+                model
+                |> Update3.eval (\out m -> pure m)
 
-                            Store.ExitItemModified ( updatedTodo, todoStore ) ->
-                                let
-                                    newMode =
-                                        case model.mode of
-                                            EditContentMode id content ->
-                                                if updatedTodo.meta.id == id then
-                                                    editContentMode updatedTodo
-
-                                                else
-                                                    model.mode
-
-                                            ListTodoMode ->
-                                                model.mode
-                                in
-                                Step.to { model | todoStore = todoStore, mode = newMode }
-                    )
-                |> Step.run
-                |> Maybe.withDefault ( model, Cmd.none )
-
+        --                |> Step.within (\w -> { model | todoStore = w }) TodoStoreMsg
+        --                |> Step.onExit
+        --                    (\exit ->
+        --                        case exit of
+        --                            Store.NewInsertedOutMsg ( newTodo, todoStore ) ->
+        --                                Step.to { model | todoStore = todoStore, mode = editContentMode newTodo }
+        --                                    |> focusId newTodoInputDomId
+        --
+        --                            Store.ItemModifiedOutMsg ( updatedTodo, todoStore ) ->
+        --                                let
+        --                                    newMode =
+        --                                        case model.mode of
+        --                                            EditContentMode id content ->
+        --                                                if updatedTodo.meta.id == id then
+        --                                                    editContentMode updatedTodo
+        --
+        --                                                else
+        --                                                    model.mode
+        --
+        --                                            ListTodoMode ->
+        --                                                model.mode
+        --                                in
+        --                                Step.to { model | todoStore = todoStore, mode = newMode }
+        --                    )
+        --                |> Step.run
+        --                |> Maybe.withDefault ( model, Cmd.none )
         AddClicked ->
             update (TodoStoreMsg <| Store.createAndInsert TodoAttrs.defaultValue) model
 
@@ -165,7 +171,7 @@ update message model =
 
 focusId domId =
     Browser.Dom.focus domId
-        |> Step.attempt (\_ -> NoOp)
+        |> Task.attempt (\_ -> NoOp)
 
 
 

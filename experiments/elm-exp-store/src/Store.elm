@@ -1,9 +1,9 @@
 module Store exposing
     ( Config
-    , Exit(..)
     , Id
     , Item
     , Msg
+    , OutMsg(..)
     , Store
     , createAndInsert
     , initEmpty
@@ -22,9 +22,10 @@ import IdX
 import Json.Decode as D exposing (Decoder, decodeValue)
 import Json.Encode as E exposing (Value)
 import Random exposing (Generator, Seed)
-import Step exposing (Step)
 import Task exposing (Task)
 import Time
+import Update3
+import UpdateReturn exposing (pure)
 
 
 type alias Id =
@@ -75,9 +76,9 @@ loadWithDefaultEmpty config =
     load config >> Result.withDefault initEmpty
 
 
-insert : Item attrs -> Model attrs -> ( Item attrs, Model attrs )
+insert : Item attrs -> Model attrs -> Model attrs
 insert item model =
-    ( item, { model | dict = Dict.insert item.meta.id item model.dict } )
+    { model | dict = Dict.insert item.meta.id item model.dict }
 
 
 toIdItemPairList : Model attrs -> List ( Id, Item attrs )
@@ -94,9 +95,10 @@ type Msg attrs
     | ModifiedAtChanged (Item attrs)
 
 
-type Exit attrs
-    = ExitNewInserted ( Item attrs, Model attrs )
-    | ExitItemModified ( Item attrs, Model attrs )
+type OutMsg attrs
+    = NoOutMsg
+    | NewInsertedOutMsg (Item attrs)
+    | ItemModifiedOutMsg (Item attrs)
 
 
 createAndInsert =
@@ -139,23 +141,24 @@ type alias Config msg attrs =
     }
 
 
-update : Msg attrs -> Model attrs -> Step (Model attrs) (Msg attrs) (Exit attrs)
+update : Msg attrs -> Model attrs -> ( Model attrs, Cmd (Msg attrs), OutMsg attrs )
 update message model =
     case message of
         NoOp ->
-            Step.stay
+            pure model
+                |> Update3.addOutMsg NoOutMsg
 
         CreateAndInsert attrs ->
-            Step.to model
-                |> Step.withCmd (Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator)
+            ( model, Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator )
+                |> Update3.addOutMsg NoOutMsg
 
         CreateAndInsertWithId attrs id ->
-            Step.to model
-                |> Step.withCmd
-                    (Time.now
-                        |> Task.map (Time.posixToMillis >> initMeta id)
-                        |> Task.perform (CreateAndInsertWithMeta attrs)
-                    )
+            ( model
+            , Time.now
+                |> Task.map (Time.posixToMillis >> initMeta id)
+                |> Task.perform (CreateAndInsertWithMeta attrs)
+            )
+                |> Update3.addOutMsg NoOutMsg
 
         CreateAndInsertWithMeta attrs meta ->
             let
@@ -165,18 +168,23 @@ update message model =
                 newId =
                     meta.id
             in
-            Step.exit (ExitNewInserted (insert newItem model))
+            pure (insert newItem model) |> Update3.addOutMsg (NewInsertedOutMsg newItem)
 
         UpdateModifiedAtOnAttributeChange item ->
-            Step.to model
-                |> Step.withCmd
-                    (Time.now
+            let
+                cc : Cmd (Msg attrs)
+                cc =
+                    Time.now
                         |> Task.map (Time.posixToMillis >> setModifiedAt item)
                         >> Task.perform ModifiedAtChanged
-                    )
+            in
+            ( model
+            , cc
+            , NoOutMsg
+            )
 
         ModifiedAtChanged item ->
-            Step.exit (ExitItemModified (insert item model))
+            pure (insert item model) |> Update3.addOutMsg (ItemModifiedOutMsg item)
 
 
 
