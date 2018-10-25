@@ -13,6 +13,7 @@ import Html.Events exposing (..)
 import Html.Keyed
 import Json.Decode as D
 import Json.Encode as E
+import Log
 import MagicMenu exposing (MagicMenu)
 import Port
 import Random
@@ -69,7 +70,7 @@ init flags =
       , todoStore = todoStore
       , mode = ListTodoMode
       }
-    , Cmd.none
+    , maybeWarn |> BasicsX.unwrapMaybe Cmd.none (Log.warn "Main")
     )
 
 
