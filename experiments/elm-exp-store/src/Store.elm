@@ -68,9 +68,9 @@ load =
     decoder >> decodeValue
 
 
-insert : ( Id, Item attrs ) -> Model attrs -> Model attrs
-insert ( id, item ) model =
-    { model | dict = Dict.insert id item model.dict }
+insert : Item attrs -> Model attrs -> Model attrs
+insert item model =
+    { model | dict = Dict.insert item.meta.id item model.dict }
 
 
 toIdItemPairList : Model attrs -> List ( Id, Item attrs )
@@ -81,9 +81,8 @@ toIdItemPairList =
 type Msg attrs
     = NoOp
     | CreateAndInsert attrs
-    | CreateAndInsertWithMeta Meta attrs
-    | NewCreated (Item attrs)
-    | NewWithIdCreated (Item attrs) Id
+    | CreateAndInsertWithId attrs Id
+    | CreateAndInsertWithMeta attrs Meta
     | UpdateModifiedAtOnAttributeChange Id (Item attrs)
     | ModifiedAtChanged Id (Item attrs)
 
@@ -119,9 +118,18 @@ update message model =
             Step.stay
 
         CreateAndInsert attrs ->
-            Step.to model |> Step.withCmd (newItemTask attrs |> Task.perform NewCreated)
+            Step.to model
+                |> Step.withCmd (Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator)
 
-        CreateAndInsertWithMeta meta attrs ->
+        CreateAndInsertWithId attrs id ->
+            Step.to model
+                |> Step.withCmd
+                    (Time.now
+                        |> Task.map (Time.posixToMillis >> initMeta id)
+                        |> Task.perform (CreateAndInsertWithMeta attrs)
+                    )
+
+        CreateAndInsertWithMeta attrs meta ->
             let
                 newItem =
                     Item meta attrs
@@ -129,17 +137,7 @@ update message model =
                 newId =
                     meta.id
             in
-            Step.exit (ExitNewInserted ( ( newId, newItem ), insert ( newId, newItem ) model ))
-
-        NewCreated item ->
-            Step.to model |> Step.withCmd (Random.generate (NewWithIdCreated item) IdX.stringIdGenerator)
-
-        NewWithIdCreated item id ->
-            let
-                idItemTuple =
-                    ( id, item )
-            in
-            Step.exit (ExitNewInserted ( idItemTuple, insert idItemTuple model ))
+            Step.exit (ExitNewInserted ( ( newId, newItem ), insert newItem model ))
 
         UpdateModifiedAtOnAttributeChange id item ->
             Step.to model
@@ -150,11 +148,7 @@ update message model =
                     )
 
         ModifiedAtChanged id item ->
-            let
-                idItemTuple =
-                    ( id, item )
-            in
-            Step.exit (ExitItemUpdated ( idItemTuple, insert idItemTuple model ))
+            Step.exit (ExitItemUpdated ( ( id, item ), insert item model ))
 
 
 
@@ -179,6 +173,10 @@ type alias Meta =
     , modifiedAt : Milli
     , deleted : Bool
     }
+
+
+initMeta id now =
+    { id = id, createdAt = now, modifiedAt = now, deleted = False }
 
 
 metaDecoder : Decoder Meta
