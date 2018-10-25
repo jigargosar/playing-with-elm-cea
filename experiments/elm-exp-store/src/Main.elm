@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import BasicsX exposing (flip, ter)
+import BasicsX exposing (flip, ter, unpackResult)
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -80,6 +80,7 @@ init flags =
 
 type Msg
     = NoOp
+    | Warn Log.Messages
     | SetMode Mode
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
@@ -141,14 +142,21 @@ update message model =
         NoOp ->
             pure model
 
-        SetMode mode ->
-            pure { model | mode = mode }
+        Warn logMessages ->
+            ( model, Log.warn "Main" logMessages )
 
         FocusDomId domId ->
             ( model
             , Browser.Dom.focus domId
-                |> Task.attempt (\_ -> NoOp)
+                |> Task.attempt
+                    (unpackResult
+                        (\_ -> Warn [ "Focus Error: #", domId, " NotFound" ])
+                        (\_ -> NoOp)
+                    )
             )
+
+        SetMode mode ->
+            pure { model | mode = mode }
 
         MagicMenuMsg msg ->
             handleMagicMenuMessage msg model
