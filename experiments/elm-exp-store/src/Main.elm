@@ -20,16 +20,19 @@ import MagicMenu exposing (MagicMenu)
 import Port
 import Random
 import Step exposing (Step)
-import Store exposing (Item)
+import Store exposing (Item, Store)
 import Task
 import Todo exposing (TodoAttr)
-import TodoStore exposing (TodoStore)
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
 
 
 
 ---- MODEL ----
+
+
+type alias TodoStore =
+    Store TodoAttr
 
 
 type Mode
@@ -55,7 +58,10 @@ type alias Flags =
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( { magicMenu = MagicMenu.initial
-      , todoStore = TodoStore.load flags.todos
+      , todoStore =
+            flags.todos
+                |> Store.load Todo.decoder
+                >> Result.withDefault Store.initEmpty
       , mode = ListTodoMode
       }
     , Cmd.none
