@@ -259,7 +259,7 @@ newTodoInputDomId =
 
 
 viewNewTodoModal todoId content =
-    div [ class "absolute absolute--fill bg-black-40 flex items-center justify-center" ]
+    div [ class "z-2 absolute absolute--fill bg-black-40 flex items-center justify-center" ]
         [ div
             [ class "bg-white br4 shadow-1 pa3 measure w-100"
             ]
