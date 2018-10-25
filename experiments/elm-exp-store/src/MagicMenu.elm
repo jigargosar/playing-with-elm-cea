@@ -46,10 +46,6 @@ subscriptions model =
     Sub.batch [ Port.wheel WheelEvent ]
 
 
-setVisibilityFromWheelEventIn model { deltaY } =
-    { model | hidden = deltaY > 0 }
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
