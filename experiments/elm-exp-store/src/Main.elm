@@ -74,10 +74,6 @@ init flags =
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
 
 
-andThenUpdate msg =
-    andThen (update msg)
-
-
 
 ---- UPDATE ----
 
@@ -193,6 +189,10 @@ update message model =
 
                 ListTodoMode ->
                     pure model
+
+
+andThenUpdate msg =
+    andThen (update msg)
 
 
 
