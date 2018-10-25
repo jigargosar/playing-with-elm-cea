@@ -21,6 +21,7 @@ import Store exposing (Item, Store)
 import Task
 import TodoAttrs exposing (TodoAttrs)
 import UI exposing (..)
+import Update2
 import WheelEvent exposing (WheelEvent)
 
 
@@ -90,8 +91,13 @@ update message model =
             ( model, Cmd.none )
 
         MagicMenuMsg msg ->
-            MagicMenu.update msg model.magicMenu
-                |> Tuple.mapBoth (\w -> { model | magicMenu = w }) (Cmd.map MagicMenuMsg)
+            Update2.lift
+                .magicMenu
+                (\magicMenu model_ -> { model_ | magicMenu = magicMenu })
+                MagicMenuMsg
+                MagicMenu.update
+                msg
+                model
 
         TodoStoreMsg msg ->
             Store.update msg model.todoStore
