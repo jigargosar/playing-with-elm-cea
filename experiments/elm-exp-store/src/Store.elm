@@ -25,7 +25,7 @@ import Random exposing (Generator, Seed)
 import Task exposing (Task)
 import Time
 import Update3
-import UpdateReturn exposing (pure)
+import UpdateReturn exposing (addOutMsg, pure)
 
 
 type alias Id =
@@ -176,10 +176,6 @@ update message model =
 
         ModifiedAtChanged item ->
             pure (insert item model) |> addOutMsg (ItemModifiedOutMsg item)
-
-
-addOutMsg =
-    Update3.addOutMsg
 
 
 withNoOutMsg =

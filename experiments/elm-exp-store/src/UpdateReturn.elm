@@ -1,4 +1,6 @@
-module UpdateReturn exposing (andThen, pure)
+module UpdateReturn exposing (addOutMsg, andThen, pure)
+
+import Update3
 
 
 pure model =
@@ -11,3 +13,7 @@ andThen f ( m1, c1 ) =
             f m1
     in
     ( m2, Cmd.batch [ c1, c2 ] )
+
+
+addOutMsg =
+    Update3.addOutMsg
