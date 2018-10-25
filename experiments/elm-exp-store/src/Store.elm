@@ -25,7 +25,7 @@ import Random exposing (Generator, Seed)
 import Task exposing (Task)
 import Time
 import Update3
-import UpdateReturn exposing (addOutMsg, pure)
+import UpdateReturn exposing (addOutMsg, andThen3, andThenAddOutMsg, pure)
 
 
 type alias Id =
@@ -88,6 +88,8 @@ toIdItemPairList =
 
 type Msg attrs
     = NoOp
+    | Cache
+    | InsertItemAndCache (Item attrs)
     | CreateAndInsert attrs
     | CreateAndInsertWithId attrs Id
     | CreateAndInsertWithMeta attrs Meta
@@ -147,6 +149,13 @@ update config message model =
     case message of
         NoOp ->
             pure model |> withNoOutMsg
+
+        Cache ->
+            ( model, config.toCacheCmd <| encode config.encoder model ) |> withNoOutMsg
+
+        InsertItemAndCache item ->
+            pure (insert item model)
+                |> andThenAddOutMsg (update config Cache)
 
         CreateAndInsert attrs ->
             ( model, Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator )
