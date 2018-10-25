@@ -1,7 +1,6 @@
 module TodoAttrs exposing
     ( Content
     , TodoAttrs
-    , init
     , initEmpty
     , setContent
     , storeConfig
