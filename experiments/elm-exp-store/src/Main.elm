@@ -21,7 +21,6 @@ import Port
 import Random
 import Step exposing (Step)
 import Store exposing (Item)
-import Store.Item
 import Task
 import Todo exposing (TodoAttr)
 import TodoStore exposing (TodoStore)

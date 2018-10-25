@@ -20,7 +20,6 @@ import Json.Decode as D exposing (Decoder, decodeValue)
 import Json.Encode as E exposing (Value)
 import Random exposing (Generator, Seed)
 import Step exposing (Step)
-import Store.Item as Item exposing (Item)
 import Task exposing (Task)
 import Time
 
@@ -54,13 +53,13 @@ init dict =
 decoder : Decoder attrs -> Decoder (Model attrs)
 decoder attrsDecoder =
     D.map init
-        (D.dict (Item.itemDecoder attrsDecoder))
+        (D.dict (itemDecoder attrsDecoder))
 
 
 encode : Encoder attrs -> Encoder (Model attrs)
 encode attrsEncoder model =
     E.object
-        [ ( "dict", E.dict identity (Item.itemEncoder attrsEncoder) model.dict )
+        [ ( "dict", E.dict identity (itemEncoder attrsEncoder) model.dict )
         ]
 
 
@@ -77,11 +76,6 @@ insert ( id, item ) model =
 toIdItemPairList : Model attrs -> List ( Id, Item attrs )
 toIdItemPairList =
     .dict >> Dict.toList
-
-
-newItem : attrs -> Task x (Item attrs)
-newItem =
-    Item.newItemTask
 
 
 type Msg attrs
@@ -124,7 +118,7 @@ update message model =
             Step.stay
 
         CreateAndInsert attrs ->
-            Step.to model |> Step.withCmd (newItem attrs |> Task.perform NewCreated)
+            Step.to model |> Step.withCmd (newItemTask attrs |> Task.perform NewCreated)
 
         NewCreated item ->
             Step.to model |> Step.withCmd (Random.generate (NewWithIdCreated item) IdX.stringIdGenerator)
@@ -140,7 +134,7 @@ update message model =
             Step.to model
                 |> Step.withCmd
                     (Time.now
-                        |> Task.map (Time.posixToMillis >> Item.setModifiedAt item)
+                        |> Task.map (Time.posixToMillis >> setModifiedAt item)
                         >> Task.perform (ModifiedAtChanged id)
                     )
 
@@ -160,5 +154,72 @@ type alias Store item =
     Model item
 
 
+
+---- Item
+
+
+type alias Milli =
+    Int
+
+
+type alias Meta =
+    { createdAt : Milli
+    , modifiedAt : Milli
+    , deleted : Bool
+    }
+
+
+metaDecoder : Decoder Meta
+metaDecoder =
+    D.map3 Meta
+        (D.field "createdAt" D.int)
+        (D.field "modifiedAt" D.int)
+        (D.field "deleted" D.bool)
+
+
+metaEncoder : Encoder Meta
+metaEncoder model =
+    E.object
+        [ ( "createdAt", E.int model.createdAt )
+        , ( "modifiedAt", E.int model.modifiedAt )
+        , ( "deleted", E.bool model.deleted )
+        ]
+
+
 type alias Item attrs =
-    Item.Item attrs
+    { meta : Meta
+    , attrs : attrs
+    }
+
+
+initItem : attrs -> Milli -> Item attrs
+initItem attrs now =
+    { meta = { createdAt = now, modifiedAt = now, deleted = False }, attrs = attrs }
+
+
+itemDecoder : Decoder attrs -> Decoder (Item attrs)
+itemDecoder attrsDecoder =
+    D.map2 Item
+        (D.field "meta" metaDecoder)
+        (D.field "attrs" attrsDecoder)
+
+
+itemEncoder : Encoder attrs -> Encoder (Item attrs)
+itemEncoder attrsEncoder model =
+    E.object
+        [ ( "meta", metaEncoder model.meta )
+        , ( "attrs", attrsEncoder model.attrs )
+        ]
+
+
+newItemTask : attrs -> Task x (Item attrs)
+newItemTask attrs =
+    Time.now |> Task.map (Time.posixToMillis >> initItem attrs)
+
+
+setModifiedAt model now =
+    let
+        meta =
+            model.meta
+    in
+    { model | meta = { meta | modifiedAt = now } }
