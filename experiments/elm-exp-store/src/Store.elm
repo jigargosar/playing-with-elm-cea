@@ -55,7 +55,7 @@ init dict =
 decoder : Decoder attrs -> Decoder (Model attrs)
 decoder attrsDecoder =
     D.map init
-        (D.dict (itemDecoder attrsDecoder))
+        (D.field "dict" (D.dict <| itemDecoder attrsDecoder))
 
 
 encode : Encoder attrs -> Encoder (Model attrs)
@@ -71,7 +71,9 @@ load config =
 
 
 loadWithDefaultEmpty config =
-    decodeValue (decoder config.decoder) >> Result.withDefault initEmpty
+    decodeValue (decoder config.decoder)
+        --        >> Result.mapError (Debug.log "ER")
+        >> Result.withDefault initEmpty
 
 
 insert : Item attrs -> Model attrs -> Model attrs
