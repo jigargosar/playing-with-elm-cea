@@ -1,4 +1,4 @@
-module Todo exposing (Content, TodoAttr, decoder, init, initEmpty, setContent)
+module TodoAttrs exposing (Content, TodoAttrs, decoder, init, initEmpty, setContent)
 
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
@@ -9,28 +9,28 @@ type alias Content =
     String
 
 
-type alias TodoAttr =
+type alias TodoAttrs =
     { content : Content
     }
 
 
 type alias TodoItem =
-    Item TodoAttr
+    Item TodoAttrs
 
 
 init =
-    TodoAttr
+    TodoAttrs
 
 
 initEmpty =
     init ""
 
 
-decoder : Decoder TodoAttr
+decoder : Decoder TodoAttrs
 decoder =
-    D.map TodoAttr (D.field "content" D.string)
+    D.map TodoAttrs (D.field "content" D.string)
 
 
-setContent : Content -> TodoAttr -> TodoAttr
+setContent : Content -> TodoAttrs -> TodoAttrs
 setContent content model =
     { model | content = content }

@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 --import Style exposing (Transform(..), Unit(..))
---import Todo exposing (Todo)
+--import TodoAttrs exposing (TodoAttrs)
 --import Todos exposing (Todos)
 
 import BasicsX exposing (flip, ter)
@@ -22,7 +22,7 @@ import Random
 import Step exposing (Step)
 import Store exposing (Item, Store)
 import Task
-import Todo exposing (TodoAttr)
+import TodoAttrs exposing (TodoAttrs)
 import UI exposing (..)
 import WheelEvent exposing (WheelEvent)
 
@@ -32,12 +32,12 @@ import WheelEvent exposing (WheelEvent)
 
 
 type alias TodoStore =
-    Store TodoAttr
+    Store TodoAttrs
 
 
 type Mode
     = ListTodoMode
-    | EditContentMode Store.Id Todo.Content
+    | EditContentMode Store.Id TodoAttrs.Content
 
 
 type alias Model =
@@ -60,7 +60,7 @@ init flags =
     ( { magicMenu = MagicMenu.initial
       , todoStore =
             flags.todos
-                |> Store.load Todo.decoder
+                |> Store.load TodoAttrs.decoder
                 >> Result.withDefault Store.initEmpty
       , mode = ListTodoMode
       }
@@ -75,9 +75,9 @@ init flags =
 type Msg
     = Stay
     | MagicMenuMsg MagicMenu.Msg
-    | TSMsg (Store.Msg TodoAttr)
+    | TSMsg (Store.Msg TodoAttrs)
     | AddClicked
-    | ContentChanged Todo.Content
+    | ContentChanged TodoAttrs.Content
 
 
 
@@ -126,13 +126,13 @@ update message model =
                     )
 
         AddClicked ->
-            update (TSMsg <| Store.createAndInsert Todo.initEmpty) model
+            update (TSMsg <| Store.createAndInsert TodoAttrs.initEmpty) model
 
         ContentChanged newContent ->
             case model.mode of
                 EditContentMode id _ ->
                     model
-                        |> update (TSMsg <| Store.modifyItemWithId id (Todo.setContent newContent) model.todoStore)
+                        |> update (TSMsg <| Store.modifyItemWithId id (TodoAttrs.setContent newContent) model.todoStore)
 
                 ListTodoMode ->
                     Step.stay
@@ -227,7 +227,7 @@ viewTodoList model =
     Html.Keyed.node "div" [] todoList
 
 
-viewTodoItem : Store.Id -> Store.Item TodoAttr -> Html Msg
+viewTodoItem : Store.Id -> Store.Item TodoAttrs -> Html Msg
 viewTodoItem id todo =
     div [] [ text todo.attrs.content ]
 
