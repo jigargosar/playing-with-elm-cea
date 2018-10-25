@@ -20,6 +20,7 @@ import Dict exposing (Dict)
 import IdX
 import Json.Decode as D exposing (Decoder, decodeValue)
 import Json.Encode as E exposing (Value)
+import Log
 import Random exposing (Generator, Seed)
 import Task exposing (Task)
 import Time
@@ -65,9 +66,9 @@ encode attrsEncoder model =
         ]
 
 
-load : Config msg attrs -> Value -> Result D.Error (Model attrs)
+load : Config msg attrs -> Value -> Result Log.Messages (Model attrs)
 load config =
-    decodeValue (decoder config.decoder)
+    decodeValue (decoder config.decoder) >> Result.mapError (D.errorToString >> List.singleton)
 
 
 loadWithDefaultEmpty config =
