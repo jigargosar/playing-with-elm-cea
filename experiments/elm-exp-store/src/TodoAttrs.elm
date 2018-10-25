@@ -50,3 +50,9 @@ update message model =
 
         SetContent newContent ->
             maybeBool (model.content /= newContent) { model | content = newContent }
+
+
+todoStoreConfig : Store.Config Msg TodoAttrs
+todoStoreConfig =
+    { update = update
+    }

@@ -1,5 +1,6 @@
 module Store exposing
-    ( Exit(..)
+    ( Config
+    , Exit(..)
     , Id
     , Item
     , Msg
@@ -109,6 +110,10 @@ modifyItemWithId id updateAttrFn =
             )
         >> Maybe.map UpdateModifiedAtOnAttributeChange
         >> Maybe.withDefault NoOp
+
+
+type alias Config msg attrs =
+    { update : msg -> attrs -> Maybe attrs }
 
 
 update : Msg attrs -> Model attrs -> Step (Model attrs) (Msg attrs) (Exit attrs)
