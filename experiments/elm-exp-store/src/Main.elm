@@ -19,6 +19,7 @@ import Port
 import Random
 import Store exposing (Item, Store)
 import Task
+import Toasty
 import Todo exposing (TodoAttrs, TodoStore)
 import UI exposing (..)
 import Update2
@@ -38,6 +39,7 @@ type Mode
 
 type alias Model =
     { magicMenu : MagicMenu
+    , toasties : Toasty.Stack Log.Messages
     , todoStore : TodoStore
     , mode : Mode
     }
@@ -59,6 +61,7 @@ init flags =
     in
     pure
         { magicMenu = MagicMenu.initial
+        , toasties = Toasty.initialState
         , todoStore = todoStore
         , mode = ListTodoMode
         }
@@ -80,6 +83,7 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Messages
+    | ToastyMsg (Toasty.Msg Log.Messages)
     | SetMode Mode
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
@@ -139,6 +143,10 @@ update message model =
 
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
+                |> Toasty.addToast Toasty.config ToastyMsg logMessages
+
+        ToastyMsg msg ->
+            Toasty.update Toasty.config ToastyMsg msg model
 
         FocusDomId domId ->
             ( model
