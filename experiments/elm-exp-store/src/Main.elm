@@ -18,7 +18,7 @@ import Port
 import Random
 import Store exposing (Item, Store)
 import Task
-import TodoAttrs exposing (TodoAttrs, TodoStore)
+import Todo exposing (TodoAttrs, TodoStore)
 import UI exposing (..)
 import Update2
 import Update3
@@ -32,7 +32,7 @@ import WheelEvent exposing (WheelEvent)
 
 type Mode
     = ListTodoMode
-    | EditContentMode Store.Id TodoAttrs.Content
+    | EditContentMode Store.Id Todo.Content
 
 
 type alias Model =
@@ -62,7 +62,7 @@ type alias Flags =
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( { magicMenu = MagicMenu.initial
-      , todoStore = flags.todos |> Store.loadWithDefaultEmpty TodoAttrs.storeConfig
+      , todoStore = flags.todos |> Store.loadWithDefaultEmpty Todo.storeConfig
       , mode = ListTodoMode
       }
     , Cmd.none
@@ -80,7 +80,7 @@ type Msg
     | MagicMenuMsg MagicMenu.Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)
     | AddClicked
-    | ContentChanged TodoAttrs.Content
+    | ContentChanged Todo.Content
     | EndEditMode
 
 
@@ -101,7 +101,7 @@ handleTodoStoreMsg msg model =
         .todoStore
         (\sub m -> { m | todoStore = sub })
         TodoStoreMsg
-        (Store.update TodoAttrs.storeConfig)
+        (Store.update Todo.storeConfig)
         msg
         model
         |> foldlOutMsgList handleTodStoreOutMsg
@@ -152,16 +152,16 @@ update message model =
             handleTodoStoreMsg msg model
 
         AddClicked ->
-            update (TodoStoreMsg <| Store.createAndInsert TodoAttrs.defaultValue) model
+            update (TodoStoreMsg <| Store.createAndInsert Todo.defaultValue) model
 
         ContentChanged newContent ->
             case model.mode of
                 EditContentMode id _ ->
                     update
                         (TodoStoreMsg <|
-                            Store.updateItem TodoAttrs.storeConfig
+                            Store.updateItem Todo.storeConfig
                                 id
-                                (TodoAttrs.SetContent newContent)
+                                (Todo.SetContent newContent)
                                 model.todoStore
                         )
                         model

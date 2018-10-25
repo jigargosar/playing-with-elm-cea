@@ -1,4 +1,4 @@
-module TodoAttrs exposing
+module Todo exposing
     ( Content
     , Msg(..)
     , TodoAttrs
