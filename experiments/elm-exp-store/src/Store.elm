@@ -9,6 +9,7 @@ module Store exposing
     , initEmpty
     , insert
     , load
+    , loadWithDefaultEmpty
     , modifyItemWithId
     , toIdItemPairList
     , update
@@ -67,6 +68,10 @@ encode attrsEncoder model =
 load : Config msg attrs -> Value -> Result D.Error (Model attrs)
 load config =
     decodeValue (decoder config.decoder)
+
+
+loadWithDefaultEmpty config =
+    load config >> Result.withDefault initEmpty
 
 
 insert : Item attrs -> Model attrs -> ( Item attrs, Model attrs )

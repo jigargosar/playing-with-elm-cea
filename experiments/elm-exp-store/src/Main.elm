@@ -58,10 +58,7 @@ type alias Flags =
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( { magicMenu = MagicMenu.initial
-      , todoStore =
-            flags.todos
-                |> Store.load TodoAttrs.storeConfig
-                >> Result.withDefault Store.initEmpty
+      , todoStore = flags.todos |> Store.loadWithDefaultEmpty TodoAttrs.storeConfig
       , mode = ListTodoMode
       }
     , Cmd.none
