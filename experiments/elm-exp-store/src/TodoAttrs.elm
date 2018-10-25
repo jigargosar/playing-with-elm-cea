@@ -39,16 +39,6 @@ type Msg
     | SetContent Content
 
 
-update : Msg -> TodoAttrs -> Maybe TodoAttrs
-update message model =
-    case message of
-        NoOp ->
-            Nothing
-
-        SetContent newContent ->
-            maybeBool (model.content /= newContent) { model | content = newContent }
-
-
 storeConfig : Store.Config Msg TodoAttrs
 storeConfig =
     let
@@ -61,6 +51,15 @@ storeConfig =
             E.object
                 [ ( "content", E.string model.content )
                 ]
+
+        update : Msg -> TodoAttrs -> Maybe TodoAttrs
+        update message model =
+            case message of
+                NoOp ->
+                    Nothing
+
+                SetContent newContent ->
+                    maybeBool (model.content /= newContent) { model | content = newContent }
     in
     { update = update
     , encoder = encoder
