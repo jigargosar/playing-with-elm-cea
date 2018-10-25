@@ -1,11 +1,11 @@
-module UpdateReturn exposing (andThen2, pure)
+module UpdateReturn exposing (andThen, pure)
 
 
 pure model =
     ( model, Cmd.none )
 
 
-andThen2 f ( m1, c1 ) =
+andThen f ( m1, c1 ) =
     let
         ( m2, c2 ) =
             f m1

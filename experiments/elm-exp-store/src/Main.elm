@@ -22,7 +22,7 @@ import TodoAttrs exposing (TodoAttrs)
 import UI exposing (..)
 import Update2
 import Update3
-import UpdateReturn exposing (andThen2, pure)
+import UpdateReturn exposing (andThen, pure)
 import WheelEvent exposing (WheelEvent)
 
 
@@ -114,7 +114,7 @@ handleTodoStoreOutMsg outMsg model =
 
         Store.NewInsertedOutMsg newTodo ->
             update (SetMode <| editContentMode newTodo) model
-                |> andThen2 (update <| FocusDomId newTodoInputDomId)
+                |> andThen (update <| FocusDomId newTodoInputDomId)
 
         Store.ItemModifiedOutMsg updatedTodo ->
             let
