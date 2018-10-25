@@ -69,7 +69,7 @@ init flags =
 type Msg
     = NoOp
     | MagicMenuMsg MagicMenu.Msg
-    | TSMsg (Store.Msg TodoAttrs)
+    | TodoStoreMsg (Store.Msg TodoAttrs)
     | AddClicked
     | ContentChanged TodoAttrs.Content
     | EndEditMode
@@ -93,9 +93,9 @@ update message model =
             MagicMenu.update msg model.magicMenu
                 |> Step.within (\w -> { model | magicMenu = w }) MagicMenuMsg
 
-        TSMsg msg ->
+        TodoStoreMsg msg ->
             Store.update msg model.todoStore
-                |> Step.within (\w -> { model | todoStore = w }) TSMsg
+                |> Step.within (\w -> { model | todoStore = w }) TodoStoreMsg
                 |> Step.onExit
                     (\exit ->
                         case exit of
@@ -121,13 +121,13 @@ update message model =
                     )
 
         AddClicked ->
-            update (TSMsg <| Store.createAndInsert TodoAttrs.defaultValue) model
+            update (TodoStoreMsg <| Store.createAndInsert TodoAttrs.defaultValue) model
 
         ContentChanged newContent ->
             case model.mode of
                 EditContentMode id _ ->
                     update
-                        (TSMsg <|
+                        (TodoStoreMsg <|
                             Store.updateItem TodoAttrs.storeConfig
                                 id
                                 (TodoAttrs.SetContent newContent)
