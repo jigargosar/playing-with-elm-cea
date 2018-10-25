@@ -137,13 +137,13 @@ type alias Config msg attrs =
     { update : msg -> attrs -> Maybe attrs
     , encoder : Encoder attrs
     , decoder : Decoder attrs
-    , toCacheCmd : Value -> Cmd msg
+    , toCacheCmd : Value -> Cmd (Msg attrs)
     , defaultValue : attrs
     }
 
 
-update : Msg attrs -> Model attrs -> ( Model attrs, Cmd (Msg attrs), OutMsg attrs )
-update message model =
+update : Config msg attrs -> Msg attrs -> Model attrs -> ( Model attrs, Cmd (Msg attrs), OutMsg attrs )
+update config message model =
     case message of
         NoOp ->
             pure model |> withNoOutMsg
@@ -164,8 +164,11 @@ update message model =
             let
                 newItem =
                     Item meta attrs
+
+                newModel =
+                    insert newItem model
             in
-            pure (insert newItem model) |> addOutMsg (InsertedOutMsg newItem)
+            ( newModel, config.toCacheCmd <| encode config.encoder newModel ) |> addOutMsg (InsertedOutMsg newItem)
 
         InsertModified item ->
             ( model

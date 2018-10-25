@@ -104,7 +104,7 @@ handleTodoStoreMsg =
     Update3.lift .todoStore
         (\sub m -> { m | todoStore = sub })
         TodoStoreMsg
-        Store.update
+        (Store.update TodoAttrs.storeConfig)
 
 
 handleTodoStoreOutMsg outMsg model =
