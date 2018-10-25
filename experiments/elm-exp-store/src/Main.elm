@@ -6,6 +6,7 @@ import Browser.Dom
 import Browser.Events
 import Dict
 import FeatherIcons
+import HotKey
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -66,11 +67,12 @@ init flags =
 
 
 type Msg
-    = Stay
+    = NoOp
     | MagicMenuMsg MagicMenu.Msg
     | TSMsg (Store.Msg TodoAttrs)
     | AddClicked
     | ContentChanged TodoAttrs.Content
+    | EndEditMode
 
 
 
@@ -84,7 +86,7 @@ editContentMode todo =
 update : Msg -> Model -> Step Model Msg a
 update message model =
     case message of
-        Stay ->
+        NoOp ->
             Step.stay
 
         MagicMenuMsg msg ->
@@ -136,10 +138,18 @@ update message model =
                 ListTodoMode ->
                     Step.stay
 
+        EndEditMode ->
+            case model.mode of
+                EditContentMode id _ ->
+                    Step.to { model | mode = ListTodoMode }
+
+                ListTodoMode ->
+                    Step.stay
+
 
 focusId domId =
     Browser.Dom.focus domId
-        |> Step.attempt (\_ -> Stay)
+        |> Step.attempt (\_ -> NoOp)
 
 
 
@@ -208,6 +218,18 @@ viewNewTodoModal todoId content =
                     , class "flex-auto pa3"
                     , value content
                     , onInput ContentChanged
+                    , Html.Events.on "keydown"
+                        (D.map
+                            (\ke ->
+                                case ke of
+                                    ( [], "Enter" ) ->
+                                        EndEditMode
+
+                                    _ ->
+                                        NoOp
+                            )
+                            HotKey.decoder
+                        )
                     ]
                     []
                 ]
