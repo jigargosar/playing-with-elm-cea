@@ -45,6 +45,11 @@ type alias Model =
     }
 
 
+setMagicMenu : MagicMenu -> Model -> Model
+setMagicMenu magicMenu model =
+    { model | magicMenu = magicMenu }
+
+
 type alias Mills =
     Int
 
@@ -93,7 +98,7 @@ update message model =
         MagicMenuMsg msg ->
             Update2.lift
                 .magicMenu
-                (\magicMenu model_ -> { model_ | magicMenu = magicMenu })
+                setMagicMenu
                 MagicMenuMsg
                 MagicMenu.update
                 msg
