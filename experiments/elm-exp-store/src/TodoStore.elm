@@ -19,5 +19,3 @@ load : Value -> TodoStore
 load =
     Store.load Todo.decoder
         >> Result.withDefault Store.initEmpty
-        >> Store.insert ( "1", Todo.init "Foo Bar" |> Store.Item.init )
-        >> Store.insert ( "2", Todo.init "Mr. Can Do" |> Store.Item.init )

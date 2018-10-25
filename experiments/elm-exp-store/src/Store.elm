@@ -54,13 +54,13 @@ init dict =
 decoder : Decoder attrs -> Decoder (Model attrs)
 decoder attrsDecoder =
     D.map init
-        (D.dict (Item.decoder attrsDecoder))
+        (D.dict (Item.itemDecoder attrsDecoder))
 
 
 encode : Encoder attrs -> Encoder (Model attrs)
 encode attrsEncoder model =
     E.object
-        [ ( "dict", E.dict identity (Item.encoder attrsEncoder) model.dict )
+        [ ( "dict", E.dict identity (Item.itemEncoder attrsEncoder) model.dict )
         ]
 
 
@@ -81,7 +81,7 @@ toIdItemPairList =
 
 newItem : attrs -> Task x (Item attrs)
 newItem =
-    Item.new
+    Item.newItemTask
 
 
 type Msg attrs

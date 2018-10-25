@@ -1,4 +1,4 @@
-module Store.Item exposing (Item, Meta, Milli, decoder, encoder, init, new, setModifiedAt)
+module Store.Item exposing (Item, Meta, Milli, itemDecoder, itemEncoder, newItemTask, setModifiedAt)
 
 import BasicsX exposing (Encoder)
 import Json.Decode as D exposing (Decoder)
@@ -41,37 +41,30 @@ type alias Item attrs =
     }
 
 
-defaultMeta =
-    { createdAt = 0, modifiedAt = 0, deleted = False }
+
+initItem : attrs -> Milli -> Item attrs
+initItem attrs now =
+    { meta = {  createdAt = now, modifiedAt = now , deleted = False}, attrs = attrs }
 
 
-init attrs =
-    { meta = defaultMeta, attrs = attrs }
-
-
-initWithNow : attrs -> Milli -> Item attrs
-initWithNow attrs now =
-    { meta = { defaultMeta | createdAt = now, modifiedAt = now }, attrs = attrs }
-
-
-decoder : Decoder attrs -> Decoder (Item attrs)
-decoder attrsDecoder =
+itemDecoder : Decoder attrs -> Decoder (Item attrs)
+itemDecoder attrsDecoder =
     D.map2 Item
         (D.field "meta" metaDecoder)
         (D.field "attrs" attrsDecoder)
 
 
-encoder : Encoder attrs -> Encoder (Item attrs)
-encoder attrsEncoder model =
+itemEncoder : Encoder attrs -> Encoder (Item attrs)
+itemEncoder attrsEncoder model =
     E.object
         [ ( "meta", metaEncoder model.meta )
         , ( "attrs", attrsEncoder model.attrs )
         ]
 
 
-new : attrs -> Task x (Item attrs)
-new attrs =
-    Time.now |> Task.map (Time.posixToMillis >> initWithNow attrs)
+newItemTask : attrs -> Task x (Item attrs)
+newItemTask attrs =
+    Time.now |> Task.map (Time.posixToMillis >> initItem attrs)
 
 
 setModifiedAt model now =
