@@ -101,7 +101,8 @@ handleMagicMenuMessage =
 
 
 handleTodoStoreMsg msg model =
-    Update3.lift .todoStore
+    Update3.lift
+        .todoStore
         (\sub m -> { m | todoStore = sub })
         TodoStoreMsg
         (Store.update TodoAttrs.storeConfig)
