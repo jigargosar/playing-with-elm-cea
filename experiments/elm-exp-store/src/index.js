@@ -38,7 +38,7 @@ subscribe(
     warn: data => {
       console.warn(data)
     },
-    cacheTodoC: todos => {
+    cacheTodoStore: todos => {
       storageSet('todos', todos)
     },
     // focusSelector,

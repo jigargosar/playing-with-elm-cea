@@ -69,6 +69,6 @@ storeConfig =
     { update = update
     , encoder = encoder
     , decoder = decoder
-    , toCacheCmd = Port.cacheTodoC
+    , toCacheCmd = Port.cacheTodoStore
     , defaultValue = defaultValue
     }
