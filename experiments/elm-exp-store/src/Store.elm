@@ -8,7 +8,7 @@ module Store exposing
     , initEmpty
     , insert
     , load
-    , overItemAttrs
+    , modifyItemWithId
     , toIdItemPairList
     , update
     )
@@ -68,9 +68,9 @@ load =
     decoder >> decodeValue
 
 
-insert : Item attrs -> Model attrs -> Model attrs
+insert : Item attrs -> Model attrs -> ( Item attrs, Model attrs )
 insert item model =
-    { model | dict = Dict.insert item.meta.id item model.dict }
+    ( item, { model | dict = Dict.insert item.meta.id item model.dict } )
 
 
 toIdItemPairList : Model attrs -> List ( Id, Item attrs )
@@ -83,20 +83,20 @@ type Msg attrs
     | CreateAndInsert attrs
     | CreateAndInsertWithId attrs Id
     | CreateAndInsertWithMeta attrs Meta
-    | UpdateModifiedAtOnAttributeChange Id (Item attrs)
-    | ModifiedAtChanged Id (Item attrs)
+    | UpdateModifiedAtOnAttributeChange (Item attrs)
+    | ModifiedAtChanged (Item attrs)
 
 
 type Exit attrs
     = ExitNewInserted ( Item attrs, Model attrs )
-    | ExitItemUpdated ( Item attrs, Model attrs )
+    | ExitItemModified ( Item attrs, Model attrs )
 
 
 createAndInsert =
     CreateAndInsert
 
 
-overItemAttrs id updateAttrFn =
+modifyItemWithId id updateAttrFn =
     .dict
         >> Dict.get id
         >> Maybe.andThen
@@ -107,7 +107,7 @@ overItemAttrs id updateAttrFn =
                 in
                 maybeBool (item.attrs /= newAttrs) { item | attrs = newAttrs }
             )
-        >> Maybe.map (UpdateModifiedAtOnAttributeChange id)
+        >> Maybe.map UpdateModifiedAtOnAttributeChange
         >> Maybe.withDefault NoOp
 
 
@@ -137,18 +137,18 @@ update message model =
                 newId =
                     meta.id
             in
-            Step.exit (ExitNewInserted ( newItem, insert newItem model ))
+            Step.exit (ExitNewInserted (insert newItem model))
 
-        UpdateModifiedAtOnAttributeChange id item ->
+        UpdateModifiedAtOnAttributeChange item ->
             Step.to model
                 |> Step.withCmd
                     (Time.now
                         |> Task.map (Time.posixToMillis >> setModifiedAt item)
-                        >> Task.perform (ModifiedAtChanged id)
+                        >> Task.perform ModifiedAtChanged
                     )
 
-        ModifiedAtChanged id item ->
-            Step.exit (ExitItemUpdated ( item, insert item model ))
+        ModifiedAtChanged item ->
+            Step.exit (ExitItemModified (insert item model))
 
 
 
