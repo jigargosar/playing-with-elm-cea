@@ -171,15 +171,10 @@ update message model =
             pure (insert newItem model) |> Update3.addOutMsg (NewInsertedOutMsg newItem)
 
         UpdateModifiedAtOnAttributeChange item ->
-            let
-                cc : Cmd (Msg attrs)
-                cc =
-                    Time.now
-                        |> Task.map (Time.posixToMillis >> setModifiedAt item)
-                        >> Task.perform ModifiedAtChanged
-            in
             ( model
-            , cc
+            , Time.now
+                |> Task.map (Time.posixToMillis >> setModifiedAt item)
+                >> Task.perform ModifiedAtChanged
             , NoOutMsg
             )
 
