@@ -1,6 +1,6 @@
 module MagicMenu exposing (Action, Actions, MagicMenu, Msg, initial, subscriptions, update, view)
 
-import BasicsX exposing (flip, ter, unpackResult)
+import BasicsX exposing (flip, ter, unpackResult, unwrapDecodeResult)
 import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -70,9 +70,8 @@ update message model =
                     update msg model
             in
             D.decodeValue WheelEvent.decoder encoded
-                |> unpackResult
-                    (updateMsg << Warn << List.singleton << D.errorToString)
-                    (updateMsg << UpdateVisibilityFromWheelEvent)
+                |> unwrapDecodeResult Warn UpdateVisibilityFromWheelEvent
+                |> updateMsg
 
         UpdateVisibilityFromWheelEvent { deltaY } ->
             update NoOp { model | hidden = deltaY > 0 }

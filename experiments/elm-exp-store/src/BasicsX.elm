@@ -10,12 +10,14 @@ module BasicsX exposing
     , tsDecoder
     , unless
     , unpackResult
+    , unwrapDecodeResult
     , unwrapMaybe
     , when
     )
 
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E exposing (Value)
+import Log
 
 
 ter b t f =
@@ -65,6 +67,16 @@ unpackResult errFn okFn result =
 
         Err error ->
             errFn error
+
+
+unwrapDecodeResult : (Log.Messages -> c) -> (a -> c) -> Result D.Error a -> c
+unwrapDecodeResult errFn okFn result =
+    case result of
+        Ok answer ->
+            okFn answer
+
+        Err error ->
+            errFn (error |> D.errorToString >> List.singleton)
 
 
 flip fn a b =
