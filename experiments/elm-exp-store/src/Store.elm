@@ -13,6 +13,7 @@ module Store exposing
     , modifyItemWithId
     , toIdItemPairList
     , update
+    , updateItem
     )
 
 import BasicsX exposing (Encoder, mapMaybeWithDefault, maybeBool)

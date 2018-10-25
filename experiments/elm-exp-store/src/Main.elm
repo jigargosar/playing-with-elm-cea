@@ -126,7 +126,10 @@ update message model =
                 EditContentMode id _ ->
                     update
                         (TSMsg <|
-                            Store.modifyItemWithId id (TodoAttrs.setContent newContent) model.todoStore
+                            Store.updateItem TodoAttrs.storeConfig
+                                id
+                                (TodoAttrs.SetContent newContent)
+                                model.todoStore
                         )
                         model
 
