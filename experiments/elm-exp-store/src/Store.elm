@@ -145,8 +145,7 @@ update : Msg attrs -> Model attrs -> ( Model attrs, Cmd (Msg attrs), OutMsg attr
 update message model =
     case message of
         NoOp ->
-            pure model
-                |> withNoOutMsg
+            pure model |> withNoOutMsg
 
         CreateAndInsert attrs ->
             ( model, Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator )
