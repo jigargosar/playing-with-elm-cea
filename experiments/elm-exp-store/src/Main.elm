@@ -160,7 +160,7 @@ update message model =
 
         TodoStoreMsg msg ->
             handleTodoStoreMsg msg model
-                |> Update3.eval (\out m -> pure m)
+                |> Update3.eval handleTodoStoreOutMsgList
 
         AddClicked ->
             update (TodoStoreMsg <| Store.createAndInsert TodoAttrs.defaultValue) model
