@@ -25,7 +25,7 @@ import Log
 import Random exposing (Generator, Seed)
 import Task exposing (Task)
 import Time
-import UpdateReturn exposing (andThen3, pure)
+import UpdateReturn exposing (andThen3, pure, pure3)
 
 
 type alias Id =
@@ -157,14 +157,13 @@ update : Config msg attrs -> Msg attrs -> Model attrs -> ( Model attrs, Cmd (Msg
 update config message model =
     case message of
         NoOp ->
-            pure model |> withNoOutMsg
+            pure3 model
 
         Cache ->
             ( model, config.toCacheCmd <| encode config.encoder model, [] )
 
         InsertItemAndCache item ->
-            pure (insert item model)
-                |> withNoOutMsg
+            pure3 (insert item model)
                 |> andThen3 (update config Cache)
 
         CreateAndInsert attrs ->
@@ -205,10 +204,6 @@ update config message model =
                     insert newItem model
             in
             ( newModel, config.toCacheCmd <| encode config.encoder newModel, [ ModifiedOutMsg newItem ] )
-
-
-withNoOutMsg ( m, c ) =
-    ( m, c, [] )
 
 
 
