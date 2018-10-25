@@ -7,10 +7,10 @@ module BasicsX exposing
     , mapMaybeWithDefault
     , maybeBool
     , optionalOr
-    , recoverErr
     , ter
     , tsDecoder
     , unless
+    , unpackResult
     , when
     )
 
@@ -58,7 +58,7 @@ mapMaybeWithDefault dv fn =
     Maybe.map fn >> Maybe.withDefault dv
 
 
-recoverErr errFn okFn result =
+unpackResult errFn okFn result =
     case result of
         Ok answer ->
             okFn answer

@@ -1,6 +1,6 @@
 module MagicMenu exposing (Action, Actions, MagicMenu, Msg, initial, subscriptions, update, view)
 
-import BasicsX exposing (flip, recoverErr, ter)
+import BasicsX exposing (flip, ter, unpackResult)
 import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -70,7 +70,7 @@ update message model =
                     update msg model
             in
             D.decodeValue WheelEvent.decoder encoded
-                |> recoverErr
+                |> unpackResult
                     (updateMsg << Warn << List.singleton << D.errorToString)
                     (updateMsg << UpdateVisibilityFromWheelEvent)
 
