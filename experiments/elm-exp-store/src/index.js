@@ -32,9 +32,9 @@ window.addEventListener('wheel', function(e) {
 
 subscribe(
   {
-    logS: data => {
-      console.warn(data)
-    },
+    // logS: data => {
+    //   console.warn(data)
+    // },
     warn: data => {
       console.warn(data)
     },
