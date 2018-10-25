@@ -40,7 +40,7 @@ type Mode
 
 type alias Model =
     { magicMenu : MagicMenu
-    , toasties : Toasty.Stack Log.Messages
+    , toasties : Toasty.Stack Log.Line
     , todoStore : TodoStore
     , mode : Mode
     }
@@ -83,8 +83,8 @@ andThenUpdate msg =
 
 type Msg
     = NoOp
-    | Warn Log.Messages
-    | ToastyMsg (Toasty.Msg Log.Messages)
+    | Warn Log.Line
+    | ToastyMsg (Toasty.Msg Log.Line)
     | SetMode Mode
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
@@ -240,7 +240,7 @@ view model =
         ]
 
 
-renderToast : Log.Messages -> Html Msg
+renderToast : Log.Line -> Html Msg
 renderToast toast =
     div [] [ text (toast |> String.join " ") ]
 

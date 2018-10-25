@@ -67,7 +67,7 @@ encode attrsEncoder model =
         ]
 
 
-load : Config msg attrs -> Value -> ( Maybe Log.Messages, Model attrs )
+load : Config msg attrs -> Value -> ( Maybe Log.Line, Model attrs )
 load config =
     decodeValue (storeDecoder config.decoder)
         >> (\result ->

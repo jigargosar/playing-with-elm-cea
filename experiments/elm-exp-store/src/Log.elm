@@ -1,17 +1,17 @@
-module Log exposing (Messages, Result, resultWithDefault, warn)
+module Log exposing (Line, Result, resultWithDefault, warn)
 
 import Port
 
 
-type alias Messages =
+type alias Line =
     List String
 
 
 type alias Result a =
-    Result.Result Messages a
+    Result.Result Line a
 
 
-warn : String -> Messages -> Cmd msg
+warn : String -> Line -> Cmd msg
 warn moduleName =
     (::) moduleName >> Port.warn
 

@@ -34,7 +34,7 @@ initial =
 
 type Msg
     = NoOp
-    | Warn Log.Messages
+    | Warn Log.Line
     | WheelEvent E.Value
     | ToggleOpen
     | Clicked

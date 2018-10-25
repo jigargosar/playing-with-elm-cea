@@ -70,7 +70,7 @@ unpackResult errFn okFn result =
             errFn error
 
 
-unwrapDecodeResult : (Log.Messages -> c) -> (a -> c) -> Result D.Error a -> c
+unwrapDecodeResult : (Log.Line -> c) -> (a -> c) -> Result D.Error a -> c
 unwrapDecodeResult errFn okFn result =
     case result of
         Ok answer ->
