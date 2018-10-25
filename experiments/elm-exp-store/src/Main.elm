@@ -94,6 +94,10 @@ editContentMode todo =
     EditContentMode todo.meta.id todo.attrs.content
 
 
+handleMagicMenuMessage =
+    Update2.lift getMagicMenu setMagicMenu MagicMenuMsg MagicMenu.update
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -101,7 +105,7 @@ update message model =
             ( model, Cmd.none )
 
         MagicMenuMsg msg ->
-            Update2.lift getMagicMenu setMagicMenu MagicMenuMsg MagicMenu.update msg model
+            handleMagicMenuMessage msg model
 
         TodoStoreMsg msg ->
             Store.update msg model.todoStore
