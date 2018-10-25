@@ -74,8 +74,16 @@ init flags =
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
 
 
+editContentMode todo =
+    EditContentMode todo.meta.id todo.attrs.content
+
+
 
 ---- UPDATE ----
+
+
+andThenUpdate msg =
+    andThen (update msg)
 
 
 type Msg
@@ -88,14 +96,6 @@ type Msg
     | AddClicked
     | ContentChanged Todo.Content
     | EndEditMode
-
-
-
---    | TodosMsg Todos.Msg
-
-
-editContentMode todo =
-    EditContentMode todo.meta.id todo.attrs.content
 
 
 handleMagicMenuMessage =
@@ -189,10 +189,6 @@ update message model =
 
                 ListTodoMode ->
                     pure model
-
-
-andThenUpdate msg =
-    andThen (update msg)
 
 
 
