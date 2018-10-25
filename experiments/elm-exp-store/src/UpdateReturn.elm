@@ -22,7 +22,7 @@ addOutMsg =
 andThen3 f ( m1, c1, o1 ) =
     let
         ( m2, c2, o2 ) =
-            f o1 m1
+            f m1
     in
     ( m2, Cmd.batch [ c1, c2 ], o2 )
 

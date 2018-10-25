@@ -155,7 +155,8 @@ update config message model =
 
         InsertItemAndCache item ->
             pure (insert item model)
-                |> andThenAddOutMsg (update config Cache)
+                |> withNoOutMsg
+                |> andThen3 (update config Cache)
 
         CreateAndInsert attrs ->
             ( model, Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator )
