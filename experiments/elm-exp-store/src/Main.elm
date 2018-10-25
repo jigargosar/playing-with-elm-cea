@@ -22,7 +22,7 @@ import TodoAttrs exposing (TodoAttrs)
 import UI exposing (..)
 import Update2
 import Update3
-import UpdateReturn exposing (pure)
+import UpdateReturn exposing (andThen2, pure)
 import WheelEvent exposing (WheelEvent)
 
 
@@ -134,7 +134,7 @@ handleTodoStoreOutMsg outMsg model =
 
 
 andThenUpdate msg =
-    Update2.eval <| update msg
+    andThen2 <| update msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
