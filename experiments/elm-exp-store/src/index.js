@@ -1,5 +1,6 @@
 import 'tachyons'
 import './main.css'
+import './Toasty/Defaults.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
 import {
