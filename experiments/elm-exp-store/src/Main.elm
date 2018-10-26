@@ -258,7 +258,7 @@ renderToast toast =
 viewModal model =
     case model.mode of
         EditContentMode id content ->
-            viewNewTodoModal id content
+            viewEditContentModal id content
 
         ListTodoMode ->
             text ""
@@ -268,7 +268,7 @@ modalTodoInputDomId =
     "modal-todo-content-input"
 
 
-viewNewTodoModal todoId content =
+viewEditContentModal todoId content =
     backdrop []
         [ div
             [ class "bg-white br4 shadow-1 pa3 measure w-100"
@@ -284,6 +284,9 @@ viewNewTodoModal todoId content =
                             (\ke ->
                                 case ke of
                                     ( [], "Enter" ) ->
+                                        EndEditMode
+
+                                    ( [], "Escape" ) ->
                                         EndEditMode
 
                                     _ ->
