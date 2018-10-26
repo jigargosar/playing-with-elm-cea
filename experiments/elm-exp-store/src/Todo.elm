@@ -1,10 +1,12 @@
 module Todo exposing
     ( Content
+    , ListFilter(..)
     , Msg(..)
     , TodoAttrs
     , TodoItem
     , TodoStore
     , defaultValue
+    , matchesFilter
     , storeConfig
     )
 
@@ -13,6 +15,12 @@ import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
 import Port
 import Store exposing (Item, Store)
+
+
+type ListFilter
+    = Future
+    | Active
+    | Completed
 
 
 type alias Content =
@@ -73,3 +81,9 @@ storeConfig =
     , toCacheCmd = Port.cacheTodoStore
     , defaultValue = defaultValue
     }
+
+
+matchesFilter filter todo =
+    case filter of
+        _ ->
+            True

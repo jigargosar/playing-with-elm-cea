@@ -33,12 +33,6 @@ import WheelEvent exposing (WheelEvent)
 ---- MODEL ----
 
 
-type ListFilter
-    = Future
-    | Active
-    | Completed
-
-
 type Mode
     = ListTodoMode
     | EditContentMode Store.Id Todo.Content
@@ -49,7 +43,7 @@ type alias Model =
     , toasties : Toasty.Stack Log.Line
     , todoStore : TodoStore
     , mode : Mode
-    , listFilter : ListFilter
+    , listFilter : Todo.ListFilter
     }
 
 
@@ -72,7 +66,7 @@ init flags =
         , toasties = Toasty.initialState
         , todoStore = todoStore
         , mode = ListTodoMode
-        , listFilter = Active
+        , listFilter = Todo.Active
         }
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
 
@@ -305,15 +299,7 @@ viewNewTodoModal todoId content =
 
 
 filterTodoItem model todo =
-    case model.listFilter of
-        Future ->
-            True
-
-        Active ->
-            True
-
-        Completed ->
-            True
+    Todo.matchesFilter model.listFilter todo
 
 
 viewTodoList : Model -> Html Msg
