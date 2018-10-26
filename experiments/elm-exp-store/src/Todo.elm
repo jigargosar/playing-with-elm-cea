@@ -82,7 +82,7 @@ storeConfig =
                     maybeBool (model.content /= newContent) { model | content = newContent }
 
                 SetScheduledAt newScheduledAt ->
-                    maybeBool (model.scheduledAt /= newScheduledAt) { model | content = newScheduledAt }
+                    maybeBool (model.scheduledAt /= newScheduledAt) { model | scheduledAt = newScheduledAt }
 
                 MarkCompleted ->
                     maybeBool (not model.completed) { model | completed = True }
