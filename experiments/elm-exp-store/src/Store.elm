@@ -98,7 +98,7 @@ type Msg attrs
     = NoOp
     | Cache
     | ResetCache
-    | InsertItemAndUpdateCacheWithOutMsg (ItemOutMsg attrs) (Item attrs)
+    | UpsertItemAndUpdateCacheWithOutMsg (ItemOutMsg attrs) (Item attrs)
     | CreateAndInsert attrs
     | CreateAndInsertWithId attrs Id
     | UpdateModifiedAt (Item attrs)
@@ -165,7 +165,7 @@ update config message model =
         ResetCache ->
             ( initEmpty, toCacheCmd config initEmpty, [] )
 
-        InsertItemAndUpdateCacheWithOutMsg outMsg item ->
+        UpsertItemAndUpdateCacheWithOutMsg outMsg item ->
             pure3 (insert item model)
                 |> andThen3 (update config Cache)
                 |> addOutMsg3 (outMsg item)
@@ -176,13 +176,13 @@ update config message model =
         CreateAndInsertWithId attrs id ->
             pure3 model
                 |> perform3
-                    (InsertItemAndUpdateCacheWithOutMsg InsertedOutMsg)
+                    (UpsertItemAndUpdateCacheWithOutMsg InsertedOutMsg)
                     (initItemWithNowTask attrs id)
 
         UpdateModifiedAt item ->
             pure3 model
                 |> perform3
-                    (InsertItemAndUpdateCacheWithOutMsg ModifiedOutMsg)
+                    (UpsertItemAndUpdateCacheWithOutMsg ModifiedOutMsg)
                     (setModifiedAtToNowTask item)
 
 
