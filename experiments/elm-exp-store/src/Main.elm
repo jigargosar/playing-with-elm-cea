@@ -251,6 +251,13 @@ view model =
     let
         onClickSetFilter =
             onClick << SetListFilter
+
+        filterBtn filter label =
+            button
+                [ onClickSetFilter filter
+                , classList [ ( "bb", filter == model.listFilter ) ]
+                ]
+                [ text label ]
     in
     UI.root
         [ viewToolbar model
@@ -258,9 +265,9 @@ view model =
             [ row ""
                 []
                 [ button [ onClick AddClicked ] [ text "add" ]
-                , button [ onClickSetFilter Todo.Future ] [ text "Future" ]
-                , button [ onClickSetFilter Todo.Active ] [ text "Active" ]
-                , button [ onClickSetFilter Todo.Completed ] [ text "Completed" ]
+                , filterBtn Todo.Future "Future"
+                , filterBtn Todo.Active "Active"
+                , filterBtn Todo.Completed "Completed"
                 ]
             , viewTodoList model
             ]
