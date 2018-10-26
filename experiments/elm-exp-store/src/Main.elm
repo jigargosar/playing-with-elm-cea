@@ -357,11 +357,29 @@ viewTodoList model =
         todoList =
             model.todoStore
                 |> Store.items
+
+        viewPrimaryListKeyed =
+            todoList
                 |> List.filter (ListFilter.matchesSelectedIn model.listFilter)
                 |> List.sortBy Store.itemCreatedAt
                 |> List.map (\todo -> ( todo.meta.id, viewTodoItem model todo ))
+
+        secondaryList =
+            todoList
+                |> List.filter (ListFilter.matchesSelectedWithReferenceTimeIn model.listFilter model.lastTickAt)
+
+        secondaryListLength =
+            List.length secondaryList
+
+        viewSecondaryListKeyed =
+            secondaryList
+                |> List.sortBy Todo.scheduledAt
+                |> List.map (\todo -> ( todo.meta.id, viewTodoItem model todo ))
     in
-    Html.Keyed.node "div" [ class "w-100 measure-wide items-center" ] todoList
+    div [ class "w-100 measure-wide" ]
+        [ row "justify-center" [] [ txt "more", txt <| String.fromInt secondaryListLength ]
+        , Html.Keyed.node "div" [] viewPrimaryListKeyed
+        ]
 
 
 type alias TodoView msg =

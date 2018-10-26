@@ -8,6 +8,9 @@ module Todo exposing
     , defaultValue
     , isCompleted
     , isScheduledAfter
+    , isScheduledBefore
+    , isScheduledBetween
+    , scheduledAt
     , storeConfig
     )
 
@@ -99,4 +102,16 @@ content =
 
 
 isScheduledAfter now =
-    itemAttrs >> .scheduledAt >> (<) now
+    scheduledAt >> (<) now
+
+
+isScheduledBefore now =
+    scheduledAt >> (>) now
+
+
+isScheduledBetween a b item =
+    scheduledAt item <= a && scheduledAt item <= b
+
+
+scheduledAt =
+    itemAttrs >> .scheduledAt

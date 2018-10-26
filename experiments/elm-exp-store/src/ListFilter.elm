@@ -5,6 +5,7 @@ module ListFilter exposing
     , init
     , isSelected
     , matchesSelectedIn
+    , matchesSelectedWithReferenceTimeIn
     , update
     )
 
@@ -47,6 +48,25 @@ matchesSelectedIn { selected, modifiedAt } todo =
 
         Completed ->
             completed
+
+
+matchesSelectedWithReferenceTimeIn : Model -> Int -> TodoItem -> Bool
+matchesSelectedWithReferenceTimeIn { selected, modifiedAt } referenceTime todo =
+    let
+        completed =
+            Todo.isCompleted todo
+    in
+    case selected of
+        Future ->
+            False
+
+        Active ->
+            not completed
+                && Todo.isScheduledAfter modifiedAt todo
+                && Todo.isScheduledBefore referenceTime todo
+
+        Completed ->
+            False
 
 
 
