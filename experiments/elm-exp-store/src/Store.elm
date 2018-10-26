@@ -26,7 +26,7 @@ import Log
 import Random exposing (Generator, Seed)
 import Task exposing (Task)
 import Time
-import UpdateReturn exposing (addCmd3, addOutMsg3, andThen3, perform3, pure, pure3)
+import UpdateReturn exposing (addCmd3, addOutMsg3, andThen3, generate3, perform3, pure, pure3)
 
 
 type alias Id =
@@ -171,7 +171,8 @@ update config message model =
                 |> addOutMsg3 (outMsg item)
 
         InsertNew attrs ->
-            ( model, Random.generate (InsertNewWithId attrs) IdX.stringIdGenerator, [] )
+            pure3 model
+                |> generate3 (InsertNewWithId attrs) IdX.stringIdGenerator
 
         InsertNewWithId attrs id ->
             pure3 model

@@ -1,5 +1,16 @@
-module UpdateReturn exposing (addCmd3, addOutMsg3, andThen, andThen3, foldlOutMsgList, perform3, pure, pure3)
+module UpdateReturn exposing
+    ( addCmd3
+    , addOutMsg3
+    , andThen
+    , andThen3
+    , foldlOutMsgList
+    , generate3
+    , perform3
+    , pure
+    , pure3
+    )
 
+import Random
 import Task
 import Update3
 
@@ -36,8 +47,12 @@ addCmd3 c2 ( m1, c1, o1 ) =
     ( m1, Cmd.batch [ c1, c2 ], o1 )
 
 
-perform3 msg =
-    Task.perform msg >> addCmd3
+perform3 toMsg =
+    Task.perform toMsg >> addCmd3
+
+
+generate3 toMsg =
+    Random.generate toMsg >> addCmd3
 
 
 foldlOutMsgList outMsgHandler =
