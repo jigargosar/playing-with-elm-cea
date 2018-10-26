@@ -276,9 +276,9 @@ view model =
                 ]
             , viewTodoList model
             ]
-        , viewModal model
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
+        , viewModal model
         , Toasty.view Toasty.config renderToast ToastyMsg model.toasties
         ]
 
