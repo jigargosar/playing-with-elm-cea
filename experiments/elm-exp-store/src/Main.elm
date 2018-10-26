@@ -372,7 +372,9 @@ viewTodoList model =
             List.length secondaryList
 
         viewMore =
-            row "justify-center" [] [ txt "more", txt <| String.fromInt secondaryListLength ]
+            row "justify-center pointer"
+                [ onClick <| ListFilterMsg ListFilter.UpdateModifiedAtToNow ]
+                [ txt "more", txt <| String.fromInt secondaryListLength ]
     in
     div [ class "w-100 measure-wide" ]
         [ boolHtml (secondaryListLength > 0) viewMore

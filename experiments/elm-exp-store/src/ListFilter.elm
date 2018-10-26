@@ -83,6 +83,7 @@ type Msg
     = NoOp
     | SwitchFilterTo Filter
     | SwitchFilterToWithNow Filter Int
+    | UpdateModifiedAtToNow
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -97,3 +98,7 @@ update message model =
 
         SwitchFilterToWithNow newFilter now ->
             pure { model | selected = newFilter, modifiedAt = now }
+
+        UpdateModifiedAtToNow ->
+            pure model
+                |> performWithNow (SwitchFilterToWithNow model.selected)
