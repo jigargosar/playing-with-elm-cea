@@ -343,7 +343,7 @@ viewEditContentModal todoId content =
 
 
 filterTodoItem model todo =
-    Todo.matchesFilter model.listFilter todo
+    Todo.matchesFilter model.lastTickAt model.listFilter todo
 
 
 viewTodoList : Model -> Html Msg

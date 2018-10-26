@@ -1,5 +1,6 @@
 module BasicsX exposing
     ( Encoder
+    , applyTo
     , defaultEmptyStringTo
     , eq0
     , eqs
@@ -28,6 +29,10 @@ ter b t f =
 
     else
         f
+
+
+applyTo a fn =
+    fn a
 
 
 ifElse b t f v =

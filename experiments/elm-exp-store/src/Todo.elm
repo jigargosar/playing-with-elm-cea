@@ -12,7 +12,7 @@ module Todo exposing
     , storeConfig
     )
 
-import BasicsX exposing (Encoder, maybeBool)
+import BasicsX exposing (Encoder, applyTo, flip, maybeBool)
 import JsonCodec as JC exposing (Codec)
 import Port
 import Store exposing (Item, Store, itemAttrs)
@@ -97,17 +97,17 @@ storeConfig =
     }
 
 
-matchesFilter : ListFilter -> TodoItem -> Bool
-matchesFilter filter todo =
+matchesFilter : Int -> ListFilter -> TodoItem -> Bool
+matchesFilter now filter =
     case filter of
         Future ->
-            True
+            flip List.all [ isActive, isScheduledAfter now ] << applyTo
 
         Active ->
-            isActive todo
+            isActive
 
         Completed ->
-            isCompleted todo
+            isCompleted
 
 
 isCompleted =
@@ -120,3 +120,7 @@ isActive =
 
 content =
     itemAttrs >> .content
+
+
+isScheduledAfter now =
+    itemAttrs >> .scheduledAt >> (<) now
