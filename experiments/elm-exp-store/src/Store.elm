@@ -201,7 +201,8 @@ update config message model =
 
         UpdateModifiedAt item ->
             pure3 model
-                |> perform3 (InsertItemAndUpdateCacheWithOutMsg ModifiedOutMsg)
+                |> perform3
+                    (InsertItemAndUpdateCacheWithOutMsg ModifiedOutMsg)
                     (setModifiedAtToNowTask item)
 
 
