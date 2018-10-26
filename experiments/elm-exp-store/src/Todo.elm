@@ -98,24 +98,27 @@ storeConfig =
 
 
 matchesFilter : Int -> ListFilter -> TodoItem -> Bool
-matchesFilter now filter =
+matchesFilter now filter todo =
+    let
+        completed =
+            isCompleted todo
+
+        inFuture =
+            isScheduledAfter now todo
+    in
     case filter of
         Future ->
-            flip List.all [ isActive, isScheduledAfter now ] << applyTo
+            not completed && inFuture
 
         Active ->
-            isActive
+            not completed && not inFuture
 
         Completed ->
-            isCompleted
+            completed
 
 
 isCompleted =
     itemAttrs >> .completed
-
-
-isActive =
-    isCompleted >> not
 
 
 content =

@@ -354,29 +354,35 @@ viewTodoList model =
                 |> Store.toPairs
                 |> List.filter (Tuple.second >> filterTodoItem model)
                 |> List.sortBy (Tuple.second >> Store.itemCreatedAt)
-                |> List.map (Tuple.mapSecond viewTodoItem)
+                |> List.map (Tuple.mapSecond <| viewTodoItem model)
     in
     Html.Keyed.node "div" [ class "w-100 measure-wide items-center" ] todoList
 
 
 type alias TodoView msg =
-    { content : String, isCompleted : Bool, editContentMsg : msg, updateMsg : Todo.Msg -> msg }
+    { content : String
+    , isCompleted : Bool
+    , editContentMsg : msg
+    , updateMsg : Todo.Msg -> msg
+    , now : Int
+    }
 
 
-todoView : TodoItem -> TodoView Msg
-todoView todo =
+todoView : Model -> TodoItem -> TodoView Msg
+todoView model todo =
     TodoView
         (defaultEmptyStringTo "<empty>" <| Todo.content todo)
         (Todo.isCompleted todo)
         (EditClicked todo)
         (UpdateTodoId todo.meta.id)
+        model.lastTickAt
 
 
-viewTodoItem : Store.Item TodoAttrs -> Html Msg
-viewTodoItem todo =
+viewTodoItem : Model -> Store.Item TodoAttrs -> Html Msg
+viewTodoItem model todo =
     let
         vm =
-            todoView todo
+            todoView model todo
     in
     div
         [ class "pa3 w-100  bb b--light-gray"
@@ -390,6 +396,7 @@ viewTodoItem todo =
               else
                 fBtn FeatherIcons.circle <| vm.updateMsg Todo.MarkCompleted
             , div [ class "flex-grow-1 pointer", onClick vm.editContentMsg ] [ txt vm.content ]
+            , fBtn FeatherIcons.clock <| vm.updateMsg <| Todo.SetScheduledAt (vm.now + 1000 * 20)
             ]
         ]
 
