@@ -19,8 +19,8 @@ module Store exposing
 import BasicsX exposing (Encoder, flip, maybeBool, unwrapMaybe)
 import Dict exposing (Dict)
 import IdX
-import Json.Decode as D exposing (Decoder, decodeValue)
-import Json.Encode as E exposing (Value)
+import Json.Decode exposing (Decoder, decodeValue, errorToString)
+import Json.Encode exposing (Value)
 import JsonCodec as JC exposing (Codec)
 import Log
 import Random exposing (Generator, Seed)
@@ -62,16 +62,9 @@ storeCodec attrsCodec =
         |> JC.end
 
 
-storeEncoder : Codec attrs -> Encoder (Model attrs)
-storeEncoder attrsCodec model =
-    E.object
-        [ ( "dict", E.dict identity (itemEncoder <| JC.encoder attrsCodec) model.dict )
-        ]
-
-
 toCacheCmd : Config msg attrs -> Model attrs -> Cmd (Msg attrs)
 toCacheCmd config =
-    config.toCacheCmd << storeEncoder config.codec
+    config.toCacheCmd << JC.encoder (storeCodec config.codec)
 
 
 load : Config msg attrs -> Value -> ( Maybe Log.Line, Model attrs )
@@ -83,7 +76,7 @@ load config =
                         ( Nothing, todoStore )
 
                     Err error ->
-                        ( Just [ D.errorToString error ], initEmpty )
+                        ( Just [ errorToString error ], initEmpty )
            )
 
 
@@ -244,25 +237,6 @@ metaCodec =
         |> JC.end
 
 
-metaDecoder : Decoder Meta
-metaDecoder =
-    D.map4 Meta
-        (D.field "id" D.string)
-        (D.field "createdAt" D.int)
-        (D.field "modifiedAt" D.int)
-        (D.field "deleted" D.bool)
-
-
-metaEncoder : Encoder Meta
-metaEncoder model =
-    E.object
-        [ ( "id", E.string model.id )
-        , ( "createdAt", E.int model.createdAt )
-        , ( "modifiedAt", E.int model.modifiedAt )
-        , ( "deleted", E.bool model.deleted )
-        ]
-
-
 type alias Item attrs =
     { meta : Meta
     , attrs : attrs
@@ -280,21 +254,6 @@ itemCodec attrCodec =
         |> JC.first "meta" metaCodec .meta
         |> JC.next "attrs" attrCodec .attrs
         |> JC.end
-
-
-itemDecoder : Decoder attrs -> Decoder (Item attrs)
-itemDecoder attrsDecoder =
-    D.map2 Item
-        (D.field "meta" metaDecoder)
-        (D.field "attrs" attrsDecoder)
-
-
-itemEncoder : Encoder attrs -> Encoder (Item attrs)
-itemEncoder attrsEncoder model =
-    E.object
-        [ ( "meta", metaEncoder model.meta )
-        , ( "attrs", attrsEncoder model.attrs )
-        ]
 
 
 newItemTask : attrs -> Task x (Item attrs)
