@@ -106,7 +106,7 @@ type Msg attrs
     | CreateAndInsertWithId attrs Id
     | CreateAndInsertWithMeta attrs Meta
     | UpdateModifiedAt (Item attrs)
-    | UpdateModifiedWithNow (Item attrs) Milli
+    | UpdateModifiedAtWithNow (Item attrs) Milli
 
 
 type OutMsg attrs
@@ -199,11 +199,11 @@ update config message model =
             ( model
             , Time.now
                 |> Task.map Time.posixToMillis
-                |> Task.perform (UpdateModifiedWithNow item)
+                |> Task.perform (UpdateModifiedAtWithNow item)
             , []
             )
 
-        UpdateModifiedWithNow item now ->
+        UpdateModifiedAtWithNow item now ->
             let
                 newItem =
                     setModifiedAt now item
