@@ -17,7 +17,7 @@ import Log
 import MagicMenu exposing (MagicMenu)
 import Port
 import Random
-import Store exposing (Item, Store, resetCache)
+import Store exposing (Id, Item, Store, resetCache)
 import Task
 import Toasty
 import Toasty.Defaults
@@ -94,6 +94,7 @@ type Msg
     | StartEditing TodoItem
     | AddClicked
     | EditClicked TodoItem
+    | UpdateTodoId Id Todo.Msg
     | ContentChanged Todo.Content
     | EndEditMode
 
@@ -195,6 +196,16 @@ update message model =
 
                 ListTodoMode ->
                     pure model
+
+        UpdateTodoId id msg ->
+            update
+                (TodoStoreMsg <|
+                    Store.updateItem Todo.storeConfig
+                        id
+                        msg
+                        model.todoStore
+                )
+                model
 
         EndEditMode ->
             case model.mode of
@@ -319,7 +330,7 @@ viewTodoList model =
 
 
 type alias TodoView msg =
-    { content : String, isCompleted : Bool, editContentMsg : msg }
+    { content : String, isCompleted : Bool, editContentMsg : msg, updateMsg : Todo.Msg -> msg }
 
 
 todoView : TodoItem -> TodoView Msg
@@ -328,6 +339,7 @@ todoView todo =
         (defaultEmptyStringTo "<empty>" <| Todo.content todo)
         (Todo.isCompleted todo)
         (EditClicked todo)
+        (UpdateTodoId todo.meta.id)
 
 
 viewTodoItem : Store.Item TodoAttrs -> Html Msg
@@ -337,11 +349,19 @@ viewTodoItem todo =
             todoView todo
     in
     div
-        [ class "pa3 w-100 pointer bb b--light-gray"
+        [ class "pa3 w-100  bb b--light-gray"
         , classList [ ( "strike", vm.isCompleted ) ]
-        , onClick vm.editContentMsg
         ]
-        [ row "" [] [ txt vm.content ] ]
+        [ row ""
+            []
+            [ if vm.isCompleted then
+                fBtn FeatherIcons.checkCircle <| vm.updateMsg Todo.UnmarkCompleted
+
+              else
+                fBtn FeatherIcons.circle <| vm.updateMsg Todo.MarkCompleted
+            , div [ class "flex-grow-1 pointer", onClick vm.editContentMsg ] [ txt vm.content ]
+            ]
+        ]
 
 
 
