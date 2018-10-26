@@ -11,8 +11,6 @@ module Todo exposing
     )
 
 import BasicsX exposing (Encoder, maybeBool)
-import Json.Decode as D exposing (Decoder)
-import Json.Encode as E
 import JsonCodec as JC
 import Port
 import Store exposing (Item, Store)
