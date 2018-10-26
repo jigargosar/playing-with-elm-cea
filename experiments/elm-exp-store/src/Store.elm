@@ -101,7 +101,6 @@ type Msg attrs
     | InsertItemAndUpdateCacheWithOutMsg (ItemOutMsg attrs) (Item attrs)
     | CreateAndInsert attrs
     | CreateAndInsertWithId attrs Id
-    | CreateAndInsertWithMeta attrs Meta
     | UpdateModifiedAt (Item attrs)
 
 
@@ -177,18 +176,8 @@ update config message model =
         CreateAndInsertWithId attrs id ->
             pure3 model
                 |> perform3
-                    (CreateAndInsertWithMeta attrs)
-                    (initMetaWithNowTask id)
-
-        CreateAndInsertWithMeta attrs meta ->
-            let
-                newItem =
-                    Item meta attrs
-
-                newModel =
-                    insert newItem model
-            in
-            ( newModel, toCacheCmd config newModel, [ InsertedOutMsg newItem ] )
+                    (InsertItemAndUpdateCacheWithOutMsg InsertedOutMsg)
+                    (initItemWithNowTask attrs id)
 
         UpdateModifiedAt item ->
             pure3 model
@@ -225,9 +214,13 @@ initMeta id now =
     { id = id, createdAt = now, modifiedAt = now, deleted = False }
 
 
-initMetaWithNowTask id =
+initItem attrs meta =
+    Item meta attrs
+
+
+initItemWithNowTask attrs id =
     Time.now
-        |> Task.map (Time.posixToMillis >> initMeta id)
+        |> Task.map (Time.posixToMillis >> initMeta id >> initItem attrs)
 
 
 metaCodec : Codec Meta
