@@ -5,18 +5,25 @@ module UpdateReturn exposing
     , andThen3
     , foldlOutMsgList
     , generate3
+    , perform
     , perform3
+    , performWithNow
     , pure
     , pure3
     )
 
 import Random
 import Task
+import Time
 import Update3
 
 
 pure model =
     ( model, Cmd.none )
+
+
+addCmd c2 ( m, c1 ) =
+    ( m, Cmd.batch [ c1, c2 ] )
 
 
 pure3 model =
@@ -49,6 +56,14 @@ addCmd3 c2 ( m1, c1, o1 ) =
 
 perform3 toMsg =
     Task.perform toMsg >> addCmd3
+
+
+perform toMsg =
+    Task.perform toMsg >> addCmd
+
+
+performWithNow toMsg =
+    Time.now |> Task.map Time.posixToMillis |> perform toMsg
 
 
 generate3 toMsg =

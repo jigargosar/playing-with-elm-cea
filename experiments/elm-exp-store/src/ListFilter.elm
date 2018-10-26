@@ -1,6 +1,16 @@
-module ListFilter exposing (Filter(..), Model, matchesOld)
+module ListFilter exposing
+    ( Filter(..)
+    , Model
+    , Msg(..)
+    , init
+    , isSelected
+    , matches
+    , matchesOld
+    , update
+    )
 
 import Todo exposing (TodoItem)
+import UpdateReturn exposing (..)
 
 
 type Filter
@@ -13,6 +23,11 @@ type alias Model =
     { selected : Filter
     , modifiedAt : Int
     }
+
+
+init : Int -> Model
+init now =
+    { selected = Active, modifiedAt = now }
 
 
 matchesOld : Int -> Filter -> TodoItem -> Bool
@@ -53,3 +68,28 @@ matches todo { selected, modifiedAt } =
 
         Completed ->
             completed
+
+
+isSelected : Filter -> Model -> Bool
+isSelected filter =
+    .selected >> (==) filter
+
+
+type Msg
+    = NoOp
+    | SwitchFilterTo Filter
+    | SwitchFilterToWithNow Filter Int
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update message model =
+    case message of
+        NoOp ->
+            pure model
+
+        SwitchFilterTo newFilter ->
+            pure model
+                |> performWithNow (SwitchFilterToWithNow newFilter)
+
+        SwitchFilterToWithNow newFilter now ->
+            pure { model | selected = newFilter, modifiedAt = now }

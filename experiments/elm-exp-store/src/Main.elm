@@ -46,7 +46,7 @@ type alias Model =
     , toasties : Toasty.Stack Log.Line
     , todoStore : TodoStore
     , mode : Mode
-    , listFilter : Filter
+    , listFilter : ListFilter.Model
     }
 
 
@@ -70,7 +70,7 @@ init flags =
         , toasties = Toasty.initialState
         , todoStore = todoStore
         , mode = ListTodoMode
-        , listFilter = ListFilter.Active
+        , listFilter = ListFilter.init flags.now
         }
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
 
@@ -93,7 +93,7 @@ type Msg
     | ToastyMsg (Toasty.Msg Log.Line)
     | Tick Mills
     | SetMode Mode
-    | SetListFilter Filter
+    | ListFilterMsg ListFilter.Msg
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)
@@ -105,12 +105,20 @@ type Msg
     | EndEditMode
 
 
-handleMagicMenuMessage =
+handleMagicMenuMsg =
     Update2.lift
         .magicMenu
         (\magicMenu model -> { model | magicMenu = magicMenu })
         MagicMenuMsg
         MagicMenu.update
+
+
+handleListFilterMsg =
+    Update2.lift
+        .listFilter
+        (\listFilter model -> { model | listFilter = listFilter })
+        ListFilterMsg
+        ListFilter.update
 
 
 handleTodoStoreMsg msg model =
@@ -175,11 +183,11 @@ update message model =
         SetMode mode ->
             pure { model | mode = mode }
 
-        SetListFilter listFilter ->
-            pure { model | listFilter = listFilter }
+        ListFilterMsg msg ->
+            handleListFilterMsg msg model
 
         MagicMenuMsg msg ->
-            handleMagicMenuMessage msg model
+            handleMagicMenuMsg msg model
 
         TodoStoreMsg msg ->
             handleTodoStoreMsg msg model
@@ -259,7 +267,7 @@ view : Model -> Html Msg
 view model =
     let
         onClickSetFilter =
-            onClick << SetListFilter
+            onClick << ListFilterMsg << ListFilter.SwitchFilterTo
 
         filterBtn filter label =
             button
@@ -268,7 +276,7 @@ view model =
                 ]
                 [ txtA
                     [ class "bb bw1"
-                    , classList [ ( "b--transparent", filter /= model.listFilter ) ]
+                    , classList [ ( "b--transparent", model.listFilter |> ListFilter.isSelected filter |> not ) ]
                     ]
                     label
                 ]
@@ -344,7 +352,7 @@ viewEditContentModal todoId content =
 
 
 filterTodoItem model todo =
-    ListFilter.matchesOld model.lastTickAt model.listFilter todo
+    ListFilter.matches todo model.listFilter
 
 
 viewTodoList : Model -> Html Msg
