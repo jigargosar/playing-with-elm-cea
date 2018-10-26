@@ -175,12 +175,10 @@ update config message model =
             ( model, Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator, [] )
 
         CreateAndInsertWithId attrs id ->
-            ( model
-            , Time.now
-                |> Task.map (Time.posixToMillis >> initMeta id)
-                |> Task.perform (CreateAndInsertWithMeta attrs)
-            , []
-            )
+            pure3 model
+                |> perform3
+                    (CreateAndInsertWithMeta attrs)
+                    (initMetaWithNowTask id)
 
         CreateAndInsertWithMeta attrs meta ->
             let
@@ -227,6 +225,11 @@ initMeta id now =
     { id = id, createdAt = now, modifiedAt = now, deleted = False }
 
 
+initMetaWithNowTask id =
+    Time.now
+        |> Task.map (Time.posixToMillis >> initMeta id)
+
+
 metaCodec : Codec Meta
 metaCodec =
     Meta
@@ -243,22 +246,12 @@ type alias Item attrs =
     }
 
 
-initItem : attrs -> Milli -> Item attrs
-initItem attrs now =
-    { meta = { id = "dummyId", createdAt = now, modifiedAt = now, deleted = False }, attrs = attrs }
-
-
 itemCodec : Codec attrs -> Codec (Item attrs)
 itemCodec attrCodec =
     Item
         |> JC.first "meta" metaCodec .meta
         |> JC.next "attrs" attrCodec .attrs
         |> JC.end
-
-
-newItemTask : attrs -> Task x (Item attrs)
-newItemTask attrs =
-    Time.now |> Task.map (Time.posixToMillis >> initItem attrs)
 
 
 setModifiedAt now model =
