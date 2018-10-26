@@ -13,6 +13,7 @@ module Todo exposing
 import BasicsX exposing (Encoder, maybeBool)
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
+import JsonCodec as JC
 import Port
 import Store exposing (Item, Store)
 
@@ -60,18 +61,12 @@ type Msg
 storeConfig : Store.Config Msg TodoAttrs
 storeConfig =
     let
-        decoder : Decoder TodoAttrs
-        decoder =
-            D.map2 TodoAttrs
-                (D.field "content" D.string)
-                (D.field "completed" D.bool)
-
-        encoder : Encoder TodoAttrs
-        encoder model =
-            E.object
-                [ ( "content", E.string model.content )
-                , ( "completed", E.bool model.completed )
-                ]
+        codec : JC.Codec TodoAttrs
+        codec =
+            TodoAttrs
+                |> JC.first "content" JC.string .content
+                |> JC.option "completed" JC.bool .completed True
+                |> JC.end
 
         update : Msg -> TodoAttrs -> Maybe TodoAttrs
         update message model =
@@ -86,8 +81,8 @@ storeConfig =
                     maybeBool (not model.completed) { model | completed = True }
     in
     { update = update
-    , encoder = encoder
-    , decoder = decoder
+    , encoder = JC.encoder codec
+    , decoder = JC.decoder codec
     , toCacheCmd = Port.cacheTodoStore
     , defaultValue = defaultValue
     }
