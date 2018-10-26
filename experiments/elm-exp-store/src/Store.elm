@@ -5,13 +5,10 @@ module Store exposing
     , Msg
     , OutMsg(..)
     , Store
-    , createAndInsert
-    , initEmpty
-    , insert
+    , insertNew
     , load
-    , modifyItemWithId
     , resetCache
-    , toIdItemPairList
+    , toPairs
     , update
     , updateItem
     )
@@ -30,10 +27,6 @@ import UpdateReturn exposing (addCmd3, addOutMsg3, andThen3, generate3, perform3
 
 
 type alias Id =
-    String
-
-
-type alias CacheName =
     String
 
 
@@ -80,13 +73,8 @@ load config =
            )
 
 
-insert : Item attrs -> Model attrs -> Model attrs
-insert item model =
-    { model | dict = Dict.insert item.meta.id item model.dict }
-
-
-toIdItemPairList : Model attrs -> List ( Id, Item attrs )
-toIdItemPairList =
+toPairs : Model attrs -> List ( Id, Item attrs )
+toPairs =
     .dict >> Dict.toList
 
 
@@ -109,27 +97,12 @@ type OutMsg attrs
     | ModifiedOutMsg (Item attrs)
 
 
-createAndInsert =
+insertNew =
     InsertNew
 
 
 resetCache =
     ResetCache
-
-
-modifyItemWithId id updateAttrFn =
-    .dict
-        >> Dict.get id
-        >> Maybe.andThen
-            (\item ->
-                let
-                    newAttrs =
-                        updateAttrFn item.attrs
-                in
-                maybeBool (item.attrs /= newAttrs) { item | attrs = newAttrs }
-            )
-        >> Maybe.map UpdateModifiedAt
-        >> Maybe.withDefault NoOp
 
 
 updateItemAttrsMaybe : (attrs -> Maybe attrs) -> Item attrs -> Maybe (Item attrs)
@@ -167,7 +140,7 @@ update config message model =
                 |> andThen3 (update config Cache)
 
         UpsertItemAndUpdateCacheWithOutMsg outMsg item ->
-            pure3 (insert item model)
+            pure3 { model | dict = Dict.insert item.meta.id item model.dict }
                 |> andThen3 (update config Cache)
                 |> addOutMsg3 (outMsg item)
 

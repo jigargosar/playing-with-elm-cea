@@ -176,7 +176,7 @@ update message model =
                 |> andThen (update <| FocusDomId modalTodoInputDomId)
 
         AddClicked ->
-            update (TodoStoreMsg <| Store.createAndInsert Todo.defaultValue) model
+            update (TodoStoreMsg <| Store.insertNew Todo.defaultValue) model
 
         EditClicked todo ->
             update (StartEditing todo) model
@@ -307,7 +307,7 @@ viewTodoList model =
     let
         todoList =
             model.todoStore
-                |> Store.toIdItemPairList
+                |> Store.toPairs
                 |> List.filter (filterTodoItem model)
                 |> List.map (Tuple.mapSecond viewTodoItem)
     in
