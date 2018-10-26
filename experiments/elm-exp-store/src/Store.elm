@@ -38,6 +38,10 @@ type alias Model attrs =
     { dict : Dict_ attrs }
 
 
+type alias Store item =
+    Model item
+
+
 initEmpty : Model attrs
 initEmpty =
     init Dict.empty
@@ -159,14 +163,6 @@ update config message model =
                 |> perform3
                     (UpsertItemAndUpdateCacheWithOutMsg ModifiedOutMsg)
                     (setModifiedAtToNowTask item)
-
-
-
----- External
-
-
-type alias Store item =
-    Model item
 
 
 
