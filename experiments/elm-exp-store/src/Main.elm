@@ -336,7 +336,7 @@ viewTodoItem todo =
     div
         [ class "pa3 w-100 pointer bb b--light-gray"
         , classList [ ( "strike", vm.isCompleted ) ]
-        , onClick <| EditClicked todo
+        , onClick vm.editContentMsg
         ]
         [ txt vm.content ]
 
