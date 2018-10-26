@@ -98,13 +98,13 @@ storeConfig =
 
 
 matchesFilter : Int -> ListFilter -> TodoItem -> Bool
-matchesFilter now filter todo =
+matchesFilter referenceTime filter todo =
     let
         completed =
             isCompleted todo
 
         inFuture =
-            isScheduledAfter now todo
+            isScheduledAfter referenceTime todo
     in
     case filter of
         Future ->
