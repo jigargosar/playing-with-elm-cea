@@ -56,9 +56,11 @@ init dict =
     { dict = dict }
 
 
-
---storeCodec =
---    Model |> JC.first "dict" JC.dict ()
+storeCodec : Codec attrs -> Codec (Model attrs)
+storeCodec attrsCodec =
+    Model
+        |> JC.first "dict" (JC.dict <| itemCodec attrsCodec) .dict
+        |> JC.end
 
 
 storeDecoder : Decoder attrs -> Decoder (Model attrs)
