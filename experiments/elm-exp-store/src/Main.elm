@@ -88,6 +88,7 @@ type Msg
     | Warn Log.Line
     | ToastyMsg (Toasty.Msg Log.Line)
     | SetMode Mode
+    | SetListFilter Todo.ListFilter
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)
@@ -165,6 +166,9 @@ update message model =
 
         SetMode mode ->
             pure { model | mode = mode }
+
+        SetListFilter listFilter ->
+            pure { model | listFilter = listFilter }
 
         MagicMenuMsg msg ->
             handleMagicMenuMessage msg model
