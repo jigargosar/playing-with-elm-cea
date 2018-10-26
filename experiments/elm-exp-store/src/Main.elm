@@ -277,10 +277,6 @@ view model =
             , viewTodoList model
             ]
         , viewModal model
-
-        --        , Html.map TodosMsg <|
-        --            div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
-        --                [ Todos.view model.todos ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         , Toasty.view Toasty.config renderToast ToastyMsg model.toasties
