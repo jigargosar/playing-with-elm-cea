@@ -94,12 +94,22 @@ storeConfig =
 matchesFilter : ListFilter -> TodoItem -> Bool
 matchesFilter filter todo =
     case filter of
-        _ ->
+        Future ->
             True
+
+        Active ->
+            isActive todo
+
+        Completed ->
+            isCompleted todo
 
 
 isCompleted =
     itemAttrs >> .completed
+
+
+isActive =
+    isCompleted >> not
 
 
 content =
