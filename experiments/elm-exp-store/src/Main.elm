@@ -351,17 +351,13 @@ viewEditContentModal todoId content =
         ]
 
 
-filterTodoItem model todo =
-    ListFilter.matches todo model.listFilter
-
-
 viewTodoList : Model -> Html Msg
 viewTodoList model =
     let
         todoList =
             model.todoStore
                 |> Store.toPairs
-                |> List.filter (Tuple.second >> filterTodoItem model)
+                |> List.filter (Tuple.second >> ListFilter.matchesSelectedIn model.listFilter)
                 |> List.sortBy (Tuple.second >> Store.itemCreatedAt)
                 |> List.map (Tuple.mapSecond <| viewTodoItem model)
     in

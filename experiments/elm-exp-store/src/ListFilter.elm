@@ -4,7 +4,7 @@ module ListFilter exposing
     , Msg(..)
     , init
     , isSelected
-    , matches
+    , matchesSelectedIn
     , update
     )
 
@@ -29,8 +29,8 @@ init now =
     { selected = Active, modifiedAt = now }
 
 
-matches : TodoItem -> Model -> Bool
-matches todo { selected, modifiedAt } =
+matchesSelectedIn : Model -> TodoItem -> Bool
+matchesSelectedIn { selected, modifiedAt } todo =
     let
         completed =
             Todo.isCompleted todo
@@ -47,6 +47,11 @@ matches todo { selected, modifiedAt } =
 
         Completed ->
             completed
+
+
+
+--filter todoList model =
+--    todoList |> List.filter matches
 
 
 isSelected : Filter -> Model -> Bool
