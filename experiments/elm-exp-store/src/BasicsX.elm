@@ -1,5 +1,6 @@
 module BasicsX exposing
     ( Encoder
+    , defaultEmptyStringTo
     , eq0
     , eqs
     , flip
@@ -31,6 +32,11 @@ ter b t f =
 
 ifElse b t f v =
     ter (b v) (t v) (f v)
+
+
+defaultEmptyStringTo : String -> String -> String
+defaultEmptyStringTo =
+    when String.isEmpty << always
 
 
 when : (a -> Bool) -> (a -> a) -> a -> a

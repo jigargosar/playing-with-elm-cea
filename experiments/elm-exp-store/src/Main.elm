@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import BasicsX exposing (flip, ter, unpackResult, unwrapMaybe, when)
+import BasicsX exposing (defaultEmptyStringTo, flip, ter, unpackResult, unwrapMaybe, when)
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -314,12 +314,24 @@ viewTodoList model =
     Html.Keyed.node "div" [ class "w-100 measure-wide items-center" ] todoList
 
 
+type alias TodoView msg =
+    { content : String, done : Bool, editContentMsg : msg }
+
+
+todoView : TodoItem -> TodoView Msg
+todoView todo =
+    TodoView
+        (defaultEmptyStringTo "<empty>" <| Todo.content todo)
+        (Todo.isCompleted todo)
+        (EditClicked todo)
+
+
 viewTodoItem : Store.Item TodoAttrs -> Html Msg
 viewTodoItem todo =
     let
         content : String
         content =
-            when String.isEmpty (\_ -> "<empty>") todo.attrs.content
+            when String.isEmpty (\_ -> "<empty>") (Todo.content todo)
 
         completed =
             Todo.isCompleted todo

@@ -5,6 +5,7 @@ module Todo exposing
     , TodoAttrs
     , TodoItem
     , TodoStore
+    , content
     , defaultValue
     , isCompleted
     , matchesFilter
@@ -99,3 +100,7 @@ matchesFilter filter todo =
 
 isCompleted =
     itemAttrs >> .completed
+
+
+content =
+    itemAttrs >> .content
