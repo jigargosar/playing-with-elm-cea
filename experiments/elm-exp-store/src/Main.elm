@@ -255,7 +255,7 @@ view model =
         filterBtn filter label =
             button
                 [ onClickSetFilter filter
-                , classList [ ( "bb", filter == model.listFilter ) ]
+                , classList [ ( "bb bw1", filter == model.listFilter ) ]
                 ]
                 [ text label ]
     in
