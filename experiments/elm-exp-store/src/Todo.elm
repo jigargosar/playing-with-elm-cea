@@ -89,6 +89,7 @@ storeConfig =
     }
 
 
+matchesFilter : ListFilter -> TodoItem -> Bool
 matchesFilter filter todo =
     case filter of
         _ ->
