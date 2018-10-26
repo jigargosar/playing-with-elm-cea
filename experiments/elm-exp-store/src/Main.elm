@@ -248,10 +248,20 @@ mockActions =
 
 view : Model -> Html Msg
 view model =
+    let
+        onClickSetFilter =
+            onClick << SetListFilter
+    in
     UI.root
         [ viewToolbar model
         , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
-            [ button [ onClick AddClicked ] [ text "add" ]
+            [ row ""
+                []
+                [ button [ onClick AddClicked ] [ text "add" ]
+                , button [ onClickSetFilter Todo.Future ] [ text "Future" ]
+                , button [ onClickSetFilter Todo.Active ] [ text "Active" ]
+                , button [ onClickSetFilter Todo.Completed ] [ text "Completed" ]
+                ]
             , viewTodoList model
             ]
         , viewModal model
