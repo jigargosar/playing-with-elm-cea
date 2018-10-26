@@ -304,12 +304,25 @@ viewNewTodoModal todoId content =
         ]
 
 
+filterTodoItem model todo =
+    case model.listFilter of
+        Future ->
+            True
+
+        Active ->
+            True
+
+        Completed ->
+            True
+
+
 viewTodoList : Model -> Html Msg
 viewTodoList model =
     let
         todoList =
             model.todoStore
                 |> Store.toIdItemPairList
+                |> List.filter (filterTodoItem model)
                 |> List.map (Tuple.mapSecond viewTodoItem)
     in
     Html.Keyed.node "div" [ class "w-100 measure-wide items-center" ] todoList
