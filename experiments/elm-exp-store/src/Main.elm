@@ -396,7 +396,9 @@ viewTodoItem model todo =
               else
                 fBtn FeatherIcons.circle <| vm.updateMsg Todo.MarkCompleted
             , div [ class "flex-grow-1 pointer", onClick vm.editContentMsg ] [ txt vm.content ]
-            , fBtn FeatherIcons.clock <| vm.updateMsg <| Todo.SetScheduledAt (vm.now + 1000 * 60)
+            , boolHtml
+                (not vm.isCompleted)
+                (fBtn FeatherIcons.clock <| vm.updateMsg <| Todo.SetScheduledAt (vm.now + 1000 * 60))
             ]
         ]
 
