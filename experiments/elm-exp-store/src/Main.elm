@@ -375,9 +375,12 @@ viewTodoList model =
             secondaryList
                 |> List.sortBy Todo.scheduledAt
                 |> List.map (\todo -> ( todo.meta.id, viewTodoItem model todo ))
+
+        viewMore =
+            row "justify-center" [] [ txt "more", txt <| String.fromInt secondaryListLength ]
     in
     div [ class "w-100 measure-wide" ]
-        [ row "justify-center" [] [ txt "more", txt <| String.fromInt secondaryListLength ]
+        [ boolHtml (secondaryListLength > 0) viewMore
         , Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
 
