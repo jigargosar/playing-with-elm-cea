@@ -189,15 +189,6 @@ initMeta id now =
     { id = id, createdAt = now, modifiedAt = now, deleted = False }
 
 
-initItem attrs meta =
-    Item meta attrs
-
-
-initItemWithNowTask attrs id =
-    Time.now
-        |> Task.map (Time.posixToMillis >> initMeta id >> initItem attrs)
-
-
 metaCodec : Codec Meta
 metaCodec =
     Meta
@@ -222,7 +213,16 @@ itemCodec attrCodec =
         |> JC.end
 
 
-setModifiedAt now model =
+initItem attrs meta =
+    Item meta attrs
+
+
+initItemWithNowTask attrs id =
+    Time.now
+        |> Task.map (Time.posixToMillis >> initMeta id >> initItem attrs)
+
+
+setItemModifiedAt now model =
     let
         meta =
             model.meta
@@ -232,4 +232,4 @@ setModifiedAt now model =
 
 setModifiedAtToNowTask model =
     Time.now
-        |> Task.map (Time.posixToMillis >> flip setModifiedAt model)
+        |> Task.map (Time.posixToMillis >> flip setItemModifiedAt model)
