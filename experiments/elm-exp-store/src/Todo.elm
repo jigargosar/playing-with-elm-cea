@@ -54,6 +54,7 @@ type Msg
     = NoOp
     | SetContent Content
     | MarkCompleted
+    | UnmarkCompleted
 
 
 storeConfig : Store.Config Msg TodoAttrs
@@ -77,6 +78,9 @@ storeConfig =
 
                 MarkCompleted ->
                     maybeBool (not model.completed) { model | completed = True }
+
+                UnmarkCompleted ->
+                    maybeBool model.completed { model | completed = False }
     in
     { update = update
     , codec = codec
