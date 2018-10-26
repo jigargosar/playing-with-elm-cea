@@ -165,10 +165,10 @@ update config message model =
             pure3 model
 
         Cache ->
-            ( model, config.toCacheCmd <| storeEncoder config.codec model, [] )
+            ( model, toCacheCmd config model, [] )
 
         ResetCache ->
-            ( initEmpty, config.toCacheCmd <| storeEncoder config.codec initEmpty, [] )
+            ( initEmpty, toCacheCmd config initEmpty, [] )
 
         InsertItemAndCache item ->
             pure3 (insert item model)
@@ -193,7 +193,7 @@ update config message model =
                 newModel =
                     insert newItem model
             in
-            ( newModel, config.toCacheCmd <| storeEncoder config.codec newModel, [ InsertedOutMsg newItem ] )
+            ( newModel, toCacheCmd config newModel, [ InsertedOutMsg newItem ] )
 
         InsertModified item ->
             ( model
@@ -211,7 +211,7 @@ update config message model =
                 newModel =
                     insert newItem model
             in
-            ( newModel, config.toCacheCmd <| storeEncoder config.codec newModel, [ ModifiedOutMsg newItem ] )
+            ( newModel, toCacheCmd config newModel, [ ModifiedOutMsg newItem ] )
 
 
 
