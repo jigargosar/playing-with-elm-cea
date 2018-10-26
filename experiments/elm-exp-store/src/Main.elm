@@ -6,7 +6,6 @@ import Browser.Dom
 import Browser.Events
 import Dict
 import FeatherIcons
-import Filter exposing (ListFilter)
 import HotKey
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -14,6 +13,7 @@ import Html.Events exposing (..)
 import Html.Keyed
 import Json.Decode as D
 import Json.Encode as E
+import ListFilter exposing (ListFilter)
 import Log
 import MagicMenu exposing (MagicMenu)
 import Port
@@ -70,7 +70,7 @@ init flags =
         , toasties = Toasty.initialState
         , todoStore = todoStore
         , mode = ListTodoMode
-        , listFilter = Filter.Active
+        , listFilter = ListFilter.Active
         }
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
 
@@ -279,9 +279,9 @@ view model =
             [ row ""
                 []
                 [ button [ onClick AddClicked ] [ text "add" ]
-                , filterBtn Filter.Future "Future"
-                , filterBtn Filter.Active "Active"
-                , filterBtn Filter.Completed "Completed"
+                , filterBtn ListFilter.Future "Future"
+                , filterBtn ListFilter.Active "Active"
+                , filterBtn ListFilter.Completed "Completed"
                 ]
             , viewTodoList model
             ]
@@ -344,7 +344,7 @@ viewEditContentModal todoId content =
 
 
 filterTodoItem model todo =
-    Filter.matches model.lastTickAt model.listFilter todo
+    ListFilter.matches model.lastTickAt model.listFilter todo
 
 
 viewTodoList : Model -> Html Msg

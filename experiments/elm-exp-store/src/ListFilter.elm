@@ -1,4 +1,4 @@
-module Filter exposing (ListFilter(..), matches)
+module ListFilter exposing (ListFilter(..), matches)
 
 import Todo exposing (TodoItem)
 
