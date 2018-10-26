@@ -6,6 +6,7 @@ module Store exposing
     , OutMsg(..)
     , Store
     , insertNew
+    , itemAttrs
     , load
     , resetCache
     , toPairs
@@ -216,6 +217,10 @@ initItem attrs meta =
 initItemWithNowTask attrs id =
     Time.now
         |> Task.map (Time.posixToMillis >> initMeta id >> initItem attrs)
+
+
+itemAttrs =
+    .attrs
 
 
 setItemModifiedAt now model =

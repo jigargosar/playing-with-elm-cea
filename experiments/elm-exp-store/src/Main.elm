@@ -320,6 +320,9 @@ viewTodoItem todo =
         content : String
         content =
             when String.isEmpty (\_ -> "<empty>") todo.attrs.content
+
+        completed =
+            Todo.isCompleted todo
     in
     div
         [ class "pa3 w-100 pointer bb b--light-gray"

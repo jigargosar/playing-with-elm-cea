@@ -6,6 +6,7 @@ module Todo exposing
     , TodoItem
     , TodoStore
     , defaultValue
+    , isCompleted
     , matchesFilter
     , storeConfig
     )
@@ -13,7 +14,7 @@ module Todo exposing
 import BasicsX exposing (Encoder, maybeBool)
 import JsonCodec as JC exposing (Codec)
 import Port
-import Store exposing (Item, Store)
+import Store exposing (Item, Store, itemAttrs)
 
 
 type ListFilter
@@ -94,3 +95,7 @@ matchesFilter filter todo =
     case filter of
         _ ->
             True
+
+
+isCompleted =
+    itemAttrs >> .completed
