@@ -201,8 +201,7 @@ update config message model =
 
         UpdateModifiedAt item ->
             ( model
-            , Time.now
-                |> Task.map (Time.posixToMillis >> (\now -> setModifiedAt now item))
+            , setModifiedAtToNowTask item
                 |> Task.perform (InsertItemAndUpdateCacheWithOutMsg ModifiedOutMsg)
             , []
             )
@@ -312,6 +311,6 @@ setModifiedAt now model =
     { model | meta = { meta | modifiedAt = now } }
 
 
-setModifiedAtToNow model =
+setModifiedAtToNowTask model =
     Time.now
         |> Task.map (Time.posixToMillis >> flip setModifiedAt model)
