@@ -66,7 +66,7 @@ storeConfig =
         codec =
             TodoAttrs
                 |> JC.first "content" JC.string .content
-                |> JC.option "completed" JC.bool .completed True
+                |> JC.option "completed" JC.bool .completed False
                 |> JC.end
 
         update : Msg -> TodoAttrs -> Maybe TodoAttrs
