@@ -105,8 +105,8 @@ type Msg attrs
     | CreateAndInsert attrs
     | CreateAndInsertWithId attrs Id
     | CreateAndInsertWithMeta attrs Meta
-    | InsertModified (Item attrs)
-    | InsertModifiedWithNow (Item attrs) Milli
+    | UpdateModifiedAt (Item attrs)
+    | UpdateModifiedWithNow (Item attrs) Milli
 
 
 type OutMsg attrs
@@ -133,7 +133,7 @@ modifyItemWithId id updateAttrFn =
                 in
                 maybeBool (item.attrs /= newAttrs) { item | attrs = newAttrs }
             )
-        >> Maybe.map InsertModified
+        >> Maybe.map UpdateModifiedAt
         >> Maybe.withDefault NoOp
 
 
@@ -147,7 +147,7 @@ updateItem config id msg =
     .dict
         >> Dict.get id
         >> Maybe.andThen (updateItemAttrsMaybe <| config.update msg)
-        >> unwrapMaybe NoOp InsertModified
+        >> unwrapMaybe NoOp UpdateModifiedAt
 
 
 type alias Config msg attrs =
@@ -195,15 +195,15 @@ update config message model =
             in
             ( newModel, toCacheCmd config newModel, [ InsertedOutMsg newItem ] )
 
-        InsertModified item ->
+        UpdateModifiedAt item ->
             ( model
             , Time.now
                 |> Task.map Time.posixToMillis
-                |> Task.perform (InsertModifiedWithNow item)
+                |> Task.perform (UpdateModifiedWithNow item)
             , []
             )
 
-        InsertModifiedWithNow item now ->
+        UpdateModifiedWithNow item now ->
             let
                 newItem =
                     setModifiedAt now item
