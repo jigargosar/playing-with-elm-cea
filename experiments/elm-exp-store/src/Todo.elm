@@ -2,6 +2,7 @@ module Todo exposing
     ( Content
     , Msg(..)
     , TodoAttrs
+    , TodoItem
     , TodoStore
     , defaultValue
     , storeConfig

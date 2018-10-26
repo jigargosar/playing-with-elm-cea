@@ -21,7 +21,7 @@ import Store exposing (Item, Store, resetCache)
 import Task
 import Toasty
 import Toasty.Defaults
-import Todo exposing (TodoAttrs, TodoStore)
+import Todo exposing (TodoAttrs, TodoItem, TodoStore)
 import UI exposing (..)
 import Update2
 import Update3
@@ -90,6 +90,7 @@ type Msg
     | MagicMenuMsg MagicMenu.Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)
     | AddClicked
+    | EditClicked TodoItem
     | ContentChanged Todo.Content
     | EndEditMode
 
@@ -117,7 +118,7 @@ handleTodStoreOutMsg outMsg model =
     case outMsg of
         Store.InsertedOutMsg newTodo ->
             update (SetMode <| editContentMode newTodo) model
-                |> andThen (update <| FocusDomId newTodoInputDomId)
+                |> andThen (update <| FocusDomId modalTodoInputDomId)
 
         Store.ModifiedOutMsg updatedTodo ->
             let
@@ -170,6 +171,10 @@ update message model =
 
         AddClicked ->
             update (TodoStoreMsg <| Store.createAndInsert Todo.defaultValue) model
+
+        EditClicked todo ->
+            update (SetMode <| editContentMode todo) model
+                |> andThen (update <| FocusDomId modalTodoInputDomId)
 
         ContentChanged newContent ->
             case model.mode of
@@ -254,8 +259,8 @@ viewModal model =
             text ""
 
 
-newTodoInputDomId =
-    "new-todo-content-input"
+modalTodoInputDomId =
+    "modal-todo-content-input"
 
 
 viewNewTodoModal todoId content =
@@ -265,7 +270,7 @@ viewNewTodoModal todoId content =
             ]
             [ div [ class "w-100 flex" ]
                 [ input
-                    [ id newTodoInputDomId
+                    [ id modalTodoInputDomId
                     , class "flex-auto pa3"
                     , value content
                     , onInput ContentChanged
@@ -294,19 +299,23 @@ viewTodoList model =
         todoList =
             model.todoStore
                 |> Store.toIdItemPairList
-                |> List.map (\( id, todo ) -> ( id, viewTodoItem id todo ))
+                |> List.map (\( id, todo ) -> ( id, viewTodoItem todo ))
     in
-    Html.Keyed.node "div" [] todoList
+    Html.Keyed.node "div" [ class "w-100 measure-wide items-center" ] todoList
 
 
-viewTodoItem : Store.Id -> Store.Item TodoAttrs -> Html Msg
-viewTodoItem id todo =
+viewTodoItem : Store.Item TodoAttrs -> Html Msg
+viewTodoItem todo =
     let
         content : String
         content =
             when String.isEmpty (\_ -> "<empty>") todo.attrs.content
     in
-    txtA [ class "pv3" ] content
+    div
+        [ class "pa3 w-100 pointer bb b--light-gray"
+        , onClick <| EditClicked todo
+        ]
+        [ txt content ]
 
 
 
