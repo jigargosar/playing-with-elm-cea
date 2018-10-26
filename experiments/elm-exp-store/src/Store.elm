@@ -293,10 +293,12 @@ initItem attrs now =
     { meta = { id = "dummyId", createdAt = now, modifiedAt = now, deleted = False }, attrs = attrs }
 
 
-
---itemCodec =
---    Item
---        |> JC.first "meta" metaCodec
+itemCodec : Codec attrs -> Codec (Item attrs)
+itemCodec attrCodec =
+    Item
+        |> JC.first "meta" metaCodec .meta
+        |> JC.next "attrs" attrCodec .attrs
+        |> JC.end
 
 
 itemDecoder : Decoder attrs -> Decoder (Item attrs)
