@@ -9,7 +9,6 @@ module Store exposing
     , initEmpty
     , insert
     , load
-    , loadWithDefaultEmpty
     , modifyItemWithId
     , resetCache
     , toIdItemPairList
@@ -63,12 +62,6 @@ storeCodec attrsCodec =
         |> JC.end
 
 
-storeDecoder : Decoder attrs -> Decoder (Model attrs)
-storeDecoder attrsDecoder =
-    D.map init
-        (D.field "dict" (D.dict <| itemDecoder attrsDecoder))
-
-
 storeEncoder : Codec attrs -> Encoder (Model attrs)
 storeEncoder attrsCodec model =
     E.object
@@ -83,7 +76,7 @@ toCacheCmd config =
 
 load : Config msg attrs -> Value -> ( Maybe Log.Line, Model attrs )
 load config =
-    decodeValue (storeDecoder <| JC.decoder config.codec)
+    decodeValue (JC.decoder <| storeCodec config.codec)
         >> (\result ->
                 case result of
                     Ok todoStore ->
@@ -92,12 +85,6 @@ load config =
                     Err error ->
                         ( Just [ D.errorToString error ], initEmpty )
            )
-
-
-loadWithDefaultEmpty config =
-    decodeValue (storeDecoder config.decoder)
-        --        >> Result.mapError (Debug.log "ER")
-        >> Result.withDefault initEmpty
 
 
 insert : Item attrs -> Model attrs -> Model attrs
