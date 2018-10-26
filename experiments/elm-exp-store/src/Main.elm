@@ -6,6 +6,7 @@ import Browser.Dom
 import Browser.Events
 import Dict
 import FeatherIcons
+import Filter exposing (ListFilter)
 import HotKey
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -45,7 +46,7 @@ type alias Model =
     , toasties : Toasty.Stack Log.Line
     , todoStore : TodoStore
     , mode : Mode
-    , listFilter : Todo.ListFilter
+    , listFilter : ListFilter
     }
 
 
@@ -69,7 +70,7 @@ init flags =
         , toasties = Toasty.initialState
         , todoStore = todoStore
         , mode = ListTodoMode
-        , listFilter = Todo.Active
+        , listFilter = Filter.Active
         }
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
 
@@ -92,7 +93,7 @@ type Msg
     | ToastyMsg (Toasty.Msg Log.Line)
     | Tick Mills
     | SetMode Mode
-    | SetListFilter Todo.ListFilter
+    | SetListFilter ListFilter
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)
@@ -278,9 +279,9 @@ view model =
             [ row ""
                 []
                 [ button [ onClick AddClicked ] [ text "add" ]
-                , filterBtn Todo.Future "Future"
-                , filterBtn Todo.Active "Active"
-                , filterBtn Todo.Completed "Completed"
+                , filterBtn Filter.Future "Future"
+                , filterBtn Filter.Active "Active"
+                , filterBtn Filter.Completed "Completed"
                 ]
             , viewTodoList model
             ]
@@ -343,7 +344,7 @@ viewEditContentModal todoId content =
 
 
 filterTodoItem model todo =
-    Todo.matchesFilter model.lastTickAt model.listFilter todo
+    Filter.matches model.lastTickAt model.listFilter todo
 
 
 viewTodoList : Model -> Html Msg

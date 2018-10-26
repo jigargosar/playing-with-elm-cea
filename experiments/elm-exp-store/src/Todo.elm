@@ -1,6 +1,5 @@
 module Todo exposing
     ( Content
-    , ListFilter(..)
     , Msg(..)
     , TodoAttrs
     , TodoItem
@@ -8,7 +7,7 @@ module Todo exposing
     , content
     , defaultValue
     , isCompleted
-    , matchesFilter
+    , isScheduledAfter
     , storeConfig
     )
 
@@ -16,12 +15,6 @@ import BasicsX exposing (Encoder, applyTo, flip, maybeBool)
 import JsonCodec as JC exposing (Codec)
 import Port
 import Store exposing (Item, Store, itemAttrs)
-
-
-type ListFilter
-    = Future
-    | Active
-    | Completed
 
 
 type alias Content =
@@ -95,26 +88,6 @@ storeConfig =
     , toCacheCmd = Port.cacheTodoStore
     , defaultValue = defaultValue
     }
-
-
-matchesFilter : Int -> ListFilter -> TodoItem -> Bool
-matchesFilter referenceTime filter todo =
-    let
-        completed =
-            isCompleted todo
-
-        inFuture =
-            isScheduledAfter referenceTime todo
-    in
-    case filter of
-        Future ->
-            not completed && inFuture
-
-        Active ->
-            not completed && not inFuture
-
-        Completed ->
-            completed
 
 
 isCompleted =
