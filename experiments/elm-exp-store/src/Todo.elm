@@ -29,6 +29,7 @@ type alias Content =
 
 type alias TodoAttrs =
     { content : Content
+    , completed : Bool
     }
 
 
@@ -40,17 +41,20 @@ type alias TodoStore =
     Store TodoAttrs
 
 
+init : Content -> Bool -> TodoAttrs
 init =
     TodoAttrs
 
 
+defaultValue : TodoAttrs
 defaultValue =
-    init ""
+    init "" False
 
 
 type Msg
     = NoOp
     | SetContent Content
+    | MarkCompleted
 
 
 storeConfig : Store.Config Msg TodoAttrs
@@ -58,12 +62,15 @@ storeConfig =
     let
         decoder : Decoder TodoAttrs
         decoder =
-            D.map TodoAttrs (D.field "content" D.string)
+            D.map2 TodoAttrs
+                (D.field "content" D.string)
+                (D.field "completed" D.bool)
 
         encoder : Encoder TodoAttrs
         encoder model =
             E.object
                 [ ( "content", E.string model.content )
+                , ( "completed", E.bool model.completed )
                 ]
 
         update : Msg -> TodoAttrs -> Maybe TodoAttrs
@@ -74,6 +81,9 @@ storeConfig =
 
                 SetContent newContent ->
                     maybeBool (model.content /= newContent) { model | content = newContent }
+
+                MarkCompleted ->
+                    maybeBool (not model.completed) { model | completed = True }
     in
     { update = update
     , encoder = encoder
