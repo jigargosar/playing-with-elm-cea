@@ -11,7 +11,7 @@ module Todo exposing
     )
 
 import BasicsX exposing (Encoder, maybeBool)
-import JsonCodec as JC
+import JsonCodec as JC exposing (Codec)
 import Port
 import Store exposing (Item, Store)
 
@@ -59,7 +59,7 @@ type Msg
 storeConfig : Store.Config Msg TodoAttrs
 storeConfig =
     let
-        codec : JC.Codec TodoAttrs
+        codec : Codec TodoAttrs
         codec =
             TodoAttrs
                 |> JC.first "content" JC.string .content
@@ -79,8 +79,7 @@ storeConfig =
                     maybeBool (not model.completed) { model | completed = True }
     in
     { update = update
-    , encoder = JC.encoder codec
-    , decoder = JC.decoder codec
+    , codec = codec
     , toCacheCmd = Port.cacheTodoStore
     , defaultValue = defaultValue
     }
