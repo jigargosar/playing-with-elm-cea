@@ -22,7 +22,7 @@ import Dict exposing (Dict)
 import IdX
 import Json.Decode as D exposing (Decoder, decodeValue)
 import Json.Encode as E exposing (Value)
-import JsonCodec exposing (Codec)
+import JsonCodec as JC exposing (Codec)
 import Log
 import Random exposing (Generator, Seed)
 import Task exposing (Task)
@@ -56,27 +56,32 @@ init dict =
     { dict = dict }
 
 
+
+--storeCodec =
+--    Model |> JC.first "dict" JC.dict ()
+
+
 storeDecoder : Decoder attrs -> Decoder (Model attrs)
 storeDecoder attrsDecoder =
     D.map init
         (D.field "dict" (D.dict <| itemDecoder attrsDecoder))
 
 
-encode : Codec attrs -> Encoder (Model attrs)
-encode attrsCodec model =
+storeEncoder : Codec attrs -> Encoder (Model attrs)
+storeEncoder attrsCodec model =
     E.object
-        [ ( "dict", E.dict identity (itemEncoder <| JsonCodec.encoder attrsCodec) model.dict )
+        [ ( "dict", E.dict identity (itemEncoder <| JC.encoder attrsCodec) model.dict )
         ]
 
 
 toCacheCmd : Config msg attrs -> Model attrs -> Cmd (Msg attrs)
 toCacheCmd config =
-    config.toCacheCmd << encode config.codec
+    config.toCacheCmd << storeEncoder config.codec
 
 
 load : Config msg attrs -> Value -> ( Maybe Log.Line, Model attrs )
 load config =
-    decodeValue (storeDecoder <| JsonCodec.decoder config.codec)
+    decodeValue (storeDecoder <| JC.decoder config.codec)
         >> (\result ->
                 case result of
                     Ok todoStore ->
@@ -171,10 +176,10 @@ update config message model =
             pure3 model
 
         Cache ->
-            ( model, config.toCacheCmd <| encode config.codec model, [] )
+            ( model, config.toCacheCmd <| storeEncoder config.codec model, [] )
 
         ResetCache ->
-            ( initEmpty, config.toCacheCmd <| encode config.codec initEmpty, [] )
+            ( initEmpty, config.toCacheCmd <| storeEncoder config.codec initEmpty, [] )
 
         InsertItemAndCache item ->
             pure3 (insert item model)
@@ -199,7 +204,7 @@ update config message model =
                 newModel =
                     insert newItem model
             in
-            ( newModel, config.toCacheCmd <| encode config.codec newModel, [ InsertedOutMsg newItem ] )
+            ( newModel, config.toCacheCmd <| storeEncoder config.codec newModel, [ InsertedOutMsg newItem ] )
 
         InsertModified item ->
             ( model
@@ -217,7 +222,7 @@ update config message model =
                 newModel =
                     insert newItem model
             in
-            ( newModel, config.toCacheCmd <| encode config.codec newModel, [ ModifiedOutMsg newItem ] )
+            ( newModel, config.toCacheCmd <| storeEncoder config.codec newModel, [ ModifiedOutMsg newItem ] )
 
 
 
