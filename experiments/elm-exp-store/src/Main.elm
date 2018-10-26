@@ -338,7 +338,7 @@ viewTodoItem todo =
         , classList [ ( "strike", vm.isCompleted ) ]
         , onClick vm.editContentMsg
         ]
-        [ txt vm.content ]
+        [ row "" [] [ txt vm.content ] ]
 
 
 
