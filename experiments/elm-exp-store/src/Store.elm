@@ -69,6 +69,11 @@ encode attrsCodec model =
         ]
 
 
+toCacheCmd : Config msg attrs -> Model attrs -> Cmd (Msg attrs)
+toCacheCmd config =
+    config.toCacheCmd << encode config.codec
+
+
 load : Config msg attrs -> Value -> ( Maybe Log.Line, Model attrs )
 load config =
     decodeValue (storeDecoder <| JsonCodec.decoder config.codec)
