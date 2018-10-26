@@ -33,6 +33,12 @@ import WheelEvent exposing (WheelEvent)
 ---- MODEL ----
 
 
+type ListFilter
+    = Future
+    | Active
+    | Completed
+
+
 type Mode
     = ListTodoMode
     | EditContentMode Store.Id Todo.Content
@@ -43,6 +49,7 @@ type alias Model =
     , toasties : Toasty.Stack Log.Line
     , todoStore : TodoStore
     , mode : Mode
+    , listFilter : ListFilter
     }
 
 
@@ -65,6 +72,7 @@ init flags =
         , toasties = Toasty.initialState
         , todoStore = todoStore
         , mode = ListTodoMode
+        , listFilter = Active
         }
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
 
@@ -302,7 +310,7 @@ viewTodoList model =
         todoList =
             model.todoStore
                 |> Store.toIdItemPairList
-                |> List.map (\( id, todo ) -> ( id, viewTodoItem todo ))
+                |> List.map (Tuple.mapSecond viewTodoItem)
     in
     Html.Keyed.node "div" [ class "w-100 measure-wide items-center" ] todoList
 
