@@ -255,16 +255,11 @@ view model =
         filterBtn filter label =
             button
                 [ onClickSetFilter filter
-                , class
-                    ("pv2 bb bw1 "
-                        ++ ter
-                            (filter == model.listFilter)
-                            " "
-                            "b--transparent "
-                    )
+                , class "pv2 "
                 ]
                 [ txtA
-                    [ classList [ ( " b--", filter == model.listFilter ) ]
+                    [ class "bb bw1"
+                    , classList [ ( "b--transparent", filter /= model.listFilter ) ]
                     ]
                     label
                 ]
