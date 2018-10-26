@@ -1,4 +1,4 @@
-module UpdateReturn exposing (andThen, andThen3, foldlOutMsgList, pure, pure3)
+module UpdateReturn exposing (addOutMsg3, andThen, andThen3, foldlOutMsgList, pure, pure3)
 
 import Update3
 
@@ -25,6 +25,10 @@ andThen3 f ( m1, c1, o1 ) =
             f m1
     in
     ( m2, Cmd.batch [ c1, c2 ], o1 ++ o2 )
+
+
+addOutMsg3 o2 ( m1, c1, o1 ) =
+    ( m1, c1, o1 ++ [ o2 ] )
 
 
 foldlOutMsgList outMsgHandler =

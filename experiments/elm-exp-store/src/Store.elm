@@ -26,7 +26,7 @@ import Log
 import Random exposing (Generator, Seed)
 import Task exposing (Task)
 import Time
-import UpdateReturn exposing (andThen3, pure, pure3)
+import UpdateReturn exposing (addOutMsg3, andThen3, pure, pure3)
 
 
 type alias Id =
@@ -97,11 +97,15 @@ toIdItemPairList =
     .dict >> Dict.toList
 
 
+type alias ItemOutMsg attrs =
+    Item attrs -> OutMsg attrs
+
+
 type Msg attrs
     = NoOp
     | Cache
     | ResetCache
-    | InsertItemAndCache (Item attrs)
+    | InsertItemAndUpdateCacheWithOutMsg (Item attrs) (ItemOutMsg attrs)
     | CreateAndInsert attrs
     | CreateAndInsertWithId attrs Id
     | CreateAndInsertWithMeta attrs Meta
@@ -170,9 +174,10 @@ update config message model =
         ResetCache ->
             ( initEmpty, toCacheCmd config initEmpty, [] )
 
-        InsertItemAndCache item ->
+        InsertItemAndUpdateCacheWithOutMsg item outMsg ->
             pure3 (insert item model)
                 |> andThen3 (update config Cache)
+                |> addOutMsg3 (outMsg item)
 
         CreateAndInsert attrs ->
             ( model, Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator, [] )
