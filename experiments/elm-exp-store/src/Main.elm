@@ -255,9 +255,19 @@ view model =
         filterBtn filter label =
             button
                 [ onClickSetFilter filter
-                , classList [ ( "bb bw1", filter == model.listFilter ) ]
+                , class
+                    ("pv2 bb bw1 "
+                        ++ ter
+                            (filter == model.listFilter)
+                            " "
+                            "b--transparent "
+                    )
                 ]
-                [ text label ]
+                [ txtA
+                    [ classList [ ( " b--", filter == model.listFilter ) ]
+                    ]
+                    label
+                ]
     in
     UI.root
         [ viewToolbar model
