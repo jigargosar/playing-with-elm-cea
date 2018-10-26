@@ -163,7 +163,8 @@ update config message model =
             ( model, toCacheCmd config model, [] )
 
         ResetCache ->
-            ( initEmpty, toCacheCmd config initEmpty, [] )
+            pure3 initEmpty
+                |> andThen3 (update config Cache)
 
         UpsertItemAndUpdateCacheWithOutMsg outMsg item ->
             pure3 (insert item model)
