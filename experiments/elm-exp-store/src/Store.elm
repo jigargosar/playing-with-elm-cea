@@ -7,6 +7,8 @@ module Store exposing
     , Store
     , insertNew
     , itemAttrs
+    , itemCreatedAt
+    , itemModifiedAt
     , load
     , resetCache
     , toPairs
@@ -221,6 +223,14 @@ initItemWithNowTask attrs id =
 
 itemAttrs =
     .attrs
+
+
+itemModifiedAt =
+    .meta >> .modifiedAt
+
+
+itemCreatedAt =
+    .meta >> .createdAt
 
 
 setItemModifiedAt now model =

@@ -309,6 +309,7 @@ viewTodoList model =
             model.todoStore
                 |> Store.toPairs
                 |> List.filter (Tuple.second >> filterTodoItem model)
+                |> List.sortBy (Tuple.second >> Store.itemCreatedAt)
                 |> List.map (Tuple.mapSecond viewTodoItem)
     in
     Html.Keyed.node "div" [ class "w-100 measure-wide items-center" ] todoList
