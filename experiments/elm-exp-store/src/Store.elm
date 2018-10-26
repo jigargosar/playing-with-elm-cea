@@ -209,14 +209,9 @@ update config message model =
             )
 
         UpdateModifiedAtWithNow item now ->
-            let
-                newItem =
-                    setModifiedAt now item
-
-                newModel =
-                    insert newItem model
-            in
-            ( newModel, toCacheCmd config newModel, [ ModifiedOutMsg newItem ] )
+            update config
+                (InsertItemAndUpdateCacheWithOutMsg (setModifiedAt now item) ModifiedOutMsg)
+                model
 
 
 
