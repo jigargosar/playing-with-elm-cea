@@ -89,6 +89,7 @@ type Msg
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)
+    | StartEditing TodoItem
     | AddClicked
     | EditClicked TodoItem
     | ContentChanged Todo.Content
@@ -117,8 +118,7 @@ handleTodoStoreMsg msg model =
 handleTodStoreOutMsg outMsg model =
     case outMsg of
         Store.InsertedOutMsg newTodo ->
-            update (SetMode <| editContentMode newTodo) model
-                |> andThen (update <| FocusDomId modalTodoInputDomId)
+            update (StartEditing newTodo) model
 
         Store.ModifiedOutMsg updatedTodo ->
             let
@@ -169,12 +169,15 @@ update message model =
         TodoStoreMsg msg ->
             handleTodoStoreMsg msg model
 
+        StartEditing todo ->
+            update (SetMode <| editContentMode todo) model
+                |> andThen (update <| FocusDomId modalTodoInputDomId)
+
         AddClicked ->
             update (TodoStoreMsg <| Store.createAndInsert Todo.defaultValue) model
 
         EditClicked todo ->
-            update (SetMode <| editContentMode todo) model
-                |> andThen (update <| FocusDomId modalTodoInputDomId)
+            update (StartEditing todo) model
 
         ContentChanged newContent ->
             case model.mode of
