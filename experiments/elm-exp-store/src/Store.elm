@@ -99,8 +99,8 @@ type Msg attrs
     | Cache
     | ResetCache
     | UpsertItemAndUpdateCacheWithOutMsg (ItemOutMsg attrs) (Item attrs)
-    | CreateAndInsert attrs
-    | CreateAndInsertWithId attrs Id
+    | InsertNew attrs
+    | InsertNewWithId attrs Id
     | UpdateModifiedAt (Item attrs)
 
 
@@ -110,7 +110,7 @@ type OutMsg attrs
 
 
 createAndInsert =
-    CreateAndInsert
+    InsertNew
 
 
 resetCache =
@@ -170,10 +170,10 @@ update config message model =
                 |> andThen3 (update config Cache)
                 |> addOutMsg3 (outMsg item)
 
-        CreateAndInsert attrs ->
-            ( model, Random.generate (CreateAndInsertWithId attrs) IdX.stringIdGenerator, [] )
+        InsertNew attrs ->
+            ( model, Random.generate (InsertNewWithId attrs) IdX.stringIdGenerator, [] )
 
-        CreateAndInsertWithId attrs id ->
+        InsertNewWithId attrs id ->
             pure3 model
                 |> perform3
                     (UpsertItemAndUpdateCacheWithOutMsg InsertedOutMsg)
