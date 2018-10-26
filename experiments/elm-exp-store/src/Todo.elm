@@ -31,6 +31,7 @@ type alias Content =
 type alias TodoAttrs =
     { content : Content
     , completed : Bool
+    , scheduledAt : Int
     }
 
 
@@ -42,14 +43,14 @@ type alias TodoStore =
     Store TodoAttrs
 
 
-init : Content -> Bool -> TodoAttrs
+init : Content -> Bool -> Int -> TodoAttrs
 init =
     TodoAttrs
 
 
 defaultValue : TodoAttrs
 defaultValue =
-    init "" False
+    init "" False 0
 
 
 type Msg
@@ -67,6 +68,7 @@ storeConfig =
             TodoAttrs
                 |> JC.first "content" JC.string .content
                 |> JC.option "completed" JC.bool .completed False
+                |> JC.option "scheduledAt" JC.int .scheduledAt 0
                 |> JC.end
 
         update : Msg -> TodoAttrs -> Maybe TodoAttrs
