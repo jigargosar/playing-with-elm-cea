@@ -315,7 +315,7 @@ viewTodoList model =
 
 
 type alias TodoView msg =
-    { content : String, done : Bool, editContentMsg : msg }
+    { content : String, isCompleted : Bool, editContentMsg : msg }
 
 
 todoView : TodoItem -> TodoView Msg
@@ -329,18 +329,15 @@ todoView todo =
 viewTodoItem : Store.Item TodoAttrs -> Html Msg
 viewTodoItem todo =
     let
-        content : String
-        content =
-            when String.isEmpty (\_ -> "<empty>") (Todo.content todo)
-
-        completed =
-            Todo.isCompleted todo
+        vm =
+            todoView todo
     in
     div
         [ class "pa3 w-100 pointer bb b--light-gray"
+        , classList [ ( "strike", vm.isCompleted ) ]
         , onClick <| EditClicked todo
         ]
-        [ txt content ]
+        [ txt vm.content ]
 
 
 
