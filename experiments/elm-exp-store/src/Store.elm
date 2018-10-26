@@ -16,7 +16,7 @@ module Store exposing
     , updateItem
     )
 
-import BasicsX exposing (Encoder, maybeBool, unwrapMaybe)
+import BasicsX exposing (Encoder, flip, maybeBool, unwrapMaybe)
 import Dict exposing (Dict)
 import IdX
 import Json.Decode as D exposing (Decoder, decodeValue)
@@ -105,12 +105,11 @@ type Msg attrs
     = NoOp
     | Cache
     | ResetCache
-    | InsertItemAndUpdateCacheWithOutMsg (Item attrs) (ItemOutMsg attrs)
+    | InsertItemAndUpdateCacheWithOutMsg (ItemOutMsg attrs) (Item attrs)
     | CreateAndInsert attrs
     | CreateAndInsertWithId attrs Id
     | CreateAndInsertWithMeta attrs Meta
     | UpdateModifiedAt (Item attrs)
-    | UpdateModifiedAtWithNow (Item attrs)
 
 
 type OutMsg attrs
@@ -174,7 +173,7 @@ update config message model =
         ResetCache ->
             ( initEmpty, toCacheCmd config initEmpty, [] )
 
-        InsertItemAndUpdateCacheWithOutMsg item outMsg ->
+        InsertItemAndUpdateCacheWithOutMsg outMsg item ->
             pure3 (insert item model)
                 |> andThen3 (update config Cache)
                 |> addOutMsg3 (outMsg item)
@@ -204,14 +203,9 @@ update config message model =
             ( model
             , Time.now
                 |> Task.map (Time.posixToMillis >> (\now -> setModifiedAt now item))
-                |> Task.perform UpdateModifiedAtWithNow
+                |> Task.perform (InsertItemAndUpdateCacheWithOutMsg ModifiedOutMsg)
             , []
             )
-
-        UpdateModifiedAtWithNow item ->
-            update config
-                (InsertItemAndUpdateCacheWithOutMsg item ModifiedOutMsg)
-                model
 
 
 
@@ -316,3 +310,8 @@ setModifiedAt now model =
             model.meta
     in
     { model | meta = { meta | modifiedAt = now } }
+
+
+setModifiedAtToNow model =
+    Time.now
+        |> Task.map (Time.posixToMillis >> flip setModifiedAt model)
