@@ -1,5 +1,6 @@
-module UpdateReturn exposing (addOutMsg3, andThen, andThen3, foldlOutMsgList, pure, pure3)
+module UpdateReturn exposing (addCmd3, addOutMsg3, andThen, andThen3, foldlOutMsgList, perform3, pure, pure3)
 
+import Task
 import Update3
 
 
@@ -29,6 +30,14 @@ andThen3 f ( m1, c1, o1 ) =
 
 addOutMsg3 o2 ( m1, c1, o1 ) =
     ( m1, c1, o1 ++ [ o2 ] )
+
+
+addCmd3 c2 ( m1, c1, o1 ) =
+    ( m1, Cmd.batch [ c1, c2 ], o1 )
+
+
+perform3 msg =
+    Task.perform msg >> addCmd3
 
 
 foldlOutMsgList outMsgHandler =

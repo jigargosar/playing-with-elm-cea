@@ -26,7 +26,7 @@ import Log
 import Random exposing (Generator, Seed)
 import Task exposing (Task)
 import Time
-import UpdateReturn exposing (addOutMsg3, andThen3, pure, pure3)
+import UpdateReturn exposing (addCmd3, addOutMsg3, andThen3, perform3, pure, pure3)
 
 
 type alias Id =
@@ -200,11 +200,9 @@ update config message model =
             ( newModel, toCacheCmd config newModel, [ InsertedOutMsg newItem ] )
 
         UpdateModifiedAt item ->
-            ( model
-            , setModifiedAtToNowTask item
-                |> Task.perform (InsertItemAndUpdateCacheWithOutMsg ModifiedOutMsg)
-            , []
-            )
+            pure3 model
+                |> perform3 (InsertItemAndUpdateCacheWithOutMsg ModifiedOutMsg)
+                    (setModifiedAtToNowTask item)
 
 
 
