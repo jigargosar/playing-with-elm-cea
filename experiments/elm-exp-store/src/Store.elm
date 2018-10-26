@@ -9,6 +9,7 @@ module Store exposing
     , itemAttrs
     , itemCreatedAt
     , itemModifiedAt
+    , items
     , load
     , resetCache
     , toPairs
@@ -83,6 +84,11 @@ load config =
 toPairs : Model attrs -> List ( Id, Item attrs )
 toPairs =
     .dict >> Dict.toList
+
+
+items : Model attrs -> List (Item attrs)
+items =
+    .dict >> Dict.values
 
 
 type alias ItemOutMsg attrs =

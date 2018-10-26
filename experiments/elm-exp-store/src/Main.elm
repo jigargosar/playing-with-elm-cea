@@ -356,10 +356,10 @@ viewTodoList model =
     let
         todoList =
             model.todoStore
-                |> Store.toPairs
-                |> List.filter (Tuple.second >> ListFilter.matchesSelectedIn model.listFilter)
-                |> List.sortBy (Tuple.second >> Store.itemCreatedAt)
-                |> List.map (Tuple.mapSecond <| viewTodoItem model)
+                |> Store.items
+                |> List.filter (ListFilter.matchesSelectedIn model.listFilter)
+                |> List.sortBy Store.itemCreatedAt
+                |> List.map (\todo -> ( todo.meta.id, viewTodoItem model todo ))
     in
     Html.Keyed.node "div" [ class "w-100 measure-wide items-center" ] todoList
 
