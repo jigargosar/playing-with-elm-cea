@@ -1,4 +1,4 @@
-module ListFilter exposing (Filter(..), matches)
+module ListFilter exposing (Filter(..), Model, matchesOld)
 
 import Todo exposing (TodoItem)
 
@@ -10,13 +10,13 @@ type Filter
 
 
 type alias Model =
-    { filter : Filter
+    { selected : Filter
     , modifiedAt : Int
     }
 
 
-matches : Int -> Filter -> TodoItem -> Bool
-matches referenceTime filter todo =
+matchesOld : Int -> Filter -> TodoItem -> Bool
+matchesOld referenceTime filter todo =
     let
         completed =
             Todo.isCompleted todo
@@ -25,6 +25,26 @@ matches referenceTime filter todo =
             Todo.isScheduledAfter referenceTime todo
     in
     case filter of
+        Future ->
+            not completed && inFuture
+
+        Active ->
+            not completed && not inFuture
+
+        Completed ->
+            completed
+
+
+matches : TodoItem -> Model -> Bool
+matches todo { selected, modifiedAt } =
+    let
+        completed =
+            Todo.isCompleted todo
+
+        inFuture =
+            Todo.isScheduledAfter modifiedAt todo
+    in
+    case selected of
         Future ->
             not completed && inFuture
 

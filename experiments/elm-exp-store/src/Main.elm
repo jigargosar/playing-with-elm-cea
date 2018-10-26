@@ -344,7 +344,7 @@ viewEditContentModal todoId content =
 
 
 filterTodoItem model todo =
-    ListFilter.matches model.lastTickAt model.listFilter todo
+    ListFilter.matchesOld model.lastTickAt model.listFilter todo
 
 
 viewTodoList : Model -> Html Msg
