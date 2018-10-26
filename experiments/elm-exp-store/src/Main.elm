@@ -371,11 +371,6 @@ viewTodoList model =
         secondaryListLength =
             List.length secondaryList
 
-        viewSecondaryListKeyed =
-            secondaryList
-                |> List.sortBy Todo.scheduledAt
-                |> List.map (\todo -> ( todo.meta.id, viewTodoItem model todo ))
-
         viewMore =
             row "justify-center" [] [ txt "more", txt <| String.fromInt secondaryListLength ]
     in
