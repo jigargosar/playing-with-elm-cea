@@ -58,6 +58,7 @@ type Msg
     | SetContent Content
     | MarkCompleted
     | UnmarkCompleted
+    | SetScheduledAt Int
 
 
 storeConfig : Store.Config Msg TodoAttrs
@@ -79,6 +80,9 @@ storeConfig =
 
                 SetContent newContent ->
                     maybeBool (model.content /= newContent) { model | content = newContent }
+
+                SetScheduledAt newScheduledAt ->
+                    maybeBool (model.scheduledAt /= newScheduledAt) { model | content = newScheduledAt }
 
                 MarkCompleted ->
                     maybeBool (not model.completed) { model | completed = True }
