@@ -19,6 +19,7 @@ import Port
 import Random
 import Store exposing (Id, Item, Store, resetCache)
 import Task
+import Time
 import Toasty
 import Toasty.Defaults
 import Todo exposing (TodoAttrs, TodoItem, TodoStore)
@@ -39,7 +40,8 @@ type Mode
 
 
 type alias Model =
-    { magicMenu : MagicMenu
+    { lastTickAt : Int
+    , magicMenu : MagicMenu
     , toasties : Toasty.Stack Log.Line
     , todoStore : TodoStore
     , mode : Mode
@@ -62,7 +64,8 @@ init flags =
             Store.load Todo.storeConfig flags.todos
     in
     pure
-        { magicMenu = MagicMenu.initial
+        { lastTickAt = flags.now
+        , magicMenu = MagicMenu.initial
         , toasties = Toasty.initialState
         , todoStore = todoStore
         , mode = ListTodoMode
@@ -87,6 +90,7 @@ type Msg
     = NoOp
     | Warn Log.Line
     | ToastyMsg (Toasty.Msg Log.Line)
+    | Tick Mills
     | SetMode Mode
     | SetListFilter Todo.ListFilter
     | FocusDomId String
@@ -153,6 +157,9 @@ update message model =
 
         ToastyMsg msg ->
             Toasty.update Toasty.config ToastyMsg msg model
+
+        Tick millis ->
+            pure { model | lastTickAt = millis }
 
         FocusDomId domId ->
             ( model
@@ -227,6 +234,7 @@ update message model =
 subscriptions model =
     Sub.batch
         [ MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
+        , Time.every (1000 * 10) (Time.posixToMillis >> Tick)
         ]
 
 
