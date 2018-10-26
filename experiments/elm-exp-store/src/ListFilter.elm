@@ -5,7 +5,6 @@ module ListFilter exposing
     , init
     , isSelected
     , matches
-    , matchesOld
     , update
     )
 
@@ -28,26 +27,6 @@ type alias Model =
 init : Int -> Model
 init now =
     { selected = Active, modifiedAt = now }
-
-
-matchesOld : Int -> Filter -> TodoItem -> Bool
-matchesOld referenceTime filter todo =
-    let
-        completed =
-            Todo.isCompleted todo
-
-        inFuture =
-            Todo.isScheduledAfter referenceTime todo
-    in
-    case filter of
-        Future ->
-            not completed && inFuture
-
-        Active ->
-            not completed && not inFuture
-
-        Completed ->
-            completed
 
 
 matches : TodoItem -> Model -> Bool
