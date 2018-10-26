@@ -13,7 +13,7 @@ import Html.Events exposing (..)
 import Html.Keyed
 import Json.Decode as D
 import Json.Encode as E
-import ListFilter exposing (ListFilter)
+import ListFilter exposing (Filter)
 import Log
 import MagicMenu exposing (MagicMenu)
 import Port
@@ -46,7 +46,7 @@ type alias Model =
     , toasties : Toasty.Stack Log.Line
     , todoStore : TodoStore
     , mode : Mode
-    , listFilter : ListFilter
+    , listFilter : Filter
     }
 
 
@@ -93,7 +93,7 @@ type Msg
     | ToastyMsg (Toasty.Msg Log.Line)
     | Tick Mills
     | SetMode Mode
-    | SetListFilter ListFilter
+    | SetListFilter Filter
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)

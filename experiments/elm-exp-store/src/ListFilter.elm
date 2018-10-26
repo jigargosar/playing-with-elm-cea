@@ -1,15 +1,21 @@
-module ListFilter exposing (ListFilter(..), matches)
+module ListFilter exposing (Filter(..), matches)
 
 import Todo exposing (TodoItem)
 
 
-type ListFilter
+type Filter
     = Future
     | Active
     | Completed
 
 
-matches : Int -> ListFilter -> TodoItem -> Bool
+type alias Model =
+    { filter : Filter
+    , modifiedAt : Int
+    }
+
+
+matches : Int -> Filter -> TodoItem -> Bool
 matches referenceTime filter todo =
     let
         completed =
