@@ -253,6 +253,16 @@ initMeta id now =
     { id = id, createdAt = now, modifiedAt = now, deleted = False }
 
 
+metaCodec : Codec Meta
+metaCodec =
+    Meta
+        |> JC.first "id" JC.string .id
+        |> JC.next "createdAt" JC.int .createdAt
+        |> JC.next "modifiedAt" JC.int .modifiedAt
+        |> JC.next "deleted" JC.bool .deleted
+        |> JC.end
+
+
 metaDecoder : Decoder Meta
 metaDecoder =
     D.map4 Meta
@@ -281,6 +291,12 @@ type alias Item attrs =
 initItem : attrs -> Milli -> Item attrs
 initItem attrs now =
     { meta = { id = "dummyId", createdAt = now, modifiedAt = now, deleted = False }, attrs = attrs }
+
+
+
+--itemCodec =
+--    Item
+--        |> JC.first "meta" metaCodec
 
 
 itemDecoder : Decoder attrs -> Decoder (Item attrs)
