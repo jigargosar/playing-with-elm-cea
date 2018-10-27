@@ -10,8 +10,8 @@
   },
   "now": {
     "alias": [
-      "elm-swipe-do",
-      "https://elm-swipe-do.functional-programmer.com"
+      "elm-exp-store",
+      "https://elm-exp-store.functional-programmer.com"
     ],
     "type": "static",
     "static": {
