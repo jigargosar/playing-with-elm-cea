@@ -123,7 +123,7 @@ handleTodoStoreMsg msg model =
 handleTodoStoreOutMsg outMsg model =
     case outMsg of
         Store.InsertedOutMsg newTodo ->
-            update (StartEditing newTodo) model
+            update (Warn [ "Store.InsertedOutMsg: unused" ]) model
 
         Store.ModifiedOutMsg updatedTodo ->
             update (Warn [ "Store.ModifiedOutMsg: unused" ]) model
