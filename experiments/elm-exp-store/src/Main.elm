@@ -92,7 +92,6 @@ type Msg
     | AddClicked
     | EditClicked TodoItem
     | TodoUpdateMsg Id Todo.Msg
-    | EndEditMode
     | ModeMsg Mode.Msg
 
 
@@ -226,14 +225,6 @@ update message model =
                 )
                 model
 
-        EndEditMode ->
-            case model.mode of
-                Mode.EditContentMode id _ ->
-                    pure { model | mode = Mode.Default }
-
-                Mode.Default ->
-                    pure model
-
         ModeMsg msg ->
             handleModeMsg msg model
 
@@ -297,18 +288,8 @@ view model =
             ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
-        , viewModal model
+        , Mode.viewModal model |> Html.map ModeMsg
         ]
-
-
-viewModal model =
-    case model.mode of
-        Mode.EditContentMode id content ->
-            Mode.viewEditContentModal id content
-                |> Html.map ModeMsg
-
-        Mode.Default ->
-            text ""
 
 
 modalTodoInputDomId =

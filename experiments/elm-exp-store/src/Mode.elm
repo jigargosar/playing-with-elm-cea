@@ -6,7 +6,7 @@ module Mode exposing
     , editContentMode
     , init
     , update
-    , viewEditContentModal
+    , viewModal
     )
 
 import HotKey
@@ -126,3 +126,12 @@ viewEditContentModal todoId content =
                 ]
             ]
         ]
+
+
+viewModal model =
+    case model.mode of
+        EditContentMode id content ->
+            viewEditContentModal id content
+
+        Default ->
+            text ""
