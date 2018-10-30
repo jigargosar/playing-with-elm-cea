@@ -65,4 +65,9 @@ update message model =
                    )
 
         EndEditMode ->
-            pure3 model
+            case model of
+                EditContentMode id _ ->
+                    pure3 Default
+
+                Default ->
+                    pure3 model
