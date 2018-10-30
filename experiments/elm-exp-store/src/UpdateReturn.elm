@@ -1,5 +1,6 @@
 module UpdateReturn exposing
-    ( addCmd3
+    ( Update3Config
+    , addCmd3
     , addOutMsg3
     , andThen
     , andThen3
@@ -10,6 +11,7 @@ module UpdateReturn exposing
     , performWithNow
     , pure
     , pure3
+    , update3
     )
 
 import Random
@@ -81,3 +83,25 @@ foldlOutMsgList outMsgHandler =
                     )
                     ( model, Cmd.none )
         )
+
+
+type alias Update3Config small smallMsg outMsg big bigMsg =
+    { get : big -> small
+    , set : small -> big -> big
+    , toMsg : smallMsg -> bigMsg
+    , update : smallMsg -> small -> ( small, Cmd smallMsg, List outMsg )
+    , toOutMsg : outMsg -> bigMsg
+    , updateOutMsg : bigMsg -> big -> ( big, Cmd bigMsg )
+    }
+
+
+update3 : Update3Config small smallMsg outMsg big bigMsg -> smallMsg -> big -> ( big, Cmd bigMsg )
+update3 config smallMsg bigModel =
+    Update3.lift
+        config.get
+        config.set
+        config.toMsg
+        config.update
+        smallMsg
+        bigModel
+        |> foldlOutMsgList (config.updateOutMsg << config.toOutMsg)

@@ -26,7 +26,7 @@ import Todo exposing (TodoAttrs, TodoItem, TodoStore)
 import UI exposing (..)
 import Update2
 import Update3
-import UpdateReturn exposing (andThen, foldlOutMsgList, pure)
+import UpdateReturn exposing (Update3Config, andThen, foldlOutMsgList, pure, update3)
 import WheelEvent exposing (WheelEvent)
 
 
@@ -182,14 +182,7 @@ update message model =
                 model
 
         ModeMsg msg ->
-            Update3.lift
-                .mode
-                (\sub m -> { m | mode = sub })
-                ModeMsg
-                Mode.update
-                msg
-                model
-                |> foldlOutMsgList (update << ModeOutMsg)
+            update3 modeUpdate3Config msg model
 
         ModeOutMsg msg ->
             case msg of
@@ -203,18 +196,8 @@ update message model =
                     update (AddNewWithContent content) model
 
 
-type alias Update3Config small smallMsg outMsg big bigMsg =
-    { get : big -> small
-    , set : small -> big -> big
-    , toMsg : smallMsg -> bigMsg
-    , update : smallMsg -> small -> ( small, Cmd smallMsg, List outMsg )
-    , toOutMsg : outMsg -> bigMsg
-    , updateOutMsg : bigMsg -> big -> ( big, Cmd bigMsg )
-    }
-
-
-modeUpdate3 : Update3Config Mode Mode.Msg Mode.OutMsg Model Msg
-modeUpdate3 =
+modeUpdate3Config : Update3Config Mode Mode.Msg Mode.OutMsg Model Msg
+modeUpdate3Config =
     { get = .mode
     , set = \s b -> { b | mode = s }
     , toMsg = ModeMsg
@@ -222,18 +205,6 @@ modeUpdate3 =
     , toOutMsg = ModeOutMsg
     , updateOutMsg = update
     }
-
-
-update3 : Update3Config small smallMsg outMsg big bigMsg -> smallMsg -> big -> ( big, Cmd bigMsg )
-update3 config smallMsg bigModel =
-    Update3.lift
-        config.get
-        config.set
-        config.toMsg
-        config.update
-        smallMsg
-        bigModel
-        |> foldlOutMsgList (config.updateOutMsg << config.toOutMsg)
 
 
 
