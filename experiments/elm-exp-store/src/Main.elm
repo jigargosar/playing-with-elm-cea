@@ -88,6 +88,7 @@ type Msg
     | TodoUpdateMsg Id Todo.Msg
     | AddNewWithContent Todo.Content
     | ModeMsg Mode.Msg
+    | ModeOutMsg Mode.OutMsg
 
 
 handleMagicMenuMsg =
@@ -134,18 +135,7 @@ handleModeMsg msg model =
         Mode.update
         msg
         model
-        |> foldlOutMsgList
-            (\outMsg ->
-                case outMsg of
-                    Mode.TodoContentUpdateOutMsg id newContent ->
-                        update (TodoUpdateMsg id (Todo.SetContent newContent))
-
-                    Mode.FocusDomIdOutMsg domId ->
-                        update (FocusDomId domId)
-
-                    Mode.AddTodoWithContentOutMsg content ->
-                        update (AddNewWithContent content)
-            )
+        |> foldlOutMsgList (update << ModeOutMsg)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -204,6 +194,17 @@ update message model =
 
         ModeMsg msg ->
             handleModeMsg msg model
+
+        ModeOutMsg msg ->
+            case msg of
+                Mode.TodoContentUpdateOutMsg id newContent ->
+                    update (TodoUpdateMsg id (Todo.SetContent newContent)) model
+
+                Mode.FocusDomIdOutMsg domId ->
+                    update (FocusDomId domId) model
+
+                Mode.AddTodoWithContentOutMsg content ->
+                    update (AddNewWithContent content) model
 
 
 
