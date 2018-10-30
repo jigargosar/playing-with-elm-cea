@@ -1,4 +1,13 @@
-module Mode exposing (Mode(..), Model, Msg(..), OutMsg(..), editContentMode, init, update)
+module Mode exposing
+    ( Mode(..)
+    , Model
+    , Msg(..)
+    , OutMsg(..)
+    , editContentMode
+    , init
+    , update
+    , viewEditContentModal
+    )
 
 import HotKey
 import Html exposing (..)

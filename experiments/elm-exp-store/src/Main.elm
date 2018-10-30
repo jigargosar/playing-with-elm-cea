@@ -317,7 +317,8 @@ view model =
 viewModal model =
     case model.mode of
         Mode.EditContentMode id content ->
-            viewEditContentModal id content
+            Mode.viewEditContentModal id content
+                |> Html.map ModeMsg
 
         Mode.Default ->
             text ""
@@ -325,39 +326,6 @@ viewModal model =
 
 modalTodoInputDomId =
     "modal-todo-content-input"
-
-
-viewEditContentModal todoId content =
-    backdrop []
-        [ div
-            [ class "bg-white br4 shadow-1 pa3 measure w-100"
-            ]
-            [ div [ class "w-100 flex" ]
-                [ input
-                    [ id modalTodoInputDomId
-                    , class "flex-auto pa3"
-                    , value content
-                    , onInput ContentChanged
-                    , Html.Events.on "keydown"
-                        (D.map
-                            (\ke ->
-                                case ke of
-                                    ( [], "Enter" ) ->
-                                        EndEditMode
-
-                                    ( [], "Escape" ) ->
-                                        EndEditMode
-
-                                    _ ->
-                                        NoOp
-                            )
-                            HotKey.decoder
-                        )
-                    ]
-                    []
-                ]
-            ]
-        ]
 
 
 viewTodoList : Model -> Html Msg
