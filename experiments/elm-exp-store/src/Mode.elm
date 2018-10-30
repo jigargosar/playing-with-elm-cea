@@ -38,7 +38,6 @@ type Msg
     = NoOp
     | StartEditing TodoItem
     | StartAdding
-    | ContentChangedInStore TodoItem
     | ContentChangedInView Todo.Content
     | EndEditMode
 
@@ -67,20 +66,6 @@ update message model =
             AddContentMode ""
                 |> pure3
                 |> addOutMsg3 (FocusDomIdOutMsg modalTodoInputDomId)
-
-        ContentChangedInStore updatedTodo ->
-            (case model of
-                EditContentMode id content ->
-                    if updatedTodo.meta.id == id then
-                        editContentMode updatedTodo
-
-                    else
-                        model
-
-                _ ->
-                    Debug.todo "Handle this Case"
-            )
-                |> pure3
 
         ContentChangedInView newContent ->
             case model of
