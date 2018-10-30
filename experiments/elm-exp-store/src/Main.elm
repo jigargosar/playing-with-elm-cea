@@ -93,14 +93,6 @@ type Msg
     | ModeOutMsg Mode.OutMsg
 
 
-handleMagicMenuMsg =
-    Update2.lift
-        .magicMenu
-        (\magicMenu model -> { model | magicMenu = magicMenu })
-        MagicMenuMsg
-        MagicMenu.update
-
-
 handleListFilterMsg =
     Update2.lift
         .listFilter
@@ -135,7 +127,13 @@ update message model =
             handleListFilterMsg msg model
 
         MagicMenuMsg msg ->
-            handleMagicMenuMsg msg model
+            Update2.lift
+                .magicMenu
+                (\s b -> { b | magicMenu = s })
+                MagicMenuMsg
+                MagicMenu.update
+                msg
+                model
 
         AddClicked ->
             update (ModeMsg <| Mode.StartAdding) model
