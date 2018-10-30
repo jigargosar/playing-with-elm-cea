@@ -346,28 +346,7 @@ viewTodoItem model todo =
 viewToolbar model =
     UI.toolbar
         [ txtC "b pa3" "ELM Experiment Store"
-        , spacer
-
-        --        , viewTabs (Todos.getFilters model.todos |> List.map viewTab)
-        , spacer
         ]
-
-
-
---onClickFilter =
---    Todos.SetFilter >> TodosMsg >> onClick
---
---viewTab ( active, filter, labelText ) =
---    txtA
---        [ onClickFilter filter
---        , class "pointer b ph3 pv2"
---        , classList [ ( "bw2 bb b--blue", active ) ]
---        ]
---        labelText
-
-
-viewTabs =
-    div [ class "flex bw2 bt b--transparent" ]
 
 
 
