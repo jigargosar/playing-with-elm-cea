@@ -203,7 +203,7 @@ update message model =
                     update (AddNewWithContent content) model
 
 
-type alias Update3 small smallMsg outMsg big bigMsg =
+type alias Update3Config small smallMsg outMsg big bigMsg =
     { get : big -> small
     , set : small -> big -> big
     , toMsg : smallMsg -> bigMsg
@@ -213,7 +213,7 @@ type alias Update3 small smallMsg outMsg big bigMsg =
     }
 
 
-modeUpdate3 : Update3 Mode Mode.Msg Mode.OutMsg Model Msg
+modeUpdate3 : Update3Config Mode Mode.Msg Mode.OutMsg Model Msg
 modeUpdate3 =
     { get = .mode
     , set = \s b -> { b | mode = s }
@@ -222,6 +222,18 @@ modeUpdate3 =
     , toOutMsg = ModeOutMsg
     , updateOutMsg = update
     }
+
+
+update3 : Update3Config small smallMsg outMsg big bigMsg -> smallMsg -> big -> ( big, Cmd bigMsg )
+update3 config smallMsg bigModel =
+    Update3.lift
+        config.get
+        config.set
+        config.toMsg
+        config.update
+        smallMsg
+        bigModel
+        |> foldlOutMsgList (config.updateOutMsg << config.toOutMsg)
 
 
 
