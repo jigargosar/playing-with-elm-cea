@@ -86,6 +86,7 @@ type Msg
     | AddClicked
     | EditClicked TodoItem
     | TodoUpdateMsg Id Todo.Msg
+    | AddNewWithContent Todo.Content
     | ModeMsg Mode.Msg
 
 
@@ -139,24 +140,13 @@ handleModeMsg msg model =
 handleModeOutMsg outMsg model =
     case outMsg of
         Mode.TodoContentUpdateOutMsg id newContent ->
-            update
-                (TodoStoreMsg <|
-                    Store.updateItem Todo.storeConfig
-                        id
-                        (Todo.SetContent newContent)
-                        model.todoStore
-                )
-                model
+            update (TodoUpdateMsg id (Todo.SetContent newContent)) model
 
         Mode.FocusDomIdOutMsg domId ->
             update (FocusDomId domId) model
 
         Mode.AddTodoWithContentOutMsg content ->
-            if String.isEmpty content then
-                pure model
-
-            else
-                update (TodoStoreMsg <| Store.insertNew <| Todo.initAttrWithContent content) model
+            update (AddNewWithContent content) model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -195,6 +185,13 @@ update message model =
 
         EditClicked todo ->
             update (ModeMsg <| Mode.StartEditing todo) model
+
+        AddNewWithContent content ->
+            if String.isEmpty content then
+                pure model
+
+            else
+                update (TodoStoreMsg <| Store.insertNew <| Todo.initAttrWithContent content) model
 
         TodoUpdateMsg id msg ->
             update
