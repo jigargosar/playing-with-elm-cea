@@ -1,7 +1,12 @@
 module Mode exposing (Mode(..), Model, Msg(..), OutMsg(..), editContentMode, init, update)
 
+import HotKey
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import Store
 import Todo exposing (TodoItem)
+import UI exposing (..)
 import UpdateReturn exposing (..)
 
 
@@ -71,3 +76,37 @@ update message model =
 
                 Default ->
                     pure3 model
+
+
+modalTodoInputDomId =
+    "modal-todo-content-input"
+
+
+viewEditContentModal todoId content =
+    backdrop []
+        [ div
+            [ class "bg-white br4 shadow-1 pa3 measure w-100"
+            ]
+            [ div [ class "w-100 flex" ]
+                [ input
+                    [ id modalTodoInputDomId
+                    , class "flex-auto pa3"
+                    , value content
+                    , onInput ContentChangedInView
+                    , HotKey.onKeyDown
+                        (\ke ->
+                            case ke of
+                                ( [], "Enter" ) ->
+                                    EndEditMode
+
+                                ( [], "Escape" ) ->
+                                    EndEditMode
+
+                                _ ->
+                                    NoOp
+                        )
+                    ]
+                    []
+                ]
+            ]
+        ]

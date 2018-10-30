@@ -1,6 +1,7 @@
-module HotKey exposing (Event, SoftKey(..), decoder)
+module HotKey exposing (Event, SoftKey(..), decoder, onKeyDown)
 
 import BasicsX exposing (ter)
+import Html.Events
 import Json.Decode as D
 import Json.Encode as E
 
@@ -40,3 +41,11 @@ decoder =
         (D.field "ctrlKey" D.bool)
         (D.field "metaKey" D.bool)
         (D.field "key" D.string)
+
+
+onKeyDown handler =
+    Html.Events.on "keydown"
+        (D.map
+            handler
+            decoder
+        )
