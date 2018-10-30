@@ -119,20 +119,6 @@ resetCache =
     ResetCache
 
 
-
---updateItem : Config msg attrs -> Id -> msg -> Store attrs -> Msg msg attrs
---updateItem config id msg =
---    let
---        updateItemAttrsMaybe : (attrs -> Maybe attrs) -> Item attrs -> Maybe (Item attrs)
---        updateItemAttrsMaybe updateFn model =
---            updateFn model.attrs |> Maybe.map (\attrs -> { model | attrs = attrs })
---    in
---    .dict
---        >> Dict.get id
---        >> Maybe.andThen (updateItemAttrsMaybe <| config.update msg)
---        >> unwrapMaybe NoOp UpdateModifiedAt
-
-
 updateItem : Id -> msg -> Msg msg attrs
 updateItem =
     UpdateItem
