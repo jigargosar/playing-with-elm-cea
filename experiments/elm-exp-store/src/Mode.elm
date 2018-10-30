@@ -22,6 +22,7 @@ import UpdateReturn exposing (..)
 type Mode
     = Default
     | EditContentMode Store.Id Todo.Content
+    | AddContentMode Todo.Content
 
 
 type alias Model =
@@ -36,6 +37,7 @@ init =
 type Msg
     = NoOp
     | StartEditing TodoItem
+    | StartAdding
     | ContentChangedInStore TodoItem
     | ContentChangedInView Todo.Content
     | EndEditMode
@@ -61,6 +63,11 @@ update message model =
                 |> pure3
                 |> addOutMsg3 (FocusDomIdOutMsg modalTodoInputDomId)
 
+        StartAdding ->
+            AddContentMode ""
+                |> pure3
+                |> addOutMsg3 (FocusDomIdOutMsg modalTodoInputDomId)
+
         ContentChangedInStore updatedTodo ->
             (case model of
                 EditContentMode id content ->
@@ -70,7 +77,7 @@ update message model =
                     else
                         model
 
-                Default ->
+                _ ->
                     model
             )
                 |> pure3
@@ -81,8 +88,11 @@ update message model =
                         EditContentMode id _ ->
                             addOutMsg3 (TodoInputContentChangedOutMsg id newContent)
 
+                        AddContentMode _ ->
+                            always (pure3 <| AddContentMode newContent)
+
                         Default ->
-                            identity
+                            Debug.todo "Handle this Case"
                    )
 
         EndEditMode ->
@@ -90,8 +100,8 @@ update message model =
                 EditContentMode id _ ->
                     pure3 Default
 
-                Default ->
-                    pure3 model
+                _ ->
+                    Debug.todo "Handle this Case"
 
 
 modalTodoInputDomId =
@@ -131,7 +141,10 @@ viewEditContentModal todoId content =
 viewModal model =
     case model.mode of
         EditContentMode id content ->
-            viewEditContentModal id content
+            viewEditContentModal (Just id) content
+
+        AddContentMode content ->
+            viewEditContentModal Nothing content
 
         Default ->
             text ""
