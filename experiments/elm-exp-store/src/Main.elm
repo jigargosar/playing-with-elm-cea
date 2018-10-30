@@ -127,7 +127,7 @@ handleTodoStoreOutMsg outMsg model =
             update (StartEditing newTodo) model
 
         Store.ModifiedOutMsg updatedTodo ->
-            update (ModeMsg <| Mode.ContentChangedInStore updatedTodo) model
+            update (Warn [ "Store.ModifiedOutMsg: unused" ]) model
 
 
 handleModeMsg msg model =
