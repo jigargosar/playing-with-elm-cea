@@ -16,6 +16,7 @@ import Json.Encode as E
 import ListFilter exposing (Filter)
 import Log
 import MagicMenu exposing (MagicMenu)
+import Mode exposing (Mode)
 import Port
 import Random
 import Store exposing (Id, Item, Store, resetCache)
@@ -31,11 +32,6 @@ import WheelEvent exposing (WheelEvent)
 
 
 ---- MODEL ----
-
-
-type Mode
-    = Default
-    | EditContentMode Store.Id Todo.Content
 
 
 type alias Model =
@@ -65,14 +61,14 @@ init flags =
         { lastTickAt = flags.now
         , magicMenu = MagicMenu.initial
         , todoStore = todoStore
-        , mode = Default
+        , mode = Mode.Default
         , listFilter = ListFilter.init flags.now
         }
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
 
 
 editContentMode todo =
-    EditContentMode todo.meta.id todo.attrs.content
+    Mode.EditContentMode todo.meta.id todo.attrs.content
 
 
 
@@ -136,14 +132,14 @@ handleTodoStoreOutMsg outMsg model =
             let
                 newMode =
                     case model.mode of
-                        EditContentMode id content ->
+                        Mode.EditContentMode id content ->
                             if updatedTodo.meta.id == id then
                                 editContentMode updatedTodo
 
                             else
                                 model.mode
 
-                        Default ->
+                        Mode.Default ->
                             model.mode
             in
             update (SetMode newMode) model
@@ -195,7 +191,7 @@ update message model =
 
         ContentChanged newContent ->
             case model.mode of
-                EditContentMode id _ ->
+                Mode.EditContentMode id _ ->
                     update
                         (TodoStoreMsg <|
                             Store.updateItem Todo.storeConfig
@@ -205,7 +201,7 @@ update message model =
                         )
                         model
 
-                Default ->
+                Mode.Default ->
                     pure model
 
         UpdateTodoId id msg ->
@@ -220,10 +216,10 @@ update message model =
 
         EndEditMode ->
             case model.mode of
-                EditContentMode id _ ->
-                    pure { model | mode = Default }
+                Mode.EditContentMode id _ ->
+                    pure { model | mode = Mode.Default }
 
-                Default ->
+                Mode.Default ->
                     pure model
 
 
@@ -292,10 +288,10 @@ view model =
 
 viewModal model =
     case model.mode of
-        EditContentMode id content ->
+        Mode.EditContentMode id content ->
             viewEditContentModal id content
 
-        Default ->
+        Mode.Default ->
             text ""
 
 
