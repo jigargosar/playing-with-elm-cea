@@ -83,17 +83,17 @@ update message model =
                 |> pure3
 
         ContentChangedInView newContent ->
-            pure3 model
-                |> (case model of
-                        EditContentMode id _ ->
-                            addOutMsg3 (TodoInputContentChangedOutMsg id newContent)
+            case model of
+                EditContentMode id _ ->
+                    EditContentMode id newContent
+                        |> pure3
+                        |> addOutMsg3 (TodoInputContentChangedOutMsg id newContent)
 
-                        AddContentMode _ ->
-                            always (pure3 <| AddContentMode newContent)
+                AddContentMode _ ->
+                    pure3 <| AddContentMode newContent
 
-                        Default ->
-                            Debug.todo "Handle this Case"
-                   )
+                Default ->
+                    Debug.todo "Handle this Case"
 
         EndEditMode ->
             case model of
