@@ -34,7 +34,7 @@ import WheelEvent exposing (WheelEvent)
 
 
 type Mode
-    = ListTodoMode
+    = Default
     | EditContentMode Store.Id Todo.Content
 
 
@@ -65,7 +65,7 @@ init flags =
         { lastTickAt = flags.now
         , magicMenu = MagicMenu.initial
         , todoStore = todoStore
-        , mode = ListTodoMode
+        , mode = Default
         , listFilter = ListFilter.init flags.now
         }
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
@@ -143,7 +143,7 @@ handleTodoStoreOutMsg outMsg model =
                             else
                                 model.mode
 
-                        ListTodoMode ->
+                        Default ->
                             model.mode
             in
             update (SetMode newMode) model
@@ -205,7 +205,7 @@ update message model =
                         )
                         model
 
-                ListTodoMode ->
+                Default ->
                     pure model
 
         UpdateTodoId id msg ->
@@ -221,9 +221,9 @@ update message model =
         EndEditMode ->
             case model.mode of
                 EditContentMode id _ ->
-                    pure { model | mode = ListTodoMode }
+                    pure { model | mode = Default }
 
-                ListTodoMode ->
+                Default ->
                     pure model
 
 
@@ -295,7 +295,7 @@ viewModal model =
         EditContentMode id content ->
             viewEditContentModal id content
 
-        ListTodoMode ->
+        Default ->
             text ""
 
 
