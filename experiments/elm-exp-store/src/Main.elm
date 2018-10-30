@@ -146,7 +146,7 @@ update message model =
             update (TodoStoreMsg <| Store.updateItem id msg) model
 
         TodoStoreMsg msg ->
-            update3 todoStoreUpdate3Config msg model
+            updateTodoStore msg model
 
         TodoStoreOutMsg msg ->
             case msg of
@@ -187,15 +187,20 @@ updateMode =
     update3 config
 
 
-todoStoreUpdate3Config : Update3Config TodoStore TodoStore.Msg TodoStore.OutMsg Model Msg
-todoStoreUpdate3Config =
-    { get = .todoStore
-    , set = \s b -> { b | todoStore = s }
-    , toMsg = TodoStoreMsg
-    , update = TodoStore.update
-    , toOutMsg = TodoStoreOutMsg
-    , updateOutMsg = update
-    }
+updateTodoStore : Update3Config TodoStore TodoStore.Msg TodoStore.OutMsg Model Msg
+updateTodoStore =
+    let
+        config : Update3Config TodoStore TodoStore.Msg TodoStore.OutMsg Model Msg
+        config =
+            { get = .todoStore
+            , set = \s b -> { b | todoStore = s }
+            , toMsg = TodoStoreMsg
+            , update = TodoStore.update
+            , toOutMsg = TodoStoreOutMsg
+            , updateOutMsg = update
+            }
+    in
+    update3 config
 
 
 
