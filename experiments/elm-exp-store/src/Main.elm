@@ -203,6 +203,27 @@ update message model =
                     update (AddNewWithContent content) model
 
 
+type alias Update3 small smallMsg outMsg big bigMsg =
+    { get : big -> small
+    , set : small -> big -> big
+    , toMsg : smallMsg -> bigMsg
+    , update : smallMsg -> small -> ( small, Cmd smallMsg, List outMsg )
+    , toOutMsg : outMsg -> bigMsg
+    , updateOutMsg : bigMsg -> big -> ( big, Cmd bigMsg )
+    }
+
+
+modeUpdate3 : Update3 Mode Mode.Msg Mode.OutMsg Model Msg
+modeUpdate3 =
+    { get = .mode
+    , set = \s b -> { b | mode = s }
+    , toMsg = ModeMsg
+    , update = Mode.update
+    , toOutMsg = ModeOutMsg
+    , updateOutMsg = update
+    }
+
+
 
 ---- Subscriptions
 
