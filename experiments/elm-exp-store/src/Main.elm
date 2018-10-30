@@ -187,7 +187,7 @@ updateMode =
     update3 config
 
 
-updateTodoStore : Update3Config TodoStore TodoStore.Msg TodoStore.OutMsg Model Msg
+updateTodoStore : TodoStore.Msg -> Model -> ( Model, Cmd Msg )
 updateTodoStore =
     let
         config : Update3Config TodoStore TodoStore.Msg TodoStore.OutMsg Model Msg
