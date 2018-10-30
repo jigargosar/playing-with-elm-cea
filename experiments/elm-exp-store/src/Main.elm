@@ -93,14 +93,6 @@ type Msg
     | ModeOutMsg Mode.OutMsg
 
 
-handleListFilterMsg =
-    Update2.lift
-        .listFilter
-        (\listFilter model -> { model | listFilter = listFilter })
-        ListFilterMsg
-        ListFilter.update
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -124,7 +116,13 @@ update message model =
             )
 
         ListFilterMsg msg ->
-            handleListFilterMsg msg model
+            Update2.lift
+                .listFilter
+                (\s b -> { b | listFilter = s })
+                ListFilterMsg
+                ListFilter.update
+                msg
+                model
 
         MagicMenuMsg msg ->
             Update2.lift
