@@ -129,10 +129,10 @@ handleTodoStoreMsg msg model =
         (Store.update Todo.storeConfig)
         msg
         model
-        |> foldlOutMsgList handleTodStoreOutMsg
+        |> foldlOutMsgList handleTodoStoreOutMsg
 
 
-handleTodStoreOutMsg outMsg model =
+handleTodoStoreOutMsg outMsg model =
     case outMsg of
         Store.InsertedOutMsg newTodo ->
             update (StartEditing newTodo) model
