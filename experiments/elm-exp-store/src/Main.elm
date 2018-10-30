@@ -83,7 +83,6 @@ type Msg
     = NoOp
     | Warn Log.Line
     | Tick Mills
-    | SetMode Mode
     | ListFilterMsg ListFilter.Msg
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
@@ -179,9 +178,6 @@ update message model =
                     )
             )
 
-        SetMode mode ->
-            pure { model | mode = mode }
-
         ListFilterMsg msg ->
             handleListFilterMsg msg model
 
@@ -195,7 +191,7 @@ update message model =
             update (ModeMsg <| Mode.StartEditing <| todo) model
 
         AddClicked ->
-            update (TodoStoreMsg <| Store.insertNew Todo.defaultValue) model
+            update (ModeMsg <| Mode.StartAdding) model
 
         TodoUpdateMsg id msg ->
             update
