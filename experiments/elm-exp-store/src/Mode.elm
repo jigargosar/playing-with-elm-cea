@@ -35,6 +35,7 @@ init =
 
 type Msg
     = NoOp
+    | StartEditing TodoItem
     | ContentChangedInStore TodoItem
     | ContentChangedInView Todo.Content
     | EndEditMode
@@ -46,6 +47,7 @@ editContentMode todo =
 
 type OutMsg
     = TodoInputContentChangedOutMsg Store.Id Todo.Content
+    | FocusDomIdOutMsg String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, List OutMsg )
@@ -53,6 +55,11 @@ update message model =
     case message of
         NoOp ->
             pure3 model
+
+        StartEditing todo ->
+            editContentMode todo
+                |> pure3
+                |> addOutMsg3 (FocusDomIdOutMsg modalTodoInputDomId)
 
         ContentChangedInStore updatedTodo ->
             (case model of

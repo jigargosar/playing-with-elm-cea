@@ -169,6 +169,9 @@ handleModeOutMsg outMsg model =
                 )
                 model
 
+        Mode.FocusDomIdOutMsg domId ->
+            update (FocusDomId domId) model
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
