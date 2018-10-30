@@ -157,7 +157,7 @@ update message model =
                     update (Warn [ "Store.ModifiedOutMsg: unused" ]) model
 
         ModeMsg msg ->
-            update3 modeUpdate3Config msg model
+            updateMode msg model
 
         ModeOutMsg msg ->
             case msg of
@@ -171,15 +171,20 @@ update message model =
                     update (AddNewWithContent content) model
 
 
-modeUpdate3Config : Update3Config Mode Mode.Msg Mode.OutMsg Model Msg
-modeUpdate3Config =
-    { get = .mode
-    , set = \s b -> { b | mode = s }
-    , toMsg = ModeMsg
-    , update = Mode.update
-    , toOutMsg = ModeOutMsg
-    , updateOutMsg = update
-    }
+updateMode : Mode.Msg -> Model -> ( Model, Cmd Msg )
+updateMode =
+    let
+        config : Update3Config Mode Mode.Msg Mode.OutMsg Model Msg
+        config =
+            { get = .mode
+            , set = \s b -> { b | mode = s }
+            , toMsg = ModeMsg
+            , update = Mode.update
+            , toOutMsg = ModeOutMsg
+            , updateOutMsg = update
+            }
+    in
+    update3 config
 
 
 todoStoreUpdate3Config : Update3Config TodoStore TodoStore.Msg TodoStore.OutMsg Model Msg
