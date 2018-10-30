@@ -61,7 +61,7 @@ init flags =
         { lastTickAt = flags.now
         , magicMenu = MagicMenu.initial
         , todoStore = todoStore
-        , mode = Mode.Default
+        , mode = Mode.init
         , listFilter = ListFilter.init flags.now
         }
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
