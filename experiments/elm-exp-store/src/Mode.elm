@@ -30,11 +30,15 @@ editContentMode todo =
     EditContentMode todo.meta.id todo.attrs.content
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+type OutMsg
+    = TodoContentChangedOutMsg Store.Id Todo.Content
+
+
+update : Msg -> Model -> ( Model, Cmd Msg, List OutMsg )
 update message model =
     case message of
         NoOp ->
-            ( model, Cmd.none )
+            pure3 model
 
         ContentChangedInStore updatedTodo ->
             (case model of
@@ -48,10 +52,17 @@ update message model =
                 Default ->
                     model
             )
-                |> pure
+                |> pure3
 
-        ContentChangedInView _ ->
-            ( model, Cmd.none )
+        ContentChangedInView newContent ->
+            pure3 model
+                |> (case model of
+                        EditContentMode id _ ->
+                            addOutMsg3 (TodoContentChangedOutMsg id newContent)
+
+                        Default ->
+                            identity
+                   )
 
         EndEditMode ->
-            ( model, Cmd.none )
+            pure3 model
