@@ -144,11 +144,7 @@ update message model =
             update (ModeMsg <| Mode.StartEditing todo) model
 
         AddNewWithContent content ->
-            if String.isEmpty content then
-                pure model
-
-            else
-                update (TodoStoreMsg <| TodoStore.insertNewWithContent content) model
+            update (TodoStoreMsg <| TodoStore.insertNewWithContent content) model
 
         TodoUpdateMsg id msg ->
             update (TodoStoreMsg <| Store.updateItem id msg) model

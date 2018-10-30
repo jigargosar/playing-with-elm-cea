@@ -27,5 +27,9 @@ update =
     Store.update Todo.storeConfig
 
 
+isWhiteSpaceString =
+    String.trim >> String.isEmpty
+
+
 insertNewWithContent content =
-    Store.insertNew <| Todo.initAttrWithContent content
+    Store.maybeInsertNew <| maybeBool (isWhiteSpaceString content |> not) (Todo.initAttrWithContent content)

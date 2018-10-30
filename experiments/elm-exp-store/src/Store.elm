@@ -11,6 +11,7 @@ module Store exposing
     , itemModifiedAt
     , items
     , load
+    , maybeInsertNew
     , resetCache
     , toPairs
     , update
@@ -113,6 +114,10 @@ type OutMsg attrs
 
 insertNew =
     InsertNew
+
+
+maybeInsertNew =
+    unwrapMaybe NoOp InsertNew
 
 
 resetCache =
