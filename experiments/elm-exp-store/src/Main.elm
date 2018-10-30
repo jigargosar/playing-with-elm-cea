@@ -87,7 +87,6 @@ type Msg
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)
-    | EditClicked TodoItem
     | AddClicked
     | TodoUpdateMsg Id Todo.Msg
     | ModeMsg Mode.Msg
@@ -193,9 +192,6 @@ update message model =
 
         TodoStoreMsg msg ->
             handleTodoStoreMsg msg model
-
-        EditClicked todo ->
-            update (ModeMsg <| Mode.StartEditing <| todo) model
 
         AddClicked ->
             update (ModeMsg <| Mode.StartAdding) model
@@ -326,7 +322,7 @@ todoView model todo =
     TodoView
         (defaultEmptyStringTo "<empty>" <| Todo.content todo)
         (Todo.isCompleted todo)
-        (EditClicked todo)
+        (ModeMsg <| Mode.StartEditing todo)
         (TodoUpdateMsg todo.meta.id)
         model.lastTickAt
 
