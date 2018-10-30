@@ -90,7 +90,6 @@ type Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)
     | StartEditing TodoItem
     | AddClicked
-    | EditClicked TodoItem
     | TodoUpdateMsg Id Todo.Msg
     | ModeMsg Mode.Msg
 
@@ -197,9 +196,6 @@ update message model =
 
         AddClicked ->
             update (TodoStoreMsg <| Store.insertNew Todo.defaultValue) model
-
-        EditClicked todo ->
-            update (StartEditing todo) model
 
         TodoUpdateMsg id msg ->
             update
@@ -327,7 +323,7 @@ todoView model todo =
     TodoView
         (defaultEmptyStringTo "<empty>" <| Todo.content todo)
         (Todo.isCompleted todo)
-        (EditClicked todo)
+        (StartEditing todo)
         (TodoUpdateMsg todo.meta.id)
         model.lastTickAt
 
