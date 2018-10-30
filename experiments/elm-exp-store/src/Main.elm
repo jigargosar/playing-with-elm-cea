@@ -21,8 +21,6 @@ import Random
 import Store exposing (Id, Item, Store, resetCache)
 import Task
 import Time
-import Toasty
-import Toasty.Defaults
 import Todo exposing (TodoAttrs, TodoItem, TodoStore)
 import UI exposing (..)
 import Update2
@@ -43,7 +41,6 @@ type Mode
 type alias Model =
     { lastTickAt : Int
     , magicMenu : MagicMenu
-    , toasties : Toasty.Stack Log.Line
     , todoStore : TodoStore
     , mode : Mode
     , listFilter : ListFilter.Model
@@ -67,7 +64,6 @@ init flags =
     pure
         { lastTickAt = flags.now
         , magicMenu = MagicMenu.initial
-        , toasties = Toasty.initialState
         , todoStore = todoStore
         , mode = ListTodoMode
         , listFilter = ListFilter.init flags.now
@@ -90,7 +86,6 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Line
-    | ToastyMsg (Toasty.Msg Log.Line)
     | Tick Mills
     | SetMode Mode
     | ListFilterMsg ListFilter.Msg
@@ -162,10 +157,6 @@ update message model =
 
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
-                |> Toasty.addPersistentToast Toasty.config ToastyMsg ("Main" :: logMessages)
-
-        ToastyMsg msg ->
-            Toasty.update Toasty.config ToastyMsg msg model
 
         Tick millis ->
             pure { model | lastTickAt = millis }
@@ -296,13 +287,7 @@ view model =
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         , viewModal model
-        , Toasty.view Toasty.config renderToast ToastyMsg model.toasties
         ]
-
-
-renderToast : Log.Line -> Html Msg
-renderToast toast =
-    div [] [ text (toast |> String.join " ") ]
 
 
 viewModal model =
