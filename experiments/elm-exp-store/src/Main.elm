@@ -161,7 +161,7 @@ update message model =
 
         ModeOutMsg msg ->
             case msg of
-                Mode.TodoContentUpdateOutMsg id newContent ->
+                Mode.TodoContentUpdatedOutMsg id newContent ->
                     update (TodoUpdateMsg id (Todo.SetContent newContent)) model
 
                 Mode.FocusDomIdOutMsg domId ->

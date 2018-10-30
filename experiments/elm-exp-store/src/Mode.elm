@@ -47,7 +47,7 @@ editContentMode todo =
 
 
 type OutMsg
-    = TodoContentUpdateOutMsg Store.Id Todo.Content
+    = TodoContentUpdatedOutMsg Store.Id Todo.Content
     | FocusDomIdOutMsg String
     | AddTodoWithContentOutMsg Todo.Content
 
@@ -73,7 +73,7 @@ update message model =
                 EditContentMode id _ ->
                     EditContentMode id newContent
                         |> pure3
-                        |> addOutMsg3 (TodoContentUpdateOutMsg id newContent)
+                        |> addOutMsg3 (TodoContentUpdatedOutMsg id newContent)
 
                 AddContentMode _ ->
                     pure3 <| AddContentMode newContent
