@@ -160,7 +160,7 @@ update message model =
                 model
 
         TodoStoreMsg msg ->
-            handleTodoStoreMsg msg model
+            update3 todoStoreUpdate3Config msg model
 
         TodoStoreOutMsg msg ->
             case msg of
@@ -205,26 +205,6 @@ todoStoreUpdate3Config =
     , toOutMsg = TodoStoreOutMsg
     , updateOutMsg = update
     }
-
-
-handleTodoStoreMsg msg model =
-    Update3.lift
-        .todoStore
-        (\sub m -> { m | todoStore = sub })
-        TodoStoreMsg
-        (Store.update Todo.storeConfig)
-        msg
-        model
-        |> foldlOutMsgList handleTodoStoreOutMsg
-
-
-handleTodoStoreOutMsg outMsg model =
-    case outMsg of
-        Store.InsertedOutMsg newTodo ->
-            update (Warn [ "Store.InsertedOutMsg: unused" ]) model
-
-        Store.ModifiedOutMsg updatedTodo ->
-            update (Warn [ "Store.ModifiedOutMsg: unused" ]) model
 
 
 
