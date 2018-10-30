@@ -1,4 +1,4 @@
-module TodoStore exposing (Item, Msg, OutMsg, TodoStore)
+module TodoStore exposing (Item, Msg, OutMsg, TodoStore, update)
 
 import BasicsX exposing (Encoder, applyTo, flip, maybeBool)
 import JsonCodec as JC exposing (Codec)
@@ -21,3 +21,7 @@ type alias Msg =
 
 type alias OutMsg =
     Store.OutMsg TodoAttrs
+
+
+update =
+    Store.update Todo.storeConfig

@@ -202,7 +202,7 @@ todoStoreUpdate3Config =
     { get = .todoStore
     , set = \s b -> { b | todoStore = s }
     , toMsg = TodoStoreMsg
-    , update = Store.update Todo.storeConfig
+    , update = TodoStore.update
     , toOutMsg = TodoStoreOutMsg
     , updateOutMsg = update
     }
