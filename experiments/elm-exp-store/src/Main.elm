@@ -22,7 +22,8 @@ import Random
 import Store exposing (Id, Item, Store, resetCache)
 import Task
 import Time
-import Todo exposing (TodoAttrs, TodoItem, TodoStore, TodoStoreMsg, TodoStoreOutMsg)
+import Todo exposing (TodoAttrs)
+import TodoStore exposing (TodoStore)
 import UI exposing (..)
 import Update2
 import Update3
@@ -85,7 +86,7 @@ type Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)
     | TodoStoreOutMsg (Store.OutMsg TodoAttrs)
     | AddClicked
-    | EditClicked TodoItem
+    | EditClicked TodoStore.Item
     | TodoUpdateMsg Id Todo.Msg
     | AddNewWithContent Todo.Content
     | ModeMsg Mode.Msg
@@ -196,7 +197,7 @@ modeUpdate3Config =
     }
 
 
-todoStoreUpdate3Config : Update3Config TodoStore TodoStoreMsg TodoStoreOutMsg Model Msg
+todoStoreUpdate3Config : Update3Config TodoStore TodoStore.Msg TodoStore.OutMsg Model Msg
 todoStoreUpdate3Config =
     { get = .todoStore
     , set = \s b -> { b | todoStore = s }
@@ -314,7 +315,7 @@ type alias TodoView msg =
     }
 
 
-todoView : Model -> TodoItem -> TodoView Msg
+todoView : Model -> TodoStore.Item -> TodoView Msg
 todoView model todo =
     TodoView
         (defaultEmptyStringTo "<empty>" <| Todo.content todo)

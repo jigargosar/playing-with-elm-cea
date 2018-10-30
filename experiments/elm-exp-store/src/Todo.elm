@@ -2,10 +2,6 @@ module Todo exposing
     ( Content
     , Msg(..)
     , TodoAttrs
-    , TodoItem
-    , TodoStore
-    , TodoStoreMsg
-    , TodoStoreOutMsg
     , content
     , defaultValue
     , initAttrWithContent
@@ -32,22 +28,6 @@ type alias TodoAttrs =
     , completed : Bool
     , scheduledAt : Int
     }
-
-
-type alias TodoItem =
-    Item TodoAttrs
-
-
-type alias TodoStore =
-    Store TodoAttrs
-
-
-type alias TodoStoreMsg =
-    Store.Msg TodoAttrs
-
-
-type alias TodoStoreOutMsg =
-    Store.OutMsg TodoAttrs
 
 
 init : Content -> Bool -> Int -> TodoAttrs

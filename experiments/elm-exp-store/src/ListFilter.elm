@@ -9,7 +9,8 @@ module ListFilter exposing
     , update
     )
 
-import Todo exposing (TodoItem)
+import Todo
+import TodoStore
 import UpdateReturn exposing (..)
 
 
@@ -30,7 +31,7 @@ init now =
     { selected = Active, modifiedAt = now }
 
 
-matchesSelectedIn : Model -> TodoItem -> Bool
+matchesSelectedIn : Model -> TodoStore.Item -> Bool
 matchesSelectedIn { selected, modifiedAt } todo =
     let
         completed =
@@ -50,7 +51,7 @@ matchesSelectedIn { selected, modifiedAt } todo =
             completed
 
 
-matchesSelectedWithReferenceTimeIn : Model -> Int -> TodoItem -> Bool
+matchesSelectedWithReferenceTimeIn : Model -> Int -> TodoStore.Item -> Bool
 matchesSelectedWithReferenceTimeIn { selected, modifiedAt } referenceTime todo =
     let
         completed =

@@ -13,7 +13,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Store
-import Todo exposing (TodoItem)
+import Todo
+import TodoStore
 import UI exposing (..)
 import UpdateReturn exposing (..)
 
@@ -35,7 +36,7 @@ init =
 
 type Msg
     = NoOp
-    | StartEditing TodoItem
+    | StartEditing TodoStore.Item
     | StartAdding
     | ContentChangedInView Todo.Content
     | EndEditMode
