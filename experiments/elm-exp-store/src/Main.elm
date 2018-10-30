@@ -193,8 +193,7 @@ update message model =
             handleTodoStoreMsg msg model
 
         StartEditing todo ->
-            update (SetMode <| editContentMode todo) model
-                |> andThen (update <| FocusDomId modalTodoInputDomId)
+            update (ModeMsg <| Mode.StartEditing <| todo) model
 
         AddClicked ->
             update (TodoStoreMsg <| Store.insertNew Todo.defaultValue) model
