@@ -134,19 +134,18 @@ handleModeMsg msg model =
         Mode.update
         msg
         model
-        |> foldlOutMsgList handleModeOutMsg
+        |> foldlOutMsgList
+            (\outMsg ->
+                case outMsg of
+                    Mode.TodoContentUpdateOutMsg id newContent ->
+                        update (TodoUpdateMsg id (Todo.SetContent newContent))
 
+                    Mode.FocusDomIdOutMsg domId ->
+                        update (FocusDomId domId)
 
-handleModeOutMsg outMsg model =
-    case outMsg of
-        Mode.TodoContentUpdateOutMsg id newContent ->
-            update (TodoUpdateMsg id (Todo.SetContent newContent)) model
-
-        Mode.FocusDomIdOutMsg domId ->
-            update (FocusDomId domId) model
-
-        Mode.AddTodoWithContentOutMsg content ->
-            update (AddNewWithContent content) model
+                    Mode.AddTodoWithContentOutMsg content ->
+                        update (AddNewWithContent content)
+            )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
