@@ -2,6 +2,7 @@ module Mode exposing (Mode(..), Msg(..), init)
 
 import Store
 import Todo exposing (TodoItem)
+import UpdateReturn exposing (..)
 
 
 type Mode
@@ -25,14 +26,29 @@ type Msg
     | EndEditMode
 
 
+editContentMode todo =
+    EditContentMode todo.meta.id todo.attrs.content
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
         NoOp ->
             ( model, Cmd.none )
 
-        ContentChangedInStore _ ->
-            ( model, Cmd.none )
+        ContentChangedInStore updatedTodo ->
+            (case model of
+                EditContentMode id content ->
+                    if updatedTodo.meta.id == id then
+                        editContentMode updatedTodo
+
+                    else
+                        model
+
+                Default ->
+                    model
+            )
+                |> pure
 
         ContentChangedInView _ ->
             ( model, Cmd.none )
