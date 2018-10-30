@@ -128,20 +128,7 @@ handleTodoStoreOutMsg outMsg model =
             update (StartEditing newTodo) model
 
         Store.ModifiedOutMsg updatedTodo ->
-            let
-                newMode =
-                    case model.mode of
-                        Mode.EditContentMode id content ->
-                            if updatedTodo.meta.id == id then
-                                editContentMode updatedTodo
-
-                            else
-                                model.mode
-
-                        Mode.Default ->
-                            model.mode
-            in
-            update (SetMode newMode) model
+            update (ModeMsg <| Mode.ContentChangedInStore updatedTodo) model
 
 
 handleModeMsg msg model =
