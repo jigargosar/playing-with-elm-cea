@@ -4,6 +4,8 @@ module Todo exposing
     , TodoAttrs
     , TodoItem
     , TodoStore
+    , TodoStoreMsg
+    , TodoStoreOutMsg
     , content
     , defaultValue
     , initAttrWithContent
@@ -38,6 +40,14 @@ type alias TodoItem =
 
 type alias TodoStore =
     Store TodoAttrs
+
+
+type alias TodoStoreMsg =
+    Store.Msg TodoAttrs
+
+
+type alias TodoStoreOutMsg =
+    Store.OutMsg TodoAttrs
 
 
 init : Content -> Bool -> Int -> TodoAttrs

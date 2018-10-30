@@ -22,7 +22,7 @@ import Random
 import Store exposing (Id, Item, Store, resetCache)
 import Task
 import Time
-import Todo exposing (TodoAttrs, TodoItem, TodoStore)
+import Todo exposing (TodoAttrs, TodoItem, TodoStore, TodoStoreMsg, TodoStoreOutMsg)
 import UI exposing (..)
 import Update2
 import Update3
@@ -83,6 +83,7 @@ type Msg
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
     | TodoStoreMsg (Store.Msg TodoAttrs)
+    | TodoStoreOutMsg (Store.OutMsg TodoAttrs)
     | AddClicked
     | EditClicked TodoItem
     | TodoUpdateMsg Id Todo.Msg
@@ -105,26 +106,6 @@ handleListFilterMsg =
         (\listFilter model -> { model | listFilter = listFilter })
         ListFilterMsg
         ListFilter.update
-
-
-handleTodoStoreMsg msg model =
-    Update3.lift
-        .todoStore
-        (\sub m -> { m | todoStore = sub })
-        TodoStoreMsg
-        (Store.update Todo.storeConfig)
-        msg
-        model
-        |> foldlOutMsgList handleTodoStoreOutMsg
-
-
-handleTodoStoreOutMsg outMsg model =
-    case outMsg of
-        Store.InsertedOutMsg newTodo ->
-            update (Warn [ "Store.InsertedOutMsg: unused" ]) model
-
-        Store.ModifiedOutMsg updatedTodo ->
-            update (Warn [ "Store.ModifiedOutMsg: unused" ]) model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -155,9 +136,6 @@ update message model =
         MagicMenuMsg msg ->
             handleMagicMenuMsg msg model
 
-        TodoStoreMsg msg ->
-            handleTodoStoreMsg msg model
-
         AddClicked ->
             update (ModeMsg <| Mode.StartAdding) model
 
@@ -180,6 +158,17 @@ update message model =
                         model.todoStore
                 )
                 model
+
+        TodoStoreMsg msg ->
+            handleTodoStoreMsg msg model
+
+        TodoStoreOutMsg msg ->
+            case msg of
+                Store.InsertedOutMsg newTodo ->
+                    update (Warn [ "Store.InsertedOutMsg: unused" ]) model
+
+                Store.ModifiedOutMsg updatedTodo ->
+                    update (Warn [ "Store.ModifiedOutMsg: unused" ]) model
 
         ModeMsg msg ->
             update3 modeUpdate3Config msg model
@@ -205,6 +194,37 @@ modeUpdate3Config =
     , toOutMsg = ModeOutMsg
     , updateOutMsg = update
     }
+
+
+todoStoreUpdate3Config : Update3Config TodoStore TodoStoreMsg TodoStoreOutMsg Model Msg
+todoStoreUpdate3Config =
+    { get = .todoStore
+    , set = \s b -> { b | todoStore = s }
+    , toMsg = TodoStoreMsg
+    , update = Store.update Todo.storeConfig
+    , toOutMsg = TodoStoreOutMsg
+    , updateOutMsg = update
+    }
+
+
+handleTodoStoreMsg msg model =
+    Update3.lift
+        .todoStore
+        (\sub m -> { m | todoStore = sub })
+        TodoStoreMsg
+        (Store.update Todo.storeConfig)
+        msg
+        model
+        |> foldlOutMsgList handleTodoStoreOutMsg
+
+
+handleTodoStoreOutMsg outMsg model =
+    case outMsg of
+        Store.InsertedOutMsg newTodo ->
+            update (Warn [ "Store.InsertedOutMsg: unused" ]) model
+
+        Store.ModifiedOutMsg updatedTodo ->
+            update (Warn [ "Store.ModifiedOutMsg: unused" ]) model
 
 
 
