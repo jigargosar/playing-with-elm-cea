@@ -127,17 +127,6 @@ handleTodoStoreOutMsg outMsg model =
             update (Warn [ "Store.ModifiedOutMsg: unused" ]) model
 
 
-handleModeMsg msg model =
-    Update3.lift
-        .mode
-        (\sub m -> { m | mode = sub })
-        ModeMsg
-        Mode.update
-        msg
-        model
-        |> foldlOutMsgList (update << ModeOutMsg)
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -193,7 +182,14 @@ update message model =
                 model
 
         ModeMsg msg ->
-            handleModeMsg msg model
+            Update3.lift
+                .mode
+                (\sub m -> { m | mode = sub })
+                ModeMsg
+                Mode.update
+                msg
+                model
+                |> foldlOutMsgList (update << ModeOutMsg)
 
         ModeOutMsg msg ->
             case msg of
