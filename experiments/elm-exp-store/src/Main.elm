@@ -151,9 +151,7 @@ update message model =
                 update (TodoStoreMsg <| TodoStore.insertNewWithContent content) model
 
         TodoUpdateMsg id msg ->
-            update
-                (TodoStoreMsg <| TodoStore.updateTodo id msg model.todoStore)
-                model
+            update (TodoStoreMsg <| Store.updateItem id msg) model
 
         TodoStoreMsg msg ->
             update3 todoStoreUpdate3Config msg model

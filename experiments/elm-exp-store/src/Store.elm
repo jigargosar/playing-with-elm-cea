@@ -119,17 +119,23 @@ resetCache =
     ResetCache
 
 
-updateItem : Config msg attrs -> Id -> msg -> Store attrs -> Msg msg attrs
-updateItem config id msg =
-    let
-        updateItemAttrsMaybe : (attrs -> Maybe attrs) -> Item attrs -> Maybe (Item attrs)
-        updateItemAttrsMaybe updateFn model =
-            updateFn model.attrs |> Maybe.map (\attrs -> { model | attrs = attrs })
-    in
-    .dict
-        >> Dict.get id
-        >> Maybe.andThen (updateItemAttrsMaybe <| config.update msg)
-        >> unwrapMaybe NoOp UpdateModifiedAt
+
+--updateItem : Config msg attrs -> Id -> msg -> Store attrs -> Msg msg attrs
+--updateItem config id msg =
+--    let
+--        updateItemAttrsMaybe : (attrs -> Maybe attrs) -> Item attrs -> Maybe (Item attrs)
+--        updateItemAttrsMaybe updateFn model =
+--            updateFn model.attrs |> Maybe.map (\attrs -> { model | attrs = attrs })
+--    in
+--    .dict
+--        >> Dict.get id
+--        >> Maybe.andThen (updateItemAttrsMaybe <| config.update msg)
+--        >> unwrapMaybe NoOp UpdateModifiedAt
+
+
+updateItem : Id -> msg -> Msg msg attrs
+updateItem =
+    UpdateItem
 
 
 type alias Config msg attrs =
@@ -169,13 +175,25 @@ update config message model =
                     (initItemWithNowTask attrs id)
 
         UpdateItem id msg ->
-            pure3 model
+            let
+                toMsg =
+                    .dict
+                        >> Dict.get id
+                        >> Maybe.andThen (updateItemAttrsMaybe <| config.update msg)
+                        >> unwrapMaybe NoOp UpdateModifiedAt
+            in
+            update config (toMsg model) model
 
         UpdateModifiedAt item ->
             pure3 model
                 |> perform3
                     (UpsertItemAndUpdateCacheWithOutMsg ModifiedOutMsg)
                     (setModifiedAtToNowTask item)
+
+
+updateItemAttrsMaybe : (attrs -> Maybe attrs) -> Item attrs -> Maybe (Item attrs)
+updateItemAttrsMaybe updateFn model =
+    updateFn model.attrs |> Maybe.map (\attrs -> { model | attrs = attrs })
 
 
 
