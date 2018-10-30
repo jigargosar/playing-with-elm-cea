@@ -91,7 +91,7 @@ type Msg
     | StartEditing TodoItem
     | AddClicked
     | EditClicked TodoItem
-    | UpdateTodoId Id Todo.Msg
+    | TodoUpdateMsg Id Todo.Msg
     | ContentChanged Todo.Content
     | EndEditMode
 
@@ -204,7 +204,7 @@ update message model =
                 Mode.Default ->
                     pure model
 
-        UpdateTodoId id msg ->
+        TodoUpdateMsg id msg ->
             update
                 (TodoStoreMsg <|
                     Store.updateItem Todo.storeConfig
@@ -378,7 +378,7 @@ todoView model todo =
         (defaultEmptyStringTo "<empty>" <| Todo.content todo)
         (Todo.isCompleted todo)
         (EditClicked todo)
-        (UpdateTodoId todo.meta.id)
+        (TodoUpdateMsg todo.meta.id)
         model.lastTickAt
 
 
