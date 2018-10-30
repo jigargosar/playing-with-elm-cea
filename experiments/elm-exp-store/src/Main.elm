@@ -142,7 +142,7 @@ handleModeMsg msg model =
 
 handleModeOutMsg outMsg model =
     case outMsg of
-        Mode.TodoInputContentChangedOutMsg id newContent ->
+        Mode.TodoContentUpdateOutMsg id newContent ->
             update
                 (TodoStoreMsg <|
                     Store.updateItem Todo.storeConfig
