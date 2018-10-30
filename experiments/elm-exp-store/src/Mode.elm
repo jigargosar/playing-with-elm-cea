@@ -78,7 +78,7 @@ update message model =
                         model
 
                 _ ->
-                    model
+                    Debug.todo "Handle this Case"
             )
                 |> pure3
 
