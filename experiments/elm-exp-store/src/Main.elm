@@ -92,7 +92,6 @@ type Msg
     | AddClicked
     | EditClicked TodoItem
     | TodoUpdateMsg Id Todo.Msg
-    | ContentChanged Todo.Content
     | EndEditMode
     | ModeMsg Mode.Msg
 
@@ -216,21 +215,6 @@ update message model =
 
         EditClicked todo ->
             update (StartEditing todo) model
-
-        ContentChanged newContent ->
-            case model.mode of
-                Mode.EditContentMode id _ ->
-                    update
-                        (TodoStoreMsg <|
-                            Store.updateItem Todo.storeConfig
-                                id
-                                (Todo.SetContent newContent)
-                                model.todoStore
-                        )
-                        model
-
-                Mode.Default ->
-                    pure model
 
         TodoUpdateMsg id msg ->
             update
