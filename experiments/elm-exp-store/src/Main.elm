@@ -83,7 +83,7 @@ type Msg
     | ListFilterMsg ListFilter.Msg
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
-    | TodoStoreMsg (Store.Msg TodoAttrs)
+    | TodoStoreMsg TodoStore.Msg
     | TodoStoreOutMsg (Store.OutMsg TodoAttrs)
     | AddClicked
     | EditClicked TodoStore.Item
@@ -148,16 +148,11 @@ update message model =
                 pure model
 
             else
-                update (TodoStoreMsg <| Store.insertNew <| Todo.initAttrWithContent content) model
+                update (TodoStoreMsg <| TodoStore.insertNewWithContent content) model
 
         TodoUpdateMsg id msg ->
             update
-                (TodoStoreMsg <|
-                    Store.updateItem Todo.storeConfig
-                        id
-                        msg
-                        model.todoStore
-                )
+                (TodoStoreMsg <| TodoStore.updateTodo id msg model.todoStore)
                 model
 
         TodoStoreMsg msg ->

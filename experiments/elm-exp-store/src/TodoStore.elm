@@ -1,4 +1,4 @@
-module TodoStore exposing (Item, Msg, OutMsg, TodoStore, update)
+module TodoStore exposing (Item, Msg, OutMsg, TodoStore, insertNewWithContent, update, updateTodo)
 
 import BasicsX exposing (Encoder, applyTo, flip, maybeBool)
 import JsonCodec as JC exposing (Codec)
@@ -16,7 +16,7 @@ type alias TodoStore =
 
 
 type alias Msg =
-    Store.Msg TodoAttrs
+    Store.Msg Todo.Msg TodoAttrs
 
 
 type alias OutMsg =
@@ -25,3 +25,11 @@ type alias OutMsg =
 
 update =
     Store.update Todo.storeConfig
+
+
+updateTodo =
+    Store.updateItem Todo.storeConfig
+
+
+insertNewWithContent content =
+    Store.insertNew <| Todo.initAttrWithContent content

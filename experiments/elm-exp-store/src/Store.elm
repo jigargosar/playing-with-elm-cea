@@ -63,7 +63,7 @@ storeCodec attrsCodec =
         |> JC.end
 
 
-toCacheCmd : Config msg attrs -> Model attrs -> Cmd (Msg attrs)
+toCacheCmd : Config msg attrs -> Model attrs -> Cmd (Msg msg attrs)
 toCacheCmd config =
     config.toCacheCmd << JC.encoder (storeCodec config.codec)
 
@@ -95,13 +95,14 @@ type alias ItemOutMsg attrs =
     Item attrs -> OutMsg attrs
 
 
-type Msg attrs
+type Msg msg attrs
     = NoOp
     | Cache
     | ResetCache
     | UpsertItemAndUpdateCacheWithOutMsg (ItemOutMsg attrs) (Item attrs)
     | InsertNew attrs
     | InsertNewWithId attrs Id
+    | UpdateItem Id msg
     | UpdateModifiedAt (Item attrs)
 
 
@@ -118,7 +119,7 @@ resetCache =
     ResetCache
 
 
-updateItem : Config msg attrs -> Id -> msg -> Store attrs -> Msg attrs
+updateItem : Config msg attrs -> Id -> msg -> Store attrs -> Msg msg attrs
 updateItem config id msg =
     let
         updateItemAttrsMaybe : (attrs -> Maybe attrs) -> Item attrs -> Maybe (Item attrs)
@@ -134,12 +135,12 @@ updateItem config id msg =
 type alias Config msg attrs =
     { update : msg -> attrs -> Maybe attrs
     , codec : Codec attrs
-    , toCacheCmd : Value -> Cmd (Msg attrs)
+    , toCacheCmd : Value -> Cmd (Msg msg attrs)
     , defaultValue : attrs
     }
 
 
-update : Config msg attrs -> Msg attrs -> Model attrs -> ( Model attrs, Cmd (Msg attrs), List (OutMsg attrs) )
+update : Config msg attrs -> Msg msg attrs -> Model attrs -> ( Model attrs, Cmd (Msg msg attrs), List (OutMsg attrs) )
 update config message model =
     case message of
         NoOp ->
@@ -166,6 +167,9 @@ update config message model =
                 |> perform3
                     (UpsertItemAndUpdateCacheWithOutMsg InsertedOutMsg)
                     (initItemWithNowTask attrs id)
+
+        UpdateItem id msg ->
+            pure3 model
 
         UpdateModifiedAt item ->
             pure3 model
