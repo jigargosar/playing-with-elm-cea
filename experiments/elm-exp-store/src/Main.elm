@@ -155,6 +155,13 @@ handleModeOutMsg outMsg model =
         Mode.FocusDomIdOutMsg domId ->
             update (FocusDomId domId) model
 
+        Mode.AddTodoWithContentOutMsg content ->
+            if String.isEmpty content then
+                pure model
+
+            else
+                update (TodoStoreMsg <| Store.insertNew <| Todo.initAttrWithContent content) model
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =

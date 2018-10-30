@@ -6,6 +6,7 @@ module Todo exposing
     , TodoStore
     , content
     , defaultValue
+    , initAttrWithContent
     , isCompleted
     , isScheduledAfter
     , isScheduledBefore
@@ -46,7 +47,11 @@ init =
 
 defaultValue : TodoAttrs
 defaultValue =
-    init "" False 0
+    initAttrWithContent ""
+
+
+initAttrWithContent content_ =
+    init content_ False 0
 
 
 type Msg
