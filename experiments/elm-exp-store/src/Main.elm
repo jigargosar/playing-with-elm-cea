@@ -94,6 +94,7 @@ type Msg
     | TodoUpdateMsg Id Todo.Msg
     | ContentChanged Todo.Content
     | EndEditMode
+    | ModeMsg Mode.Msg
 
 
 handleMagicMenuMsg =
@@ -143,6 +144,30 @@ handleTodoStoreOutMsg outMsg model =
                             model.mode
             in
             update (SetMode newMode) model
+
+
+handleModeMsg msg model =
+    Update3.lift
+        .mode
+        (\sub m -> { m | mode = sub })
+        ModeMsg
+        Mode.update
+        msg
+        model
+        |> foldlOutMsgList handleModeOutMsg
+
+
+handleModeOutMsg outMsg model =
+    case outMsg of
+        Mode.TodoInputContentChangedOutMsg id newContent ->
+            update
+                (TodoStoreMsg <|
+                    Store.updateItem Todo.storeConfig
+                        id
+                        (Todo.SetContent newContent)
+                        model.todoStore
+                )
+                model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -221,6 +246,9 @@ update message model =
 
                 Mode.Default ->
                     pure model
+
+        ModeMsg msg ->
+            handleModeMsg msg model
 
 
 

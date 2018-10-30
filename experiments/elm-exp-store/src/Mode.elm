@@ -1,4 +1,4 @@
-module Mode exposing (Mode(..), Msg(..), init)
+module Mode exposing (Mode(..), Model, Msg(..), OutMsg(..), editContentMode, init, update)
 
 import Store
 import Todo exposing (TodoItem)
@@ -31,7 +31,7 @@ editContentMode todo =
 
 
 type OutMsg
-    = TodoContentChangedOutMsg Store.Id Todo.Content
+    = TodoInputContentChangedOutMsg Store.Id Todo.Content
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, List OutMsg )
@@ -58,7 +58,7 @@ update message model =
             pure3 model
                 |> (case model of
                         EditContentMode id _ ->
-                            addOutMsg3 (TodoContentChangedOutMsg id newContent)
+                            addOutMsg3 (TodoInputContentChangedOutMsg id newContent)
 
                         Default ->
                             identity
