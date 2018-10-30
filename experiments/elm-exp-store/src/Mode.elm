@@ -1,6 +1,5 @@
 module Mode exposing
-    ( Mode(..)
-    , Model
+    ( Mode
     , Msg(..)
     , OutMsg(..)
     , editContentMode

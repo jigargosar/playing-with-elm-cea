@@ -67,10 +67,6 @@ init flags =
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
 
 
-editContentMode todo =
-    Mode.EditContentMode todo.meta.id todo.attrs.content
-
-
 
 ---- UPDATE ----
 
