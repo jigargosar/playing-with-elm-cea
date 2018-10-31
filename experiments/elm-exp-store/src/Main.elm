@@ -284,7 +284,7 @@ viewTodoList model =
         viewPrimaryListKeyed =
             primaryList
                 |> List.sortBy Store.itemCreatedAt
-                |> List.map (\todo -> ( todo.meta.id, viewTodoItem model todo ))
+                |> List.map (\todo -> ( todo.meta.id, viewTodoItem (createTodoViewModel model todo) ))
 
         viewMore =
             row "justify-center pointer"
@@ -316,12 +316,8 @@ createTodoViewModel model todo =
         model.lastTickAt
 
 
-viewTodoItem : Model -> Store.Item TodoAttrs -> Html Msg
-viewTodoItem model todo =
-    let
-        todoVM =
-            createTodoViewModel model todo
-    in
+viewTodoItem : TodoViewModel msg -> Html msg
+viewTodoItem todoVM =
     div
         [ class "pa3 w-100  bb b--light-gray"
         , classList [ ( "strike", todoVM.isCompleted ) ]
