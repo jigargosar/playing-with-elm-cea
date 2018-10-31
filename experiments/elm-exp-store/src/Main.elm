@@ -233,7 +233,7 @@ view : Model -> Html Msg
 view model =
     let
         onClickSetFilter =
-            onClick << ListFilterMsg << ListFilter.SwitchFilterTo
+            onClick << ListFilterMsg << ListFilter.changeFilterMsg
 
         filterBtn filter label =
             button

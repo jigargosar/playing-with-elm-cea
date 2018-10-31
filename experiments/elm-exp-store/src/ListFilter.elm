@@ -1,7 +1,8 @@
 module ListFilter exposing
     ( Filter(..)
     , Model
-    , Msg(..)
+    , Msg
+    , changeFilterMsg
     , getFilteredLists
     , init
     , isSelected
@@ -61,7 +62,12 @@ isSelected filter =
 
 type Msg
     = NoOp
-    | SwitchFilterTo Filter
+    | SetFilter Filter
+
+
+changeFilterMsg : Filter -> Msg
+changeFilterMsg =
+    SetFilter
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -70,5 +76,5 @@ update message model =
         NoOp ->
             pure model
 
-        SwitchFilterTo newFilter ->
+        SetFilter newFilter ->
             pure { model | selected = newFilter }
