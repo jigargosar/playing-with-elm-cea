@@ -232,10 +232,10 @@ viewTodo { content, done, startEditingContent, markDone, unmarkDone, startSchedu
         [ row ""
             []
             [ if done then
-                fBtnSA [ sClass "gray" ] FeatherIcons.checkCircle unmarkDone
+                fBtnSA [ sClass "green" ] FeatherIcons.checkCircle unmarkDone
 
               else
-                fBtnSA [ sClass "green" ] FeatherIcons.circle markDone
+                fBtnSA [ sClass "gray" ] FeatherIcons.circle markDone
             , div [ class "flex-grow-1 pointer", onClick startEditingContent ] [ txt content ]
             , fBtnSA [ sClass "orange" ] FeatherIcons.clock startScheduling
             ]
