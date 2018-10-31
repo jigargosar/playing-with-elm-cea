@@ -1,4 +1,15 @@
-module TodoStore exposing (Msg, Todo, TodoContent, TodoId, TodoStore, list, load, update)
+module TodoStore exposing
+    ( Msg
+    , Todo
+    , TodoContent
+    , TodoId
+    , TodoStore
+    , addNew
+    , list
+    , load
+    , setContent
+    , update
+    )
 
 import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool, nowMilli, withNowMilli)
 import Dict exposing (Dict)
@@ -69,10 +80,15 @@ type Msg
     | AddNewWithNowAndId TodoContent Millis TodoId
     | UpsertTodoAndCache Todo
     | Cache
+    | SetContent TodoId TodoContent
 
 
 addNew =
     AddNew
+
+
+setContent =
+    SetContent
 
 
 update : Msg -> TodoStore -> ( TodoStore, Cmd Msg )
@@ -107,6 +123,9 @@ update message model =
 
         Cache ->
             ( model, Port.cacheTodoStore (JC.encoder todoStoreCodec model) )
+
+        SetContent id content ->
+            ( model, Cmd.none )
 
 
 andThenUpdate msg =

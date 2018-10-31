@@ -76,6 +76,7 @@ type Msg
     | TodoStoreMsg TodoStore.Msg
     | MagicMenuMsg MagicMenu.Msg
     | ModeMsg Mode.Msg
+    | ModeOutMsg Mode.OutMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -107,7 +108,34 @@ update message model =
                 model
 
         ModeMsg msg ->
-            ( model, Cmd.none )
+            let
+                updateMode : Mode.Msg -> Model -> ( Model, Cmd Msg )
+                updateMode =
+                    let
+                        config : Update3Config Mode Mode.Msg Mode.OutMsg Model Msg
+                        config =
+                            { get = .mode
+                            , set = \s b -> { b | mode = s }
+                            , toMsg = ModeMsg
+                            , update = Mode.update
+                            , toOutMsg = ModeOutMsg
+                            , updateOutMsg = update
+                            }
+                    in
+                    update3 config
+            in
+            updateMode msg model
+
+        ModeOutMsg msg ->
+            case msg of
+                Mode.TodoContentUpdatedOutMsg id newContent ->
+                    update (TodoStoreMsg <| TodoStore.setContent id newContent) model
+
+                Mode.FocusDomIdOutMsg domId ->
+                    update (FocusDomId domId) model
+
+                Mode.AddTodoWithContentOutMsg content ->
+                    update (TodoStoreMsg <| TodoStore.addNew content) model
 
         MagicMenuMsg msg ->
             Update2.lift
