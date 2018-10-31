@@ -75,6 +75,7 @@ type Msg
     | FocusDomId String
     | TodoStoreMsg TodoStore.Msg
     | MagicMenuMsg MagicMenu.Msg
+    | ModeMsg Mode.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -104,6 +105,9 @@ update message model =
                 TodoStore.update
                 msg
                 model
+
+        ModeMsg msg ->
+            ( model, Cmd.none )
 
         MagicMenuMsg msg ->
             Update2.lift
