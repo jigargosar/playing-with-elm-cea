@@ -87,6 +87,7 @@ type Msg
     | AddClicked
     | EditClicked TodoStore.Item
     | TodoUpdateMsg Id Todo.Msg
+    | ScheduleClicked Id
     | AddNewWithContent Todo.Content
     | ModeMsg Mode.Msg
     | ModeOutMsg Mode.OutMsg
@@ -140,6 +141,9 @@ update message model =
 
         AddNewWithContent content ->
             update (TodoStoreMsg <| TodoStore.insertNewWithContent content) model
+
+        ScheduleClicked id ->
+            update (TodoUpdateMsg id (Todo.SetScheduledAt 0)) model
 
         TodoUpdateMsg id msg ->
             update (TodoStoreMsg <| Store.updateItem id msg) model
@@ -290,7 +294,7 @@ type alias TodoViewModel msg =
     , isCompleted : Bool
     , editContentMsg : msg
     , updateMsg : Todo.Msg -> msg
-    , now : Int
+    , scheduleClicked : msg
     }
 
 
@@ -301,7 +305,7 @@ createTodoViewModel model todo =
         (Todo.isCompleted todo)
         (EditClicked todo)
         (TodoUpdateMsg todo.meta.id)
-        model.lastTickAt
+        (ScheduleClicked todo.meta.id)
 
 
 viewTodoItem : TodoViewModel msg -> Html msg
@@ -320,7 +324,7 @@ viewTodoItem todoVM =
             , div [ class "flex-grow-1 pointer", onClick todoVM.editContentMsg ] [ txt todoVM.content ]
             , boolHtml
                 (not todoVM.isCompleted)
-                (fBtn FeatherIcons.clock <| todoVM.updateMsg <| Todo.SetScheduledAt (todoVM.now + 1000 * 60))
+                (fBtn FeatherIcons.clock todoVM.scheduleClicked)
             ]
         ]
 
