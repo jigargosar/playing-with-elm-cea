@@ -275,16 +275,14 @@ viewTodoList model =
         todoList =
             Store.items model.todoStore
 
-        ( primaryList, secondaryList ) =
+        ( primaryList, secondaryListLength ) =
             ListFilter.getFilteredLists model.lastTickAt todoList model.listFilter
+                |> Tuple.mapSecond List.length
 
         viewPrimaryListKeyed =
             primaryList
                 |> List.sortBy Store.itemCreatedAt
                 |> List.map (\todo -> ( todo.meta.id, viewTodoItem model todo ))
-
-        secondaryListLength =
-            List.length secondaryList
 
         viewMore =
             row "justify-center pointer"
