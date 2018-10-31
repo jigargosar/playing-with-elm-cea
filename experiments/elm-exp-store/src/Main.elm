@@ -219,10 +219,6 @@ createTodoViewModel todo =
         NoOp
 
 
-sClass =
-    Svg.Attributes.class
-
-
 viewTodo : TodoViewModel msg -> Html msg
 viewTodo { content, done, startEditingContent, markDone, unmarkDone, startScheduling } =
     div

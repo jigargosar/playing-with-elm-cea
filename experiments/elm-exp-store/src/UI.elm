@@ -9,6 +9,7 @@ module UI exposing
     , root
     , row
     , rowS3
+    , sClass
     , spacer
     , toolbar
     , txt
@@ -20,6 +21,7 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Svg.Attributes
 
 
 link url lbl =
@@ -45,6 +47,10 @@ fBtn fIcon msg =
         , class "flex items-center justify-center pa0 ma0"
         ]
         [ fIcon |> FeatherIcons.toHtml [] ]
+
+
+sClass =
+    Svg.Attributes.class
 
 
 fBtnSA svgAttrs fIcon msg =
