@@ -22,8 +22,7 @@ type Filter
 
 
 type alias Model =
-    { filter : Filter
-    }
+    { filter : Filter }
 
 
 init : Int -> Model
