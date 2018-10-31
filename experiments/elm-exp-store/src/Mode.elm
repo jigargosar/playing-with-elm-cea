@@ -114,6 +114,10 @@ targetIdDecoder =
     D.at [ "target", "id" ] D.string
 
 
+onClickTargetId toMsg =
+    Html.Events.on "click" <| D.map toMsg targetIdDecoder
+
+
 viewEditContentModal todoId content =
     backdrop
         [ id "edit-content-modal-backdrop"
