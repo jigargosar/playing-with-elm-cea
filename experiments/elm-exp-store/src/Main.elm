@@ -35,8 +35,7 @@ import WheelEvent exposing (WheelEvent)
 
 
 type alias Model =
-    { lastTickAt : Int
-    , magicMenu : MagicMenu
+    { magicMenu : MagicMenu
     , todoStore : TodoStore
     , mode : Mode
     , listFilter : ListFilter.Model
@@ -54,8 +53,7 @@ init flags =
             Store.load Todo.storeConfig flags.todos
     in
     pure
-        { lastTickAt = flags.now
-        , magicMenu = MagicMenu.initial
+        { magicMenu = MagicMenu.initial
         , todoStore = todoStore
         , mode = Mode.init
         , listFilter = ListFilter.init flags.now
@@ -78,7 +76,6 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Line
-    | Tick Millis
     | ListFilterMsg ListFilter.Msg
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
@@ -101,9 +98,6 @@ update message model =
 
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
-
-        Tick millis ->
-            pure { model | lastTickAt = millis }
 
         FocusDomId domId ->
             ( model
