@@ -1,6 +1,7 @@
-module TodoStore exposing (Content, Todo)
+module TodoStore exposing (Content, Id, Todo, TodoStore)
 
 import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool)
+import Dict exposing (Dict)
 import JsonCodec as JC exposing (Codec)
 import Port
 
@@ -35,3 +36,7 @@ todoCodec =
         |> JC.option "completed" JC.bool .completed False
         |> JC.option "scheduledAt" JC.int .scheduledAt 0
         |> JC.end
+
+
+type alias TodoStore =
+    { todoLookup : Dict Id Todo }
