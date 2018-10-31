@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import BasicsX exposing (Millis, defaultEmptyStringTo, everyXSeconds, flip, ter, unpackResult, unwrapMaybe, when)
+import BasicsX exposing (Millis, attemptDomIdFocus, defaultEmptyStringTo, everyXSeconds, flip, ter, unpackResult, unwrapMaybe, when)
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -90,12 +90,7 @@ update message model =
 
         FocusDomId domId ->
             ( model
-            , Browser.Dom.focus domId
-                |> Task.attempt
-                    (unpackResult
-                        (\_ -> Warn [ "Focus Error: #", domId, " NotFound" ])
-                        (\_ -> NoOp)
-                    )
+            , attemptDomIdFocus domId NoOp Warn
             )
 
         TodoStoreMsg msg ->

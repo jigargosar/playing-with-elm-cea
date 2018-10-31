@@ -2,6 +2,7 @@ module BasicsX exposing
     ( Encoder
     , Millis
     , applyTo
+    , attemptDomIdFocus
     , defaultEmptyStringTo
     , eq0
     , eqs
@@ -23,6 +24,7 @@ module BasicsX exposing
     , withNowMilli
     )
 
+import Browser.Dom
 import Html exposing (Html)
 import Html.Events
 import Json.Decode as D exposing (Decoder)
@@ -62,6 +64,15 @@ onClickTargetId toMsg =
             D.at [ "target", "id" ] D.string
     in
     Html.Events.on "click" <| D.map toMsg targetIdDecoder
+
+
+attemptDomIdFocus domId onSuccess onError =
+    Browser.Dom.focus domId
+        |> Task.attempt
+            (unpackResult
+                (\_ -> onError [ "Focus Error: #", domId, " NotFound" ])
+                (\_ -> onSuccess)
+            )
 
 
 ter b t f =
