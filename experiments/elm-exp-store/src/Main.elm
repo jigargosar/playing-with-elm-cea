@@ -213,8 +213,8 @@ createTodoViewModel todo =
         (defaultEmptyStringTo "<empty>" todo.content)
         todo.done
         (ModeMsg <| Mode.startEditing todo)
-        NoOp
-        NoOp
+        (TodoStoreMsg <| TodoStore.markDone todo.id)
+        (TodoStoreMsg <| TodoStore.unmarkDone todo.id)
         NoOp
 
 
