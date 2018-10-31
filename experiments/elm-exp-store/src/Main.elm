@@ -21,7 +21,6 @@ import Port
 import Random
 import Store exposing (Id, Item, Store, resetCache)
 import Task
-import Time
 import Todo exposing (TodoAttrs)
 import TodoStore exposing (TodoStore)
 import UI exposing (..)
