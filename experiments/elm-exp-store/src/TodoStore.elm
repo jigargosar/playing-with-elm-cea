@@ -2,6 +2,7 @@ module TodoStore exposing (Content, Id, Todo, TodoStore, load)
 
 import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool, nowMilli, withNowMilli)
 import Dict exposing (Dict)
+import IdX exposing (withNewId)
 import Json.Decode
 import JsonCodec as JC exposing (Codec)
 import JsonCodecX exposing (Value, decodeValue)
@@ -24,7 +25,6 @@ type alias Todo =
     , deleted : Bool
     , content : Content
     , completed : Bool
-    , scheduledAt : Millis
     }
 
 
@@ -37,7 +37,6 @@ todoCodec =
         |> JC.next "deleted" JC.bool .deleted
         |> JC.next "content" JC.string .content
         |> JC.option "completed" JC.bool .completed False
-        |> JC.option "scheduledAt" JC.int .scheduledAt 0
         |> JC.end
 
 
@@ -65,6 +64,7 @@ type Msg
     = NoOp
     | AddNew Content
     | AddNewWithNow Content Millis
+    | AddNewWithNowAndId Content Millis Id
 
 
 addNew =
@@ -81,4 +81,18 @@ update message model =
             ( model, withNowMilli <| AddNewWithNow content )
 
         AddNewWithNow content now ->
+            ( model, withNewId <| AddNewWithNowAndId content now )
+
+        AddNewWithNowAndId content now id ->
+            let
+                newTodo : Todo
+                newTodo =
+                    { id = id
+                    , createdAt = now
+                    , modifiedAt = now
+                    , deleted = False
+                    , content = content
+                    , completed = False
+                    }
+            in
             ( model, Cmd.none )

@@ -1,4 +1,4 @@
-module IdX exposing (idCharGenerator, idChars, stringIdGenerator)
+module IdX exposing (stringIdGenerator, withNewId)
 
 import Random
 
@@ -25,3 +25,8 @@ idCharGenerator =
 stringIdGenerator : Random.Generator String
 stringIdGenerator =
     Random.list 21 idCharGenerator |> Random.map String.fromList
+
+
+withNewId : (String -> msg) -> Cmd msg
+withNewId toMsg =
+    Random.generate toMsg stringIdGenerator
