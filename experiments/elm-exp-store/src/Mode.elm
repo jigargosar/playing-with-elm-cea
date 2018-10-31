@@ -1,8 +1,9 @@
 module Mode exposing
     ( Mode
-    , Msg(..)
+    , Msg
     , OutMsg(..)
     , init
+    , startAdding
     , update
     , viewModal
     )
@@ -44,6 +45,10 @@ type Msg
     | ContentChangedInView TodoContent
     | EndEditMode
     | FocusDomId DomId
+
+
+startAdding =
+    StartAdding
 
 
 type OutMsg

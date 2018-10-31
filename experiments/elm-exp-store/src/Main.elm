@@ -147,6 +147,10 @@ subscriptions model =
 ---- VIEW ----
 
 
+startAddingMsg =
+    ModeMsg Mode.startAdding
+
+
 mockActions =
     [ FeatherIcons.home
     , FeatherIcons.twitter
@@ -156,7 +160,7 @@ mockActions =
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
         |> (::) (MagicMenu.Action FeatherIcons.trash2 NoOp)
-        |> (::) (MagicMenu.Action FeatherIcons.filePlus NoOp)
+        |> (::) (MagicMenu.Action FeatherIcons.filePlus startAddingMsg)
 
 
 view : Model -> Html Msg
@@ -166,7 +170,7 @@ view model =
         , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
             [ row ""
                 []
-                [ button [ onClick NoOp ] [ text "add" ]
+                [ button [ onClick startAddingMsg ] [ text "add" ]
                 ]
             , viewTodoList model
             ]
