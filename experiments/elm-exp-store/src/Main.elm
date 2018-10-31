@@ -19,6 +19,7 @@ import Port
 import Random
 import Store exposing (Id, Item, Store, resetCache)
 import Task
+import TodoStore exposing (TodoStore)
 import UI exposing (..)
 import Update2
 import Update3
@@ -32,6 +33,7 @@ import WheelEvent exposing (WheelEvent)
 
 type alias Model =
     { magicMenu : MagicMenu
+    , todoStore : TodoStore
     }
 
 
@@ -41,9 +43,15 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
+    let
+        ( maybeLogLine, todoStore ) =
+            TodoStore.load flags.todos
+    in
     pure
         { magicMenu = MagicMenu.initial
+        , todoStore = todoStore
         }
+        |> andThenUpdate (unwrapMaybe NoOp Warn maybeLogLine)
 
 
 
