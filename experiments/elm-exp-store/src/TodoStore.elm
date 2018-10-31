@@ -7,7 +7,9 @@ module TodoStore exposing
     , addNew
     , list
     , load
+    , markDone
     , setContent
+    , unmarkDone
     , update
     )
 
@@ -86,6 +88,8 @@ type Msg
 
 type TodoMsg
     = SetContent TodoContent
+    | MarkDone
+    | UnmarkDone
 
 
 addNew =
@@ -94,6 +98,14 @@ addNew =
 
 setContent id content =
     UpdateTodo id (SetContent content)
+
+
+markDone id =
+    UpdateTodo id MarkDone
+
+
+unmarkDone id =
+    UpdateTodo id UnmarkDone
 
 
 update : Msg -> TodoStore -> ( TodoStore, Cmd Msg )
@@ -148,6 +160,12 @@ maybeUpdateTodo now msg todo =
             case msg of
                 SetContent content ->
                     { todo | content = content }
+
+                MarkDone ->
+                    { todo | done = True }
+
+                UnmarkDone ->
+                    { todo | done = False }
     in
     maybeBool (updatedTodo /= todo) { updatedTodo | modifiedAt = now }
 
