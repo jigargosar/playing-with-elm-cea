@@ -2,7 +2,6 @@ module Mode exposing
     ( Mode
     , Msg(..)
     , OutMsg(..)
-    , editContentMode
     , init
     , update
     , viewModal
@@ -16,17 +15,15 @@ import Html.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
 import Log
-import Store
-import Todo
-import TodoStore
+import TodoStore exposing (Todo, TodoContent, TodoId)
 import UI exposing (..)
 import UpdateReturn exposing (..)
 
 
 type Mode
     = Default
-    | EditContentMode Store.Id Todo.Content
-    | AddContentMode Todo.Content
+    | EditContentMode TodoId TodoContent
+    | AddContentMode TodoContent
 
 
 type alias Model =
@@ -42,20 +39,16 @@ type Msg
     = NoOp
     | BackdropClicked
     | Warn Log.Line
-    | StartEditing TodoStore.Item
+    | StartEditing Todo
     | StartAdding
-    | ContentChangedInView Todo.Content
+    | ContentChangedInView TodoContent
     | EndEditMode
 
 
-editContentMode todo =
-    EditContentMode todo.meta.id todo.attrs.content
-
-
 type OutMsg
-    = TodoContentUpdatedOutMsg Store.Id Todo.Content
+    = TodoContentUpdatedOutMsg TodoId TodoContent
     | FocusDomIdOutMsg String
-    | AddTodoWithContentOutMsg Todo.Content
+    | AddTodoWithContentOutMsg TodoContent
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, List OutMsg )
@@ -72,7 +65,7 @@ update message model =
                 |> addCmd3 (Log.warn "Mode.elm" logLine)
 
         StartEditing todo ->
-            editContentMode todo
+            EditContentMode todo.id todo.content
                 |> pure3
                 |> addOutMsg3 (FocusDomIdOutMsg modalTodoInputDomId)
 

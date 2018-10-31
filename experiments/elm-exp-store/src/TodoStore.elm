@@ -1,4 +1,4 @@
-module TodoStore exposing (Content, Id, Msg, Todo, TodoStore, list, load, update)
+module TodoStore exposing (Msg, Todo, TodoContent, TodoId, TodoStore, list, load, update)
 
 import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool, nowMilli, withNowMilli)
 import Dict exposing (Dict)
@@ -12,20 +12,20 @@ import Task
 import UpdateReturn exposing (..)
 
 
-type alias Content =
+type alias TodoContent =
     String
 
 
-type alias Id =
+type alias TodoId =
     String
 
 
 type alias Todo =
-    { id : Id
+    { id : TodoId
     , createdAt : Millis
     , modifiedAt : Millis
     , deleted : Bool
-    , content : Content
+    , content : TodoContent
     , done : Bool
     }
 
@@ -43,7 +43,7 @@ todoCodec =
 
 
 type alias TodoStore =
-    { todoLookup : Dict Id Todo }
+    { todoLookup : Dict TodoId Todo }
 
 
 emptyStore : TodoStore
@@ -64,9 +64,9 @@ load =
 
 type Msg
     = NoOp
-    | AddNew Content
-    | AddNewWithNow Content Millis
-    | AddNewWithNowAndId Content Millis Id
+    | AddNew TodoContent
+    | AddNewWithNow TodoContent Millis
+    | AddNewWithNowAndId TodoContent Millis TodoId
     | UpsertTodoAndCache Todo
     | Cache
 
