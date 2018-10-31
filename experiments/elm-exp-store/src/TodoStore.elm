@@ -134,21 +134,22 @@ update message model =
 
         UpdateTodoWithNow id msg now ->
             let
-                foo todo =
-                    let
-                        updatedTodo =
-                            case msg of
-                                SetContent content ->
-                                    { todo | content = content }
-                    in
-                    maybeBool (updatedTodo /= todo) { updatedTodo | modifiedAt = now }
-
                 newMsg =
                     Dict.get id model.todoLookup
-                        |> Maybe.andThen foo
+                        |> Maybe.andThen (maybeUpdateTodo now msg)
                         |> unwrapMaybe NoOp UpsertTodoAndCache
             in
             update newMsg model
+
+
+maybeUpdateTodo now msg todo =
+    let
+        updatedTodo =
+            case msg of
+                SetContent content ->
+                    { todo | content = content }
+    in
+    maybeBool (updatedTodo /= todo) { updatedTodo | modifiedAt = now }
 
 
 andThenUpdate msg =
