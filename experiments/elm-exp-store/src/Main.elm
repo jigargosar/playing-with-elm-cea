@@ -232,9 +232,7 @@ viewTodo { content, done, startEditingContent, markDone, unmarkDone, startSchedu
               else
                 fBtn FeatherIcons.circle markDone
             , div [ class "flex-grow-1 pointer", onClick startEditingContent ] [ txt content ]
-            , boolHtml
-                (not done)
-                (fBtn FeatherIcons.clock startScheduling)
+            , fBtn FeatherIcons.clock startScheduling
             ]
         ]
 
