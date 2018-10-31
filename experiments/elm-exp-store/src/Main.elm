@@ -54,6 +54,10 @@ init flags =
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeLogLine)
 
 
+getTodoList =
+    .todoStore >> TodoStore.list
+
+
 
 ---- UPDATE ----
 
@@ -143,6 +147,7 @@ view model =
                 []
                 [ button [ onClick NoOp ] [ text "add" ]
                 ]
+            , viewTodoList model
             ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
@@ -151,6 +156,14 @@ view model =
 
 modalTodoInputDomId =
     "modal-todo-content-input"
+
+
+viewTodoList model =
+    div [] (List.map viewTodo (getTodoList model))
+
+
+viewTodo todo =
+    div [] [ text todo.content ]
 
 
 

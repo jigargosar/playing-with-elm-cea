@@ -1,4 +1,4 @@
-module TodoStore exposing (Content, Id, Msg, Todo, TodoStore, load, update)
+module TodoStore exposing (Content, Id, Msg, Todo, TodoStore, list, load, update)
 
 import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool, nowMilli, withNowMilli)
 import Dict exposing (Dict)
@@ -26,7 +26,7 @@ type alias Todo =
     , modifiedAt : Millis
     , deleted : Bool
     , content : Content
-    , completed : Bool
+    , done : Bool
     }
 
 
@@ -38,7 +38,7 @@ todoCodec =
         |> JC.next "modifiedAt" JC.int .modifiedAt
         |> JC.next "deleted" JC.bool .deleted
         |> JC.next "content" JC.string .content
-        |> JC.option "completed" JC.bool .completed False
+        |> JC.option "done" JC.bool .done False
         |> JC.end
 
 
@@ -96,7 +96,7 @@ update message model =
                     , modifiedAt = now
                     , deleted = False
                     , content = content
-                    , completed = False
+                    , done = False
                     }
             in
             update (UpsertTodoAndCache newTodo) model
@@ -111,3 +111,7 @@ update message model =
 
 andThenUpdate msg =
     andThen (update msg)
+
+
+list =
+    .todoLookup >> Dict.values
