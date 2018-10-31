@@ -80,15 +80,19 @@ type Msg
     | AddNewWithNowAndId TodoContent Millis TodoId
     | UpsertTodoAndCache Todo
     | Cache
-    | SetContent TodoId TodoContent
+    | UpdateTodo TodoId TodoMsg
+
+
+type TodoMsg
+    = SetContent TodoContent
 
 
 addNew =
     AddNew
 
 
-setContent =
-    SetContent
+setContent id content =
+    UpdateTodo id (SetContent content)
 
 
 update : Msg -> TodoStore -> ( TodoStore, Cmd Msg )
@@ -124,8 +128,21 @@ update message model =
         Cache ->
             ( model, Port.cacheTodoStore (JC.encoder todoStoreCodec model) )
 
-        SetContent id content ->
-            ( model, Cmd.none )
+        UpdateTodo id msg ->
+            case msg of
+                SetContent content ->
+                    updateTodoAndCache id (\todo -> { todo | content = content }) model
+
+
+overTodoLookup : (Dict String Todo -> Dict String Todo) -> TodoStore -> TodoStore
+overTodoLookup updateFn model =
+    { model | todoLookup = updateFn model.todoLookup }
+
+
+updateTodoAndCache id fn =
+    overTodoLookup (Dict.update id <| Maybe.map fn)
+        >> pure
+        >> andThenUpdate Cache
 
 
 andThenUpdate msg =
