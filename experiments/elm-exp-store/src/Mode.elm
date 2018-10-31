@@ -7,7 +7,7 @@ module Mode exposing
     , viewModal
     )
 
-import BasicsX exposing (onClickTargetId)
+import BasicsX exposing (..)
 import HotKey
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -43,12 +43,16 @@ type Msg
     | StartAdding
     | ContentChangedInView TodoContent
     | EndEditMode
+    | FocusDomId DomId
 
 
 type OutMsg
     = TodoContentUpdatedOutMsg TodoId TodoContent
-    | FocusDomIdOutMsg String
     | AddTodoWithContentOutMsg TodoContent
+
+
+andThenUpdate msg =
+    andThen3 (update msg)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, List OutMsg )
@@ -57,22 +61,26 @@ update message model =
         NoOp ->
             pure3 model
 
-        BackdropClicked ->
-            update EndEditMode model
-
         Warn logLine ->
             pure3 model
                 |> addCmd3 (Log.warn "Mode.elm" logLine)
 
+        FocusDomId domId ->
+            pure3 model
+                |> addCmd3 (attemptDomIdFocus domId NoOp Warn)
+
+        BackdropClicked ->
+            update EndEditMode model
+
         StartEditing todo ->
             EditContentMode todo.id todo.content
                 |> pure3
-                |> addOutMsg3 (FocusDomIdOutMsg modalTodoInputDomId)
+                |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
         StartAdding ->
             AddContentMode ""
                 |> pure3
-                |> addOutMsg3 (FocusDomIdOutMsg modalTodoInputDomId)
+                |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
         ContentChangedInView newContent ->
             case model of

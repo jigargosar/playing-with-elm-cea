@@ -1,5 +1,6 @@
 module BasicsX exposing
-    ( Encoder
+    ( DomId
+    , Encoder
     , Millis
     , applyTo
     , attemptDomIdFocus

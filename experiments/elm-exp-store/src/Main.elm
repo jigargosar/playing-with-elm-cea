@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import BasicsX exposing (Millis, attemptDomIdFocus, defaultEmptyStringTo, everyXSeconds, flip, ter, unpackResult, unwrapMaybe, when)
+import BasicsX exposing (..)
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -72,7 +72,6 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Line
-    | FocusDomId String
     | TodoStoreMsg TodoStore.Msg
     | MagicMenuMsg MagicMenu.Msg
     | ModeMsg Mode.Msg
@@ -87,11 +86,6 @@ update message model =
 
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
-
-        FocusDomId domId ->
-            ( model
-            , attemptDomIdFocus domId NoOp Warn
-            )
 
         TodoStoreMsg msg ->
             Update2.lift
@@ -125,9 +119,6 @@ update message model =
             case msg of
                 Mode.TodoContentUpdatedOutMsg id newContent ->
                     update (TodoStoreMsg <| TodoStore.setContent id newContent) model
-
-                Mode.FocusDomIdOutMsg domId ->
-                    update (FocusDomId domId) model
 
                 Mode.AddTodoWithContentOutMsg content ->
                     update (TodoStoreMsg <| TodoStore.addNew content) model
