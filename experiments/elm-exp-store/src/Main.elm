@@ -21,8 +21,6 @@ import Port
 import Random
 import Store exposing (Id, Item, Store, resetCache)
 import Task
-import Todo exposing (TodoAttrs)
-import TodoStore exposing (TodoStore)
 import UI exposing (..)
 import Update2
 import Update3
@@ -36,7 +34,6 @@ import WheelEvent exposing (WheelEvent)
 
 type alias Model =
     { magicMenu : MagicMenu
-    , todoStore : TodoStore
     , mode : Mode
     , listFilter : ListFilter.Model
     }
@@ -48,17 +45,11 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    let
-        ( maybeWarn, todoStore ) =
-            Store.load Todo.storeConfig flags.todos
-    in
     pure
         { magicMenu = MagicMenu.initial
-        , todoStore = todoStore
         , mode = Mode.init
         , listFilter = ListFilter.init flags.now
         }
-        |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
 
 
 isFilterSelected filter =
@@ -79,13 +70,7 @@ type Msg
     | ListFilterMsg ListFilter.Msg
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
-    | TodoStoreMsg TodoStore.Msg
-    | TodoStoreOutMsg (Store.OutMsg TodoAttrs)
     | AddClicked
-    | EditClicked TodoStore.Item
-    | TodoUpdateMsg Id Todo.Msg
-    | ScheduleClicked Id
-    | AddNewWithContent Todo.Content
     | ModeMsg Mode.Msg
     | ModeOutMsg Mode.OutMsg
 
@@ -130,42 +115,13 @@ update message model =
         AddClicked ->
             update (ModeMsg <| Mode.StartAdding) model
 
-        EditClicked todo ->
-            update (ModeMsg <| Mode.StartEditing todo) model
-
-        AddNewWithContent content ->
-            update (TodoStoreMsg <| TodoStore.insertNewWithContent content) model
-
-        ScheduleClicked id ->
-            update (TodoUpdateMsg id (Todo.SetScheduledAt 0)) model
-
-        TodoUpdateMsg id msg ->
-            update (TodoStoreMsg <| Store.updateItem id msg) model
-
-        TodoStoreMsg msg ->
-            updateTodoStore msg model
-
-        TodoStoreOutMsg msg ->
-            case msg of
-                Store.InsertedOutMsg newTodo ->
-                    update (Warn [ "Store.InsertedOutMsg: unused" ]) model
-
-                Store.ModifiedOutMsg updatedTodo ->
-                    update (Warn [ "Store.ModifiedOutMsg: unused" ]) model
-
         ModeMsg msg ->
             updateMode msg model
 
         ModeOutMsg msg ->
             case msg of
-                Mode.TodoContentUpdatedOutMsg id newContent ->
-                    update (TodoUpdateMsg id (Todo.SetContent newContent)) model
-
-                Mode.FocusDomIdOutMsg domId ->
-                    update (FocusDomId domId) model
-
-                Mode.AddTodoWithContentOutMsg content ->
-                    update (AddNewWithContent content) model
+                _ ->
+                    pure model
 
 
 updateMode : Mode.Msg -> Model -> ( Model, Cmd Msg )
@@ -178,22 +134,6 @@ updateMode =
             , toMsg = ModeMsg
             , update = Mode.update
             , toOutMsg = ModeOutMsg
-            , updateOutMsg = update
-            }
-    in
-    update3 config
-
-
-updateTodoStore : TodoStore.Msg -> Model -> ( Model, Cmd Msg )
-updateTodoStore =
-    let
-        config : Update3Config TodoStore TodoStore.Msg TodoStore.OutMsg Model Msg
-        config =
-            { get = .todoStore
-            , set = \s b -> { b | todoStore = s }
-            , toMsg = TodoStoreMsg
-            , update = TodoStore.update
-            , toOutMsg = TodoStoreOutMsg
             , updateOutMsg = update
             }
     in
@@ -223,7 +163,7 @@ mockActions =
     , FeatherIcons.moon
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
-        |> (::) (MagicMenu.Action FeatherIcons.trash2 (TodoStoreMsg resetCache))
+        |> (::) (MagicMenu.Action FeatherIcons.trash2 NoOp)
         |> (::) (MagicMenu.Action FeatherIcons.filePlus AddClicked)
 
 
@@ -255,7 +195,6 @@ view model =
                 , filterBtn ListFilter.Active "Active"
                 , filterBtn ListFilter.Completed "Completed"
                 ]
-            , viewTodoList model
             ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
@@ -265,62 +204,6 @@ view model =
 
 modalTodoInputDomId =
     "modal-todo-content-input"
-
-
-viewTodoList : Model -> Html Msg
-viewTodoList model =
-    let
-        filteredList =
-            ListFilter.filterTodoList (Store.items model.todoStore) model.listFilter
-
-        viewPrimaryListKeyed =
-            filteredList
-                |> List.sortBy Store.itemCreatedAt
-                |> List.map (\todo -> ( todo.meta.id, viewTodoItem (createTodoViewModel model todo) ))
-    in
-    div [ class "w-100 measure-wide" ]
-        [ Html.Keyed.node "div" [] viewPrimaryListKeyed
-        ]
-
-
-type alias TodoViewModel msg =
-    { content : String
-    , isCompleted : Bool
-    , editContentMsg : msg
-    , updateMsg : Todo.Msg -> msg
-    , scheduleClicked : msg
-    }
-
-
-createTodoViewModel : Model -> TodoStore.Item -> TodoViewModel Msg
-createTodoViewModel model todo =
-    TodoViewModel
-        (defaultEmptyStringTo "<empty>" <| Todo.content todo)
-        (Todo.isCompleted todo)
-        (EditClicked todo)
-        (TodoUpdateMsg todo.meta.id)
-        (ScheduleClicked todo.meta.id)
-
-
-viewTodoItem : TodoViewModel msg -> Html msg
-viewTodoItem todoVM =
-    div
-        [ class "pa3 w-100  bb b--light-gray"
-        , classList [ ( "strike", todoVM.isCompleted ) ]
-        ]
-        [ row ""
-            []
-            [ if todoVM.isCompleted then
-                fBtn FeatherIcons.checkCircle <| todoVM.updateMsg Todo.UnmarkCompleted
-
-              else
-                fBtn FeatherIcons.circle <| todoVM.updateMsg Todo.MarkCompleted
-            , div [ class "flex-grow-1 pointer", onClick todoVM.editContentMsg ] [ txt todoVM.content ]
-            , boolHtml
-                (not todoVM.isCompleted)
-                (fBtn FeatherIcons.clock todoVM.scheduleClicked)
-            ]
-        ]
 
 
 
