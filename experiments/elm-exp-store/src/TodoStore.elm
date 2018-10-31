@@ -2,7 +2,10 @@ module TodoStore exposing (Content, Id, Todo, TodoStore)
 
 import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool)
 import Dict exposing (Dict)
+import Json.Decode exposing (decodeValue, errorToString)
+import Json.Encode exposing (Value)
 import JsonCodec as JC exposing (Codec)
+import Log
 import Port
 
 
@@ -40,3 +43,28 @@ todoCodec =
 
 type alias TodoStore =
     { todoLookup : Dict Id Todo }
+
+
+emptyStore : TodoStore
+emptyStore =
+    TodoStore Dict.empty
+
+
+todoStoreCodec : Codec TodoStore
+todoStoreCodec =
+    TodoStore
+        |> JC.first "todoLookup" (JC.dict todoCodec) .todoLookup
+        |> JC.end
+
+
+load : Value -> ( Maybe Log.Line, TodoStore )
+load =
+    decodeValue (JC.decoder todoStoreCodec)
+        >> (\result ->
+                case result of
+                    Ok todoStore ->
+                        ( Nothing, todoStore )
+
+                    Err error ->
+                        ( Just [ errorToString error ], emptyStore )
+           )
