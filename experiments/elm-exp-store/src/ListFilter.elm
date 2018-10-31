@@ -31,8 +31,8 @@ init now =
     { filter = Active, lastTickedAt = now }
 
 
-filterTodoList : Millis -> List TodoStore.Item -> Model -> List TodoStore.Item
-filterTodoList referenceTime todoList { filter } =
+filterTodoList : List TodoStore.Item -> Model -> List TodoStore.Item
+filterTodoList todoList { filter, lastTickedAt } =
     let
         pred todo =
             let
@@ -40,7 +40,7 @@ filterTodoList referenceTime todoList { filter } =
                     Todo.isCompleted todo
 
                 inFuture =
-                    Todo.isScheduledAfter referenceTime todo
+                    Todo.isScheduledAfter lastTickedAt todo
             in
             case filter of
                 Future ->
