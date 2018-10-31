@@ -118,17 +118,13 @@ viewEditContentModal todoId content =
     backdrop
         [ id "edit-content-modal-backdrop"
         , Html.Events.on "click" <|
-            D.map
+            D.andThen
                 (\targetId ->
-                    let
-                        _ =
-                            Warn [ "Backdrop Clicked on domId(", targetId, ")" ]
-                    in
                     if targetId == "edit-content-modal-backdrop" then
-                        BackdropClicked
+                        D.succeed BackdropClicked
 
                     else
-                        NoOp
+                        D.fail "Ignoring Click"
                 )
                 targetIdDecoder
         ]
