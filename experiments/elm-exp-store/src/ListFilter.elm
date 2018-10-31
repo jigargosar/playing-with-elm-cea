@@ -5,8 +5,6 @@ module ListFilter exposing
     , getFilteredLists
     , init
     , isSelected
-    , matchesSelectedIn
-    , matchesSelectedWithReferenceTimeIn
     , update
     )
 
@@ -55,50 +53,6 @@ getFilteredLists referenceTime todoList { selected } =
                     completed
     in
     List.filter pred todoList
-
-
-matchesSelectedIn : Model -> TodoStore.Item -> Bool
-matchesSelectedIn { selected, modifiedAt } todo =
-    let
-        completed =
-            Todo.isCompleted todo
-
-        inFuture =
-            Todo.isScheduledAfter modifiedAt todo
-    in
-    case selected of
-        Future ->
-            not completed && inFuture
-
-        Active ->
-            not completed && not inFuture
-
-        Completed ->
-            completed
-
-
-matchesSelectedWithReferenceTimeIn : Model -> Millis -> TodoStore.Item -> Bool
-matchesSelectedWithReferenceTimeIn { selected, modifiedAt } referenceTime todo =
-    let
-        completed =
-            Todo.isCompleted todo
-    in
-    case selected of
-        Future ->
-            False
-
-        Active ->
-            not completed
-                && Todo.isScheduledAfter modifiedAt todo
-                && Todo.isScheduledBefore referenceTime todo
-
-        Completed ->
-            False
-
-
-
---filter todoList model =
---    todoList |> List.filter matches
 
 
 isSelected : Filter -> Model -> Bool
