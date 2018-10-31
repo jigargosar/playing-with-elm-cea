@@ -3,7 +3,7 @@ module ListFilter exposing
     , Model
     , Msg
     , changeFilterMsg
-    , filter
+    , filterTodoList
     , init
     , isSelected
     , update
@@ -31,8 +31,8 @@ init now =
     { filter = Active }
 
 
-filter : Millis -> List TodoStore.Item -> Model -> List TodoStore.Item
-filter referenceTime todoList { filter } =
+filterTodoList : Millis -> List TodoStore.Item -> Model -> List TodoStore.Item
+filterTodoList referenceTime todoList { filter } =
     let
         pred todo =
             let

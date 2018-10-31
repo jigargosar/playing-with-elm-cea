@@ -273,7 +273,7 @@ viewTodoList : Model -> Html Msg
 viewTodoList model =
     let
         filteredList =
-            ListFilter.filter model.lastTickAt (Store.items model.todoStore) model.listFilter
+            ListFilter.filterTodoList model.lastTickAt (Store.items model.todoStore) model.listFilter
 
         viewPrimaryListKeyed =
             filteredList
