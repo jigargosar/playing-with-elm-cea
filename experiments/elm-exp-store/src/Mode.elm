@@ -4,6 +4,7 @@ module Mode exposing
     , OutMsg(..)
     , init
     , startAdding
+    , startEditing
     , update
     , viewModal
     )
@@ -49,6 +50,10 @@ type Msg
 
 startAdding =
     StartAdding
+
+
+startEditing =
+    StartEditing
 
 
 type OutMsg

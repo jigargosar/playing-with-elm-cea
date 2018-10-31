@@ -151,6 +151,10 @@ startAddingMsg =
     ModeMsg Mode.startAdding
 
 
+startEditingMsg =
+    ModeMsg << Mode.startEditing
+
+
 mockActions =
     [ FeatherIcons.home
     , FeatherIcons.twitter
