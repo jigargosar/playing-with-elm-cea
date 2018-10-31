@@ -18,9 +18,8 @@ import MagicMenu exposing (MagicMenu)
 import Mode exposing (Mode)
 import Port
 import Random
-import Store exposing (Id, Item, Store, resetCache)
 import Task
-import TodoStore exposing (TodoStore)
+import TodoStore exposing (Todo, TodoStore)
 import UI exposing (..)
 import Update2
 import Update3
@@ -57,8 +56,10 @@ init flags =
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeLogLine)
 
 
-getTodoList =
-    .todoStore >> TodoStore.list
+getCurrentTodoList =
+    .todoStore
+        >> TodoStore.list
+        >> List.sortBy .createdAt
 
 
 
@@ -151,10 +152,6 @@ startAddingMsg =
     ModeMsg Mode.startAdding
 
 
-startEditingMsg =
-    ModeMsg << Mode.startEditing
-
-
 mockActions =
     [ FeatherIcons.home
     , FeatherIcons.twitter
@@ -188,12 +185,58 @@ modalTodoInputDomId =
     "modal-todo-content-input"
 
 
+viewTodoList : Model -> Html Msg
 viewTodoList model =
-    div [] (List.map viewTodo (getTodoList model))
+    let
+        viewPrimaryListKeyed =
+            getCurrentTodoList model
+                |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel todo) ))
+    in
+    div [ class "w-100 measure-wide" ]
+        [ Html.Keyed.node "div" [] viewPrimaryListKeyed
+        ]
 
 
-viewTodo todo =
-    div [] [ text todo.content ]
+type alias TodoViewModel msg =
+    { content : String
+    , done : Bool
+    , startEditingContent : msg
+    , markDone : msg
+    , unmarkDone : msg
+    , startScheduling : msg
+    }
+
+
+createTodoViewModel : Todo -> TodoViewModel Msg
+createTodoViewModel todo =
+    TodoViewModel
+        (defaultEmptyStringTo "<empty>" todo.content)
+        todo.done
+        (ModeMsg <| Mode.startEditing todo)
+        NoOp
+        NoOp
+        NoOp
+
+
+viewTodo : TodoViewModel msg -> Html msg
+viewTodo { content, done, startEditingContent, markDone, unmarkDone, startScheduling } =
+    div
+        [ class "pa3 w-100  bb b--light-gray"
+        , classList [ ( "strike", done ) ]
+        ]
+        [ row ""
+            []
+            [ if done then
+                fBtn FeatherIcons.checkCircle unmarkDone
+
+              else
+                fBtn FeatherIcons.circle markDone
+            , div [ class "flex-grow-1 pointer", onClick startEditingContent ] [ txt content ]
+            , boolHtml
+                (not done)
+                (fBtn FeatherIcons.clock startScheduling)
+            ]
+        ]
 
 
 
