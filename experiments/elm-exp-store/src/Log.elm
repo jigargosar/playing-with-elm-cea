@@ -12,8 +12,10 @@ type alias Result a =
 
 
 warn : String -> Line -> Cmd msg
-warn moduleName =
-    (::) moduleName >> Port.warn
+warn moduleName line =
+    ([ moduleName, ": " ] ++ line |> String.join "")
+        |> List.singleton
+        |> Port.warn
 
 
 resultWithDefault : a -> Result a -> ( a, Cmd msg )

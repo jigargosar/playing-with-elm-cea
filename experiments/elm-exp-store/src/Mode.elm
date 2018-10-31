@@ -12,6 +12,9 @@ import HotKey
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Json.Decode as D
+import Json.Encode as E
+import Log
 import Store
 import Todo
 import TodoStore
@@ -36,6 +39,8 @@ init =
 
 type Msg
     = NoOp
+    | BackdropClicked
+    | Warn Log.Line
     | StartEditing TodoStore.Item
     | StartAdding
     | ContentChangedInView Todo.Content
@@ -57,6 +62,13 @@ update message model =
     case message of
         NoOp ->
             pure3 model
+
+        BackdropClicked ->
+            update EndEditMode model
+
+        Warn logLine ->
+            pure3 model
+                |> addCmd3 (Log.warn "Mode.elm" logLine)
 
         StartEditing todo ->
             editContentMode todo
@@ -98,8 +110,28 @@ modalTodoInputDomId =
     "modal-todo-content-input"
 
 
+targetIdDecoder =
+    D.at [ "target", "id" ] D.string
+
+
 viewEditContentModal todoId content =
-    backdrop []
+    backdrop
+        [ id "edit-content-modal-backdrop"
+        , Html.Events.on "click" <|
+            D.map
+                (\targetId ->
+                    let
+                        _ =
+                            Warn [ "Backdrop Clicked on domId(", targetId, ")" ]
+                    in
+                    if targetId == "edit-content-modal-backdrop" then
+                        BackdropClicked
+
+                    else
+                        NoOp
+                )
+                targetIdDecoder
+        ]
         [ div
             [ class "bg-white br4 shadow-1 pa3 measure w-100"
             ]
