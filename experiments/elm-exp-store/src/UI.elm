@@ -3,6 +3,7 @@ module UI exposing
     , backdrop
     , boolHtml
     , fBtn
+    , fBtnSA
     , flexV
     , link
     , root
@@ -44,6 +45,14 @@ fBtn fIcon msg =
         , class "flex items-center justify-center pa0 ma0"
         ]
         [ fIcon |> FeatherIcons.toHtml [] ]
+
+
+fBtnSA svgAttrs fIcon msg =
+    button
+        [ onClick msg
+        , class "flex items-center justify-center pa0 ma0"
+        ]
+        [ fIcon |> FeatherIcons.toHtml svgAttrs ]
 
 
 type alias Disabled =

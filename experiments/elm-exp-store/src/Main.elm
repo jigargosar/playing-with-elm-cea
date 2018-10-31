@@ -18,6 +18,7 @@ import MagicMenu exposing (MagicMenu)
 import Mode exposing (Mode)
 import Port
 import Random
+import Svg.Attributes
 import Task
 import TodoStore exposing (Todo, TodoStore)
 import UI exposing (..)
@@ -218,6 +219,10 @@ createTodoViewModel todo =
         NoOp
 
 
+sClass =
+    Svg.Attributes.class
+
+
 viewTodo : TodoViewModel msg -> Html msg
 viewTodo { content, done, startEditingContent, markDone, unmarkDone, startScheduling } =
     div
@@ -227,12 +232,12 @@ viewTodo { content, done, startEditingContent, markDone, unmarkDone, startSchedu
         [ row ""
             []
             [ if done then
-                fBtn FeatherIcons.checkCircle unmarkDone
+                fBtnSA [ sClass "gray" ] FeatherIcons.checkCircle unmarkDone
 
               else
-                fBtn FeatherIcons.circle markDone
+                fBtnSA [ sClass "green" ] FeatherIcons.circle markDone
             , div [ class "flex-grow-1 pointer", onClick startEditingContent ] [ txt content ]
-            , fBtn FeatherIcons.clock startScheduling
+            , fBtnSA [ sClass "orange" ] FeatherIcons.clock startScheduling
             ]
         ]
 
