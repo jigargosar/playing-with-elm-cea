@@ -2,6 +2,7 @@ module ListFilter exposing
     ( Filter(..)
     , Model
     , Msg(..)
+    , getFilteredLists
     , init
     , isSelected
     , matchesSelectedIn
@@ -32,8 +33,8 @@ init now =
     { selected = Active, modifiedAt = now }
 
 
-getFilteredList : Millis -> List TodoStore.Item -> Model -> ( List TodoStore.Item, List TodoStore.Item )
-getFilteredList referenceTime todoList model =
+getFilteredLists : Millis -> List TodoStore.Item -> Model -> ( List TodoStore.Item, List TodoStore.Item )
+getFilteredLists referenceTime todoList model =
     ( List.filter (matchesSelectedIn model) todoList
     , List.filter (matchesSelectedWithReferenceTimeIn model referenceTime) todoList
     )

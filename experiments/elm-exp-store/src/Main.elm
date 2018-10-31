@@ -275,18 +275,13 @@ viewTodoList model =
         todoList =
             Store.items model.todoStore
 
-        primaryList =
-            todoList
-                |> List.filter (ListFilter.matchesSelectedIn model.listFilter)
+        ( primaryList, secondaryList ) =
+            ListFilter.getFilteredLists model.lastTickAt todoList model.listFilter
 
         viewPrimaryListKeyed =
             primaryList
                 |> List.sortBy Store.itemCreatedAt
                 |> List.map (\todo -> ( todo.meta.id, viewTodoItem model todo ))
-
-        secondaryList =
-            todoList
-                |> List.filter (ListFilter.matchesSelectedWithReferenceTimeIn model.listFilter model.lastTickAt)
 
         secondaryListLength =
             List.length secondaryList
