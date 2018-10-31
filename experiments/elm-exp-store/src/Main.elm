@@ -13,10 +13,8 @@ import Html.Events exposing (..)
 import Html.Keyed
 import Json.Decode as D
 import Json.Encode as E
-import ListFilter exposing (Filter)
 import Log
 import MagicMenu exposing (MagicMenu)
-import Mode exposing (Mode)
 import Port
 import Random
 import Store exposing (Id, Item, Store, resetCache)
@@ -34,8 +32,6 @@ import WheelEvent exposing (WheelEvent)
 
 type alias Model =
     { magicMenu : MagicMenu
-    , mode : Mode
-    , listFilter : ListFilter.Model
     }
 
 
@@ -47,13 +43,7 @@ init : Flags -> ( Model, Cmd Msg )
 init flags =
     pure
         { magicMenu = MagicMenu.initial
-        , mode = Mode.init
-        , listFilter = ListFilter.init flags.now
         }
-
-
-isFilterSelected filter =
-    .listFilter >> ListFilter.isSelected filter
 
 
 
@@ -67,12 +57,8 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Line
-    | ListFilterMsg ListFilter.Msg
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg
-    | AddClicked
-    | ModeMsg Mode.Msg
-    | ModeOutMsg Mode.OutMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -94,15 +80,6 @@ update message model =
                     )
             )
 
-        ListFilterMsg msg ->
-            Update2.lift
-                .listFilter
-                (\s b -> { b | listFilter = s })
-                ListFilterMsg
-                ListFilter.update
-                msg
-                model
-
         MagicMenuMsg msg ->
             Update2.lift
                 .magicMenu
@@ -112,33 +89,6 @@ update message model =
                 msg
                 model
 
-        AddClicked ->
-            update (ModeMsg <| Mode.StartAdding) model
-
-        ModeMsg msg ->
-            updateMode msg model
-
-        ModeOutMsg msg ->
-            case msg of
-                _ ->
-                    pure model
-
-
-updateMode : Mode.Msg -> Model -> ( Model, Cmd Msg )
-updateMode =
-    let
-        config : Update3Config Mode Mode.Msg Mode.OutMsg Model Msg
-        config =
-            { get = .mode
-            , set = \s b -> { b | mode = s }
-            , toMsg = ModeMsg
-            , update = Mode.update
-            , toOutMsg = ModeOutMsg
-            , updateOutMsg = update
-            }
-    in
-    update3 config
-
 
 
 ---- Subscriptions
@@ -147,7 +97,6 @@ updateMode =
 subscriptions model =
     Sub.batch
         [ MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
-        , ListFilter.subscriptions model.listFilter |> Sub.map ListFilterMsg
         ]
 
 
@@ -164,41 +113,21 @@ mockActions =
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
         |> (::) (MagicMenu.Action FeatherIcons.trash2 NoOp)
-        |> (::) (MagicMenu.Action FeatherIcons.filePlus AddClicked)
+        |> (::) (MagicMenu.Action FeatherIcons.filePlus NoOp)
 
 
 view : Model -> Html Msg
 view model =
-    let
-        onClickSetFilter =
-            onClick << ListFilterMsg << ListFilter.changeFilterMsg
-
-        filterBtn filter label =
-            button
-                [ onClickSetFilter filter
-                , class "pv2 "
-                ]
-                [ txtA
-                    [ class "bb bw1"
-                    , classList [ ( "b--transparent", isFilterSelected filter model |> not ) ]
-                    ]
-                    label
-                ]
-    in
     UI.root
         [ viewToolbar model
         , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
             [ row ""
                 []
-                [ button [ onClick AddClicked ] [ text "add" ]
-                , filterBtn ListFilter.Future "Future"
-                , filterBtn ListFilter.Active "Active"
-                , filterBtn ListFilter.Completed "Completed"
+                [ button [ onClick NoOp ] [ text "add" ]
                 ]
             ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
-        , Mode.viewModal model |> Html.map ModeMsg
         ]
 
 
