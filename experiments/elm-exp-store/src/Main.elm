@@ -63,6 +63,10 @@ init flags =
         |> andThenUpdate (maybeWarn |> unwrapMaybe NoOp Warn)
 
 
+isFilterSelected filter =
+    .listFilter >> ListFilter.isSelected filter
+
+
 
 ---- UPDATE ----
 
@@ -238,7 +242,7 @@ view model =
                 ]
                 [ txtA
                     [ class "bb bw1"
-                    , classList [ ( "b--transparent", model.listFilter |> ListFilter.isSelected filter |> not ) ]
+                    , classList [ ( "b--transparent", isFilterSelected filter model |> not ) ]
                     ]
                     label
                 ]
