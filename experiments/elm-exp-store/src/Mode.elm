@@ -8,6 +8,7 @@ module Mode exposing
     , viewModal
     )
 
+import BasicsX exposing (onClickTargetId)
 import HotKey
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -110,27 +111,17 @@ modalTodoInputDomId =
     "modal-todo-content-input"
 
 
-targetIdDecoder =
-    D.at [ "target", "id" ] D.string
-
-
-onClickTargetId toMsg =
-    Html.Events.on "click" <| D.map toMsg targetIdDecoder
-
-
 viewEditContentModal todoId content =
     backdrop
         [ id "edit-content-modal-backdrop"
-        , Html.Events.on "click" <|
-            D.andThen
-                (\targetId ->
-                    if targetId == "edit-content-modal-backdrop" then
-                        D.succeed BackdropClicked
+        , onClickTargetId
+            (\targetId ->
+                if targetId == "edit-content-modal-backdrop" then
+                    BackdropClicked
 
-                    else
-                        D.fail "Ignoring Click"
-                )
-                targetIdDecoder
+                else
+                    NoOp
+            )
         ]
         [ div
             [ class "bg-white br4 shadow-1 pa3 measure w-100"

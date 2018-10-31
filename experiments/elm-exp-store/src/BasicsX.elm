@@ -9,6 +9,7 @@ module BasicsX exposing
     , flip
     , ifElse
     , maybeBool
+    , onClickTargetId
     , optionalOr
     , swap
     , ter
@@ -20,6 +21,8 @@ module BasicsX exposing
     , when
     )
 
+import Html exposing (Html)
+import Html.Events
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E exposing (Value)
 import Log
@@ -32,6 +35,20 @@ type alias Mills =
 
 everyXSeconds seconds toMsg =
     Time.every (1000 * seconds) (Time.posixToMillis >> toMsg)
+
+
+type alias DomId =
+    String
+
+
+onClickTargetId : (DomId -> msg) -> Html.Attribute msg
+onClickTargetId toMsg =
+    let
+        targetIdDecoder : Decoder DomId
+        targetIdDecoder =
+            D.at [ "target", "id" ] D.string
+    in
+    Html.Events.on "click" <| D.map toMsg targetIdDecoder
 
 
 ter b t f =
