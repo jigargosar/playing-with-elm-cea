@@ -306,8 +306,8 @@ type alias TodoViewModel msg =
     }
 
 
-todoViewModel : Model -> TodoStore.Item -> TodoViewModel Msg
-todoViewModel model todo =
+createTodoViewModel : Model -> TodoStore.Item -> TodoViewModel Msg
+createTodoViewModel model todo =
     TodoViewModel
         (defaultEmptyStringTo "<empty>" <| Todo.content todo)
         (Todo.isCompleted todo)
@@ -320,7 +320,7 @@ viewTodoItem : Model -> Store.Item TodoAttrs -> Html Msg
 viewTodoItem model todo =
     let
         todoVM =
-            todoViewModel model todo
+            createTodoViewModel model todo
     in
     div
         [ class "pa3 w-100  bb b--light-gray"
