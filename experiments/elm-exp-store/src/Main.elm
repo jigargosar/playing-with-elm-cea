@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import BasicsX exposing (Mills, defaultEmptyStringTo, flip, ter, unpackResult, unwrapMaybe, when)
+import BasicsX exposing (Mills, defaultEmptyStringTo, everyXSeconds, flip, ter, unpackResult, unwrapMaybe, when)
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -206,7 +206,7 @@ updateTodoStore =
 subscriptions model =
     Sub.batch
         [ MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
-        , Time.every (1000 * 10) (Time.posixToMillis >> Tick)
+        , everyXSeconds 10 Tick
         ]
 
 

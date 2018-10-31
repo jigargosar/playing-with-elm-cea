@@ -5,6 +5,7 @@ module BasicsX exposing
     , defaultEmptyStringTo
     , eq0
     , eqs
+    , everyXSeconds
     , flip
     , ifElse
     , maybeBool
@@ -22,10 +23,15 @@ module BasicsX exposing
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E exposing (Value)
 import Log
+import Time
 
 
 type alias Mills =
     Int
+
+
+everyXSeconds seconds toMsg =
+    Time.every (1000 * seconds) (Time.posixToMillis >> toMsg)
 
 
 ter b t f =
