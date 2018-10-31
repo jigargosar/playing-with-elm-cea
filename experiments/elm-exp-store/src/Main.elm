@@ -297,7 +297,7 @@ viewTodoList model =
         ]
 
 
-type alias TodoView msg =
+type alias TodoViewModel msg =
     { content : String
     , isCompleted : Bool
     , editContentMsg : msg
@@ -306,9 +306,9 @@ type alias TodoView msg =
     }
 
 
-todoViewModel : Model -> TodoStore.Item -> TodoView Msg
+todoViewModel : Model -> TodoStore.Item -> TodoViewModel Msg
 todoViewModel model todo =
-    TodoView
+    TodoViewModel
         (defaultEmptyStringTo "<empty>" <| Todo.content todo)
         (Todo.isCompleted todo)
         (EditClicked todo)
