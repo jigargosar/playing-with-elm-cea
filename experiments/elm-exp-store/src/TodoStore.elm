@@ -1,4 +1,4 @@
-module TodoStore exposing (Content, Id, Todo, TodoStore)
+module TodoStore exposing (Content, Id, Todo, TodoStore, load)
 
 import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool)
 import Dict exposing (Dict)
