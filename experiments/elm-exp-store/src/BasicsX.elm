@@ -9,6 +9,7 @@ module BasicsX exposing
     , flip
     , ifElse
     , maybeBool
+    , nowMilli
     , onClickTargetId
     , optionalOr
     , swap
@@ -19,6 +20,7 @@ module BasicsX exposing
     , unwrapDecodeResult
     , unwrapMaybe
     , when
+    , withNowMilli
     )
 
 import Html exposing (Html)
@@ -26,11 +28,22 @@ import Html.Events
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E exposing (Value)
 import Log
+import Task exposing (Task)
 import Time
 
 
 type alias Millis =
     Int
+
+
+nowMilli : Task x Millis
+nowMilli =
+    Task.map Time.posixToMillis Time.now
+
+
+withNowMilli : (Millis -> msg) -> Cmd msg
+withNowMilli toMsg =
+    Task.perform toMsg nowMilli
 
 
 everyXSeconds seconds toMsg =

@@ -1,11 +1,12 @@
 module TodoStore exposing (Content, Id, Todo, TodoStore, load)
 
-import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool)
+import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool, nowMilli, withNowMilli)
 import Dict exposing (Dict)
 import Json.Decode
 import JsonCodec as JC exposing (Codec)
 import JsonCodecX exposing (Value, decodeValue)
 import Log
+import Task
 
 
 type alias Content =
@@ -58,3 +59,26 @@ todoStoreCodec =
 load : Value -> ( Maybe Log.Line, TodoStore )
 load =
     decodeValue todoStoreCodec emptyStore
+
+
+type Msg
+    = NoOp
+    | AddNew Content
+    | AddNewWithNow Content Millis
+
+
+addNew =
+    AddNew
+
+
+update : Msg -> TodoStore -> ( TodoStore, Cmd Msg )
+update message model =
+    case message of
+        NoOp ->
+            ( model, Cmd.none )
+
+        AddNew content ->
+            ( model, withNowMilli <| AddNewWithNow content )
+
+        AddNewWithNow content now ->
+            ( model, Cmd.none )
