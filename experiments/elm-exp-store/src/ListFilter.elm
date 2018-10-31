@@ -22,13 +22,12 @@ type Filter
 
 type alias Model =
     { selected : Filter
-    , modifiedAt : Int
     }
 
 
 init : Int -> Model
 init now =
-    { selected = Active, modifiedAt = now }
+    { selected = Active }
 
 
 getFilteredLists : Millis -> List TodoStore.Item -> Model -> List TodoStore.Item
@@ -63,8 +62,6 @@ isSelected filter =
 type Msg
     = NoOp
     | SwitchFilterTo Filter
-    | SwitchFilterToWithNow Filter Int
-    | UpdateModifiedAtToNow
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -74,12 +71,4 @@ update message model =
             pure model
 
         SwitchFilterTo newFilter ->
-            pure model
-                |> performWithNow (SwitchFilterToWithNow newFilter)
-
-        SwitchFilterToWithNow newFilter now ->
-            pure { model | selected = newFilter, modifiedAt = now }
-
-        UpdateModifiedAtToNow ->
-            pure model
-                |> performWithNow (SwitchFilterToWithNow model.selected)
+            pure { model | selected = newFilter }
