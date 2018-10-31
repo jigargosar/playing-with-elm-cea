@@ -3,7 +3,7 @@ module ListFilter exposing
     , Model
     , Msg
     , changeFilterMsg
-    , getFilteredLists
+    , filter
     , init
     , isSelected
     , update
@@ -22,17 +22,17 @@ type Filter
 
 
 type alias Model =
-    { selected : Filter
+    { filter : Filter
     }
 
 
 init : Int -> Model
 init now =
-    { selected = Active }
+    { filter = Active }
 
 
-getFilteredLists : Millis -> List TodoStore.Item -> Model -> List TodoStore.Item
-getFilteredLists referenceTime todoList { selected } =
+filter : Millis -> List TodoStore.Item -> Model -> List TodoStore.Item
+filter referenceTime todoList { filter } =
     let
         pred todo =
             let
@@ -42,7 +42,7 @@ getFilteredLists referenceTime todoList { selected } =
                 inFuture =
                     Todo.isScheduledAfter referenceTime todo
             in
-            case selected of
+            case filter of
                 Future ->
                     not completed && inFuture
 
@@ -57,7 +57,7 @@ getFilteredLists referenceTime todoList { selected } =
 
 isSelected : Filter -> Model -> Bool
 isSelected filter =
-    .selected >> (==) filter
+    .filter >> (==) filter
 
 
 type Msg
@@ -77,4 +77,4 @@ update message model =
             pure model
 
         SetFilter newFilter ->
-            pure { model | selected = newFilter }
+            pure { model | filter = newFilter }
