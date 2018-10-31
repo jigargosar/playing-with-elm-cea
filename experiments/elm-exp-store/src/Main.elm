@@ -21,7 +21,7 @@ import Random
 import Svg.Attributes
 import Task
 import TodoStore exposing (Todo, TodoStore)
-import UI exposing (..)
+import UI exposing (fBtnSA, row, sClass, txt, txtC)
 import Update2
 import Update3
 import UpdateReturn exposing (Update3Config, andThen, foldlOutMsgList, pure, update3)
