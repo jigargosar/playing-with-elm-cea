@@ -152,8 +152,8 @@ viewEditContentModal todoId content =
         ]
 
 
-viewModal model =
-    case model.mode of
+viewModal mode =
+    case mode of
         EditContentMode id content ->
             viewEditContentModal (Just id) content
 
