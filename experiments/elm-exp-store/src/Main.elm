@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import BasicsX exposing (Mills, defaultEmptyStringTo, everyXSeconds, flip, ter, unpackResult, unwrapMaybe, when)
+import BasicsX exposing (Millis, defaultEmptyStringTo, everyXSeconds, flip, ter, unpackResult, unwrapMaybe, when)
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -44,7 +44,7 @@ type alias Model =
 
 
 type alias Flags =
-    { now : Mills, todos : E.Value }
+    { now : Millis, todos : E.Value }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -78,7 +78,7 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Line
-    | Tick Mills
+    | Tick Millis
     | ListFilterMsg ListFilter.Msg
     | FocusDomId String
     | MagicMenuMsg MagicMenu.Msg

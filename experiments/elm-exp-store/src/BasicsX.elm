@@ -1,6 +1,6 @@
 module BasicsX exposing
     ( Encoder
-    , Mills
+    , Millis
     , applyTo
     , defaultEmptyStringTo
     , eq0
@@ -29,7 +29,7 @@ import Log
 import Time
 
 
-type alias Mills =
+type alias Millis =
     Int
 
 
