@@ -15,6 +15,7 @@ import Json.Decode as D
 import Json.Encode as E
 import Log
 import MagicMenu exposing (MagicMenu)
+import Mode exposing (Mode)
 import Port
 import Random
 import Store exposing (Id, Item, Store, resetCache)
@@ -34,6 +35,7 @@ import WheelEvent exposing (WheelEvent)
 type alias Model =
     { magicMenu : MagicMenu
     , todoStore : TodoStore
+    , mode : Mode
     }
 
 
@@ -50,6 +52,7 @@ init flags =
     pure
         { magicMenu = MagicMenu.initial
         , todoStore = todoStore
+        , mode = Mode.init
         }
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeLogLine)
 
