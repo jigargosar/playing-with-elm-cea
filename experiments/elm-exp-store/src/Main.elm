@@ -66,6 +66,7 @@ type Msg
     = NoOp
     | Warn Log.Line
     | FocusDomId String
+    | TodoStoreMsg TodoStore.Msg
     | MagicMenuMsg MagicMenu.Msg
 
 
@@ -87,6 +88,15 @@ update message model =
                         (\_ -> NoOp)
                     )
             )
+
+        TodoStoreMsg msg ->
+            Update2.lift
+                .todoStore
+                (\s b -> { b | todoStore = s })
+                TodoStoreMsg
+                TodoStore.update
+                msg
+                model
 
         MagicMenuMsg msg ->
             Update2.lift
