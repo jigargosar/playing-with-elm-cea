@@ -272,12 +272,11 @@ modalTodoInputDomId =
 viewTodoList : Model -> Html Msg
 viewTodoList model =
     let
-        primaryList =
+        filteredList =
             ListFilter.getFilteredLists model.lastTickAt (Store.items model.todoStore) model.listFilter
-                |> Tuple.first
 
         viewPrimaryListKeyed =
-            primaryList
+            filteredList
                 |> List.sortBy Store.itemCreatedAt
                 |> List.map (\todo -> ( todo.meta.id, viewTodoItem (createTodoViewModel model todo) ))
     in

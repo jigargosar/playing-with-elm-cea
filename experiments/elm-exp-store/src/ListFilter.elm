@@ -33,11 +33,28 @@ init now =
     { selected = Active, modifiedAt = now }
 
 
-getFilteredLists : Millis -> List TodoStore.Item -> Model -> ( List TodoStore.Item, List TodoStore.Item )
-getFilteredLists referenceTime todoList model =
-    ( List.filter (matchesSelectedIn model) todoList
-    , List.filter (matchesSelectedWithReferenceTimeIn model referenceTime) todoList
-    )
+getFilteredLists : Millis -> List TodoStore.Item -> Model -> List TodoStore.Item
+getFilteredLists referenceTime todoList { selected } =
+    let
+        pred todo =
+            let
+                completed =
+                    Todo.isCompleted todo
+
+                inFuture =
+                    Todo.isScheduledAfter referenceTime todo
+            in
+            case selected of
+                Future ->
+                    not completed && inFuture
+
+                Active ->
+                    not completed && not inFuture
+
+                Completed ->
+                    completed
+    in
+    List.filter pred todoList
 
 
 matchesSelectedIn : Model -> TodoStore.Item -> Bool
