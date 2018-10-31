@@ -151,17 +151,6 @@ update message model =
             update newMsg model
 
 
-overTodoLookup : (Dict String Todo -> Dict String Todo) -> TodoStore -> TodoStore
-overTodoLookup updateFn model =
-    { model | todoLookup = updateFn model.todoLookup }
-
-
-updateTodoAndCache id fn =
-    overTodoLookup (Dict.update id <| Maybe.map fn)
-        >> pure
-        >> andThenUpdate Cache
-
-
 andThenUpdate msg =
     andThen (update msg)
 
