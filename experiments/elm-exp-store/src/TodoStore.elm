@@ -7,7 +7,9 @@ import Json.Decode
 import JsonCodec as JC exposing (Codec)
 import JsonCodecX exposing (Value, decodeValue)
 import Log
+import Port
 import Task
+import UpdateReturn exposing (..)
 
 
 type alias Content =
@@ -65,6 +67,8 @@ type Msg
     | AddNew Content
     | AddNewWithNow Content Millis
     | AddNewWithNowAndId Content Millis Id
+    | UpsertTodoAndCache Todo
+    | Cache
 
 
 addNew =
@@ -75,7 +79,7 @@ update : Msg -> TodoStore -> ( TodoStore, Cmd Msg )
 update message model =
     case message of
         NoOp ->
-            ( model, Cmd.none )
+            pure model
 
         AddNew content ->
             ( model, withNowMilli <| AddNewWithNow content )
@@ -95,4 +99,15 @@ update message model =
                     , completed = False
                     }
             in
-            ( model, Cmd.none )
+            update (UpsertTodoAndCache newTodo) model
+
+        UpsertTodoAndCache todo ->
+            pure { model | todoLookup = Dict.insert todo.id todo model.todoLookup }
+                |> andThenUpdate Cache
+
+        Cache ->
+            ( model, Port.cacheTodoStore (JC.encoder todoStoreCodec model) )
+
+
+andThenUpdate msg =
+    andThen (update msg)

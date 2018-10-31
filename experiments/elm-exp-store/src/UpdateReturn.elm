@@ -1,5 +1,6 @@
 module UpdateReturn exposing
     ( Update3Config
+    , addCmd
     , addCmd3
     , addOutMsg3
     , andThen
