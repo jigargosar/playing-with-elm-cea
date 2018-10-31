@@ -3,7 +3,6 @@ module UI exposing
     , backdrop
     , boolHtml
     , fBtn
-    , fDBtn
     , flexV
     , link
     , root
@@ -39,22 +38,16 @@ spacer =
 
 
 fBtn : FeatherIcons.Icon -> msg -> Html msg
-fBtn icon =
-    fDBtn icon False
+fBtn fIcon msg =
+    button
+        [ onClick msg
+        , class "flex items-center justify-center pa0 ma0"
+        ]
+        [ fIcon |> FeatherIcons.toHtml [] ]
 
 
 type alias Disabled =
     Bool
-
-
-fDBtn : FeatherIcons.Icon -> Disabled -> msg -> Html msg
-fDBtn fIcon disabled_ msg =
-    button
-        [ disabled disabled_
-        , onClick msg
-        , class "flex items-center justify-center pa0 ma0"
-        ]
-        [ fIcon |> FeatherIcons.toHtml [] ]
 
 
 boolHtml bool html_ =

@@ -222,7 +222,7 @@ viewTodo : TodoViewModel msg -> Html msg
 viewTodo { content, done, startEditingContent, markDone, unmarkDone, startScheduling } =
     div
         [ class "pa3 w-100  bb b--light-gray"
-        , classList [ ( "strike", done ) ]
+        , classList [ ( "strike gray ", done ) ]
         ]
         [ row ""
             []
