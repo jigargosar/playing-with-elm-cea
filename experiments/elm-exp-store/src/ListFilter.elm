@@ -9,7 +9,7 @@ module ListFilter exposing
     , update
     )
 
-import BasicsX exposing (Millis)
+import BasicsX exposing (Millis, everyXSeconds)
 import Todo
 import TodoStore
 import UpdateReturn exposing (..)
@@ -22,12 +22,12 @@ type Filter
 
 
 type alias Model =
-    { filter : Filter }
+    { filter : Filter, lastTickedAt : Millis }
 
 
-init : Int -> Model
+init : Millis -> Model
 init now =
-    { filter = Active }
+    { filter = Active, lastTickedAt = now }
 
 
 filterTodoList : Millis -> List TodoStore.Item -> Model -> List TodoStore.Item
@@ -62,6 +62,7 @@ isSelected filter =
 type Msg
     = NoOp
     | SetFilter Filter
+    | SetLastTickedAt Millis
 
 
 changeFilterMsg : Filter -> Msg
@@ -77,3 +78,12 @@ update message model =
 
         SetFilter newFilter ->
             pure { model | filter = newFilter }
+
+        SetLastTickedAt now ->
+            pure { model | lastTickedAt = now }
+
+
+subscriptions model =
+    Sub.batch
+        [ everyXSeconds 10 SetLastTickedAt
+        ]
