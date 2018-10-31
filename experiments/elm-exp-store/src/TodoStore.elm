@@ -2,6 +2,7 @@ module TodoStore exposing (Content, Id, Todo, TodoStore, load)
 
 import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool)
 import Dict exposing (Dict)
+import Json.Decode
 import JsonCodec as JC exposing (Codec)
 import JsonCodecX exposing (Value, decodeValue)
 import Log
@@ -50,9 +51,8 @@ emptyStore =
 
 todoStoreCodec : Codec TodoStore
 todoStoreCodec =
-    TodoStore
-        |> JC.first "todoLookup" (JC.dict todoCodec) .todoLookup
-        |> JC.end
+    JC.dict todoCodec
+        |> JC.map TodoStore .todoLookup
 
 
 load : Value -> ( Maybe Log.Line, TodoStore )
