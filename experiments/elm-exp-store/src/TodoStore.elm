@@ -20,7 +20,7 @@ type alias Todo =
     , deleted : Bool
     , content : Content
     , completed : Bool
-    , scheduledAt : Int
+    , scheduledAt : Millis
     }
 
 
