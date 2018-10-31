@@ -269,15 +269,17 @@ modalTodoInputDomId =
     "modal-todo-content-input"
 
 
+getListsTuple : Model -> ( List TodoStore.Item, Int )
+getListsTuple model =
+    ListFilter.getFilteredLists model.lastTickAt (Store.items model.todoStore) model.listFilter
+        |> Tuple.mapSecond List.length
+
+
 viewTodoList : Model -> Html Msg
 viewTodoList model =
     let
-        todoList =
-            Store.items model.todoStore
-
         ( primaryList, secondaryListLength ) =
-            ListFilter.getFilteredLists model.lastTickAt todoList model.listFilter
-                |> Tuple.mapSecond List.length
+            getListsTuple model
 
         viewPrimaryListKeyed =
             primaryList
