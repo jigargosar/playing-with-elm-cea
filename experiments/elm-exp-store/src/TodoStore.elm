@@ -2,11 +2,9 @@ module TodoStore exposing (Content, Id, Todo, TodoStore, load)
 
 import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool)
 import Dict exposing (Dict)
-import Json.Encode exposing (Value)
 import JsonCodec as JC exposing (Codec)
-import JsonCodecX exposing (decodeValue)
+import JsonCodecX exposing (Value, decodeValue)
 import Log
-import Port
 
 
 type alias Content =

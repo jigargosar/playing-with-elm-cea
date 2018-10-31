@@ -1,9 +1,13 @@
-module JsonCodecX exposing (decodeValue)
+module JsonCodecX exposing (Value, decodeValue)
 
 import Json.Decode as D exposing (errorToString)
-import Json.Encode as E exposing (Value)
+import Json.Encode as E
 import JsonCodec as JC exposing (Codec)
 import Log
+
+
+type alias Value =
+    E.Value
 
 
 decodeValue : Codec a -> a -> Value -> ( Maybe Log.Line, a )
