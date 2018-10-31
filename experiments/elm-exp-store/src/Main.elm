@@ -319,24 +319,24 @@ todoViewModel model todo =
 viewTodoItem : Model -> Store.Item TodoAttrs -> Html Msg
 viewTodoItem model todo =
     let
-        vm =
+        todoVM =
             todoViewModel model todo
     in
     div
         [ class "pa3 w-100  bb b--light-gray"
-        , classList [ ( "strike", vm.isCompleted ) ]
+        , classList [ ( "strike", todoVM.isCompleted ) ]
         ]
         [ row ""
             []
-            [ if vm.isCompleted then
-                fBtn FeatherIcons.checkCircle <| vm.updateMsg Todo.UnmarkCompleted
+            [ if todoVM.isCompleted then
+                fBtn FeatherIcons.checkCircle <| todoVM.updateMsg Todo.UnmarkCompleted
 
               else
-                fBtn FeatherIcons.circle <| vm.updateMsg Todo.MarkCompleted
-            , div [ class "flex-grow-1 pointer", onClick vm.editContentMsg ] [ txt vm.content ]
+                fBtn FeatherIcons.circle <| todoVM.updateMsg Todo.MarkCompleted
+            , div [ class "flex-grow-1 pointer", onClick todoVM.editContentMsg ] [ txt todoVM.content ]
             , boolHtml
-                (not vm.isCompleted)
-                (fBtn FeatherIcons.clock <| vm.updateMsg <| Todo.SetScheduledAt (vm.now + 1000 * 60))
+                (not todoVM.isCompleted)
+                (fBtn FeatherIcons.clock <| todoVM.updateMsg <| Todo.SetScheduledAt (todoVM.now + 1000 * 60))
             ]
         ]
 
