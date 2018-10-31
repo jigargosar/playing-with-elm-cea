@@ -1,5 +1,6 @@
 module BasicsX exposing
     ( Encoder
+    , Mills
     , applyTo
     , defaultEmptyStringTo
     , eq0
@@ -21,6 +22,10 @@ module BasicsX exposing
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E exposing (Value)
 import Log
+
+
+type alias Mills =
+    Int
 
 
 ter b t f =

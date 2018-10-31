@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import BasicsX exposing (defaultEmptyStringTo, flip, ter, unpackResult, unwrapMaybe, when)
+import BasicsX exposing (Mills, defaultEmptyStringTo, flip, ter, unpackResult, unwrapMaybe, when)
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -42,10 +42,6 @@ type alias Model =
     , mode : Mode
     , listFilter : ListFilter.Model
     }
-
-
-type alias Mills =
-    Int
 
 
 type alias Flags =
