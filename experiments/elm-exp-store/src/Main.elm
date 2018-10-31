@@ -269,31 +269,20 @@ modalTodoInputDomId =
     "modal-todo-content-input"
 
 
-getListsTuple : Model -> ( List TodoStore.Item, Int )
-getListsTuple model =
-    ListFilter.getFilteredLists model.lastTickAt (Store.items model.todoStore) model.listFilter
-        |> Tuple.mapSecond List.length
-
-
 viewTodoList : Model -> Html Msg
 viewTodoList model =
     let
-        ( primaryList, secondaryListLength ) =
-            getListsTuple model
+        primaryList =
+            ListFilter.getFilteredLists model.lastTickAt (Store.items model.todoStore) model.listFilter
+                |> Tuple.first
 
         viewPrimaryListKeyed =
             primaryList
                 |> List.sortBy Store.itemCreatedAt
                 |> List.map (\todo -> ( todo.meta.id, viewTodoItem (createTodoViewModel model todo) ))
-
-        viewMore =
-            row "justify-center pointer"
-                [ onClick <| ListFilterMsg ListFilter.UpdateModifiedAtToNow ]
-                [ txt "more", txt <| String.fromInt secondaryListLength ]
     in
     div [ class "w-100 measure-wide" ]
-        [ boolHtml (secondaryListLength > 0) viewMore
-        , Html.Keyed.node "div" [] viewPrimaryListKeyed
+        [ Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
 
 
