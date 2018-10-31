@@ -6,6 +6,7 @@ module ListFilter exposing
     , filterTodoList
     , init
     , isSelected
+    , subscriptions
     , update
     )
 

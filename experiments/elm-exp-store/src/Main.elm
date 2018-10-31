@@ -213,7 +213,7 @@ updateTodoStore =
 subscriptions model =
     Sub.batch
         [ MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
-        , everyXSeconds 10 Tick
+        , ListFilter.subscriptions model.listFilter |> Sub.map ListFilterMsg
         ]
 
 
