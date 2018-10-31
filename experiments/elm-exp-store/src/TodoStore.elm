@@ -11,7 +11,7 @@ module TodoStore exposing
     , update
     )
 
-import BasicsX exposing (Encoder, Millis, applyTo, flip, maybeBool, nowMilli, withNowMilli)
+import BasicsX exposing (..)
 import Dict exposing (Dict)
 import IdX exposing (withNewId)
 import Json.Decode
@@ -81,6 +81,7 @@ type Msg
     | UpsertTodoAndCache Todo
     | Cache
     | UpdateTodo TodoId TodoMsg
+    | UpdateTodoWithNow TodoId TodoMsg Millis
 
 
 type TodoMsg
@@ -129,9 +130,25 @@ update message model =
             ( model, Port.cacheTodoStore (JC.encoder todoStoreCodec model) )
 
         UpdateTodo id msg ->
-            case msg of
-                SetContent content ->
-                    updateTodoAndCache id (\todo -> { todo | content = content }) model
+            ( model, withNowMilli <| UpdateTodoWithNow id msg )
+
+        UpdateTodoWithNow id msg now ->
+            let
+                foo todo =
+                    let
+                        updatedTodo =
+                            case msg of
+                                SetContent content ->
+                                    { todo | content = content }
+                    in
+                    maybeBool (updatedTodo /= todo) { updatedTodo | modifiedAt = now }
+
+                newMsg =
+                    Dict.get id model.todoLookup
+                        |> Maybe.andThen foo
+                        |> unwrapMaybe NoOp UpsertTodoAndCache
+            in
+            update newMsg model
 
 
 overTodoLookup : (Dict String Todo -> Dict String Todo) -> TodoStore -> TodoStore
