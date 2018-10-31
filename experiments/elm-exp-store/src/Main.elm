@@ -273,12 +273,14 @@ viewTodoList : Model -> Html Msg
 viewTodoList model =
     let
         todoList =
-            model.todoStore
-                |> Store.items
+            Store.items model.todoStore
 
-        viewPrimaryListKeyed =
+        primaryList =
             todoList
                 |> List.filter (ListFilter.matchesSelectedIn model.listFilter)
+
+        viewPrimaryListKeyed =
+            primaryList
                 |> List.sortBy Store.itemCreatedAt
                 |> List.map (\todo -> ( todo.meta.id, viewTodoItem model todo ))
 
