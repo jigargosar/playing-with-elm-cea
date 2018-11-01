@@ -43,10 +43,10 @@ type Msg
     = NoOp
     | BackdropClicked
     | Warn Log.Line
-    | StartEditing Todo
+    | StartEditingTodo Todo
     | StartAddingTodo
     | StartAddingContext
-    | ContentChangedInView TodoContent
+    | TextInputChanged TodoContent
     | EndEditMode
     | FocusDomId DomId
 
@@ -60,7 +60,7 @@ startAddingContext =
 
 
 startEditing =
-    StartEditing
+    StartEditingTodo
 
 
 type OutMsg
@@ -90,7 +90,7 @@ update message model =
         BackdropClicked ->
             update EndEditMode model
 
-        StartEditing todo ->
+        StartEditingTodo todo ->
             case model of
                 EditTodoMode id _ ->
                     pure3 model
@@ -138,21 +138,22 @@ update message model =
                         |> pure3
                         |> andThenUpdate (FocusDomId modalContextInputDomId)
 
-        ContentChangedInView newContent ->
+        TextInputChanged newValue ->
             case model of
                 EditTodoMode id _ ->
-                    EditTodoMode id newContent
+                    EditTodoMode id newValue
                         |> pure3
-                        |> addOutMsg3 (TodoContentUpdatedOutMsg id newContent)
+                        |> addOutMsg3 (TodoContentUpdatedOutMsg id newValue)
 
                 AddTodoMode _ ->
-                    pure3 <| AddTodoMode newContent
+                    pure3 <| AddTodoMode newValue
 
                 AddContextMode _ ->
-                    pure3 <| AddContextMode newContent
+                    pure3 <| AddContextMode newValue
 
                 Default ->
-                    Debug.todo "Handle this Case"
+                    pure3 model
+                        |> andThenUpdate (Warn [ "Invalid Msg TextInputChanged received in Default Mode" ])
 
         EndEditMode ->
             case model of
@@ -199,7 +200,7 @@ viewEditContentModal content =
                     [ id modalTodoInputDomId
                     , class "flex-auto pa3"
                     , value content
-                    , onInput ContentChangedInView
+                    , onInput TextInputChanged
                     , HotKey.onKeyDown
                         (\ke ->
                             case ke of
