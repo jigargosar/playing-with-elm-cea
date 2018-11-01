@@ -99,15 +99,19 @@ update message model =
 
         AutoFocus ->
             case model of
-                EditTodoMode id _ ->
-                    pure3 model
-                        |> andThenUpdate (FocusDomId modalTodoInputDomId)
-
                 AddTodoMode content ->
                     pure3 model
                         |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
                 AddContextMode name ->
+                    pure3 model
+                        |> andThenUpdate (FocusDomId modalContextInputDomId)
+
+                EditTodoMode id _ ->
+                    pure3 model
+                        |> andThenUpdate (FocusDomId modalTodoInputDomId)
+
+                EditContextMode id _ ->
                     pure3 model
                         |> andThenUpdate (FocusDomId modalContextInputDomId)
 
