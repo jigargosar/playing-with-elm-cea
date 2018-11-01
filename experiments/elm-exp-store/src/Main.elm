@@ -22,6 +22,7 @@ import Port
 import Process
 import Random
 import Set exposing (Set)
+import SnackBar exposing (SnackBar, SnackBarTitle)
 import Svg.Attributes
 import Task
 import Time
@@ -29,16 +30,12 @@ import TodoStore exposing (Todo, TodoStore)
 import UI exposing (fBtnSA, row, sClass, txt, txtA, txtC)
 import Update2
 import Update3
-import UpdateReturn exposing (Update3Config, andThen, foldlOutMsgList, pure, update3)
+import UpdateReturn exposing (..)
 import WheelEvent exposing (WheelEvent)
 
 
 
 ---- MODEL ----
-
-
-type alias SnackBar =
-    { message : String, maybeProcessId : Maybe Process.Id }
 
 
 type Page
@@ -53,7 +50,7 @@ type TodoFilter
 
 type alias Model =
     { magicMenu : MagicMenu
-    , snackbar : SnackBar
+    , snackBar : SnackBar
     , todoStore : TodoStore
     , contextStore : ContextStore
     , todoFilters : Set TodoFilter
@@ -77,7 +74,7 @@ init flags =
     in
     pure
         { magicMenu = MagicMenu.initial
-        , snackbar = SnackBar "" Nothing
+        , snackBar = SnackBar "" Nothing
         , todoStore = todoStore
         , contextStore = contextStore
         , todoFilters = Set.empty
@@ -130,6 +127,7 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Line
+    | SnackBarMsg SnackBar.Msg
     | SetPage Page
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
@@ -146,6 +144,15 @@ update message model =
 
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
+
+        SnackBarMsg msg ->
+            Update2.lift
+                .snackBar
+                (\s b -> { b | snackBar = s })
+                SnackBarMsg
+                SnackBar.update
+                msg
+                model
 
         SetPage page ->
             pure { model | page = page }
