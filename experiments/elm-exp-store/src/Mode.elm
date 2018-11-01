@@ -50,6 +50,7 @@ type Msg
     | TextInputChanged TodoContent
     | EndEditMode
     | FocusDomId DomId
+    | AutoFocus
 
 
 startAddingTodo =
@@ -87,6 +88,23 @@ update message model =
         FocusDomId domId ->
             pure3 model
                 |> addCmd3 (attemptDomIdFocus domId NoOp Warn)
+
+        AutoFocus ->
+            case model of
+                EditTodoMode id _ ->
+                    pure3 model
+                        |> andThenUpdate (FocusDomId modalTodoInputDomId)
+
+                AddTodoMode content ->
+                    pure3 model
+                        |> andThenUpdate (FocusDomId modalTodoInputDomId)
+
+                AddContextMode name ->
+                    pure3 model
+                        |> andThenUpdate (FocusDomId modalContextInputDomId)
+
+                Default ->
+                    pure3 model
 
         BackdropClicked ->
             update EndEditMode model
