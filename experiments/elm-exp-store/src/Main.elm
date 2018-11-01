@@ -74,7 +74,7 @@ init flags =
     in
     pure
         { magicMenu = MagicMenu.initial
-        , snackBar = SnackBar "" Nothing
+        , snackBar = SnackBar.empty
         , todoStore = todoStore
         , contextStore = contextStore
         , todoFilters = Set.empty
