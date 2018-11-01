@@ -2,15 +2,17 @@ const inquirer = require('inquirer')
 const ora = require('ora')
 const got = require('got')
 const TeenProcess = require('teen_process')
+const pEachSeries = require('p-each-series')
+const pSettle = require('p-settle')
 
 async function elmInstall(packageName) {
   let teen = new TeenProcess.SubProcess('elm', ['install', packageName])
-  teen.on('stream-line', console.log)
+  // teen.on('stream-line', console.log)
   // console.log('teen',teen)
   await teen.start(0)
   // teen.proc.stdin.write(' ')
   teen.proc.stdin.write('\n')
-  await proc.join()
+  await pSettle(teen.join())
   // if (teen.isRunning()) {
   // await teen.stop()
   // }
@@ -60,8 +62,11 @@ const boot = async () => {
     },
   ])
   console.log('answers', answers)
+
   if (answers.installConfirmed) {
-    await Promise.all(answers.elmPackages.map(elmInstall))
+    const result = await pEachSeries(answers.elmPackages, elmInstall)
+    console.log('result', result)
+    // await Promise.all(answers.elmPackages.map(elmInstall))
   }
 }
 
