@@ -218,7 +218,7 @@ createTodoViewModel todo =
 
 
 viewTodo : TodoViewModel msg -> Html msg
-viewTodo { content, done, startEditingContent, markDone, unmarkDone} =
+viewTodo { content, done, startEditingContent, markDone, unmarkDone } =
     div
         [ class "pa3 w-100  bb b--light-gray"
         , classList [ ( "strike gray ", done ) ]
