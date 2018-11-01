@@ -1,17 +1,19 @@
+const { nAry } = require('ramda')
+
 const inquirer = require('inquirer')
 const ora = require('ora')
 const got = require('got')
-const TeenProcess = require('teen_process')
+const { SubProcess } = require('teen_process')
 const pEachSeries = require('p-each-series')
+const pSeries = require('p-series')
 
 async function elmInstall(packageName) {
-  let teen = new TeenProcess.SubProcess('elm', ['install', packageName])
-  teen.on('stream-line', console.log)
-  // console.log('teen',teen)
-  await teen.start(0)
-  // teen.proc.stdin.write(' ')
-  teen.proc.stdin.write('\n')
-  await teen.join()
+  let subProcess = new SubProcess('elm', ['install', packageName])
+  subProcess.on('stream-line', console.log)
+  await subProcess.start(0)
+  subProcess.proc.stdin.write('\n')
+  await subProcess.join()
+  return packageName
 }
 
 inquirer.registerPrompt('search-checkbox', require('inquirer-search-checkbox'))
@@ -55,7 +57,7 @@ const boot = async () => {
   console.log('answers', answers)
 
   if (answers.installConfirmed) {
-    const result = await pEachSeries(answers.elmPackages, elmInstall)
+    const result = await pSeries(answers.elmPackages.map(nAry(2, elmInstall)))
     console.log('Successfully Installed', result)
     // await Promise.all(answers.elmPackages.map(elmInstall))
   }
