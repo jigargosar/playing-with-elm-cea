@@ -291,8 +291,7 @@ viewContextList model =
 
         viewPrimaryListKeyed =
             getCurrentContextList model
-                |> List.map
-                    (createContextViewModel >> viewContext)
+                |> List.map (createContextViewModel >> viewContext)
                 |> (::) (viewContext inboxViewModel)
     in
     div [ class "w-100 measure-wide" ]
