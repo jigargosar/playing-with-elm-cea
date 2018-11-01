@@ -20,6 +20,7 @@ import MagicMenu exposing (MagicMenu)
 import Mode exposing (Mode)
 import Port
 import Random
+import Set exposing (Set)
 import Svg.Attributes
 import Task
 import TodoStore exposing (Todo, TodoStore)
@@ -43,7 +44,7 @@ type alias Model =
     { magicMenu : MagicMenu
     , todoStore : TodoStore
     , contextStore : ContextStore
-    , todoFilters : List TodoFilter
+    , todoFilters : Set TodoFilter
     , mode : Mode
     }
 
@@ -65,7 +66,7 @@ init flags =
         { magicMenu = MagicMenu.initial
         , todoStore = todoStore
         , contextStore = contextStore
-        , todoFilters = []
+        , todoFilters = Set.empty
         , mode = Mode.init
         }
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeTodoStoreLogLine)
