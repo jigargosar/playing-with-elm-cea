@@ -10,6 +10,7 @@ module Mode exposing
     )
 
 import BasicsX exposing (..)
+import ContextStore exposing (ContextName)
 import HotKey
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -24,8 +25,9 @@ import UpdateReturn exposing (..)
 
 type Mode
     = Default
-    | EditContentMode TodoId TodoContent
-    | AddContentMode TodoContent
+    | EditTodoMode TodoId TodoContent
+    | AddTodoMode TodoContent
+    | AddContextMode ContextName
 
 
 type alias Model =
@@ -42,14 +44,14 @@ type Msg
     | BackdropClicked
     | Warn Log.Line
     | StartEditing Todo
-    | StartAdding
+    | StartAddingTodo
     | ContentChangedInView TodoContent
     | EndEditMode
     | FocusDomId DomId
 
 
 startAdding =
-    StartAdding
+    StartAddingTodo
 
 
 startEditing =
@@ -83,34 +85,37 @@ update message model =
             update EndEditMode model
 
         StartEditing todo ->
-            EditContentMode todo.id todo.content
+            EditTodoMode todo.id todo.content
                 |> pure3
                 |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
-        StartAdding ->
-            AddContentMode ""
+        StartAddingTodo ->
+            AddTodoMode ""
                 |> pure3
                 |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
         ContentChangedInView newContent ->
             case model of
-                EditContentMode id _ ->
-                    EditContentMode id newContent
+                EditTodoMode id _ ->
+                    EditTodoMode id newContent
                         |> pure3
                         |> addOutMsg3 (TodoContentUpdatedOutMsg id newContent)
 
-                AddContentMode _ ->
-                    pure3 <| AddContentMode newContent
+                AddTodoMode _ ->
+                    pure3 <| AddTodoMode newContent
+
+                AddContextMode _ ->
+                    pure3 <| AddContextMode newContent
 
                 Default ->
                     Debug.todo "Handle this Case"
 
         EndEditMode ->
             case model of
-                EditContentMode id _ ->
+                EditTodoMode id _ ->
                     pure3 Default
 
-                AddContentMode content ->
+                AddTodoMode content ->
                     pure3 Default
                         |> addOutMsg3 (AddTodoWithContentOutMsg content)
 
@@ -122,7 +127,7 @@ modalTodoInputDomId =
     "modal-todo-content-input"
 
 
-viewEditContentModal todoId content =
+viewEditContentModal content =
     backdrop
         [ id "edit-content-modal-backdrop"
         , onClickTargetId
@@ -164,11 +169,14 @@ viewEditContentModal todoId content =
 
 viewModal mode =
     case mode of
-        EditContentMode id content ->
-            viewEditContentModal (Just id) content
+        EditTodoMode id content ->
+            viewEditContentModal content
 
-        AddContentMode content ->
-            viewEditContentModal Nothing content
+        AddTodoMode content ->
+            viewEditContentModal content
+
+        AddContextMode name ->
+            viewEditContentModal name
 
         Default ->
             text ""
