@@ -82,7 +82,7 @@ view model =
         []
         [ row "bg-black white pa3"
             []
-            [ txtA "Welcome to SnackBar"
+            [ txt "Welcome to SnackBar"
             , button [] [ text "close" ]
             ]
         ]
