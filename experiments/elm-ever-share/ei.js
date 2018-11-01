@@ -33,43 +33,45 @@ async function fetchElmSearchJSON() {
   }
 }
 
-const boot = async () => {
-  const searchJSON = await fetchElmSearchJSON()
-  const answers = await inquirer.prompt([
-    {
-      type: 'search-checkbox',
-      message: 'Select Elm Packages to Install',
-      name: 'elmPackages',
-      choices: searchJSON,
-      validate: function(answer) {
-        if (answer.length < 1) {
-          return 'You must choose at least one topping.'
-        }
-        return true
-      },
-    },
-    {
-      type: 'confirm',
-      message: 'Proceed with install',
-      name: 'installConfirmed',
-    },
-  ])
-  console.log('answers', answers)
+async function installPackages(elmPackages) {
+  const result = await pSeries(
+    elmPackages.map(packageName => () => elmInstall(packageName)),
+  )
+  console.log('Successfully Installed', result)
+}
 
-  if (answers.installConfirmed) {
-    const result = await pSeries(
-      answers.elmPackages.map(packageName => () => elmInstall(packageName)),
-    )
-    console.log('Successfully Installed', result)
-    // await Promise.all(answers.elmPackages.map(elmInstall))
+const boot = async packageNames => {
+  console.log(packageNames)
+  if (isEmpty(packageNames)) {
+    const searchJSON = await fetchElmSearchJSON()
+    const answers = await inquirer.prompt([
+      {
+        type: 'search-checkbox',
+        message: 'Select Elm Packages to Install',
+        name: 'elmPackages',
+        choices: searchJSON,
+        validate: function(answer) {
+          if (answer.length < 1) {
+            return 'You must choose at least one topping.'
+          }
+          return true
+        },
+      },
+      {
+        type: 'confirm',
+        message: 'Proceed with install',
+        name: 'installConfirmed',
+      },
+    ])
+    console.log('answers', answers)
+
+    if (answers.installConfirmed) {
+      await installPackages(answers.elmPackages)
+      // await Promise.all(answers.elmPackages.map(elmInstall))
+    }
+  } else {
+    await installPackages(packageNames)
   }
 }
 
-// boot().catch(console.error)
-
-program.version('0.1.0').action(function(packages) {
-  const pl = Array.from(packages)
-  console.log('ei', pl)
-})
-
-program.parse(process.argv)
+boot(process.argv.slice(2)).catch(console.error)
