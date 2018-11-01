@@ -60,27 +60,30 @@ function findPackageWithExposedModule(moduleName, elmJSONResults) {
 }
 
 async function findPackagesWithModule(searchJson, moduleName) {
-  const fuse = new Fuse(searchJson, {
-    shouldSort: true,
-    tokenize: true,
-    matchAllTokens: true,
-    includeScore: true,
-    // threshold: 0.6,
+  const fuse = new Fuse(
+    searchJson.map(mi => R.assoc('repoName')(mi.name.split('/')[1])(mi)),
+    {
+      shouldSort: true,
+      tokenize: true,
+      matchAllTokens: true,
+      includeScore: true,
+      // threshold: 0.6,
 
-    location: 0,
-    // distance: 100,
-    // maxPatternLength: 32,
-    // minMatchCharLength: 2,
-    keys: [
-      'name',
-      // 'summary',
-    ],
-  })
+      location: 0,
+      // distance: 100,
+      // maxPatternLength: 32,
+      // minMatchCharLength: 2,
+      keys: [
+        'repoName',
+        // 'summary',
+      ],
+    },
+  )
 
   // const pattern = decamelize(moduleName, '-')
   // console.log(pattern)
   const searchResults = R.take(3)(fuse.search(moduleName))
-  // console.log(searchResults)
+  console.log(searchResults)
 
   const elmJSONResults = await pMap(
     searchResults,
