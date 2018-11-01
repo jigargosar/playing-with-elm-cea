@@ -204,7 +204,6 @@ type alias TodoViewModel msg =
     , startEditingContent : msg
     , markDone : msg
     , unmarkDone : msg
-    , startScheduling : msg
     }
 
 
@@ -216,11 +215,10 @@ createTodoViewModel todo =
         (ModeMsg <| Mode.startEditing todo)
         (TodoStoreMsg <| TodoStore.markDone todo.id)
         (TodoStoreMsg <| TodoStore.unmarkDone todo.id)
-        NoOp
 
 
 viewTodo : TodoViewModel msg -> Html msg
-viewTodo { content, done, startEditingContent, markDone, unmarkDone, startScheduling } =
+viewTodo { content, done, startEditingContent, markDone, unmarkDone} =
     div
         [ class "pa3 w-100  bb b--light-gray"
         , classList [ ( "strike gray ", done ) ]
@@ -233,7 +231,6 @@ viewTodo { content, done, startEditingContent, markDone, unmarkDone, startSchedu
               else
                 fBtnSA [ sClass "gray" ] FeatherIcons.circle markDone
             , div [ class "flex-grow-1 pointer", onClick startEditingContent ] [ txt content ]
-            , fBtnSA [ sClass "orange" ] FeatherIcons.clock startScheduling
             ]
         ]
 
