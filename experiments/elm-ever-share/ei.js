@@ -4,7 +4,7 @@ const inquirer = require('inquirer')
 const ora = require('ora')
 const got = require('got')
 const { SubProcess } = require('teen_process')
-const pEachSeries = require('p-each-series')
+// const pEachSeries = require('p-each-series')
 const pSeries = require('p-series')
 
 async function elmInstall(packageName) {
