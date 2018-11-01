@@ -291,8 +291,9 @@ viewContextList model =
 
         viewPrimaryListKeyed =
             getCurrentContextList model
-                |> List.map (\context -> ( context.id, viewContext <| createContextViewModel context ))
-                |> (::) ( "", viewContext inboxViewModel )
+                |> List.map
+                    (createContextViewModel >> viewContext)
+                |> (::) (viewContext inboxViewModel)
     in
     div [ class "w-100 measure-wide" ]
         [ Html.Keyed.node "div" [] viewPrimaryListKeyed
@@ -329,9 +330,10 @@ viewInbox =
         ]
 
 
-viewContext : ContextViewModel msg -> Html msg
-viewContext { name, startEditingName, isNameEditable } =
-    div
+viewContext : ContextViewModel msg -> ( String, Html msg )
+viewContext { key, name, startEditingName, isNameEditable } =
+    ( key
+    , div
         [ class "pa3 w-100  bb b--light-gray"
         ]
         [ row ""
@@ -345,6 +347,7 @@ viewContext { name, startEditingName, isNameEditable } =
                 ("@" ++ name)
             ]
         ]
+    )
 
 
 viewTodoList : Model -> Html Msg
