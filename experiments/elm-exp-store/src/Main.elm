@@ -185,7 +185,11 @@ update message model =
                     update (TodoStoreMsg <| TodoStore.setContent id newContent) model
 
                 Mode.AddTodoOutMsg content ->
-                    update (TodoStoreMsg <| TodoStore.addNew content) model
+                    if isWhitespaceOrEmptyString content then
+                        pure model
+
+                    else
+                        update (TodoStoreMsg <| TodoStore.addNew content) model
 
                 Mode.AddContextOutMsg name ->
                     if isWhitespaceOrEmptyString name then
