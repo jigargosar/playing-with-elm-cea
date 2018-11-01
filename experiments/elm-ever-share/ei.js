@@ -6,6 +6,7 @@ const { SubProcess } = require('teen_process')
 const pSeries = require('p-series')
 
 async function elmInstall(packageName) {
+  console.log('Installing ', packageName)
   let subProcess = new SubProcess('elm', ['install', packageName])
   subProcess.on('stream-line', console.log)
   await subProcess.start(0)
@@ -39,7 +40,6 @@ async function installPackages(elmPackages) {
 }
 
 const boot = async packageNames => {
-  console.log(packageNames)
   if (isEmpty(packageNames)) {
     const searchJSON = await fetchElmSearchJSON()
     const answers = await inquirer.prompt([
