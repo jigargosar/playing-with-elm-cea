@@ -42,7 +42,8 @@
     "p-settle": "^2.1.0",
     "prettier": "^1.14.3",
     "shelljs": "^0.8.2",
-    "teen_process": "^1.14.0"
+    "teen_process": "^1.14.0",
+    "commander": "latest"
   },
   "prettier": {
     "trailingComma": "all",

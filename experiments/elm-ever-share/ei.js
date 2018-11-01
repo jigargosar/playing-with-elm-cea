@@ -1,5 +1,5 @@
 const { nAry } = require('ramda')
-
+const program = require('commander')
 const inquirer = require('inquirer')
 const ora = require('ora')
 const got = require('got')
@@ -65,4 +65,11 @@ const boot = async () => {
   }
 }
 
-boot().catch(console.error)
+// boot().catch(console.error)
+
+program.version('0.1.0').action(function(packages) {
+  const pl = Array.from(packages)
+  console.log('ei', pl)
+})
+
+program.parse(process.argv)
