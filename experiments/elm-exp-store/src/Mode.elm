@@ -194,7 +194,7 @@ update message model =
                         |> addOutMsg3 (AddContextOutMsg name)
 
                 _ ->
-                    pure3 model
+                    pure3 Default
 
 
 modalTodoInputDomId =
