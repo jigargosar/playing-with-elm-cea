@@ -254,10 +254,23 @@ viewContextList model =
     let
         viewPrimaryListKeyed =
             getCurrentContextList model
-                |> List.map (\context -> ( context.id, viewContext (createContextViewModel context) ))
+                |> List.map (\context -> ( context.id, viewContext context ))
     in
     div [ class "w-100 measure-wide" ]
         [ Html.Keyed.node "div" [] viewPrimaryListKeyed
+        ]
+
+
+viewContext : Context -> Html msg
+viewContext context =
+    div
+        [ class "pa3 w-100  bb b--light-gray"
+        ]
+        [ row ""
+            []
+            [ txtA [ style "width" "24px" ] ""
+            , txtA [ class "" ] context.name
+            ]
         ]
 
 
