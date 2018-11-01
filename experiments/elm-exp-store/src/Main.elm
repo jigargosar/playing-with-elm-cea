@@ -188,7 +188,11 @@ update message model =
                     update (TodoStoreMsg <| TodoStore.addNew content) model
 
                 Mode.AddContextOutMsg name ->
-                    update (ContextStoreMsg <| ContextStore.addNew name) model
+                    if String.trim name |> String.isEmpty then
+                        pure model
+
+                    else
+                        update (ContextStoreMsg <| ContextStore.addNew name) model
 
         MagicMenuMsg msg ->
             Update2.lift
