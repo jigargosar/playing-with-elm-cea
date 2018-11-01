@@ -122,6 +122,7 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Line
+    | SetPage Page
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
     | MagicMenuMsg MagicMenu.Msg
@@ -137,6 +138,9 @@ update message model =
 
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
+
+        SetPage page ->
+            pure { model | page = page }
 
         TodoStoreMsg msg ->
             Update2.lift
@@ -231,8 +235,8 @@ view model =
             [ row ""
                 []
                 [ button [ onClick startAddingMsg ] [ text "Add Task" ]
-                , button [ onClick NoOp ] [ text "Tasks" ]
-                , button [ onClick NoOp ] [ text "Contexts" ]
+                , button [ onClick <| SetPage TodoList ] [ text "Tasks" ]
+                , button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
                 ]
             , viewPage model
             ]
