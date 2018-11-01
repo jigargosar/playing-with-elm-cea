@@ -4,7 +4,7 @@ import BasicsX exposing (..)
 import Browser
 import Browser.Dom
 import Browser.Events
-import ContextStore exposing (ContextId, ContextStore)
+import ContextStore exposing (Context, ContextId, ContextStore)
 import Dict
 import FeatherIcons
 import HotKey
@@ -35,6 +35,11 @@ import WheelEvent exposing (WheelEvent)
 ---- MODEL ----
 
 
+type Page
+    = TodoList
+    | ContextList
+
+
 type TodoFilter
     = DoneFilter Bool
     | ContextIdFilter ContextId
@@ -46,6 +51,7 @@ type alias Model =
     , contextStore : ContextStore
     , todoFilters : Set TodoFilter
     , mode : Mode
+    , page : Page
     }
 
 
@@ -68,6 +74,7 @@ init flags =
         , contextStore = contextStore
         , todoFilters = Set.empty
         , mode = Mode.init
+        , page = TodoList
         }
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeTodoStoreLogLine)
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeContextStoreLogLine)
@@ -94,6 +101,13 @@ getCurrentTodoList model =
     model.todoStore
         |> TodoStore.list
         |> List.filter (matchesFilters model.todoFilters)
+        |> List.sortBy .createdAt
+
+
+getCurrentContextList : Model -> List Context
+getCurrentContextList model =
+    model.contextStore
+        |> ContextStore.list
         |> List.sortBy .createdAt
 
 
@@ -218,11 +232,32 @@ view model =
                 []
                 [ button [ onClick startAddingMsg ] [ text "add" ]
                 ]
-            , viewTodoList model
+            , viewPage model
             ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         , Mode.viewModal model.mode |> Html.map ModeMsg
+        ]
+
+
+viewPage model =
+    case model.page of
+        TodoList ->
+            viewTodoList model
+
+        ContextList ->
+            viewContextList model
+
+
+viewContextList : Model -> Html Msg
+viewContextList model =
+    let
+        viewPrimaryListKeyed =
+            getCurrentContextList model
+                |> List.map (\context -> ( context.id, viewContext (createContextViewModel context) ))
+    in
+    div [ class "w-100 measure-wide" ]
+        [ Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
 
 
