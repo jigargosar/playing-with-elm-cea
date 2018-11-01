@@ -394,18 +394,16 @@ viewTodo { content, done, startEditingContent, markDone, unmarkDone, contextName
         ]
         [ row ""
             []
-            [ doneIconBtn
-            , div
-                [ class "flex-grow-1 pointer"
-                , classList [ ( "strike gray ", done ) ]
-                , onClick startEditingContent
+            [ div [] [ doneIconBtn ]
+            , div [ class "flex-grow-1" ]
+                [ div
+                    [ class " pointer"
+                    , classList [ ( "strike gray ", done ) ]
+                    , onClick startEditingContent
+                    ]
+                    [ txt content ]
+                , txtA [ class "f6 gray" ] contextName
                 ]
-                [ txt content ]
-            ]
-        , row ""
-            []
-            [ txtA [ style "width" "24px" ] ""
-            , txtA [ class "f6 gray" ] contextName
             ]
         ]
 
