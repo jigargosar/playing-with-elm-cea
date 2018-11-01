@@ -57,7 +57,9 @@ const boot = async () => {
   console.log('answers', answers)
 
   if (answers.installConfirmed) {
-    const result = await pSeries(answers.elmPackages.map(nAry(2, elmInstall)))
+    const result = await pSeries(
+      answers.elmPackages.map(packageName => () => elmInstall(packageName)),
+    )
     console.log('Successfully Installed', result)
     // await Promise.all(answers.elmPackages.map(elmInstall))
   }
