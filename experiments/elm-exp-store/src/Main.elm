@@ -202,6 +202,7 @@ update message model =
 
                     else
                         update (TodoStoreMsg <| TodoStore.addNew content) model
+                            |> andThenUpdate (SnackBarMsg <| SnackBar.show "Todo Added")
 
                 Mode.AddContextOutMsg name ->
                     if isWhitespaceOrEmptyString name then
@@ -285,6 +286,7 @@ view model =
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         , Mode.viewModal model.mode |> Html.map ModeMsg
+        , SnackBar.view model.snackBar |> Html.map SnackBarMsg
         ]
 
 

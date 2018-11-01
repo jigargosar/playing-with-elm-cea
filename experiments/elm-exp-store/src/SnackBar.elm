@@ -1,9 +1,12 @@
-module SnackBar exposing (Msg(..), SnackBar, SnackBarTitle, empty, update)
+module SnackBar exposing (Msg, SnackBar, SnackBarTitle, empty, show, update, view)
 
 import BasicsX exposing (..)
+import Html exposing (..)
+import Html.Attributes exposing (class)
 import Log
 import Process
 import Task
+import UI exposing (..)
 import UpdateReturn exposing (..)
 
 
@@ -26,6 +29,10 @@ type Msg
 
 empty =
     SnackBar "" False Nothing
+
+
+show =
+    Show
 
 
 andThenUpdate msg =
@@ -66,3 +73,20 @@ update message model =
                 |> andThenUpdate (SetVisible True)
                 |> andThenUpdate Kill
                 |> andThenUpdate Sleep
+
+
+view : SnackBar -> Html Msg
+view model =
+    --    boolHtml model.visible (viewSnackBar model)
+    row "w-100 absolute  bottom-0 z-2 justify-center "
+        []
+        [ row "bg-black white pa3"
+            []
+            [ txtA "Welcome to SnackBar"
+            , button [] [ text "close" ]
+            ]
+        ]
+
+
+viewSnackBar model =
+    div [] []
