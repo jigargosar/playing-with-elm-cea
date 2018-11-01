@@ -11,6 +11,7 @@ module BasicsX exposing
     , everyXSeconds
     , flip
     , ifElse
+    , isWhitespaceOrEmptyString
     , maybeBool
     , nowMilli
     , onClickTargetId
@@ -157,6 +158,10 @@ swap ( a, b ) =
 allPass : a -> List (a -> Bool) -> Bool
 allPass item predList =
     List.all (\pred -> pred item) predList
+
+
+isWhitespaceOrEmptyString =
+    String.trim >> String.isEmpty
 
 
 

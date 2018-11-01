@@ -188,7 +188,7 @@ update message model =
                     update (TodoStoreMsg <| TodoStore.addNew content) model
 
                 Mode.AddContextOutMsg name ->
-                    if String.trim name |> String.isEmpty then
+                    if isWhitespaceOrEmptyString name then
                         pure model
 
                     else
