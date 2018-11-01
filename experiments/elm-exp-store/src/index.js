@@ -2,28 +2,21 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import {
-  forEachObjIndexed,
-  ifElse,
-  invoker,
-  isNil,
-  partial,
-  partialRight,
-  pathOr,
-  pick,
-} from 'ramda'
+import { forEachObjIndexed, ifElse, invoker, isNil, partial, partialRight, pathOr, pick } from 'ramda'
 
 let initialTodos = storageGetOr({}, 'todos')
+let initialContexts = storageGetOr({}, 'contexts')
 // console.log("initialTodos",initialTodos)
 const app = Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
     now: Date.now(),
     todos: initialTodos,
+    contexts: initialContexts,
   },
 })
 
-window.addEventListener('wheel', function(e) {
+window.addEventListener('wheel', function (e) {
   // console.log(e)
   let data = pick(['deltaX', 'deltaY'])(e)
   // console.log(data)
