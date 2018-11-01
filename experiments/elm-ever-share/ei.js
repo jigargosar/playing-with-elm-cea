@@ -1,7 +1,7 @@
+const { fetchElmSearchJSON } = require('./elm-util')
+
 const { isEmpty } = require('ramda')
 const inquirer = require('inquirer')
-const ora = require('ora')
-const got = require('got')
 const { SubProcess } = require('teen_process')
 const pSeries = require('p-series')
 
@@ -16,21 +16,6 @@ async function elmInstall(packageName) {
 }
 
 inquirer.registerPrompt('search-checkbox', require('inquirer-search-checkbox'))
-
-async function fetchElmSearchJSON() {
-  const spinner = ora({ text: 'Fetching Elm Package Index' }).start()
-  try {
-    const response = await got('package.elm-lang.org/search.json', {
-      json: true,
-    })
-    return response.body
-  } catch (error) {
-    console.log(error.response.body)
-    throw error
-  } finally {
-    spinner.stop()
-  }
-}
 
 async function installPackages(elmPackages) {
   const result = await pSeries(
