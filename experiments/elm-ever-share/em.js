@@ -1,3 +1,5 @@
+const R = require('ramda')
+
 const { isEmpty } = require('ramda')
 const inquirer = require('inquirer')
 const ora = require('ora')
@@ -14,7 +16,11 @@ const boot = async () => {
       'src/Main.elm',
     ])
   } catch (e) {
-    console.log(JSON.parse(e.stderr))
+    let jsonErr = JSON.parse(e.stderr)
+    if (jsonErr.title === 'UNKNOWN IMPORT') {
+      let importModule = jsonErr.message[1].string.split(' ')[1]
+      console.log(importModule)
+    }
   }
 }
 
