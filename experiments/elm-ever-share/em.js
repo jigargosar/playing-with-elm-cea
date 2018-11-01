@@ -1,5 +1,3 @@
-import { pick } from 'ramda'
-
 const R = require('ramda')
 const { fetchElmSearchJSON } = require('./elm-util')
 
@@ -51,7 +49,7 @@ async function fetchPackageElmJson(packageInfo) {
 
 function findPackageWithExposedModule(moduleName, elmJSONResults) {
   return R.compose(
-    R.map(pick(['name', 'exposed-modules'])),
+    R.map(R.pick(['name', 'exposed-modules'])),
     R.filter(ejs => {
       ejs['exposed-modules'].includes(moduleName)
     }),
