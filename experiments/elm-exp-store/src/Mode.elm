@@ -185,9 +185,6 @@ update message model =
 
         EndEditMode ->
             case model of
-                EditTodoMode id _ ->
-                    pure3 Default
-
                 AddTodoMode content ->
                     pure3 Default
                         |> addOutMsg3 (AddTodoOutMsg content)
@@ -196,8 +193,8 @@ update message model =
                     pure3 Default
                         |> addOutMsg3 (AddContextOutMsg name)
 
-                Default ->
-                    Debug.todo "Handle this Case"
+                _ ->
+                    pure3 model
 
 
 modalTodoInputDomId =

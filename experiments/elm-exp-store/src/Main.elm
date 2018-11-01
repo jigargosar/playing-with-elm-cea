@@ -294,7 +294,7 @@ createContextViewModel : Context -> ContextViewModel Msg
 createContextViewModel context =
     ContextViewModel
         (defaultEmptyStringTo "<empty>" context.name)
-        (ModeMsg <| Mode.startEditingTodo context)
+        (ModeMsg <| Mode.startEditingContext context)
 
 
 viewInbox : Html msg
