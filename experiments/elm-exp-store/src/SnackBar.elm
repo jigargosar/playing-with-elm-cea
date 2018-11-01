@@ -87,10 +87,6 @@ type alias Config msg =
     }
 
 
-defaultSnackBarConfig =
-    Config
-
-
 view : (Msg -> msg) -> Config msg -> SnackBar -> Html msg
 view toMsg config model =
     boolHtml model.visible (viewSnackBar toMsg config model)
@@ -98,11 +94,17 @@ view toMsg config model =
 
 viewSnackBar : (Msg -> msg) -> Config msg -> SnackBar -> Html msg
 viewSnackBar toMsg config model =
+    let
+        btnFromAction : Html -> msg
+        btnFromAction =
+            button [ onClick <| toMsg Close ] [ text "close" ]
+    in
     row "w-100 absolute  bottom-0 z-2 justify-center "
         []
         [ row "bg-black white pa3"
             []
             [ txt model.title
+            , row "" [] (List.map btnFromAction config.actions)
             , button [ onClick <| toMsg Close ] [ text "close" ]
             ]
         ]
