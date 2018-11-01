@@ -287,7 +287,7 @@ viewContextList model =
     let
         viewPrimaryListKeyed =
             getCurrentContextList model
-                |> List.map (\context -> ( context.id, viewContext context ))
+                |> List.map (\context -> ( context.id, viewContext <| createContextViewModel context ))
                 |> (::) ( "", viewInbox )
     in
     div [ class "w-100 measure-wide" ]
@@ -296,7 +296,7 @@ viewContextList model =
 
 
 type alias ContextViewModel msg =
-    { content : String
+    { name : String
     , startEditingContent : msg
     }
 
@@ -321,15 +321,15 @@ viewInbox =
         ]
 
 
-viewContext : Context -> Html msg
-viewContext context =
+viewContext : ContextViewModel msg -> Html msg
+viewContext { name } =
     div
         [ class "pa3 w-100  bb b--light-gray"
         ]
         [ row ""
             []
             [ txtA [ style "width" "24px" ] ""
-            , txtA [ class "flex-grow-1 pointer" ] context.name
+            , txtA [ class "flex-grow-1 pointer" ] name
             ]
         ]
 
