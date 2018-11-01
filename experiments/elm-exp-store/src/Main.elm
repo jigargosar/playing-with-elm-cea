@@ -211,7 +211,7 @@ subscriptions model =
 ---- VIEW ----
 
 
-startAddingMsg =
+startAddingTodoMsg =
     ModeMsg Mode.startAdding
 
 
@@ -224,7 +224,7 @@ mockActions =
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
         |> (::) (MagicMenu.Action FeatherIcons.trash2 NoOp)
-        |> (::) (MagicMenu.Action FeatherIcons.filePlus startAddingMsg)
+        |> (::) (MagicMenu.Action FeatherIcons.filePlus startAddingTodoMsg)
 
 
 view : Model -> Html Msg
@@ -234,8 +234,8 @@ view model =
         , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
             [ row ""
                 []
-                [ button [ onClick startAddingMsg ] [ text "Add Task" ]
-                , button [ onClick startAddingMsg ] [ text "Add Context" ]
+                [ button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
+                , button [ onClick startAddingTodoMsg ] [ text "Add Context" ]
                 , button [ onClick <| SetPage TodoList ] [ text "Tasks" ]
                 , button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
                 ]
