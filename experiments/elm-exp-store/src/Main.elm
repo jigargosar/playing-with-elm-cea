@@ -261,9 +261,23 @@ viewContextList model =
         viewPrimaryListKeyed =
             getCurrentContextList model
                 |> List.map (\context -> ( context.id, viewContext context ))
+                |> (::) ( "", viewInbox )
     in
     div [ class "w-100 measure-wide" ]
         [ Html.Keyed.node "div" [] viewPrimaryListKeyed
+        ]
+
+
+viewInbox : Html msg
+viewInbox =
+    div
+        [ class "pa3 w-100  bb b--light-gray"
+        ]
+        [ row ""
+            []
+            [ txtA [ style "width" "24px" ] ""
+            , txtA [ class "" ] "Inbox"
+            ]
         ]
 
 
