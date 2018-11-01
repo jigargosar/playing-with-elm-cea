@@ -184,7 +184,7 @@ update message model =
                 Mode.TodoContentUpdatedOutMsg id newContent ->
                     update (TodoStoreMsg <| TodoStore.setContent id newContent) model
 
-                Mode.AddTodoWithContentOutMsg content ->
+                Mode.AddTodoOutMsg content ->
                     update (TodoStoreMsg <| TodoStore.addNew content) model
 
         MagicMenuMsg msg ->

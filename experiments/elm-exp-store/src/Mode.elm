@@ -60,7 +60,8 @@ startEditing =
 
 type OutMsg
     = TodoContentUpdatedOutMsg TodoId TodoContent
-    | AddTodoWithContentOutMsg TodoContent
+    | AddTodoOutMsg TodoContent
+    | AddContextOutMsg ContextName
 
 
 andThenUpdate msg =
@@ -117,9 +118,13 @@ update message model =
 
                 AddTodoMode content ->
                     pure3 Default
-                        |> addOutMsg3 (AddTodoWithContentOutMsg content)
+                        |> addOutMsg3 (AddTodoOutMsg content)
 
-                _ ->
+                AddContextMode name ->
+                    pure3 Default
+                        |> addOutMsg3 (AddContextOutMsg name)
+
+                Default ->
                     Debug.todo "Handle this Case"
 
 

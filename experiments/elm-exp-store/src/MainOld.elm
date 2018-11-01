@@ -164,7 +164,7 @@ update message model =
                 Mode.FocusDomIdOutMsg domId ->
                     update (FocusDomId domId) model
 
-                Mode.AddTodoWithContentOutMsg content ->
+                Mode.AddTodoOutMsg content ->
                     update (AddNewWithContent content) model
 
 
