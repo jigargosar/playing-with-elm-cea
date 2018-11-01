@@ -25,7 +25,7 @@ const elmMakeToUnknownModuleName = async () => {
     let jsonErr = JSON.parse(e.stderr)
     if (jsonErr.title === 'UNKNOWN IMPORT') {
       let importModule = jsonErr.message[1].string.split(' ')[1]
-      console.log(importModule)
+      console.log('Unknown Import', importModule)
       return importModule
     }
   } finally {
