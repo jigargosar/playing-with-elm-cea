@@ -288,7 +288,7 @@ viewContextList model =
         viewPrimaryListKeyed =
             getCurrentContextList model
                 |> List.map (\context -> ( context.id, viewContext <| createContextViewModel context ))
-                |> (::) ( "", viewInbox )
+                |> (::) ( "", viewContext inboxViewModel )
     in
     div [ class "w-100 measure-wide" ]
         [ Html.Keyed.node "div" [] viewPrimaryListKeyed
@@ -297,7 +297,8 @@ viewContextList model =
 
 type alias ContextViewModel msg =
     { name : String
-    , startEditingContent : msg
+    , isNameEditable : Bool
+    , startEditingName : msg
     }
 
 
@@ -305,7 +306,13 @@ createContextViewModel : Context -> ContextViewModel Msg
 createContextViewModel context =
     ContextViewModel
         (defaultEmptyStringTo "<empty>" context.name)
+        True
         (ModeMsg <| Mode.startEditingContext context)
+
+
+inboxViewModel : ContextViewModel Msg
+inboxViewModel =
+    ContextViewModel "Inbox" False NoOp
 
 
 viewInbox : Html msg
@@ -322,14 +329,19 @@ viewInbox =
 
 
 viewContext : ContextViewModel msg -> Html msg
-viewContext { name } =
+viewContext { name, startEditingName, isNameEditable } =
     div
         [ class "pa3 w-100  bb b--light-gray"
         ]
         [ row ""
             []
             [ txtA [ style "width" "24px" ] ""
-            , txtA [ class "flex-grow-1 pointer" ] name
+            , txtA
+                [ class "flex-grow-1"
+                , classList [ ( "pointer", isNameEditable ) ]
+                , onClick startEditingName
+                ]
+                name
             ]
         ]
 
