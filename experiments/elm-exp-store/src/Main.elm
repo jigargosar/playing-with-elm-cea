@@ -23,7 +23,7 @@ import Random
 import Svg.Attributes
 import Task
 import TodoStore exposing (Todo, TodoStore)
-import UI exposing (fBtnSA, row, sClass, txt, txtC)
+import UI exposing (fBtnSA, row, sClass, txt, txtA, txtC)
 import Update2
 import Update3
 import UpdateReturn exposing (Update3Config, andThen, foldlOutMsgList, pure, update3)
@@ -219,6 +219,7 @@ viewTodoList model =
 type alias TodoViewModel msg =
     { content : String
     , done : Bool
+    , contextName : String
     , startEditingContent : msg
     , markDone : msg
     , unmarkDone : msg
@@ -230,16 +231,16 @@ createTodoViewModel todo =
     TodoViewModel
         (defaultEmptyStringTo "<empty>" todo.content)
         todo.done
+        "Inbox"
         (ModeMsg <| Mode.startEditing todo)
         (TodoStoreMsg <| TodoStore.markDone todo.id)
         (TodoStoreMsg <| TodoStore.unmarkDone todo.id)
 
 
 viewTodo : TodoViewModel msg -> Html msg
-viewTodo { content, done, startEditingContent, markDone, unmarkDone } =
+viewTodo { content, done, startEditingContent, markDone, unmarkDone, contextName } =
     div
         [ class "pa3 w-100  bb b--light-gray"
-        , classList [ ( "strike gray ", done ) ]
         ]
         [ row ""
             []
@@ -248,7 +249,16 @@ viewTodo { content, done, startEditingContent, markDone, unmarkDone } =
 
               else
                 fBtnSA [ sClass "gray" ] FeatherIcons.circle markDone
-            , div [ class "flex-grow-1 pointer", onClick startEditingContent ] [ txt content ]
+            , div
+                [ class "flex-grow-1 pointer"
+                , classList [ ( "strike gray ", done ) ]
+                , onClick startEditingContent
+                ]
+                [ txt content ]
+            ]
+        , row ""
+            []
+            [ txtA [ class "f6 gray" ] contextName
             ]
         ]
 
