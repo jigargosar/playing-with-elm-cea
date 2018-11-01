@@ -123,7 +123,7 @@ update message model =
                 Default ->
                     EditTodoMode todo.id todo.content
                         |> pure3
-                        |> andThenUpdate (FocusDomId modalTodoInputDomId)
+                        |> andThenUpdate AutoFocus
 
         StartAddingTodo ->
             case model of
@@ -139,7 +139,7 @@ update message model =
                 Default ->
                     AddTodoMode ""
                         |> pure3
-                        |> andThenUpdate (FocusDomId modalTodoInputDomId)
+                        |> andThenUpdate AutoFocus
 
         StartAddingContext ->
             case model of
@@ -155,7 +155,7 @@ update message model =
                 Default ->
                     AddContextMode ""
                         |> pure3
-                        |> andThenUpdate (FocusDomId modalContextInputDomId)
+                        |> andThenUpdate AutoFocus
 
         TextInputChanged newValue ->
             case model of
@@ -199,7 +199,8 @@ modalContextInputDomId =
     "modal-context-name-input"
 
 
-viewEditContentModal content =
+viewEditContentModal : DomId -> String -> Html Msg
+viewEditContentModal inputId content =
     backdrop
         [ id "edit-content-modal-backdrop"
         , onClickTargetId
@@ -216,7 +217,7 @@ viewEditContentModal content =
             ]
             [ div [ class "w-100 flex" ]
                 [ input
-                    [ id modalTodoInputDomId
+                    [ id inputId
                     , class "flex-auto pa3"
                     , value content
                     , onInput TextInputChanged
@@ -242,13 +243,13 @@ viewEditContentModal content =
 viewModal mode =
     case mode of
         EditTodoMode id content ->
-            viewEditContentModal content
+            viewEditContentModal modalTodoInputDomId content
 
         AddTodoMode content ->
-            viewEditContentModal content
+            viewEditContentModal modalTodoInputDomId content
 
         AddContextMode name ->
-            viewEditContentModal name
+            viewEditContentModal modalContextInputDomId name
 
         Default ->
             text ""
