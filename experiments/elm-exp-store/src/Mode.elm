@@ -107,7 +107,6 @@ update message model =
 
                 AddTodoMode content ->
                     pure3 model
-                        |> addOutMsg3 (AddTodoOutMsg content)
 
                 AddContextMode name ->
                     AddContextMode ""
