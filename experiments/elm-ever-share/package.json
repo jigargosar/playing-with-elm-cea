@@ -41,6 +41,7 @@
     "lint-staged": "^7.3.0",
     "ora": "^3.0.0",
     "p-each-series": "^1.0.0",
+    "p-map": "^2.0.0",
     "p-series": "^1.1.0",
     "p-settle": "^2.1.0",
     "prettier": "^1.14.3",

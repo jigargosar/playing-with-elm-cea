@@ -11,22 +11,27 @@ const Fuse = require('fuse.js')
 const decamelize = require('decamelize')
 const pMap = require('p-map')
 
-// const boot = async () => {
-//   try {
-//     const result = await exec('elm', [
-//       'make',
-//       '--report=json',
-//       '--output=/dev/null',
-//       'src/Main.elm',
-//     ])
-//   } catch (e) {
-//     let jsonErr = JSON.parse(e.stderr)
-//     if (jsonErr.title === 'UNKNOWN IMPORT') {
-//       let importModule = jsonErr.message[1].string.split(' ')[1]
-//       console.log(importModule)
-//     }
-//   }
-// }
+const elmMakeToUnknownModuleName = async () => {
+  const spinner = ora({ text: 'Elm Make' }).start()
+  try {
+    await exec('elm', [
+      'make',
+      '--report=json',
+      '--output=/dev/null',
+      'src/Main.elm',
+    ])
+    return null
+  } catch (e) {
+    let jsonErr = JSON.parse(e.stderr)
+    if (jsonErr.title === 'UNKNOWN IMPORT') {
+      let importModule = jsonErr.message[1].string.split(' ')[1]
+      console.log(importModule)
+      return importModule
+    }
+  } finally {
+    spinner.stop()
+  }
+}
 
 async function fetchPackageElmJson(packageInfo) {
   const ejUrl = `raw.githubusercontent.com/${packageInfo.name}/${R.last(
@@ -54,8 +59,7 @@ function findPackageWithExposedModule(moduleName, elmJSONResults) {
   )(elmJSONResults)
 }
 
-async function boot() {
-  const searchJson = await fetchElmSearchJSON()
+async function findPackagesWithModule(searchJson, moduleName) {
   const fuse = new Fuse(searchJson, {
     shouldSort: true,
     tokenize: true,
@@ -72,12 +76,11 @@ async function boot() {
       // 'summary',
     ],
   })
-  let moduleName = 'JsonCodec'
 
-  const pattern = decamelize(moduleName, '-')
-  console.log(pattern)
+  // const pattern = decamelize(moduleName, '-')
+  // console.log(pattern)
   const searchResults = R.take(3)(fuse.search(moduleName))
-  console.log(searchResults)
+  // console.log(searchResults)
 
   const elmJSONResults = await pMap(
     searchResults,
@@ -85,11 +88,21 @@ async function boot() {
     { concurrency: 3 },
   )
 
-  console.log(elmJSONResults)
+  // console.log(elmJSONResults)
 
   const matchingModules = findPackageWithExposedModule(
     moduleName,
     elmJSONResults,
+  )
+  // console.log(matchingModules)
+  return matchingModules
+}
+
+async function boot() {
+  const searchJson = await fetchElmSearchJSON()
+  const matchingModules = await findPackagesWithModule(
+    searchJson,
+    await elmMakeToUnknownModuleName(),
   )
   console.log(matchingModules)
 }
