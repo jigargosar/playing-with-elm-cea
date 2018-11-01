@@ -84,16 +84,17 @@ filterToFn filter =
 
 matchesFilters filters todo =
     filters
+        |> Set.toList
         |> List.map filterToFn
-        |> List.allPass todo
+        |> allPass todo
 
 
+getCurrentTodoList : Model -> List Todo
 getCurrentTodoList model =
-    model
-        |> .todoStore
-        >> TodoStore.list
-        >> List.filter (matchesFilters model.todoFilters)
-        >> List.sortBy .createdAt
+    model.todoStore
+        |> TodoStore.list
+        |> List.filter (matchesFilters model.todoFilters)
+        |> List.sortBy .createdAt
 
 
 
