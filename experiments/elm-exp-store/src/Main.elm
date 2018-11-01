@@ -231,6 +231,8 @@ view model =
             [ row ""
                 []
                 [ button [ onClick startAddingMsg ] [ text "Add Task" ]
+                , button [ onClick NoOp ] [ text "Tasks" ]
+                , button [ onClick NoOp ] [ text "Contexts" ]
                 ]
             , viewPage model
             ]
