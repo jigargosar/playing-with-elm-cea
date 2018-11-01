@@ -105,6 +105,11 @@ async function boot() {
     await elmMakeToUnknownModuleName(),
   )
   console.log(matchingModules)
+  if (matchingModules.length === 1) {
+    const matchingModuleName = matchingModules[0].name
+    console.log('Installing Module', matchingModuleName)
+    await exec('node', ['ei', matchingModuleName])
+  }
 }
 
 boot(process.argv.slice(2)).catch(e => console.error('Boot ERROR', e))
