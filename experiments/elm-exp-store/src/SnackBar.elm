@@ -82,17 +82,17 @@ update message model =
                 |> andThenUpdate Kill
 
 
-view : SnackBar -> Html Msg
-view model =
-    boolHtml model.visible (viewSnackBar model)
+view : (Msg -> msg) -> SnackBar -> Html msg
+view toMsg model =
+    boolHtml model.visible (viewSnackBar toMsg model)
 
 
-viewSnackBar model =
+viewSnackBar toMsg model =
     row "w-100 absolute  bottom-0 z-2 justify-center "
         []
         [ row "bg-black white pa3"
             []
             [ txt model.title
-            , button [ onClick Close ] [ text "close" ]
+            , button [ onClick <| toMsg Close ] [ text "close" ]
             ]
         ]
