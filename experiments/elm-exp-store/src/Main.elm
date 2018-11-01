@@ -195,11 +195,19 @@ update message model =
                     else
                         update (ContextStoreMsg <| ContextStore.addNew name) model
 
-                Mode.TodoContentUpdatedOutMsg id newContent ->
-                    update (TodoStoreMsg <| TodoStore.setContent id newContent) model
+                Mode.TodoContentUpdatedOutMsg id content ->
+                    if isWhitespaceOrEmptyString content then
+                        pure model
 
-                Mode.ContextNameUpdatedOutMsg id newName ->
-                    update (ContextStoreMsg <| ContextStore.setName id newName) model
+                    else
+                        update (TodoStoreMsg <| TodoStore.setContent id content) model
+
+                Mode.ContextNameUpdatedOutMsg id name ->
+                    if isWhitespaceOrEmptyString name then
+                        pure model
+
+                    else
+                        update (ContextStoreMsg <| ContextStore.setName id name) model
 
         MagicMenuMsg msg ->
             Update2.lift
