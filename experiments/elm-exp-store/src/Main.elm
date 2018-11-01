@@ -235,6 +235,7 @@ view model =
             [ row ""
                 []
                 [ button [ onClick startAddingMsg ] [ text "Add Task" ]
+                , button [ onClick startAddingMsg ] [ text "Add Context" ]
                 , button [ onClick <| SetPage TodoList ] [ text "Tasks" ]
                 , button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
                 ]
