@@ -230,7 +230,7 @@ view model =
         , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
             [ row ""
                 []
-                [ button [ onClick startAddingMsg ] [ text "add" ]
+                [ button [ onClick startAddingMsg ] [ text "Add Task" ]
                 ]
             , viewPage model
             ]
