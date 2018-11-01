@@ -1,14 +1,9 @@
 const R = require('ramda')
 const { fetchElmSearchJSON } = require('./elm-util')
-
-const { isEmpty } = require('ramda')
-const inquirer = require('inquirer')
 const ora = require('ora')
 const got = require('got')
-const { SubProcess, exec } = require('teen_process')
-const pSeries = require('p-series')
+const { exec } = require('teen_process')
 const Fuse = require('fuse.js')
-const decamelize = require('decamelize')
 const pMap = require('p-map')
 
 const elmMakeToUnknownModuleName = async () => {
