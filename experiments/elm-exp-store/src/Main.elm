@@ -83,6 +83,7 @@ type Msg
     = NoOp
     | Warn Log.Line
     | TodoStoreMsg TodoStore.Msg
+    | ContextStoreMsg ContextStore.Msg
     | MagicMenuMsg MagicMenu.Msg
     | ModeMsg Mode.Msg
     | ModeOutMsg Mode.OutMsg
@@ -103,6 +104,15 @@ update message model =
                 (\s b -> { b | todoStore = s })
                 TodoStoreMsg
                 TodoStore.update
+                msg
+                model
+
+        ContextStoreMsg msg ->
+            Update2.lift
+                .contextStore
+                (\s b -> { b | contextStore = s })
+                ContextStoreMsg
+                ContextStore.update
                 msg
                 model
 
