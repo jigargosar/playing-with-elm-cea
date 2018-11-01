@@ -34,6 +34,11 @@ const boot = async () => {
         return true
       },
     },
+    {
+      type: 'confirm',
+      message: 'Proceed with install',
+      name: 'installConfirmed',
+    },
   ])
   console.log('answers', answers)
 }
