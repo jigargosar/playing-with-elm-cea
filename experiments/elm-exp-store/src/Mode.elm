@@ -3,6 +3,7 @@ module Mode exposing
     , Msg
     , OutMsg(..)
     , init
+    , startAddingContext
     , startAddingTodo
     , startEditing
     , update

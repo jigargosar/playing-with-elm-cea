@@ -219,7 +219,7 @@ startAddingTodoMsg =
 
 
 startAddingContextMsg =
-    ModeMsg Mode.startAddingTodo
+    ModeMsg Mode.startAddingContext
 
 
 mockActions =
@@ -242,7 +242,7 @@ view model =
             [ row ""
                 []
                 [ button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
-                , button [ onClick startAddingTodoMsg ] [ text "Add Context" ]
+                , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
                 , button [ onClick <| SetPage TodoList ] [ text "Tasks" ]
                 , button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
                 ]
@@ -300,10 +300,6 @@ viewContext context =
             , txtA [ class "" ] context.name
             ]
         ]
-
-
-modalTodoInputDomId =
-    "modal-todo-content-input"
 
 
 viewTodoList : Model -> Html Msg
