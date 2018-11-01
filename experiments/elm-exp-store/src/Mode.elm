@@ -91,14 +91,36 @@ update message model =
             update EndEditMode model
 
         StartEditing todo ->
-            EditTodoMode todo.id todo.content
-                |> pure3
-                |> andThenUpdate (FocusDomId modalTodoInputDomId)
+            case model of
+                EditTodoMode id _ ->
+                    pure3 model
+
+                AddTodoMode content ->
+                    pure3 model
+
+                AddContextMode name ->
+                    pure3 model
+
+                Default ->
+                    EditTodoMode todo.id todo.content
+                        |> pure3
+                        |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
         StartAddingTodo ->
-            AddTodoMode ""
-                |> pure3
-                |> andThenUpdate (FocusDomId modalTodoInputDomId)
+            case model of
+                EditTodoMode _ _ ->
+                    pure3 model
+
+                AddTodoMode content ->
+                    pure3 model
+
+                AddContextMode name ->
+                    pure3 model
+
+                Default ->
+                    AddTodoMode ""
+                        |> pure3
+                        |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
         StartAddingContext ->
             case model of
@@ -109,12 +131,12 @@ update message model =
                     pure3 model
 
                 AddContextMode name ->
+                    pure3 model
+
+                Default ->
                     AddContextMode ""
                         |> pure3
                         |> andThenUpdate (FocusDomId modalContextInputDomId)
-
-                Default ->
-                    pure3 model
 
         ContentChangedInView newContent ->
             case model of
