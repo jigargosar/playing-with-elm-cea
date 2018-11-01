@@ -7,12 +7,12 @@ const pSettle = require('p-settle')
 
 async function elmInstall(packageName) {
   let teen = new TeenProcess.SubProcess('elm', ['install', packageName])
-  // teen.on('stream-line', console.log)
+  teen.on('stream-line', console.log)
   // console.log('teen',teen)
   await teen.start(0)
   // teen.proc.stdin.write(' ')
   teen.proc.stdin.write('\n')
-  await pSettle(teen.join())
+  return pSettle([teen.join()])
   // if (teen.isRunning()) {
   // await teen.stop()
   // }
@@ -65,7 +65,7 @@ const boot = async () => {
 
   if (answers.installConfirmed) {
     const result = await pEachSeries(answers.elmPackages, elmInstall)
-    console.log('result', result)
+    console.log('Successfully Installed', result)
     // await Promise.all(answers.elmPackages.map(elmInstall))
   }
 }
