@@ -5,13 +5,14 @@ module Mode exposing
     , init
     , startAddingContext
     , startAddingTodo
-    , startEditing
+    , startEditingContext
+    , startEditingTodo
     , update
     , viewModal
     )
 
 import BasicsX exposing (..)
-import ContextStore exposing (ContextName)
+import ContextStore exposing (Context, ContextId, ContextName)
 import HotKey
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -27,6 +28,7 @@ import UpdateReturn exposing (..)
 type Mode
     = Default
     | EditTodoMode TodoId TodoContent
+    | EditContextMode ContextId ContextName
     | AddTodoMode TodoContent
     | AddContextMode ContextName
 
@@ -44,9 +46,10 @@ type Msg
     = NoOp
     | BackdropClicked
     | Warn Log.Line
-    | StartEditingTodo Todo
     | StartAddingTodo
     | StartAddingContext
+    | StartEditingTodo Todo
+    | StartEditingContext Context
     | TextInputChanged TodoContent
     | EndEditMode
     | FocusDomId DomId
@@ -61,14 +64,19 @@ startAddingContext =
     StartAddingContext
 
 
-startEditing =
+startEditingTodo =
     StartEditingTodo
 
 
+startEditingContext =
+    StartEditingContext
+
+
 type OutMsg
-    = TodoContentUpdatedOutMsg TodoId TodoContent
-    | AddTodoOutMsg TodoContent
+    = AddTodoOutMsg TodoContent
     | AddContextOutMsg ContextName
+    | TodoContentUpdatedOutMsg TodoId TodoContent
+    | ContextContentUpdatedOutMsg ContextId ContextName
 
 
 andThenUpdate msg =
@@ -111,64 +119,61 @@ update message model =
 
         StartEditingTodo todo ->
             case model of
-                EditTodoMode id _ ->
-                    pure3 model
-
-                AddTodoMode content ->
-                    pure3 model
-
-                AddContextMode name ->
-                    pure3 model
-
                 Default ->
                     EditTodoMode todo.id todo.content
                         |> pure3
                         |> andThenUpdate AutoFocus
 
+                _ ->
+                    pure3 model
+
+        StartEditingContext context ->
+            case model of
+                Default ->
+                    EditContextMode context.id context.name
+                        |> pure3
+                        |> andThenUpdate AutoFocus
+
+                _ ->
+                    pure3 model
+
         StartAddingTodo ->
             case model of
-                EditTodoMode _ _ ->
-                    pure3 model
-
-                AddTodoMode content ->
-                    pure3 model
-
-                AddContextMode name ->
-                    pure3 model
-
                 Default ->
                     AddTodoMode ""
                         |> pure3
                         |> andThenUpdate AutoFocus
 
+                _ ->
+                    pure3 model
+
         StartAddingContext ->
             case model of
-                EditTodoMode id _ ->
-                    pure3 model
-
-                AddTodoMode content ->
-                    pure3 model
-
-                AddContextMode name ->
-                    pure3 model
-
                 Default ->
                     AddContextMode ""
                         |> pure3
                         |> andThenUpdate AutoFocus
 
+                _ ->
+                    pure3 model
+
         TextInputChanged newValue ->
             case model of
-                EditTodoMode id _ ->
-                    EditTodoMode id newValue
-                        |> pure3
-                        |> addOutMsg3 (TodoContentUpdatedOutMsg id newValue)
-
                 AddTodoMode _ ->
                     pure3 <| AddTodoMode newValue
 
                 AddContextMode _ ->
                     pure3 <| AddContextMode newValue
+
+                EditTodoMode id _ ->
+                    EditTodoMode id newValue
+                        |> pure3
+                        |> addOutMsg3 (TodoContentUpdatedOutMsg id newValue)
+
+                EditContextMode id _ ->
+                    EditContextMode id newValue
+                        |> pure3
+                        |> addOutMsg3 (ContextNameUpdatedOutMsg id newValue)
 
                 Default ->
                     pure3 model

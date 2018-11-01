@@ -284,6 +284,19 @@ viewContextList model =
         ]
 
 
+type alias ContextViewModel msg =
+    { content : String
+    , startEditingContent : msg
+    }
+
+
+createContextViewModel : Context -> ContextViewModel Msg
+createContextViewModel context =
+    ContextViewModel
+        (defaultEmptyStringTo "<empty>" context.name)
+        (ModeMsg <| Mode.startEditingTodo context)
+
+
 viewInbox : Html msg
 viewInbox =
     div
@@ -338,7 +351,7 @@ createTodoViewModel todo =
         (defaultEmptyStringTo "<empty>" todo.content)
         todo.done
         "Inbox"
-        (ModeMsg <| Mode.startEditing todo)
+        (ModeMsg <| Mode.startEditingTodo todo)
         (TodoStoreMsg <| TodoStore.markDone todo.id)
         (TodoStoreMsg <| TodoStore.unmarkDone todo.id)
 
