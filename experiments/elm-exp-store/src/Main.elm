@@ -4,6 +4,7 @@ import BasicsX exposing (..)
 import Browser
 import Browser.Dom
 import Browser.Events
+import ContextStore
 import Dict
 import FeatherIcons
 import HotKey
@@ -13,6 +14,7 @@ import Html.Events exposing (..)
 import Html.Keyed
 import Json.Decode as D
 import Json.Encode as E
+import JsonCodecX exposing (Value)
 import Log
 import MagicMenu exposing (MagicMenu)
 import Mode exposing (Mode)
@@ -40,21 +42,25 @@ type alias Model =
 
 
 type alias Flags =
-    { now : Millis, todos : E.Value }
+    { now : Millis, todos : Value, contexts : Value }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
-        ( maybeLogLine, todoStore ) =
+        ( maybeTodoStoreLogLine, todoStore ) =
             TodoStore.load flags.todos
+
+        ( maybeContextStoreLogLine, contextStore ) =
+            ContextStore.load flags.contexts
     in
     pure
         { magicMenu = MagicMenu.initial
         , todoStore = todoStore
         , mode = Mode.init
         }
-        |> andThenUpdate (unwrapMaybe NoOp Warn maybeLogLine)
+        |> andThenUpdate (unwrapMaybe NoOp Warn maybeTodoStoreLogLine)
+        |> andThenUpdate (unwrapMaybe NoOp Warn maybeContextStoreLogLine)
 
 
 getCurrentTodoList =
