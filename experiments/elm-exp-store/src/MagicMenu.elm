@@ -9,7 +9,6 @@ import Json.Decode as D
 import Json.Encode as E
 import Log
 import Port
-import Step exposing (Step)
 import Style exposing (Transform(..), Unit(..))
 import Tuple exposing (pair)
 import UI exposing (boolHtml, fBtn)
