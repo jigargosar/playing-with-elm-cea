@@ -76,7 +76,7 @@ type OutMsg
     = AddTodoOutMsg TodoContent
     | AddContextOutMsg ContextName
     | TodoContentUpdatedOutMsg TodoId TodoContent
-    | ContextContentUpdatedOutMsg ContextId ContextName
+    | ContextNameUpdatedOutMsg ContextId ContextName
 
 
 andThenUpdate msg =
@@ -247,14 +247,17 @@ viewEditContentModal inputId content =
 
 viewModal mode =
     case mode of
-        EditTodoMode id content ->
-            viewEditContentModal modalTodoInputDomId content
-
         AddTodoMode content ->
             viewEditContentModal modalTodoInputDomId content
 
         AddContextMode name ->
             viewEditContentModal modalContextInputDomId name
+
+        EditTodoMode id content ->
+            viewEditContentModal modalTodoInputDomId content
+
+        EditContextMode id content ->
+            viewEditContentModal modalContextInputDomId content
 
         Default ->
             text ""
