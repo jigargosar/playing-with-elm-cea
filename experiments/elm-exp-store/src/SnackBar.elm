@@ -77,7 +77,10 @@ update message model =
 
 view : SnackBar -> Html Msg
 view model =
-    --    boolHtml model.visible (viewSnackBar model)
+    boolHtml model.visible (viewSnackBar model)
+
+
+viewSnackBar model =
     row "w-100 absolute  bottom-0 z-2 justify-center "
         []
         [ row "bg-black white pa3"
@@ -86,7 +89,3 @@ view model =
             , button [] [ text "close" ]
             ]
         ]
-
-
-viewSnackBar model =
-    div [] []
