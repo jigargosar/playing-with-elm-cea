@@ -82,12 +82,22 @@ update message model =
                 |> andThenUpdate Kill
 
 
-view : (Msg -> msg) -> SnackBar -> Html msg
-view toMsg model =
-    boolHtml model.visible (viewSnackBar toMsg model)
+type alias Config msg =
+    { actions : List ( String, msg )
+    }
 
 
-viewSnackBar toMsg model =
+defaultSnackBarConfig =
+    Config
+
+
+view : (Msg -> msg) -> Config msg -> SnackBar -> Html msg
+view toMsg config model =
+    boolHtml model.visible (viewSnackBar toMsg config model)
+
+
+viewSnackBar : (Msg -> msg) -> Config msg -> SnackBar -> Html msg
+viewSnackBar toMsg config model =
     row "w-100 absolute  bottom-0 z-2 justify-center "
         []
         [ row "bg-black white pa3"
