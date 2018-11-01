@@ -19,10 +19,12 @@ import Log
 import MagicMenu exposing (MagicMenu)
 import Mode exposing (Mode)
 import Port
+import Process
 import Random
 import Set exposing (Set)
 import Svg.Attributes
 import Task
+import Time
 import TodoStore exposing (Todo, TodoStore)
 import UI exposing (fBtnSA, row, sClass, txt, txtA, txtC)
 import Update2
@@ -33,6 +35,10 @@ import WheelEvent exposing (WheelEvent)
 
 
 ---- MODEL ----
+
+
+type alias SnackBar =
+    { message : String, maybeProcessId : Maybe Process.Id }
 
 
 type Page
@@ -47,6 +53,7 @@ type TodoFilter
 
 type alias Model =
     { magicMenu : MagicMenu
+    , snackbar : SnackBar
     , todoStore : TodoStore
     , contextStore : ContextStore
     , todoFilters : Set TodoFilter
@@ -70,6 +77,7 @@ init flags =
     in
     pure
         { magicMenu = MagicMenu.initial
+        , snackbar = SnackBar "" Nothing
         , todoStore = todoStore
         , contextStore = contextStore
         , todoFilters = Set.empty
