@@ -1,3 +1,5 @@
+import { pick } from 'ramda'
+
 const R = require('ramda')
 const { fetchElmSearchJSON } = require('./elm-util')
 
@@ -47,6 +49,15 @@ async function fetchPackageElmJson(packageInfo) {
   }
 }
 
+function findPackageWithExposedModule(moduleName, elmJSONResults) {
+  return R.compose(
+    R.map(pick(['name', 'exposed-modules'])),
+    R.filter(ejs => {
+      ejs['exposed-modules'].includes(moduleName)
+    }),
+  )(elmJSONResults)
+}
+
 async function boot() {
   const searchJson = await fetchElmSearchJSON()
   const fuse = new Fuse(searchJson, {
@@ -65,11 +76,11 @@ async function boot() {
       // 'summary',
     ],
   })
-  let importName = 'JsonCodec'
+  let moduleName = 'JsonCodec'
 
-  const pattern = decamelize(importName, '-')
+  const pattern = decamelize(moduleName, '-')
   console.log(pattern)
-  const searchResults = R.take(3)(fuse.search(importName))
+  const searchResults = R.take(3)(fuse.search(moduleName))
   console.log(searchResults)
 
   const elmJSONResults = await pMap(
@@ -79,6 +90,12 @@ async function boot() {
   )
 
   console.log(elmJSONResults)
+
+  const matchingModules = findPackageWithExposedModule(
+    moduleName,
+    elmJSONResults,
+  )
+  console.log(matchingModules)
 }
 
 boot(process.argv.slice(2)).catch(e => console.error('Boot ERROR', e))
