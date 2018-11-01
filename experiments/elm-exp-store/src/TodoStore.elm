@@ -14,6 +14,7 @@ module TodoStore exposing
     )
 
 import BasicsX exposing (..)
+import ContextStore exposing (ContextId)
 import Dict exposing (Dict)
 import IdX exposing (withNewId)
 import Json.Decode
@@ -40,6 +41,7 @@ type alias Todo =
     , deleted : Bool
     , content : TodoContent
     , done : Bool
+    , contextId : ContextId
     }
 
 
@@ -52,6 +54,7 @@ todoCodec =
         |> JC.next "deleted" JC.bool .deleted
         |> JC.next "content" JC.string .content
         |> JC.option "done" JC.bool .done False
+        |> JC.option "contextId" JC.string .contextId ContextStore.defaultId
         |> JC.end
 
 
@@ -130,6 +133,7 @@ update message model =
                     , deleted = False
                     , content = content
                     , done = False
+                    , contextId = ContextStore.defaultId
                     }
             in
             update (UpsertTodoAndCache newTodo) model

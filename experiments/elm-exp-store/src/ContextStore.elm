@@ -5,6 +5,7 @@ module ContextStore exposing
     , ContextStore
     , Msg
     , addNew
+    , defaultId
     , list
     , load
     , setName
@@ -21,6 +22,10 @@ import Log
 import Port
 import Task
 import UpdateReturn exposing (..)
+
+
+defaultId =
+    ""
 
 
 type alias ContextName =
