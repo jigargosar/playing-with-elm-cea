@@ -34,6 +34,9 @@ subscribe(
     cacheTodoStore: todos => {
       storageSet('todos', todos)
     },
+    cacheContextStore: contexts => {
+      storageSet('contexts', contexts)
+    },
     // focusSelector,
   },
   app,
