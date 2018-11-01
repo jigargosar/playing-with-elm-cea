@@ -50,9 +50,7 @@ async function fetchPackageElmJson(packageInfo) {
 function findPackageWithExposedModule(moduleName, elmJSONResults) {
   return R.compose(
     R.map(R.pick(['name', 'exposed-modules'])),
-    R.filter(ejs => {
-      ejs['exposed-modules'].includes(moduleName)
-    }),
+    R.filter(ejs => ejs['exposed-modules'].includes(moduleName)),
   )(elmJSONResults)
 }
 
