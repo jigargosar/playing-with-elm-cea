@@ -3,7 +3,6 @@ const ora = require('ora')
 const got = require('got')
 const TeenProcess = require('teen_process')
 const pEachSeries = require('p-each-series')
-const pSettle = require('p-settle')
 
 async function elmInstall(packageName) {
   let teen = new TeenProcess.SubProcess('elm', ['install', packageName])
@@ -12,16 +11,8 @@ async function elmInstall(packageName) {
   await teen.start(0)
   // teen.proc.stdin.write(' ')
   teen.proc.stdin.write('\n')
-  return pSettle([teen.join()])
-  // if (teen.isRunning()) {
-  // await teen.stop()
-  // }
-
-  // let teen = await TeenProcess.exec('elm', ['install','elm/svg'])
-  // console.log('teen',teen)
+  await teen.join()
 }
-
-// elmInstall().catch(console.error)
 
 inquirer.registerPrompt('search-checkbox', require('inquirer-search-checkbox'))
 
