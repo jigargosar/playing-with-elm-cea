@@ -43,6 +43,7 @@ type alias Model =
     { magicMenu : MagicMenu
     , todoStore : TodoStore
     , contextStore : ContextStore
+    , todoFilters : List TodoFilter
     , mode : Mode
     }
 
@@ -64,6 +65,7 @@ init flags =
         { magicMenu = MagicMenu.initial
         , todoStore = todoStore
         , contextStore = contextStore
+        , todoFilters = []
         , mode = Mode.init
         }
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeTodoStoreLogLine)
