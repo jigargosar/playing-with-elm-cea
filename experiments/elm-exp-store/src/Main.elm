@@ -287,7 +287,7 @@ view model =
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         , Mode.viewModal model.mode |> Html.map ModeMsg
-        , SnackBar.view SnackBarMsg model.snackBar
+        , SnackBar.view SnackBarMsg { actions = [] } model.snackBar
         ]
 
 
