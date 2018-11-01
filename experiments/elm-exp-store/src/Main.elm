@@ -285,6 +285,10 @@ viewPage model =
 viewContextList : Model -> Html Msg
 viewContextList model =
     let
+        inboxViewModel : ContextViewModel Msg
+        inboxViewModel =
+            ContextViewModel "Inbox" "Inbox" False NoOp
+
         viewPrimaryListKeyed =
             getCurrentContextList model
                 |> List.map (\context -> ( context.id, viewContext <| createContextViewModel context ))
@@ -296,7 +300,8 @@ viewContextList model =
 
 
 type alias ContextViewModel msg =
-    { name : String
+    { key : String
+    , name : String
     , isNameEditable : Bool
     , startEditingName : msg
     }
@@ -305,14 +310,10 @@ type alias ContextViewModel msg =
 createContextViewModel : Context -> ContextViewModel Msg
 createContextViewModel context =
     ContextViewModel
+        context.id
         (defaultEmptyStringTo "<empty>" context.name)
         True
         (ModeMsg <| Mode.startEditingContext context)
-
-
-inboxViewModel : ContextViewModel Msg
-inboxViewModel =
-    ContextViewModel "Inbox" False NoOp
 
 
 viewInbox : Html msg
