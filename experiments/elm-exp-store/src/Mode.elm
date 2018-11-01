@@ -101,9 +101,21 @@ update message model =
                 |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
         StartAddingContext ->
-            AddContextMode ""
-                |> pure3
-                |> andThenUpdate (FocusDomId modalContextInputDomId)
+            case model of
+                EditTodoMode id _ ->
+                    pure3 model
+
+                AddTodoMode content ->
+                    pure3 model
+                        |> addOutMsg3 (AddTodoOutMsg content)
+
+                AddContextMode name ->
+                    AddContextMode ""
+                        |> pure3
+                        |> andThenUpdate (FocusDomId modalContextInputDomId)
+
+                Default ->
+                    pure3 model
 
         ContentChangedInView newContent ->
             case model of
