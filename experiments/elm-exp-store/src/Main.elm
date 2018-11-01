@@ -187,6 +187,9 @@ update message model =
                 Mode.AddTodoOutMsg content ->
                     update (TodoStoreMsg <| TodoStore.addNew content) model
 
+                Mode.AddContextOutMsg name ->
+                    update (ContextStoreMsg <| ContextStore.addNew name) model
+
         MagicMenuMsg msg ->
             Update2.lift
                 .magicMenu
@@ -212,7 +215,11 @@ subscriptions model =
 
 
 startAddingTodoMsg =
-    ModeMsg Mode.startAdding
+    ModeMsg Mode.startAddingTodo
+
+
+startAddingContextMsg =
+    ModeMsg Mode.startAddingTodo
 
 
 mockActions =

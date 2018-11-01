@@ -3,7 +3,7 @@ module Mode exposing
     , Msg
     , OutMsg(..)
     , init
-    , startAdding
+    , startAddingTodo
     , startEditing
     , update
     , viewModal
@@ -45,13 +45,18 @@ type Msg
     | Warn Log.Line
     | StartEditing Todo
     | StartAddingTodo
+    | StartAddingContext
     | ContentChangedInView TodoContent
     | EndEditMode
     | FocusDomId DomId
 
 
-startAdding =
+startAddingTodo =
     StartAddingTodo
+
+
+startAddingContext =
+    StartAddingContext
 
 
 startEditing =
@@ -95,6 +100,11 @@ update message model =
                 |> pure3
                 |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
+        StartAddingContext ->
+            AddContextMode ""
+                |> pure3
+                |> andThenUpdate (FocusDomId modalContextInputDomId)
+
         ContentChangedInView newContent ->
             case model of
                 EditTodoMode id _ ->
@@ -130,6 +140,10 @@ update message model =
 
 modalTodoInputDomId =
     "modal-todo-content-input"
+
+
+modalContextInputDomId =
+    "modal-context-name-input"
 
 
 viewEditContentModal content =
