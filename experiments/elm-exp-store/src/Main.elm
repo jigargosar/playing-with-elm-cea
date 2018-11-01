@@ -4,7 +4,7 @@ import BasicsX exposing (..)
 import Browser
 import Browser.Dom
 import Browser.Events
-import ContextStore exposing (ContextStore)
+import ContextStore exposing (ContextId, ContextStore)
 import Dict
 import FeatherIcons
 import HotKey
@@ -32,6 +32,11 @@ import WheelEvent exposing (WheelEvent)
 
 
 ---- MODEL ----
+
+
+type TodoFilter
+    = DoneFilter Bool
+    | ContextIdFilter ContextId
 
 
 type alias Model =
