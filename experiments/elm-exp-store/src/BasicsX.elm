@@ -2,6 +2,7 @@ module BasicsX exposing
     ( DomId
     , Encoder
     , Millis
+    , allPass
     , applyTo
     , attemptDomIdFocus
     , defaultEmptyStringTo
@@ -151,6 +152,11 @@ flip fn a b =
 
 swap ( a, b ) =
     ( b, a )
+
+
+allPass : a -> List (a -> Bool) -> Bool
+allPass item predList =
+    List.all (\pred -> pred item) predList
 
 
 

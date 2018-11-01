@@ -73,9 +73,26 @@ init flags =
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeContextStoreLogLine)
 
 
-getCurrentTodoList =
-    .todoStore
+filterToFn filter =
+    case filter of
+        DoneFilter done ->
+            .done >> (==) done
+
+        ContextIdFilter contextId ->
+            .contextId >> (==) contextId
+
+
+matchesFilters filters todo =
+    filters
+        |> List.map filterToFn
+        |> List.allPass todo
+
+
+getCurrentTodoList model =
+    model
+        |> .todoStore
         >> TodoStore.list
+        >> List.filter (matchesFilters model.todoFilters)
         >> List.sortBy .createdAt
 
 
