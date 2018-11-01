@@ -430,6 +430,6 @@ main =
     Browser.element
         { view = view
         , init = init
-        , update = {- Step.asUpdateFunction -} update
+        , update = update
         , subscriptions = subscriptions
         }
