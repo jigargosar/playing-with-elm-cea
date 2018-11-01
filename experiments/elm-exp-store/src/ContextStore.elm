@@ -1,15 +1,13 @@
 module ContextStore exposing
     ( Context
-    , ContextContent
     , ContextId
+    , ContextName
     , ContextStore
     , Msg
     , addNew
     , list
     , load
-    , markDone
-    , setContent
-    , unmarkDone
+    , setName
     , update
     )
 
@@ -25,7 +23,7 @@ import Task
 import UpdateReturn exposing (..)
 
 
-type alias ContextContent =
+type alias ContextName =
     String
 
 
@@ -38,8 +36,7 @@ type alias Context =
     , createdAt : Millis
     , modifiedAt : Millis
     , deleted : Bool
-    , content : ContextContent
-    , done : Bool
+    , name : ContextName
     }
 
 
@@ -50,8 +47,7 @@ contextCodec =
         |> JC.next "createdAt" JC.int .createdAt
         |> JC.next "modifiedAt" JC.int .modifiedAt
         |> JC.next "deleted" JC.bool .deleted
-        |> JC.next "content" JC.string .content
-        |> JC.option "done" JC.bool .done False
+        |> JC.next "name" JC.string .name
         |> JC.end
 
 
@@ -77,9 +73,9 @@ load =
 
 type Msg
     = NoOp
-    | AddNew ContextContent
-    | AddNewWithNow ContextContent Millis
-    | AddNewWithNowAndId ContextContent Millis ContextId
+    | AddNew ContextName
+    | AddNewWithNow ContextName Millis
+    | AddNewWithNowAndId ContextName Millis ContextId
     | UpsertContextAndCache Context
     | Cache
     | UpdateContext ContextId ContextMsg
@@ -87,25 +83,15 @@ type Msg
 
 
 type ContextMsg
-    = SetContent ContextContent
-    | MarkDone
-    | UnmarkDone
+    = SetName ContextName
 
 
 addNew =
     AddNew
 
 
-setContent id content =
-    UpdateContext id (SetContent content)
-
-
-markDone id =
-    UpdateContext id MarkDone
-
-
-unmarkDone id =
-    UpdateContext id UnmarkDone
+setName id name =
+    UpdateContext id (SetName name)
 
 
 update : Msg -> ContextStore -> ( ContextStore, Cmd Msg )
@@ -114,13 +100,13 @@ update message model =
         NoOp ->
             pure model
 
-        AddNew content ->
-            ( model, withNowMilli <| AddNewWithNow content )
+        AddNew name ->
+            ( model, withNowMilli <| AddNewWithNow name )
 
-        AddNewWithNow content now ->
-            ( model, withNewId <| AddNewWithNowAndId content now )
+        AddNewWithNow name now ->
+            ( model, withNewId <| AddNewWithNowAndId name now )
 
-        AddNewWithNowAndId content now id ->
+        AddNewWithNowAndId name now id ->
             let
                 newContext : Context
                 newContext =
@@ -128,8 +114,7 @@ update message model =
                     , createdAt = now
                     , modifiedAt = now
                     , deleted = False
-                    , content = content
-                    , done = False
+                    , name = name
                     }
             in
             update (UpsertContextAndCache newContext) model
@@ -158,14 +143,8 @@ maybeUpdateContext now msg context =
     let
         updatedContext =
             case msg of
-                SetContent content ->
-                    { context | content = content }
-
-                MarkDone ->
-                    { context | done = True }
-
-                UnmarkDone ->
-                    { context | done = False }
+                SetName name ->
+                    { context | name = name }
     in
     maybeBool (updatedContext /= context) { updatedContext | modifiedAt = now }
 
