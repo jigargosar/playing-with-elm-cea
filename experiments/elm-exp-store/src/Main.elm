@@ -337,11 +337,11 @@ viewContext { name, startEditingName, isNameEditable } =
             []
             [ txtA [ style "width" "24px" ] ""
             , txtA
-                [ class "flex-grow-1"
+                [ class "flex-grow-1 ttu"
                 , classList [ ( "pointer", isNameEditable ) ]
                 , onClick startEditingName
                 ]
-                name
+                ("@" ++ name)
             ]
         ]
 
