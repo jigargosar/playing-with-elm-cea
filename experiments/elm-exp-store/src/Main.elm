@@ -258,7 +258,8 @@ viewTodo { content, done, startEditingContent, markDone, unmarkDone, contextName
             ]
         , row ""
             []
-            [ txtA [ class "f6 gray" ] contextName
+            [ txtA [ style "width" "24px" ] ""
+            , txtA [ class "f6 gray" ] contextName
             ]
         ]
 
