@@ -381,16 +381,20 @@ createTodoViewModel todo =
 
 viewTodo : TodoViewModel msg -> Html msg
 viewTodo { content, done, startEditingContent, markDone, unmarkDone, contextName } =
+    let
+        doneIconBtn =
+            if done then
+                fBtnSA [ sClass "green" ] FeatherIcons.checkCircle unmarkDone
+
+            else
+                fBtnSA [ sClass "gray" ] FeatherIcons.circle markDone
+    in
     div
         [ class "pa3 w-100  bb b--light-gray"
         ]
         [ row ""
             []
-            [ if done then
-                fBtnSA [ sClass "green" ] FeatherIcons.checkCircle unmarkDone
-
-              else
-                fBtnSA [ sClass "gray" ] FeatherIcons.circle markDone
+            [ doneIconBtn
             , div
                 [ class "flex-grow-1 pointer"
                 , classList [ ( "strike gray ", done ) ]
