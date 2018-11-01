@@ -305,7 +305,7 @@ viewContext context =
         [ row ""
             []
             [ txtA [ style "width" "24px" ] ""
-            , txtA [ class "" ] context.name
+            , txtA [ class "flex-grow-1 pointer" ] context.name
             ]
         ]
 
