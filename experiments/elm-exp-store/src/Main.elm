@@ -202,7 +202,7 @@ update message model =
 
                     else
                         update (TodoStoreMsg <| TodoStore.addNew content) model
-                            |> andThenUpdate (SnackBarMsg <| SnackBar.show "Todo Added")
+                            |> andThenUpdate (SnackBarMsg <| SnackBar.show "Task Added")
 
                 Mode.AddContextOutMsg name ->
                     if isWhitespaceOrEmptyString name then

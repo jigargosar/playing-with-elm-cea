@@ -2,7 +2,8 @@ module SnackBar exposing (Msg, SnackBar, SnackBarTitle, empty, show, update, vie
 
 import BasicsX exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import Log
 import Process
 import Task
@@ -21,6 +22,7 @@ type alias SnackBar =
 type Msg
     = NoOp
     | Show SnackBarTitle
+    | Close
     | SetVisible Bool
     | Warn Log.Line
     | Kill
@@ -74,6 +76,11 @@ update message model =
                 |> andThenUpdate Kill
                 |> andThenUpdate Sleep
 
+        Close ->
+            pure model
+                |> andThenUpdate (SetVisible False)
+                |> andThenUpdate Kill
+
 
 view : SnackBar -> Html Msg
 view model =
@@ -85,7 +92,7 @@ viewSnackBar model =
         []
         [ row "bg-black white pa3"
             []
-            [ txt "Welcome to SnackBar"
-            , button [] [ text "close" ]
+            [ txt model.title
+            , button [ onClick Close ] [ text "close" ]
             ]
         ]
