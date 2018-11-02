@@ -322,19 +322,18 @@ viewEditTodoContextModal { selectedContextId, contexts } =
                 [ select
                     [ class "flex-auto pa3"
                     , onInput ContextIdChanged
+                    , HotKey.onKeyDown
+                        (\ke ->
+                            case ke of
+                                ( [], "Enter" ) ->
+                                    EndEditMode
 
-                    --                                        , HotKey.onKeyDown
-                    --                                            (\ke ->
-                    --                                                case ke of
-                    --                                                    ( [], "Enter" ) ->
-                    --                                                        EndEditMode
-                    --
-                    --                                                    ( [], "Escape" ) ->
-                    --                                                        EndEditMode
-                    --
-                    --                                                    _ ->
-                    --                                                        NoOp
-                    --                                            )
+                                ( [], "Escape" ) ->
+                                    EndEditMode
+
+                                _ ->
+                                    NoOp
+                        )
                     ]
                     (contexts
                         |> List.map
