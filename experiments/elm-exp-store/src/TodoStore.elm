@@ -9,6 +9,7 @@ module TodoStore exposing
     , load
     , markDone
     , setContent
+    , setContextId
     , unmarkDone
     , update
     )
@@ -91,6 +92,7 @@ type Msg
 
 type TodoMsg
     = SetContent TodoContent
+    | SetContextId ContextId
     | MarkDone
     | UnmarkDone
 
@@ -101,6 +103,10 @@ addNew =
 
 setContent id content =
     UpdateTodo id (SetContent content)
+
+
+setContextId id contextId =
+    UpdateTodo id (SetContextId contextId)
 
 
 markDone id =
@@ -170,6 +176,9 @@ maybeUpdateTodo now msg todo =
 
                 UnmarkDone ->
                     { todo | done = False }
+
+                SetContextId contextId ->
+                    { todo | contextId = contextId }
     in
     maybeBool (updatedTodo /= todo) { updatedTodo | modifiedAt = now }
 

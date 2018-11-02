@@ -84,6 +84,7 @@ type OutMsg
     = AddTodoOutMsg TodoContent
     | AddContextOutMsg ContextName
     | TodoContentUpdatedOutMsg TodoId TodoContent
+    | SetTodoContextOutMsg TodoId ContextId
     | ContextNameUpdatedOutMsg ContextId ContextName
 
 
@@ -226,6 +227,10 @@ update message model =
                     pure3 Default
                         |> addOutMsg3 (AddContextOutMsg name)
 
+                EditTodoContextMode todoId contextId ->
+                    pure3 Default
+                        |> addOutMsg3 (SetTodoContextOutMsg todoId contextId)
+
                 _ ->
                     pure3 Default
 
@@ -318,18 +323,18 @@ viewEditTodoContextModal { selectedContextId, contexts } =
                     [ class "flex-auto pa3"
                     , onInput ContextIdChanged
 
-                    --                    , HotKey.onKeyDown
-                    --                        (\ke ->
-                    --                            case ke of
-                    --                                ( [], "Enter" ) ->
-                    --                                    EndEditMode
+                    --                                        , HotKey.onKeyDown
+                    --                                            (\ke ->
+                    --                                                case ke of
+                    --                                                    ( [], "Enter" ) ->
+                    --                                                        EndEditMode
                     --
-                    --                                ( [], "Escape" ) ->
-                    --                                    EndEditMode
+                    --                                                    ( [], "Escape" ) ->
+                    --                                                        EndEditMode
                     --
-                    --                                _ ->
-                    --                                    NoOp
-                    --                        )
+                    --                                                    _ ->
+                    --                                                        NoOp
+                    --                                            )
                     ]
                     (contexts
                         |> List.map

@@ -228,6 +228,9 @@ update message model =
                     else
                         update (TodoStoreMsg <| TodoStore.setContent id content) model
 
+                Mode.SetTodoContextOutMsg todoId contextId ->
+                    update (TodoStoreMsg <| TodoStore.setContextId todoId contextId) model
+
                 Mode.ContextNameUpdatedOutMsg id name ->
                     if isWhitespaceOrEmptyString name then
                         pure model
