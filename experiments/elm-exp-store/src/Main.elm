@@ -144,6 +144,7 @@ update message model =
 
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
+                |> andThenUpdate (SnackBarMsg <| SnackBar.show ("Main: " :: logMessages |> String.join ""))
 
         SnackBarMsg msg ->
             Update2.lift
@@ -287,7 +288,9 @@ view model =
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         , Mode.viewModal model.mode |> Html.map ModeMsg
-        , SnackBar.view SnackBarMsg { actions = [ ( "View", NoOp ) ] } model.snackBar
+        , SnackBar.view SnackBarMsg { actions = [] } model.snackBar
+
+        --        , SnackBar.view SnackBarMsg { actions = [ ( "View", NoOp ) ] } model.snackBar
         ]
 
 
