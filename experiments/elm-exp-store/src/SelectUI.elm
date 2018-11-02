@@ -6,6 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import UI exposing (..)
+import UpdateReturn exposing (..)
 
 
 type alias Model =
@@ -31,6 +32,17 @@ type alias Options =
 
 type Msg
     = NoOp
+    | SelectClicked
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update message model =
+    case message of
+        NoOp ->
+            pure model
+
+        SelectClicked ->
+            pure { model | open = not model.open }
 
 
 view : Maybe OptionValue -> Options -> Model -> Html Msg
@@ -48,8 +60,8 @@ view maybeSelectedValue options model =
     in
     div [ class "flex flex-row" ]
         [ button
-            [ onClick NoOp
-            , class "flex items-center justify-center pa0 ma0"
+            [ onClick SelectClicked
+            , class "pa0 ma0 flex items-center justify-center color-inherit"
             ]
             [ div [ class "ttu pl2" ] [ text displayName ]
             , FeatherIcons.chevronDown |> FeatherIcons.toHtml []
