@@ -465,7 +465,8 @@ viewContextTodoListHeader { contextName, isContextNameClickable, onContextNameCl
         , div []
             [ text "@"
             , select
-                [ class ""
+                [ class "bn pa0 ma0 bg-transparent br0"
+                , style "-webkit-appearance" "none"
                 , onInput selectedContextChanged
                 ]
                 (contextSelectViewModel
