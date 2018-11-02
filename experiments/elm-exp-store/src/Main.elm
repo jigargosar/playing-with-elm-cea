@@ -380,8 +380,10 @@ viewContext { key, name, startEditingName, isNameEditable } =
 viewTodoList : Maybe ContextId -> Model -> Html Msg
 viewTodoList maybeContextId model =
     let
-        filterTodoList tl =
-            tl |> unpackMaybe (always tl) (\cid -> List.filter (.contextId >> eqs cid)) maybeContextId
+        filterTodoList =
+            maybeContextId
+                |> Maybe.map (\cid -> List.filter (.contextId >> eqs cid))
+                |> Maybe.withDefault identity
 
         viewPrimaryListKeyed =
             getCurrentTodoList model
