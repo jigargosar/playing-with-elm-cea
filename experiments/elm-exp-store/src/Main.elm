@@ -53,7 +53,7 @@ type alias Model =
     , snackBar : SnackBar
     , todoStore : TodoStore
     , contextStore : ContextStore
-    , todoFilters : Set TodoFilter
+    , todoFilters : List TodoFilter
     , mode : Mode
     , page : Page
     }
@@ -77,7 +77,7 @@ init flags =
         , snackBar = SnackBar.empty
         , todoStore = todoStore
         , contextStore = contextStore
-        , todoFilters = Set.empty
+        , todoFilters = []
         , mode = Mode.init
         , page = TodoList
         }
@@ -96,7 +96,6 @@ filterToFn filter =
 
 matchesFilters filters todo =
     filters
-        |> Set.toList
         |> List.map filterToFn
         |> allPass todo
 
@@ -129,6 +128,7 @@ type Msg
     | Warn Log.Line
     | SnackBarMsg SnackBar.Msg
     | SetPage Page
+    | TodoContextClicked Todo
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
     | MagicMenuMsg MagicMenu.Msg
@@ -157,6 +157,9 @@ update message model =
 
         SetPage page ->
             pure { model | page = page }
+
+        TodoContextClicked todo ->
+            pure { model | todoFilters = [ ContextIdFilter todo.contextId ] }
 
         TodoStoreMsg msg ->
             Update2.lift
@@ -389,6 +392,7 @@ type alias TodoViewModel msg =
     , startEditingContent : msg
     , markDone : msg
     , unmarkDone : msg
+    , contextClicked : msg
     }
 
 
@@ -401,6 +405,7 @@ createTodoViewModel todo =
         (ModeMsg <| Mode.startEditingTodo todo)
         (TodoStoreMsg <| TodoStore.markDone todo.id)
         (TodoStoreMsg <| TodoStore.unmarkDone todo.id)
+        (TodoContextClicked todo)
 
 
 viewTodo : TodoViewModel msg -> Html msg
