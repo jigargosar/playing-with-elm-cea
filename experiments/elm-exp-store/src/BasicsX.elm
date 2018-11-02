@@ -20,6 +20,7 @@ module BasicsX exposing
     , ter
     , tsDecoder
     , unless
+    , unpackMaybe
     , unpackResult
     , unwrapDecodeResult
     , unwrapMaybe
@@ -126,6 +127,15 @@ maybeBool bool value =
 
 unwrapMaybe dv fn =
     Maybe.map fn >> Maybe.withDefault dv
+
+
+unpackMaybe dvFn fn mb =
+    case mb of
+        Nothing ->
+            dvFn
+
+        Just val ->
+            fn val
 
 
 unpackResult errFn okFn result =

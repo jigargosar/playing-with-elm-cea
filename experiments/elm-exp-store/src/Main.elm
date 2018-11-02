@@ -40,6 +40,7 @@ import WheelEvent exposing (WheelEvent)
 
 type Page
     = TodoList
+    | ContextTodoList ContextId
     | ContextList
 
 
@@ -300,7 +301,10 @@ view model =
 viewPage model =
     case model.page of
         TodoList ->
-            viewTodoList model
+            viewTodoList Nothing model
+
+        ContextTodoList contextId ->
+            viewTodoList (Just contextId) model
 
         ContextList ->
             viewContextList model
@@ -373,11 +377,15 @@ viewContext { key, name, startEditingName, isNameEditable } =
     )
 
 
-viewTodoList : Model -> Html Msg
-viewTodoList model =
+viewTodoList : Maybe ContextId -> Model -> Html Msg
+viewTodoList maybeContextId model =
     let
+        filterTodoList tl =
+            tl |> unpackMaybe (always tl) (\cid -> List.filter (.contextId >> eqs cid)) maybeContextId
+
         viewPrimaryListKeyed =
             getCurrentTodoList model
+                |> filterTodoList
                 |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel todo) ))
     in
     div [ class "w-100 measure-wide" ]
