@@ -122,7 +122,7 @@ view maybeSelectedValue options model =
 
 viewOption option =
     txtA
-        [ class "ph3 pv2"
+        [ class "ph3 pv2 hover-bg-lightest-blue"
         , style "min-width" "8rem"
         , onClick <| ItemClicked option.value
         ]
