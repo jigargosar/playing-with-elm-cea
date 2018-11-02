@@ -425,7 +425,7 @@ viewContext { key, name, startEditingName, isNameEditable } =
 viewTodoList : ContextId -> Model -> Html Msg
 viewTodoList selectedContextId model =
     let
-        viewPrimaryListKeyed =
+        viewTodoListKeyed =
             getCurrentTodoList model
                 |> List.filter (.contextId >> eqs selectedContextId)
                 |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel model.contextStore todo) ))
@@ -442,7 +442,7 @@ viewTodoList selectedContextId model =
                 model.selectContextUI
                 |> Html.map SelectContextUIMsg
             ]
-        , Html.Keyed.node "div" [] viewPrimaryListKeyed
+        , Html.Keyed.node "div" [] viewTodoListKeyed
         ]
 
 
