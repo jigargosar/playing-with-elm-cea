@@ -435,7 +435,12 @@ viewTodoList selectedContextId model =
             createTodoListHeaderViewModel model.contextStore selectedContextId
         , row "pa3"
             []
-            [ ContextItem.viewSelectContext selectContextUIConfig
+            [ ContextItem.viewSelectContext
+                selectContextUIConfig
+                model.contextStore
+                model.contextId
+                model.selectContextUI
+                |> Html.map SelectContextUIMsg
             ]
         , Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
