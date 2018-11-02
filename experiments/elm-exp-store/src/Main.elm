@@ -80,7 +80,7 @@ init flags =
         , contextStore = contextStore
         , todoFilters = []
         , mode = Mode.init
-        , page = TodoList
+        , page = ContextTodoList ContextStore.defaultId
         }
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeTodoStoreLogLine)
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeContextStoreLogLine)
