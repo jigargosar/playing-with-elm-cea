@@ -4,7 +4,7 @@ module SelectUI exposing
     , Option
     , OptionValue
     , Options
-    , closed
+    , new
     , update
     , view
     )
@@ -23,7 +23,7 @@ type alias Model =
     }
 
 
-closed =
+new =
     { open = False }
 
 
@@ -44,8 +44,13 @@ type Msg
     | SelectClicked
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update message model =
+type alias Config msg =
+    { onSelect : OptionValue -> msg
+    }
+
+
+update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
+update config message model =
     case message of
         NoOp ->
             pure model

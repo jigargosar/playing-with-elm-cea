@@ -82,7 +82,7 @@ init flags =
         , contextStore = contextStore
         , todoFilters = []
         , contextId = ContextStore.defaultId
-        , selectContextUI = SelectUI.closed
+        , selectContextUI = SelectUI.new
         , mode = Mode.init
         , page = ContextTodoList ContextStore.defaultId
         }
@@ -172,13 +172,8 @@ update message model =
             pure model |> andThenUpdate (SetPage <| ContextTodoList contextId)
 
         SelectContextUIMsg msg ->
-            Update2.lift
-                .selectContextUI
-                (\s b -> { b | selectContextUI = s })
-                SelectContextUIMsg
-                SelectUI.update
-                msg
-                model
+            SelectUI.update { onSelect = SwitchToTodoListContext } msg model.selectContextUI
+                |> Tuple.mapFirst (\selectContextUI -> { model | selectContextUI = selectContextUI })
 
         TodoStoreMsg msg ->
             Update2.lift
