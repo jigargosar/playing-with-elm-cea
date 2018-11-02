@@ -157,7 +157,7 @@ type Msg
 
 selectContextUIConfig : SelectUI.Config Msg ContextItem
 selectContextUIConfig =
-    { onSelect = Tuple.first >> SwitchToTodoListContext
+    { onSelect = Tuple.second >> SwitchToTodoListContext
     , toMsg = SelectContextUIMsg
     , toLabel = Tuple.first
     }
