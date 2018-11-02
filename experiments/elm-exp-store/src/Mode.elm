@@ -120,14 +120,15 @@ update message model =
                     pure3 model
                         |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
+                EditTodoContextMode todoId contextId ->
+                    pure3 model
+                        |> andThenUpdate (FocusDomId modalContextIdSelectDomId)
+
                 EditContextMode id _ ->
                     pure3 model
                         |> andThenUpdate (FocusDomId modalContextInputDomId)
 
                 Default ->
-                    pure3 model
-
-                _ ->
                     pure3 model
 
         BackdropClicked ->
@@ -243,6 +244,10 @@ modalContextInputDomId =
     "modal-context-name-input"
 
 
+modalContextIdSelectDomId =
+    "modal-context-id-select"
+
+
 viewEditContentModal : DomId -> String -> Html Msg
 viewEditContentModal inputId content =
     backdrop
@@ -320,7 +325,8 @@ viewEditTodoContextModal { selectedContextId, contexts } =
             ]
             [ div [ class "w-100 flex" ]
                 [ select
-                    [ class "flex-auto pa3"
+                    [ id modalContextIdSelectDomId
+                    , class "flex-auto pa3"
                     , onInput ContextIdChanged
                     , HotKey.onKeyDown
                         (\ke ->
