@@ -107,11 +107,12 @@ view config maybeSelectedItem items model =
 viewOption : Config msg item -> item -> Html (Msg item)
 viewOption config item =
     div
-        [ class "ph3 pv2 hover-bg-lightest-blue"
+        [ class "hover-bg-lightest-blue"
         , style "min-width" "8rem"
         ]
         [ txtA
-            [ onClick <| ItemClicked item
+            [ class "ph3 pv2 "
+            , onClick <| ItemClicked item
             ]
             (config.toLabel item)
         ]
