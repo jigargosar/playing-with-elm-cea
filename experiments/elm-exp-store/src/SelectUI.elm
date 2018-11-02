@@ -118,4 +118,8 @@ view maybeSelectedValue options model =
 
 
 viewOption option =
-    txtA [ onClick <| ItemClicked option.value ] option.name
+    txtA
+        [ class "ph3 pv1"
+        , onClick <| ItemClicked option.value
+        ]
+        option.name
