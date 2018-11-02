@@ -425,8 +425,11 @@ viewTodoList selectedContextId model =
     div [ class "w-100 measure-wide" ]
         [ viewContextTodoListHeader <|
             createTodoListHeaderViewModel model.contextStore selectedContextId
-        , SelectUI.view (Just model.contextId) selectContextOptions model.selectContextUI
-            |> Html.map SelectContextMsg
+        , row "pa3"
+            []
+            [ SelectUI.view (Just model.contextId) selectContextOptions model.selectContextUI
+                |> Html.map SelectContextMsg
+            ]
         , Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
 

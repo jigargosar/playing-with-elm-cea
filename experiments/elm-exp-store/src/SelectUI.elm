@@ -46,7 +46,7 @@ view maybeSelectedValue options model =
                 |> Maybe.withDefault "<No Selection>"
     in
     div [ class "flex flex-row" ]
-        [ div [] [ text displayName ]
+        [ div [ class "ttu" ] [ text displayName ]
         , button
             [ onClick NoOp
             , class "flex items-center justify-center pa0 ma0"
