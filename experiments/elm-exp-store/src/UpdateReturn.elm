@@ -2,6 +2,7 @@ module UpdateReturn exposing
     ( Update3Config
     , addCmd
     , addCmd3
+    , addMsgCmd
     , addOutMsg3
     , andThen
     , andThen3
@@ -63,6 +64,10 @@ perform3 toMsg =
 
 perform toMsg =
     Task.perform toMsg >> addCmd
+
+
+addMsgCmd msg =
+    perform identity (Task.succeed msg)
 
 
 performWithNow toMsg =

@@ -172,7 +172,7 @@ update message model =
             pure model |> andThenUpdate (SetPage <| ContextTodoList contextId)
 
         SelectContextUIMsg msg ->
-            SelectUI.update { onSelect = SwitchToTodoListContext } msg model.selectContextUI
+            SelectUI.update { onSelect = SwitchToTodoListContext, toMsg = SelectContextUIMsg } msg model.selectContextUI
                 |> Tuple.mapFirst (\selectContextUI -> { model | selectContextUI = selectContextUI })
 
         TodoStoreMsg msg ->

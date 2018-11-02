@@ -16,8 +16,10 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
+import Process
 import Task
 import UI exposing (..)
+import Update2
 import UpdateReturn exposing (..)
 
 
@@ -53,6 +55,7 @@ type Msg
 
 type alias Config msg =
     { onSelect : OptionValue -> msg
+    , toMsg : Msg -> msg
     }
 
 
@@ -78,10 +81,10 @@ update config message model =
         ItemClicked item ->
             pure model
                 |> andThenUpdate Close
-                |> perform config.onSelect (Task.succeed item)
+                |> perform identity (Task.succeed <| config.onSelect item)
 
         OnFocusOut ->
-            pure model |> andThenUpdate Close
+            pure model |> perform (\_ -> config.toMsg Close) (Process.sleep 0)
 
 
 view : Maybe OptionValue -> Options -> Model -> Html Msg
@@ -100,8 +103,7 @@ view maybeSelectedValue options model =
     div
         [ id "select-context-ui"
         , class "relative"
-
-        --        , onFocusOut OnFocusOut
+        , onFocusOut OnFocusOut
         ]
         [ div [ class "flex flex-row" ]
             [ button
@@ -121,9 +123,12 @@ view maybeSelectedValue options model =
 
 
 viewOption option =
-    txtA
+    div
         [ class "ph3 pv2 hover-bg-lightest-blue"
         , style "min-width" "8rem"
-        , onClick <| ItemClicked option.value
         ]
-        option.name
+        [ txtA
+            [ onClick <| ItemClicked option.value
+            ]
+            option.name
+        ]
