@@ -74,7 +74,7 @@ update config message model =
             pure model |> nextTick (config.toMsg Close)
 
 
-view : Config msg item -> Maybe item -> List items -> Model -> Html (Msg item)
+view : Config msg item -> Maybe item -> List item -> Model -> Html (Msg item)
 view config maybeSelectedItem items model =
     let
         displayName =
@@ -104,6 +104,7 @@ view config maybeSelectedItem items model =
         ]
 
 
+viewOption : Config msg item -> item -> Html (Msg item)
 viewOption config item =
     div
         [ class "ph3 pv2 hover-bg-lightest-blue"
