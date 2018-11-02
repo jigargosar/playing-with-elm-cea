@@ -361,6 +361,10 @@ viewInbox =
         ]
 
 
+viewContextNameCA cs attrs name =
+    txtA ([ class ("ttu " ++ cs) ] ++ attrs) ("@" ++ name)
+
+
 viewContext : ContextViewModel msg -> ( String, Html msg )
 viewContext { key, name, startEditingName, isNameEditable } =
     ( key
@@ -370,12 +374,11 @@ viewContext { key, name, startEditingName, isNameEditable } =
         [ row ""
             []
             [ txtA [ style "width" "24px" ] ""
-            , txtA
-                [ class "flex-grow-1 ttu"
-                , classList [ ( "pointer", isNameEditable ) ]
+            , viewContextNameCA "flex-auto"
+                [ classList [ ( "pointer", isNameEditable ) ]
                 , onClick startEditingName
                 ]
-                ("@" ++ name)
+                name
             ]
         ]
     )
@@ -401,7 +404,7 @@ viewTodoList maybeContextId model =
 
 
 viewContextTodoListHeader model contextId =
-    row "" [] [ txtC "f4" contextId ]
+    row "" [] [ txtC "f4" (getNameByContextId contextId model) ]
 
 
 type alias TodoViewModel msg =
