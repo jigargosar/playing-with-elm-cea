@@ -62,7 +62,7 @@ update message model =
 
         Sleep ->
             ( model
-            , Process.sleep (1000 * 5)
+            , Process.sleep (1000 * 15)
                 |> Task.attempt
                     (unpackResult (\_ -> Warn [ "Sleep Failed" ]) (\_ -> SetVisible False))
             )
