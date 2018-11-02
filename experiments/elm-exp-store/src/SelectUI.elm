@@ -100,7 +100,7 @@ view maybeSelectedValue options model =
     div
         [ id "select-context-ui"
         , class "relative"
-        , onFocusOut OnFocusOut
+--        , onFocusOut OnFocusOut
         ]
         [ div [ class "flex flex-row" ]
             [ button
