@@ -112,14 +112,18 @@ view maybeSelectedValue options model =
                 , FeatherIcons.chevronDown |> FeatherIcons.toHtml []
                 ]
             ]
-        , div [ class "absolute bg-white ba", classList [ ( "dn", not model.open ) ] ]
+        , div
+            [ class "absolute pv1 bg-white ba b--moon-gray"
+            , classList [ ( "dn", not model.open ) ]
+            ]
             (List.map viewOption options)
         ]
 
 
 viewOption option =
     txtA
-        [ class "ph3 pv1"
+        [ class "ph3 pv2"
+        , style "min-width" "8rem"
         , onClick <| ItemClicked option.value
         ]
         option.name
