@@ -124,6 +124,15 @@ getNameByContextId contextId =
     .contextStore >> ContextStore.getNameOrDefaultById contextId
 
 
+type alias ContextItem =
+    ( String, ContextId )
+
+
+getContextItem : Model -> ContextItem
+getContextItem model =
+    ( getNameByContextId model.contextId model, model.contextId )
+
+
 
 ---- UPDATE ----
 
@@ -137,7 +146,7 @@ type Msg
     | Warn Log.Line
     | SnackBarMsg SnackBar.Msg
     | SetPage Page
-    | SelectContextUIMsg SelectUI.Msg
+    | SelectContextUIMsg (SelectUI.Msg ContextItem)
     | SwitchToTodoListContext ContextId
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
@@ -146,10 +155,11 @@ type Msg
     | ModeOutMsg Mode.OutMsg
 
 
-selectContextUIConfig : SelectUI.Config Msg
+selectContextUIConfig : SelectUI.Config Msg ContextItem
 selectContextUIConfig =
-    { onSelect = SwitchToTodoListContext
+    { onSelect = Tuple.first >> SwitchToTodoListContext
     , toMsg = SelectContextUIMsg
+    , toLabel = Tuple.first
     }
 
 
@@ -423,19 +433,19 @@ viewTodoList selectedContextId model =
                 |> List.filter (.contextId >> eqs selectedContextId)
                 |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel model.contextStore todo) ))
 
-        selectContextOptions : SelectUI.Options
-        selectContextOptions =
+        contextItems : List ContextItem
+        contextItems =
             model.contextStore
                 |> ContextStore.list
-                >> List.map (\c -> SelectUI.Option c.name c.id)
-                >> (::) (SelectUI.Option ContextStore.defaultName ContextStore.defaultId)
+                >> List.map (\c -> ( c.name, c.id ))
+                >> (::) ( ContextStore.defaultName, ContextStore.defaultId )
     in
     div [ class "w-100 measure-wide" ]
         [ viewContextTodoListHeader <|
             createTodoListHeaderViewModel model.contextStore selectedContextId
         , row "pa3"
             []
-            [ SelectUI.view (Just model.contextId) selectContextOptions model.selectContextUI
+            [ SelectUI.view selectContextUIConfig (Just <| getContextItem model) contextItems model.selectContextUI
                 |> Html.map SelectContextUIMsg
             ]
         , Html.Keyed.node "div" [] viewPrimaryListKeyed
