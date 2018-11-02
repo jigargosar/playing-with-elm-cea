@@ -78,7 +78,7 @@ view maybeSelectedValue options model =
                     )
                 |> Maybe.withDefault "<No Selection>"
     in
-    div [ class "relative" ]
+    div [ class "" ]
         [ div [ class "flex flex-row" ]
             [ button
                 [ onClick SelectClicked
@@ -88,9 +88,7 @@ view maybeSelectedValue options model =
                 , FeatherIcons.chevronDown |> FeatherIcons.toHtml []
                 ]
             ]
-        , div [ class "absolute" ]
-            [ boolHtml model.open <|
-                div [ class "absolute top-0 bg-white ba pa3 vs2" ]
-                    (List.map (\o -> txtA [ onClick <| Selected o.value ] o.name) options)
-            ]
+        , boolHtml model.open <|
+            div [ class "absolute bg-white ba pa3 vs2" ]
+                (List.map (\o -> txtA [ onClick <| Selected o.value ] o.name) options)
         ]
