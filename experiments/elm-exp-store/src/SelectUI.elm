@@ -1,4 +1,4 @@
-module SelectUI exposing (Model, Msg(..), Option, OptionValue, closed, view)
+module SelectUI exposing (Model, Msg(..), Option, OptionValue, Options, closed, view)
 
 import BasicsX exposing (..)
 import FeatherIcons
@@ -45,11 +45,11 @@ view maybeSelectedValue options model =
                     )
                 |> Maybe.withDefault "<No Selection>"
     in
-    div [ class "flex flex-row hs2" ]
+    div [ class "flex flex-row" ]
         [ div [] [ text displayName ]
         , button
             [ onClick NoOp
             , class "flex items-center justify-center pa0 ma0"
             ]
-            [ FeatherIcons.arrowDownCircle |> FeatherIcons.toHtml [] ]
+            [ FeatherIcons.chevronDown |> FeatherIcons.toHtml [] ]
         ]

@@ -137,6 +137,7 @@ type Msg
     | Warn Log.Line
     | SnackBarMsg SnackBar.Msg
     | SetPage Page
+    | SelectContextMsg SelectUI.Msg
     | SwitchToTodoListContext ContextId
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
@@ -166,6 +167,9 @@ update message model =
 
         SetPage page ->
             pure { model | page = page }
+
+        SelectContextMsg msg ->
+            ( model, Cmd.none )
 
         SwitchToTodoListContext contextId ->
             pure model |> andThenUpdate (SetPage <| ContextTodoList contextId)
@@ -410,10 +414,19 @@ viewTodoList selectedContextId model =
             getCurrentTodoList model
                 |> List.filter (.contextId >> eqs selectedContextId)
                 |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel model.contextStore todo) ))
+
+        selectContextOptions : SelectUI.Options
+        selectContextOptions =
+            model.contextStore
+                |> ContextStore.list
+                >> List.map (\c -> SelectUI.Option c.name c.id)
+                >> (::) (SelectUI.Option ContextStore.defaultName ContextStore.defaultId)
     in
     div [ class "w-100 measure-wide" ]
         [ viewContextTodoListHeader <|
             createTodoListHeaderViewModel model.contextStore selectedContextId
+        , SelectUI.view (Just model.contextId) selectContextOptions model.selectContextUI
+            |> Html.map SelectContextMsg
         , Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
 
