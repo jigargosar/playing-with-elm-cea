@@ -67,12 +67,15 @@ view maybeSelectedValue options model =
                     )
                 |> Maybe.withDefault "<No Selection>"
     in
-    div [ class "flex flex-row" ]
-        [ button
-            [ onClick SelectClicked
-            , class "pa0 ma0 flex items-center justify-center color-inherit"
+    div []
+        [ div [ class "flex flex-row" ]
+            [ button
+                [ onClick SelectClicked
+                , class "pa0 ma0 flex items-center justify-center color-inherit"
+                ]
+                [ div [ class "ttu" ] [ text displayName ]
+                , FeatherIcons.chevronDown |> FeatherIcons.toHtml []
+                ]
             ]
-            [ div [ class "ttu pl2" ] [ text displayName ]
-            , FeatherIcons.chevronDown |> FeatherIcons.toHtml []
-            ]
+        , boolHtml model.open <| div [] (List.map (\o -> txt o.name) options)
         ]
