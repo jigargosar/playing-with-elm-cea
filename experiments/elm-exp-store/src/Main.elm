@@ -160,7 +160,7 @@ update message model =
             pure { model | page = page }
 
         TodoContextClicked todo ->
-            pure { model | todoFilters = [ ContextIdFilter todo.contextId ] }
+            pure model |> andThenUpdate (SetPage <| ContextTodoList todo.contextId)
 
         TodoStoreMsg msg ->
             Update2.lift
