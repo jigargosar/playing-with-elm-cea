@@ -100,7 +100,8 @@ view maybeSelectedValue options model =
     div
         [ id "select-context-ui"
         , class "relative"
---        , onFocusOut OnFocusOut
+
+        --        , onFocusOut OnFocusOut
         ]
         [ div [ class "flex flex-row" ]
             [ button
@@ -111,7 +112,10 @@ view maybeSelectedValue options model =
                 , FeatherIcons.chevronDown |> FeatherIcons.toHtml []
                 ]
             ]
-        , boolHtml model.open <|
-            div [ class "absolute bg-white ba pa3 vs2" ]
-                (List.map (\o -> txtA [ onClick <| ItemClicked o.value ] o.name) options)
+        , div [ class "absolute bg-white ba", classList [ ( "dn", not model.open ) ] ]
+            (List.map viewOption options)
         ]
+
+
+viewOption option =
+    txtA [ onClick <| ItemClicked option.value ] option.name
