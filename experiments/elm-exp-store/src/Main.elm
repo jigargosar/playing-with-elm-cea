@@ -133,7 +133,7 @@ type Msg
     | Warn Log.Line
     | SnackBarMsg SnackBar.Msg
     | SetPage Page
-    | TodoContextClicked Todo
+    | SwitchToTodoListContext ContextId
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
     | MagicMenuMsg MagicMenu.Msg
@@ -163,8 +163,8 @@ update message model =
         SetPage page ->
             pure { model | page = page }
 
-        TodoContextClicked todo ->
-            pure model |> andThenUpdate (SetPage <| ContextTodoList todo.contextId)
+        SwitchToTodoListContext contextId ->
+            pure model |> andThenUpdate (SetPage <| ContextTodoList contextId)
 
         TodoStoreMsg msg ->
             Update2.lift
@@ -425,18 +425,18 @@ viewTodoList maybeContextId model =
         ]
 
 
-type alias TodoListHeaderViewModel msg =
-    { contextName : String
-    , isContextNameClickable : Bool
-    , onContextNameClicked : msg
-    }
-
-
 createTodoListHeaderViewModel : ContextStore -> ContextId -> TodoListHeaderViewModel Msg
-createTodoListHeaderViewModel contextStore contextId =
+createTodoListHeaderViewModel contextStore selectedContextId =
     let
         maybeContext =
-            ContextStore.get contextId contextStore
+            ContextStore.get selectedContextId contextStore
+
+        contextSelectViewModel : ContextStore -> List ( String, ContextId, Bool )
+        contextSelectViewModel =
+            ContextStore.list
+                >> List.map (\c -> ( c.name, c.id ))
+                >> (::) ( ContextStore.defaultName, ContextStore.defaultId )
+                >> List.map (\( name, contextId ) -> ( name, contextId, contextId == selectedContextId ))
     in
     case maybeContext of
         Nothing ->
@@ -444,16 +444,29 @@ createTodoListHeaderViewModel contextStore contextId =
                 ContextStore.defaultName
                 False
                 NoOp
+                (contextSelectViewModel contextStore)
+                SwitchToTodoListContext
 
         Just context ->
             TodoListHeaderViewModel
                 context.name
                 True
                 (startEditingContextMsg context)
+                (contextSelectViewModel contextStore)
+                SwitchToTodoListContext
+
+
+type alias TodoListHeaderViewModel msg =
+    { contextName : String
+    , isContextNameClickable : Bool
+    , onContextNameClicked : msg
+    , contextSelectViewModel : List ( String, ContextId, Bool )
+    , selectedContextChanged : ContextId -> msg
+    }
 
 
 viewContextTodoListHeader : TodoListHeaderViewModel msg -> Html msg
-viewContextTodoListHeader { contextName, isContextNameClickable, onContextNameClicked } =
+viewContextTodoListHeader { contextName, isContextNameClickable, onContextNameClicked, selectedContextChanged, contextSelectViewModel } =
     row "pa3"
         []
         [ viewContextNameCA ""
@@ -461,6 +474,29 @@ viewContextTodoListHeader { contextName, isContextNameClickable, onContextNameCl
             , onClick <| onContextNameClicked
             ]
             contextName
+        , select
+            [ class ""
+            , onInput selectedContextChanged
+
+            --                              , HotKey.onKeyDown
+            --                                  (\ke ->
+            --                                      case ke of
+            --                                          ( [], "Enter" ) ->
+            --                                              EndEditMode
+            --
+            --                                          ( [], "Escape" ) ->
+            --                                              EndEditMode
+            --
+            --                                          _ ->
+            --                                              NoOp
+            --                                  )
+            ]
+            (contextSelectViewModel
+                |> List.map
+                    (\( optionText, optionValue, isSelected ) ->
+                        option [ selected isSelected, value optionValue ] [ text optionText ]
+                    )
+            )
         ]
 
 
