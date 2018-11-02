@@ -82,8 +82,12 @@ update message model =
                 |> andThenUpdate Kill
 
 
+type alias Action msg =
+    ( String, msg )
+
+
 type alias Config msg =
-    { actions : List ( String, msg )
+    { actions : List (Action msg)
     }
 
 
@@ -95,9 +99,9 @@ view toMsg config model =
 viewSnackBar : (Msg -> msg) -> Config msg -> SnackBar -> Html msg
 viewSnackBar toMsg config model =
     let
-        btnFromAction : Html -> msg
-        btnFromAction =
-            button [ onClick <| toMsg Close ] [ text "close" ]
+        btnFromAction : Action msg -> Html msg
+        btnFromAction ( title, msg ) =
+            button [ onClick <| msg ] [ text title ]
     in
     row "w-100 absolute  bottom-0 z-2 justify-center "
         []
