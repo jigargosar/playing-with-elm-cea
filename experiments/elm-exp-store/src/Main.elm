@@ -148,7 +148,9 @@ type Msg
 
 selectContextUIConfig : SelectUI.Config Msg
 selectContextUIConfig =
-    { onSelect = SwitchToTodoListContext, toMsg = SelectContextUIMsg }
+    { onSelect = SwitchToTodoListContext
+    , toMsg = SelectContextUIMsg
+    }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
