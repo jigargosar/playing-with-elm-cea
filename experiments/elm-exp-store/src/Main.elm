@@ -409,7 +409,7 @@ createTodoViewModel todo =
 
 
 viewTodo : TodoViewModel msg -> Html msg
-viewTodo { content, done, startEditingContent, markDone, unmarkDone, contextName } =
+viewTodo { content, done, startEditingContent, markDone, unmarkDone, contextName, contextClicked } =
     let
         doneIconBtn =
             if done then
@@ -431,7 +431,7 @@ viewTodo { content, done, startEditingContent, markDone, unmarkDone, contextName
                     , onClick startEditingContent
                     ]
                     [ txt content ]
-                , txtA [ class "f6 gray" ] contextName
+                , txtA [ class "f6 gray pointer", onClick contextClicked ] contextName
                 ]
             ]
         ]
