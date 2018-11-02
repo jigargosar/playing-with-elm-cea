@@ -462,29 +462,19 @@ viewContextTodoListHeader { contextName, isContextNameClickable, onContextNameCl
             , onClick <| onContextNameClicked
             ]
             contextName
-        , select
-            [ class ""
-            , onInput selectedContextChanged
-
-            --                              , HotKey.onKeyDown
-            --                                  (\ke ->
-            --                                      case ke of
-            --                                          ( [], "Enter" ) ->
-            --                                              EndEditMode
-            --
-            --                                          ( [], "Escape" ) ->
-            --                                              EndEditMode
-            --
-            --                                          _ ->
-            --                                              NoOp
-            --                                  )
+        , div []
+            [ text "@"
+            , select
+                [ class ""
+                , onInput selectedContextChanged
+                ]
+                (contextSelectViewModel
+                    |> List.map
+                        (\( optionText, optionValue, isSelected ) ->
+                            option [ selected isSelected, value optionValue ] [ txtC "ttu" optionText ]
+                        )
+                )
             ]
-            (contextSelectViewModel
-                |> List.map
-                    (\( optionText, optionValue, isSelected ) ->
-                        option [ selected isSelected, value optionValue ] [ text optionText ]
-                    )
-            )
         ]
 
 
