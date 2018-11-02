@@ -14,6 +14,7 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Task
 import UI exposing (..)
 import UpdateReturn exposing (..)
 
@@ -42,6 +43,7 @@ type alias Options =
 type Msg
     = NoOp
     | SelectClicked
+    | Selected OptionValue
 
 
 type alias Config msg =
@@ -57,6 +59,10 @@ update config message model =
 
         SelectClicked ->
             pure { model | open = not model.open }
+
+        Selected item ->
+            pure { model | open = False }
+                |> perform config.onSelect (Task.succeed item)
 
 
 view : Maybe OptionValue -> Options -> Model -> Html Msg
@@ -84,6 +90,7 @@ view maybeSelectedValue options model =
             ]
         , div [ class "absolute" ]
             [ boolHtml model.open <|
-                div [ class "absolute top-0 bg-white ba pa3 vs2" ] (List.map (\o -> txt o.name) options)
+                div [ class "absolute top-0 bg-white ba pa3 vs2" ]
+                    (List.map (\o -> txtA [ onClick <| Selected o.value ] o.name) options)
             ]
         ]
