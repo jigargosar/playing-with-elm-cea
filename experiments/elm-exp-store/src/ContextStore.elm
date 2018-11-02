@@ -6,6 +6,7 @@ module ContextStore exposing
     , Msg
     , addNew
     , defaultId
+    , getNameOrDefaultById
     , list
     , load
     , setName
@@ -160,3 +161,8 @@ andThenUpdate msg =
 
 list =
     .contextLookup >> Dict.values
+
+
+getNameOrDefaultById : ContextId -> ContextStore -> ContextName
+getNameOrDefaultById id =
+    .contextLookup >> Dict.get id >> unwrapMaybe "Inbox" .name

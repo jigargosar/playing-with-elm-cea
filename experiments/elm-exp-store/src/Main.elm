@@ -27,7 +27,7 @@ import Svg.Attributes
 import Task
 import Time
 import TodoStore exposing (Todo, TodoStore)
-import UI exposing (fBtnSA, row, sClass, txt, txtA, txtC)
+import UI exposing (..)
 import Update2
 import Update3
 import UpdateReturn exposing (..)
@@ -114,6 +114,10 @@ getCurrentContextList model =
     model.contextStore
         |> ContextStore.list
         |> List.sortBy .createdAt
+
+
+getNameByContextId contextId =
+    .contextStore >> ContextStore.getNameOrDefaultById contextId
 
 
 
@@ -388,11 +392,16 @@ viewTodoList maybeContextId model =
         viewPrimaryListKeyed =
             getCurrentTodoList model
                 |> filterTodoList
-                |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel todo) ))
+                |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel model.contextStore todo) ))
     in
     div [ class "w-100 measure-wide" ]
-        [ Html.Keyed.node "div" [] viewPrimaryListKeyed
+        [ maybeHtml (viewContextTodoListHeader model) maybeContextId
+        , Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
+
+
+viewContextTodoListHeader model contextId =
+    row "" [] [ txtC "f4" contextId ]
 
 
 type alias TodoViewModel msg =
@@ -406,12 +415,12 @@ type alias TodoViewModel msg =
     }
 
 
-createTodoViewModel : Todo -> TodoViewModel Msg
-createTodoViewModel todo =
+createTodoViewModel : ContextStore -> Todo -> TodoViewModel Msg
+createTodoViewModel contextStore todo =
     TodoViewModel
         (defaultEmptyStringTo "<empty>" todo.content)
         todo.done
-        "Inbox"
+        (ContextStore.getNameOrDefaultById todo.contextId contextStore)
         (ModeMsg <| Mode.startEditingTodo todo)
         (TodoStoreMsg <| TodoStore.markDone todo.id)
         (TodoStoreMsg <| TodoStore.unmarkDone todo.id)

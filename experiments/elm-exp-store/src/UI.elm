@@ -6,6 +6,7 @@ module UI exposing
     , fBtnSA
     , flexV
     , link
+    , maybeHtml
     , root
     , row
     , rowS3
@@ -17,6 +18,7 @@ module UI exposing
     , txtC
     )
 
+import BasicsX exposing (unwrapMaybe)
 import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -65,12 +67,20 @@ type alias Disabled =
     Bool
 
 
+noHtml =
+    text ""
+
+
 boolHtml bool html_ =
     if bool then
         html_
 
     else
-        text ""
+        noHtml
+
+
+maybeHtml htmlFn =
+    unwrapMaybe noHtml htmlFn
 
 
 txt l =
