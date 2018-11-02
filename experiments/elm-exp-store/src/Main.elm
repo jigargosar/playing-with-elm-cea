@@ -453,7 +453,7 @@ viewTodo { content, done, startEditingContent, markDone, unmarkDone, contextName
                     , onClick startEditingContent
                     ]
                     [ txt content ]
-                , txtA [ class "f6 gray pointer", onClick contextClicked ] contextName
+                , viewContextNameCA "f7 gray pointer" [ onClick contextClicked ] contextName
                 ]
             ]
         ]
