@@ -471,7 +471,7 @@ viewContextTodoListHeader { contextName, isContextNameClickable, onContextNameCl
                 (contextSelectViewModel
                     |> List.map
                         (\( optionText, optionValue, isSelected ) ->
-                            option [ selected isSelected, value optionValue ] [ txtC "ttu" optionText ]
+                            option [ selected isSelected, value optionValue ] [ optionText ]
                         )
                 )
             ]
