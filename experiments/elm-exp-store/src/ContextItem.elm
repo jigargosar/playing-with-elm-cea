@@ -16,14 +16,14 @@ allContextItems =
         >> (::) ( ContextStore.defaultName, ContextStore.defaultId )
 
 
-contextItemWithId : ContextStore -> ContextId -> ContextItem
-contextItemWithId contextStore contextId =
+createContextItemById : ContextStore -> ContextId -> ContextItem
+createContextItemById contextStore contextId =
     ( ContextStore.getNameOrDefaultById contextId contextStore, contextId )
 
 
 viewSelectContext : SelectUI.Config msg ContextItem -> ContextStore -> ContextId -> SelectUI.Model -> Html (SelectUI.Msg ContextItem)
 viewSelectContext config contextStore currentContextId selectUIModel =
     SelectUI.view config
-        (Just <| contextItemWithId contextStore currentContextId)
+        (Just <| createContextItemById contextStore currentContextId)
         (allContextItems contextStore)
         selectUIModel
