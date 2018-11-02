@@ -418,41 +418,41 @@ viewTodoList maybeContextId model =
     div [ class "w-100 measure-wide" ]
         [ maybeHtml
             (viewContextTodoListHeader
-                << createTodoListContextHeaderViewModel model.contextStore
+                << createTodoListHeaderViewModel model.contextStore
             )
             maybeContextId
         , Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
 
 
-type alias TodoListContextHeaderViewModel msg =
+type alias TodoListHeaderViewModel msg =
     { contextName : String
     , isContextNameClickable : Bool
     , onContextNameClicked : msg
     }
 
 
-createTodoListContextHeaderViewModel : ContextStore -> ContextId -> TodoListContextHeaderViewModel Msg
-createTodoListContextHeaderViewModel contextStore contextId =
+createTodoListHeaderViewModel : ContextStore -> ContextId -> TodoListHeaderViewModel Msg
+createTodoListHeaderViewModel contextStore contextId =
     let
         maybeContext =
             ContextStore.get contextId contextStore
     in
     case maybeContext of
         Nothing ->
-            TodoListContextHeaderViewModel
+            TodoListHeaderViewModel
                 ContextStore.defaultName
                 False
                 NoOp
 
         Just context ->
-            TodoListContextHeaderViewModel
+            TodoListHeaderViewModel
                 context.name
                 True
                 (startEditingContextMsg context)
 
 
-viewContextTodoListHeader : TodoListContextHeaderViewModel msg -> Html msg
+viewContextTodoListHeader : TodoListHeaderViewModel msg -> Html msg
 viewContextTodoListHeader { contextName, isContextNameClickable, onContextNameClicked } =
     row "pa3"
         []
