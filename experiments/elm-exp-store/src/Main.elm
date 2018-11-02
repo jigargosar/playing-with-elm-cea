@@ -343,7 +343,7 @@ createContextViewModel : Context -> ContextViewModel Msg
 createContextViewModel context =
     ContextViewModel
         context.id
-        (defaultEmptyStringTo "<empty>" context.name)
+        (defaultEmptyStringTo "<empty context name>" context.name)
         True
         (ModeMsg <| Mode.startEditingContext context)
 
@@ -418,7 +418,7 @@ type alias TodoViewModel msg =
 createTodoViewModel : ContextStore -> Todo -> TodoViewModel Msg
 createTodoViewModel contextStore todo =
     TodoViewModel
-        (defaultEmptyStringTo "<empty>" todo.content)
+        (defaultEmptyStringTo "<empty task>" todo.content)
         todo.done
         (ContextStore.getNameOrDefaultById todo.contextId contextStore)
         (ModeMsg <| Mode.startEditingTodo todo)
