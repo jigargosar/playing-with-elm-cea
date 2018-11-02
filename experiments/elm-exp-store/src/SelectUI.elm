@@ -1,4 +1,13 @@
-module SelectUI exposing (Model, Msg(..), Option, OptionValue, Options, closed, view)
+module SelectUI exposing
+    ( Model
+    , Msg(..)
+    , Option
+    , OptionValue
+    , Options
+    , closed
+    , update
+    , view
+    )
 
 import BasicsX exposing (..)
 import FeatherIcons

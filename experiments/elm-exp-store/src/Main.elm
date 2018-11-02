@@ -137,7 +137,7 @@ type Msg
     | Warn Log.Line
     | SnackBarMsg SnackBar.Msg
     | SetPage Page
-    | SelectContextMsg SelectUI.Msg
+    | SelectContextUIMsg SelectUI.Msg
     | SwitchToTodoListContext ContextId
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
@@ -168,11 +168,17 @@ update message model =
         SetPage page ->
             pure { model | page = page }
 
-        SelectContextMsg msg ->
-            ( model, Cmd.none )
-
         SwitchToTodoListContext contextId ->
             pure model |> andThenUpdate (SetPage <| ContextTodoList contextId)
+
+        SelectContextUIMsg msg ->
+            Update2.lift
+                .selectContextUI
+                (\s b -> { b | selectContextUI = s })
+                SelectContextUIMsg
+                SelectUI.update
+                msg
+                model
 
         TodoStoreMsg msg ->
             Update2.lift
@@ -428,7 +434,7 @@ viewTodoList selectedContextId model =
         , row "pa3"
             []
             [ SelectUI.view (Just model.contextId) selectContextOptions model.selectContextUI
-                |> Html.map SelectContextMsg
+                |> Html.map SelectContextUIMsg
             ]
         , Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
