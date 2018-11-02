@@ -28,6 +28,7 @@ import UpdateReturn exposing (..)
 type Mode
     = Default
     | EditTodoMode TodoId TodoContent
+    | EditTodoContextMode TodoId ContextId
     | EditContextMode ContextId ContextName
     | AddTodoMode TodoContent
     | AddContextMode ContextName
@@ -49,8 +50,10 @@ type Msg
     | StartAddingTodo
     | StartAddingContext
     | StartEditingTodo Todo
+    | StartEditingTodoContext Todo
     | StartEditingContext Context
     | TextInputChanged TodoContent
+    | ContextIdChanged ContextId
     | EndEditMode
     | FocusDomId DomId
     | AutoFocus
@@ -66,6 +69,10 @@ startAddingContext =
 
 startEditingTodo =
     StartEditingTodo
+
+
+startEditingTodoContext =
+    StartEditingTodoContext
 
 
 startEditingContext =
@@ -118,6 +125,9 @@ update message model =
                 Default ->
                     pure3 model
 
+                _ ->
+                    pure3 model
+
         BackdropClicked ->
             update EndEditMode model
 
@@ -125,6 +135,16 @@ update message model =
             case model of
                 Default ->
                     EditTodoMode todo.id todo.content
+                        |> pure3
+                        |> andThenUpdate AutoFocus
+
+                _ ->
+                    pure3 model
+
+        StartEditingTodoContext todo ->
+            case model of
+                Default ->
+                    EditTodoContextMode todo.id todo.contextId
                         |> pure3
                         |> andThenUpdate AutoFocus
 
@@ -182,6 +202,18 @@ update message model =
                 Default ->
                     pure3 model
                         |> andThenUpdate (Warn [ "Invalid Msg TextInputChanged received in Default Mode" ])
+
+                EditTodoContextMode _ _ ->
+                    pure3 model
+
+        ContextIdChanged newContextId ->
+            case model of
+                EditTodoContextMode todoId _ ->
+                    pure3 <| EditTodoContextMode todoId newContextId
+
+                _ ->
+                    pure3 model
+                        |> andThenUpdate (Warn [ "Invalid Msg TextInputChanged received in Invalid Mode" ])
 
         EndEditMode ->
             case model of
@@ -246,7 +278,70 @@ viewEditContentModal inputId content =
         ]
 
 
-viewModal mode =
+type alias EditTodoContextModalViewModel =
+    { contexts : List ( String, ContextId )
+    , selectedContextId : ContextId
+    , todoContent : String
+    }
+
+
+createEditTodoContextModalViewModel contexts todoId contextId =
+    EditTodoContextModalViewModel
+        contexts
+        contextId
+        todoId
+
+
+viewEditTodoContextModal : EditTodoContextModalViewModel -> Html Msg
+viewEditTodoContextModal { selectedContextId, contexts } =
+    let
+        backDropId =
+            "edit-todo-context-modal-backdrop"
+    in
+    backdrop
+        [ id backDropId
+        , onClickTargetId
+            (\targetId ->
+                if targetId == backDropId then
+                    BackdropClicked
+
+                else
+                    NoOp
+            )
+        ]
+        [ div
+            [ class "bg-white br4 shadow-1 pa3 measure w-100"
+            ]
+            [ div [ class "w-100 flex" ]
+                [ select
+                    [ class "flex-auto pa3"
+                    , onInput ContextIdChanged
+
+                    --                    , HotKey.onKeyDown
+                    --                        (\ke ->
+                    --                            case ke of
+                    --                                ( [], "Enter" ) ->
+                    --                                    EndEditMode
+                    --
+                    --                                ( [], "Escape" ) ->
+                    --                                    EndEditMode
+                    --
+                    --                                _ ->
+                    --                                    NoOp
+                    --                        )
+                    ]
+                    (contexts
+                        |> List.map
+                            (\( name, contextId ) ->
+                                option [ selected (contextId == selectedContextId), value contextId ] [ text name ]
+                            )
+                    )
+                ]
+            ]
+        ]
+
+
+viewModal contexts mode =
     case mode of
         AddTodoMode content ->
             viewEditContentModal modalTodoInputDomId content
@@ -256,6 +351,9 @@ viewModal mode =
 
         EditTodoMode id content ->
             viewEditContentModal modalTodoInputDomId content
+
+        EditTodoContextMode todoId contextId ->
+            viewEditTodoContextModal <| createEditTodoContextModalViewModel contexts todoId contextId
 
         EditContextMode id content ->
             viewEditContentModal modalContextInputDomId content

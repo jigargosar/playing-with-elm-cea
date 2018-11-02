@@ -283,6 +283,13 @@ mockActions =
         |> (::) (MagicMenu.Action FeatherIcons.filePlus startAddingTodoMsg)
 
 
+getAllContextsNameIdPairs =
+    .contextStore
+        >> ContextStore.list
+        >> List.map (\c -> ( c.name, c.id ))
+        >> (::) ( ContextStore.defaultName, ContextStore.defaultId )
+
+
 view : Model -> Html Msg
 view model =
     UI.root
@@ -299,7 +306,7 @@ view model =
             ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
-        , Mode.viewModal model.mode |> Html.map ModeMsg
+        , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         , SnackBar.view SnackBarMsg { actions = [] } model.snackBar
 
         --        , SnackBar.view SnackBarMsg { actions = [ ( "View", NoOp ) ] } model.snackBar
