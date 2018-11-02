@@ -81,10 +81,10 @@ update config message model =
         ItemClicked item ->
             pure model
                 |> andThenUpdate Close
-                |> perform identity (Task.succeed <| config.onSelect item)
+                |> addMsgCmd (config.onSelect item)
 
         OnFocusOut ->
-            pure model |> perform (\_ -> config.toMsg Close) (Process.sleep 0)
+            pure model |> nextTick (config.toMsg Close)
 
 
 view : Maybe OptionValue -> Options -> Model -> Html Msg

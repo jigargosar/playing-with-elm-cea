@@ -8,6 +8,7 @@ module UpdateReturn exposing
     , andThen3
     , foldlOutMsgList
     , generate3
+    , nextTick
     , perform
     , perform3
     , performWithNow
@@ -16,6 +17,7 @@ module UpdateReturn exposing
     , update3
     )
 
+import Process
 import Random
 import Task
 import Time
@@ -64,6 +66,10 @@ perform3 toMsg =
 
 perform toMsg =
     Task.perform toMsg >> addCmd
+
+
+nextTick msg =
+    perform (\_ -> msg) (Process.sleep 0)
 
 
 addMsgCmd msg =
