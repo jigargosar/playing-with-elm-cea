@@ -5,6 +5,7 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import UI exposing (..)
 
 
 type alias Model =
@@ -46,10 +47,11 @@ view maybeSelectedValue options model =
                 |> Maybe.withDefault "<No Selection>"
     in
     div [ class "flex flex-row" ]
-        [ div [ class "ttu" ] [ text displayName ]
-        , button
+        [ button
             [ onClick NoOp
             , class "flex items-center justify-center pa0 ma0"
             ]
-            [ FeatherIcons.chevronDown |> FeatherIcons.toHtml [] ]
+            [ div [ class "ttu pl2" ] [ text displayName ]
+            , FeatherIcons.chevronDown |> FeatherIcons.toHtml []
+            ]
         ]
