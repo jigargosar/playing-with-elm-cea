@@ -39,8 +39,7 @@ import WheelEvent exposing (WheelEvent)
 
 
 type Page
-    = TodoList
-    | ContextTodoList ContextId
+    = ContextTodoList ContextId
     | ContextList
 
 
@@ -306,7 +305,7 @@ view model =
                 []
                 [ button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
                 , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
-                , button [ onClick <| SetPage TodoList ] [ text "Tasks" ]
+                , button [ onClick <| SwitchToTodoListContext ContextStore.defaultId ] [ text "Inbox" ]
                 , button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
                 ]
             , viewPage model
@@ -322,11 +321,8 @@ view model =
 
 viewPage model =
     case model.page of
-        TodoList ->
-            viewTodoList Nothing model
-
         ContextTodoList contextId ->
-            viewTodoList (Just contextId) model
+            viewTodoList contextId model
 
         ContextList ->
             viewContextList model
@@ -402,25 +398,17 @@ viewContext { key, name, startEditingName, isNameEditable } =
     )
 
 
-viewTodoList : Maybe ContextId -> Model -> Html Msg
-viewTodoList maybeContextId model =
+viewTodoList : ContextId -> Model -> Html Msg
+viewTodoList selectedContextId model =
     let
-        filterTodoList =
-            maybeContextId
-                |> Maybe.map (\cid -> List.filter (.contextId >> eqs cid))
-                |> Maybe.withDefault identity
-
         viewPrimaryListKeyed =
             getCurrentTodoList model
-                |> filterTodoList
+                |> List.filter (.contextId >> eqs selectedContextId)
                 |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel model.contextStore todo) ))
     in
     div [ class "w-100 measure-wide" ]
-        [ maybeHtml
-            (viewContextTodoListHeader
-                << createTodoListHeaderViewModel model.contextStore
-            )
-            maybeContextId
+        [ viewContextTodoListHeader <|
+            createTodoListHeaderViewModel model.contextStore selectedContextId
         , Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
 
