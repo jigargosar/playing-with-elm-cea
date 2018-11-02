@@ -2,10 +2,12 @@ module BasicsX exposing
     ( DomId
     , Encoder
     , Millis
+    , activeElement
     , allPass
     , applyTo
     , attemptDomIdFocus
     , defaultEmptyStringTo
+    , domIdDecoder
     , eq0
     , eqs
     , everyXSeconds
@@ -15,6 +17,7 @@ module BasicsX exposing
     , maybeBool
     , nowMilli
     , onClickTargetId
+    , onFocusOut
     , optionalOr
     , swap
     , ter
@@ -60,6 +63,10 @@ type alias DomId =
     String
 
 
+onFocusOut msg =
+    Html.Events.on "focusout" (D.succeed msg)
+
+
 onClickTargetId : (DomId -> msg) -> Html.Attribute msg
 onClickTargetId toMsg =
     let
@@ -68,6 +75,16 @@ onClickTargetId toMsg =
             D.at [ "target", "id" ] D.string
     in
     Html.Events.on "click" <| D.map toMsg targetIdDecoder
+
+
+domIdDecoder : Decoder DomId
+domIdDecoder =
+    D.at [ "id" ] D.string
+
+
+activeElement : Decoder a -> Decoder a
+activeElement decoder =
+    D.at [ "target", "ownerDocument", "activeElement" ] decoder
 
 
 attemptDomIdFocus domId onSuccess onError =

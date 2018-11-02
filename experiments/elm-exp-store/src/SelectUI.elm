@@ -14,6 +14,8 @@ import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Json.Decode as D exposing (Decoder)
+import Json.Encode as E
 import Task
 import UI exposing (..)
 import UpdateReturn exposing (..)
@@ -43,7 +45,10 @@ type alias Options =
 type Msg
     = NoOp
     | SelectClicked
-    | Selected OptionValue
+    | ItemClicked OptionValue
+    | OnFocusOut
+    | Close
+    | SetOpen Bool
 
 
 type alias Config msg =
@@ -53,16 +58,30 @@ type alias Config msg =
 
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message model =
+    let
+        andThenUpdate msg =
+            andThen (update config msg)
+    in
     case message of
         NoOp ->
             pure model
 
-        SelectClicked ->
-            pure { model | open = not model.open }
+        SetOpen bool ->
+            pure { model | open = bool }
 
-        Selected item ->
-            pure { model | open = False }
+        Close ->
+            pure model |> andThenUpdate (SetOpen False)
+
+        SelectClicked ->
+            pure model |> andThenUpdate (SetOpen <| not model.open)
+
+        ItemClicked item ->
+            pure model
+                |> andThenUpdate Close
                 |> perform config.onSelect (Task.succeed item)
+
+        OnFocusOut ->
+            pure model |> andThenUpdate Close
 
 
 view : Maybe OptionValue -> Options -> Model -> Html Msg
@@ -78,7 +97,11 @@ view maybeSelectedValue options model =
                     )
                 |> Maybe.withDefault "<No Selection>"
     in
-    div [ class "" ]
+    div
+        [ id "select-context-ui"
+        , class "relative"
+        , onFocusOut OnFocusOut
+        ]
         [ div [ class "flex flex-row" ]
             [ button
                 [ onClick SelectClicked
@@ -90,5 +113,5 @@ view maybeSelectedValue options model =
             ]
         , boolHtml model.open <|
             div [ class "absolute bg-white ba pa3 vs2" ]
-                (List.map (\o -> txtA [ onClick <| Selected o.value ] o.name) options)
+                (List.map (\o -> txtA [ onClick <| ItemClicked o.value ] o.name) options)
         ]
