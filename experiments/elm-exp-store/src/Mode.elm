@@ -7,6 +7,7 @@ module Mode exposing
     , startAddingTodo
     , startEditingContext
     , startEditingTodo
+    , startEditingTodoContext
     , update
     , viewModal
     )

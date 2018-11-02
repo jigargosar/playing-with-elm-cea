@@ -271,6 +271,10 @@ startEditingContextMsg =
     ModeMsg << Mode.startEditingContext
 
 
+startEditingTodoContext =
+    ModeMsg << Mode.startEditingTodoContext
+
+
 mockActions =
     [ FeatherIcons.home
     , FeatherIcons.twitter
@@ -477,7 +481,7 @@ createTodoViewModel contextStore todo =
         (ModeMsg <| Mode.startEditingTodo todo)
         (TodoStoreMsg <| TodoStore.markDone todo.id)
         (TodoStoreMsg <| TodoStore.unmarkDone todo.id)
-        (TodoContextClicked todo)
+        (startEditingTodoContext todo)
 
 
 viewTodo : TodoViewModel msg -> Html msg
