@@ -21,6 +21,7 @@ import Mode exposing (Mode)
 import Port
 import Process
 import Random
+import SelectUI
 import Set exposing (Set)
 import SnackBar exposing (SnackBar, SnackBarTitle)
 import Svg.Attributes
@@ -54,6 +55,8 @@ type alias Model =
     , todoStore : TodoStore
     , contextStore : ContextStore
     , todoFilters : List TodoFilter
+    , contextId : ContextId
+    , selectContextUI : SelectUI.Model
     , mode : Mode
     , page : Page
     }
@@ -78,6 +81,8 @@ init flags =
         , todoStore = todoStore
         , contextStore = contextStore
         , todoFilters = []
+        , contextId = ContextStore.defaultId
+        , selectContextUI = SelectUI.closed
         , mode = Mode.init
         , page = ContextTodoList ContextStore.defaultId
         }

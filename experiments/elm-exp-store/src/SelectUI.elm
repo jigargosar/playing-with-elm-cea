@@ -1,4 +1,4 @@
-module SelectUI exposing (Model, Msg(..), OptionValue, Options, ViewConfig, view)
+module SelectUI exposing (Model, Msg(..), Option, OptionValue, closed, view)
 
 import BasicsX exposing (..)
 import FeatherIcons
@@ -9,35 +9,37 @@ import Html.Events exposing (onClick)
 
 type alias Model =
     { open : Bool
-    , selectedValue : Maybe OptionValue
     }
+
+
+closed =
+    { open = False }
 
 
 type alias OptionValue =
     String
 
 
-type alias Options =
+type alias Option =
     { name : String, value : OptionValue }
 
 
-type alias ViewConfig =
-    { options : List Options
-    }
+type alias Options =
+    List Option
 
 
 type Msg
     = NoOp
 
 
-view : ViewConfig -> Model -> Html Msg
-view config model =
+view : Maybe OptionValue -> Options -> Model -> Html Msg
+view maybeSelectedValue options model =
     let
         displayName =
-            model.selectedValue
+            maybeSelectedValue
                 |> Maybe.andThen
                     (\selectedValue ->
-                        List.filter (.value >> eqs selectedValue) config.options
+                        List.filter (.value >> eqs selectedValue) options
                             |> List.head
                             |> Maybe.map .name
                     )
