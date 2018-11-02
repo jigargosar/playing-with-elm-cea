@@ -2,9 +2,6 @@ module SelectUI exposing
     ( Config
     , Model
     , Msg
-    , Option
-    , OptionValue
-    , Options
     , new
     , update
     , view
@@ -33,34 +30,23 @@ new =
     { open = False }
 
 
-type alias OptionValue =
-    String
-
-
-type alias Option =
-    { name : String, value : OptionValue }
-
-
-type alias Options =
-    List Option
-
-
-type Msg
+type Msg item
     = NoOp
     | SelectClicked
-    | ItemClicked OptionValue
+    | ItemClicked item
     | OnFocusOut
     | Close
     | SetOpen Bool
 
 
-type alias Config msg =
-    { onSelect : OptionValue -> msg
-    , toMsg : Msg -> msg
+type alias Config msg item =
+    { onSelect : item -> msg
+    , toMsg : Msg item -> msg
+    , toLabel : item -> String
     }
 
 
-update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
+update : Config msg item -> Msg item -> Model -> ( Model, Cmd msg )
 update config message model =
     let
         andThenUpdate msg =
@@ -88,17 +74,12 @@ update config message model =
             pure model |> nextTick (config.toMsg Close)
 
 
-view : Maybe OptionValue -> Options -> Model -> Html Msg
-view maybeSelectedValue options model =
+view : Config msg item -> Maybe item -> List items -> Model -> Html (Msg item)
+view config maybeSelectedItem items model =
     let
         displayName =
-            maybeSelectedValue
-                |> Maybe.andThen
-                    (\selectedValue ->
-                        List.filter (.value >> eqs selectedValue) options
-                            |> List.head
-                            |> Maybe.map .name
-                    )
+            maybeSelectedItem
+                |> Maybe.map config.toLabel
                 |> Maybe.withDefault "<No Selection>"
     in
     div
@@ -119,17 +100,17 @@ view maybeSelectedValue options model =
             [ class "absolute pv1 bg-white ba b--moon-gray"
             , classList [ ( "dn", not model.open ) ]
             ]
-            (List.map viewOption options)
+            (List.map (viewOption config) items)
         ]
 
 
-viewOption option =
+viewOption config item =
     div
         [ class "ph3 pv2 hover-bg-lightest-blue"
         , style "min-width" "8rem"
         ]
         [ txtA
-            [ onClick <| ItemClicked option.value
+            [ onClick <| ItemClicked item
             ]
-            option.name
+            (config.toLabel item)
         ]
