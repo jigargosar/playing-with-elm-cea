@@ -267,6 +267,10 @@ startAddingContextMsg =
     ModeMsg Mode.startAddingContext
 
 
+startEditingContextMsg =
+    ModeMsg << Mode.startEditingContext
+
+
 mockActions =
     [ FeatherIcons.home
     , FeatherIcons.twitter
@@ -345,7 +349,7 @@ createContextViewModel context =
         context.id
         (defaultEmptyStringTo "<empty context name>" context.name)
         True
-        (ModeMsg <| Mode.startEditingContext context)
+        (startEditingContextMsg context)
 
 
 viewInbox : Html msg
@@ -398,13 +402,52 @@ viewTodoList maybeContextId model =
                 |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel model.contextStore todo) ))
     in
     div [ class "w-100 measure-wide" ]
-        [ maybeHtml (viewContextTodoListHeader model) maybeContextId
+        [ maybeHtml
+            (viewContextTodoListHeader
+                << createTodoListContextHeaderViewModel model.contextStore
+            )
+            maybeContextId
         , Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
 
 
-viewContextTodoListHeader model contextId =
-    row "" [] [ txtC "f4" (getNameByContextId contextId model) ]
+type alias TodoListContextHeaderViewModel msg =
+    { contextName : String
+    , isContextNameClickable : Bool
+    , onContextNameClicked : msg
+    }
+
+
+createTodoListContextHeaderViewModel : ContextStore -> ContextId -> TodoListContextHeaderViewModel Msg
+createTodoListContextHeaderViewModel contextStore contextId =
+    let
+        maybeContext =
+            ContextStore.get contextId contextStore
+    in
+    case maybeContext of
+        Nothing ->
+            TodoListContextHeaderViewModel
+                ContextStore.defaultName
+                False
+                NoOp
+
+        Just context ->
+            TodoListContextHeaderViewModel
+                context.name
+                True
+                (startEditingContextMsg context)
+
+
+viewContextTodoListHeader : TodoListContextHeaderViewModel msg -> Html msg
+viewContextTodoListHeader { contextName, isContextNameClickable, onContextNameClicked } =
+    row "pa3"
+        []
+        [ viewContextNameCA ""
+            [ classList [ ( "pointer", isContextNameClickable ) ]
+            , onClick <| onContextNameClicked
+            ]
+            contextName
+        ]
 
 
 type alias TodoViewModel msg =

@@ -6,6 +6,8 @@ module ContextStore exposing
     , Msg
     , addNew
     , defaultId
+    , defaultName
+    , get
     , getNameOrDefaultById
     , list
     , load
@@ -27,6 +29,10 @@ import UpdateReturn exposing (..)
 
 defaultId =
     ""
+
+
+defaultName =
+    "Inbox"
 
 
 type alias ContextName =
@@ -165,4 +171,9 @@ list =
 
 getNameOrDefaultById : ContextId -> ContextStore -> ContextName
 getNameOrDefaultById id =
-    .contextLookup >> Dict.get id >> unwrapMaybe "Inbox" .name
+    get id >> unwrapMaybe defaultName .name
+
+
+get : ContextId -> ContextStore -> Maybe Context
+get id =
+    .contextLookup >> Dict.get id
