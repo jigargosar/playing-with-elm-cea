@@ -4,6 +4,7 @@ import BasicsX exposing (..)
 import Browser
 import Browser.Dom
 import Browser.Events
+import ContextItem exposing (ContextItem)
 import ContextStore exposing (Context, ContextId, ContextStore)
 import Dict
 import FeatherIcons
@@ -124,12 +125,8 @@ getNameByContextId contextId =
     .contextStore >> ContextStore.getNameOrDefaultById contextId
 
 
-type alias ContextItem =
-    ( String, ContextId )
-
-
-getContextItem : Model -> ContextItem
-getContextItem model =
+getCurrentContextItem : Model -> ContextItem
+getCurrentContextItem model =
     ( getNameByContextId model.contextId model, model.contextId )
 
 
@@ -432,21 +429,13 @@ viewTodoList selectedContextId model =
             getCurrentTodoList model
                 |> List.filter (.contextId >> eqs selectedContextId)
                 |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel model.contextStore todo) ))
-
-        contextItems : List ContextItem
-        contextItems =
-            model.contextStore
-                |> ContextStore.list
-                >> List.map (\c -> ( c.name, c.id ))
-                >> (::) ( ContextStore.defaultName, ContextStore.defaultId )
     in
     div [ class "w-100 measure-wide" ]
         [ viewContextTodoListHeader <|
             createTodoListHeaderViewModel model.contextStore selectedContextId
         , row "pa3"
             []
-            [ SelectUI.view selectContextUIConfig (Just <| getContextItem model) contextItems model.selectContextUI
-                |> Html.map SelectContextUIMsg
+            [ ContextItem.viewSelectContext selectContextUIConfig
             ]
         , Html.Keyed.node "div" [] viewPrimaryListKeyed
         ]
