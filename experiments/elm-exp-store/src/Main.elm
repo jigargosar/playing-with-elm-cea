@@ -146,6 +146,11 @@ type Msg
     | ModeOutMsg Mode.OutMsg
 
 
+selectContextUIConfig : SelectUI.Config Msg
+selectContextUIConfig =
+    { onSelect = SwitchToTodoListContext, toMsg = SelectContextUIMsg }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -172,7 +177,7 @@ update message model =
             pure model |> andThenUpdate (SetPage <| ContextTodoList contextId)
 
         SelectContextUIMsg msg ->
-            SelectUI.update { onSelect = SwitchToTodoListContext, toMsg = SelectContextUIMsg } msg model.selectContextUI
+            SelectUI.update selectContextUIConfig msg model.selectContextUI
                 |> Tuple.mapFirst (\selectContextUI -> { model | selectContextUI = selectContextUI })
 
         TodoStoreMsg msg ->

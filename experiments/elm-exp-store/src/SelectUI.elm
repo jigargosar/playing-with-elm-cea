@@ -1,6 +1,7 @@
 module SelectUI exposing
-    ( Model
-    , Msg(..)
+    ( Config
+    , Model
+    , Msg
     , Option
     , OptionValue
     , Options
