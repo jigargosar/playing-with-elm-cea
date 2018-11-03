@@ -28,6 +28,11 @@ push =
     Push
 
 
+setLatest : Maybe item -> Debouncer item -> Debouncer item
+setLatest latest model =
+    { model | latest = latest }
+
+
 update : Config msg item -> Msg item -> Debouncer item -> ( Debouncer item, Cmd msg )
 update config message model =
     let
