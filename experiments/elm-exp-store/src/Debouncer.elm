@@ -1,4 +1,6 @@
-module Debouncer exposing (Config, Debouncer, Msg, init, update)
+module Debouncer exposing (Config, Debouncer, Msg, init, push, update)
+
+import UpdateReturn exposing (..)
 
 
 type alias Debouncer a =
@@ -11,8 +13,9 @@ init =
     Debouncer Nothing 0
 
 
-type Msg
+type Msg a
     = NoOp
+    | Push a
 
 
 type alias Config msg =
@@ -21,8 +24,15 @@ type alias Config msg =
     }
 
 
-update : Config msg -> Msg -> Debouncer a -> ( Debouncer a, Cmd msg )
+push =
+    Push
+
+
+update : Config msg -> Msg a -> Debouncer a -> ( Debouncer a, Cmd msg )
 update config message model =
     case message of
         NoOp ->
             ( model, Cmd.none )
+
+        Push item ->
+            pure model
