@@ -15,6 +15,7 @@ module UpdateReturn exposing
     , pure
     , pure3
     , update3
+    , updateSub
     )
 
 import Process
@@ -22,6 +23,21 @@ import Random
 import Task
 import Time
 import Update3
+
+
+updateSub :
+    (subMsg -> subModel -> ( subModel, Cmd msg ))
+    -> (model -> subModel)
+    -> (subModel -> model -> model)
+    -> subMsg
+    -> model
+    -> ( model, Cmd msg )
+updateSub updateFn getSub setSub subMsg model =
+    let
+        ( sub, cmd ) =
+            updateFn subMsg (getSub model)
+    in
+    ( setSub sub model, cmd )
 
 
 pure model =
