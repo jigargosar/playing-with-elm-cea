@@ -460,9 +460,7 @@ viewTodoList model =
                 |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel model.contextStore todo) ))
     in
     div [ class "w-100 measure-wide" ]
-        [ viewContextTodoListHeader <|
-            createTodoListHeaderViewModel model.contextStore selectedContextId
-        , row "pa3"
+        [ row "pa3"
             []
             [ div [ class "flex-auto" ]
                 [ ContextItem.viewSelectContext
@@ -476,72 +474,6 @@ viewTodoList model =
                 (UI.fBtn FeatherIcons.edit3 (startEditingSelectedContextMsg model))
             ]
         , Html.Keyed.node "div" [] viewTodoListKeyed
-        ]
-
-
-createTodoListHeaderViewModel : ContextStore -> ContextId -> TodoListHeaderViewModel Msg
-createTodoListHeaderViewModel contextStore selectedContextId =
-    let
-        maybeContext =
-            ContextStore.get selectedContextId contextStore
-
-        contextSelectViewModel : ContextStore -> List ( String, ContextId, Bool )
-        contextSelectViewModel =
-            ContextStore.list
-                >> List.map (\c -> ( c.name, c.id ))
-                >> (::) ( ContextStore.defaultName, ContextStore.defaultId )
-                >> List.map (\( name, contextId ) -> ( name, contextId, contextId == selectedContextId ))
-    in
-    case maybeContext of
-        Nothing ->
-            TodoListHeaderViewModel
-                ContextStore.defaultName
-                False
-                NoOp
-                (contextSelectViewModel contextStore)
-                SwitchToContextTodoListWithContextId
-
-        Just context ->
-            TodoListHeaderViewModel
-                context.name
-                True
-                (startEditingContextMsg context)
-                (contextSelectViewModel contextStore)
-                SwitchToContextTodoListWithContextId
-
-
-type alias TodoListHeaderViewModel msg =
-    { contextName : String
-    , isContextNameClickable : Bool
-    , onContextNameClicked : msg
-    , contextSelectViewModel : List ( String, ContextId, Bool )
-    , selectedContextChanged : ContextId -> msg
-    }
-
-
-viewContextTodoListHeader : TodoListHeaderViewModel msg -> Html msg
-viewContextTodoListHeader { contextName, isContextNameClickable, onContextNameClicked, selectedContextChanged, contextSelectViewModel } =
-    row "pa3"
-        []
-        [ viewContextNameCA ""
-            [ classList [ ( "pointer", isContextNameClickable ) ]
-            , onClick <| onContextNameClicked
-            ]
-            contextName
-        , div []
-            [ text "@"
-            , select
-                [ class "bn pa0 ma0 bg-transparent br0"
-                , style "-webkit-appearance" "none"
-                , onInput selectedContextChanged
-                ]
-                (contextSelectViewModel
-                    |> List.map
-                        (\( optionText, optionValue, isSelected ) ->
-                            option [ selected isSelected, value optionValue ] [ text <| String.toUpper optionText ]
-                        )
-                )
-            ]
         ]
 
 
