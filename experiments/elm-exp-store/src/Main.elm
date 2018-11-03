@@ -41,7 +41,7 @@ import WheelEvent exposing (WheelEvent)
 
 
 type Page
-    = ContextTodoList ContextId
+    = ContextTodoList
     | ContextList
 
 
@@ -85,7 +85,7 @@ init flags =
         , contextId = ContextStore.defaultId
         , selectContextUI = SelectUI.new
         , mode = Mode.init
-        , page = ContextTodoList ContextStore.defaultId
+        , page = ContextTodoList
         }
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeTodoStoreLogLine)
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeContextStoreLogLine)
@@ -143,8 +143,10 @@ type Msg
     | Warn Log.Line
     | SnackBarMsg SnackBar.Msg
     | SetPage Page
+    | SetContextId ContextId
     | SelectContextUIMsg (SelectUI.Msg ContextItem)
-    | SwitchToTodoListContext ContextId
+    | SwitchToTodoListWithContextId ContextId
+    | SwitchToContextTodoList
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
     | MagicMenuMsg MagicMenu.Msg
@@ -154,7 +156,7 @@ type Msg
 
 selectContextUIConfig : SelectUI.Config Msg ContextItem
 selectContextUIConfig =
-    { onSelect = Tuple.second >> SwitchToTodoListContext
+    { onSelect = Tuple.second >> SwitchToTodoListWithContextId
     , toMsg = SelectContextUIMsg
     , toLabel = Tuple.first
     }
@@ -182,8 +184,16 @@ update message model =
         SetPage page ->
             pure { model | page = page }
 
-        SwitchToTodoListContext contextId ->
-            pure model |> andThenUpdate (SetPage <| ContextTodoList contextId)
+        SetContextId contextId ->
+            pure { model | contextId = contextId }
+
+        SwitchToTodoListWithContextId contextId ->
+            pure model
+                |> andThenUpdate SwitchToContextTodoList
+                |> andThenUpdate (SetContextId contextId)
+
+        SwitchToContextTodoList ->
+            pure model |> andThenUpdate (SetPage <| ContextTodoList)
 
         SelectContextUIMsg msg ->
             SelectUI.update selectContextUIConfig msg model.selectContextUI
@@ -329,7 +339,7 @@ view model =
                 []
                 [ button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
                 , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
-                , button [ onClick <| SwitchToTodoListContext ContextStore.defaultId ] [ text "Inbox" ]
+                , button [ onClick <| SwitchToContextTodoList ] [ text "Inbox" ]
                 , button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
                 ]
             , viewPage model
@@ -345,8 +355,8 @@ view model =
 
 viewPage model =
     case model.page of
-        ContextTodoList contextId ->
-            viewTodoList contextId model
+        ContextTodoList ->
+            viewTodoList model
 
         ContextList ->
             viewContextList model
@@ -422,9 +432,12 @@ viewContext { key, name, startEditingName, isNameEditable } =
     )
 
 
-viewTodoList : ContextId -> Model -> Html Msg
-viewTodoList selectedContextId model =
+viewTodoList : Model -> Html Msg
+viewTodoList model =
     let
+        selectedContextId =
+            model.contextId
+
         viewTodoListKeyed =
             getCurrentTodoList model
                 |> List.filter (.contextId >> eqs selectedContextId)
@@ -466,7 +479,7 @@ createTodoListHeaderViewModel contextStore selectedContextId =
                 False
                 NoOp
                 (contextSelectViewModel contextStore)
-                SwitchToTodoListContext
+                SwitchToTodoListWithContextId
 
         Just context ->
             TodoListHeaderViewModel
@@ -474,7 +487,7 @@ createTodoListHeaderViewModel contextStore selectedContextId =
                 True
                 (startEditingContextMsg context)
                 (contextSelectViewModel contextStore)
-                SwitchToTodoListContext
+                SwitchToTodoListWithContextId
 
 
 type alias TodoListHeaderViewModel msg =
