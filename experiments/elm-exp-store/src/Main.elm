@@ -145,7 +145,7 @@ type Msg
     | SetPage Page
     | SetContextId ContextId
     | SelectContextUIMsg (SelectUI.Msg ContextItem)
-    | SwitchToTodoListWithContextId ContextId
+    | SwitchToContextTodoListWithContextId ContextId
     | SwitchToContextTodoList
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
@@ -156,7 +156,7 @@ type Msg
 
 selectContextUIConfig : SelectUI.Config Msg ContextItem
 selectContextUIConfig =
-    { onSelect = Tuple.second >> SwitchToTodoListWithContextId
+    { onSelect = Tuple.second >> SwitchToContextTodoListWithContextId
     , toMsg = SelectContextUIMsg
     , toLabel = Tuple.first
     }
@@ -187,7 +187,7 @@ update message model =
         SetContextId contextId ->
             pure { model | contextId = contextId }
 
-        SwitchToTodoListWithContextId contextId ->
+        SwitchToContextTodoListWithContextId contextId ->
             pure model
                 |> andThenUpdate SwitchToContextTodoList
                 |> andThenUpdate (SetContextId contextId)
@@ -479,7 +479,7 @@ createTodoListHeaderViewModel contextStore selectedContextId =
                 False
                 NoOp
                 (contextSelectViewModel contextStore)
-                SwitchToTodoListWithContextId
+                SwitchToContextTodoListWithContextId
 
         Just context ->
             TodoListHeaderViewModel
@@ -487,7 +487,7 @@ createTodoListHeaderViewModel contextStore selectedContextId =
                 True
                 (startEditingContextMsg context)
                 (contextSelectViewModel contextStore)
-                SwitchToTodoListWithContextId
+                SwitchToContextTodoListWithContextId
 
 
 type alias TodoListHeaderViewModel msg =
