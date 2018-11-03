@@ -2,7 +2,20 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { forEachObjIndexed, ifElse, invoker, isNil, partial, partialRight, pathOr, pick } from 'ramda'
+import {
+  compose,
+  forEachObjIndexed,
+  ifElse,
+  invoker,
+  isEmpty,
+  isNil,
+  partial,
+  partialRight,
+  pathOr,
+  reject,
+  unfold,
+} from 'ramda'
+import debounce from 'lodash.debounce'
 
 let initialTodos = storageGetOr({}, 'todos')
 let initialContexts = storageGetOr({}, 'contexts')
@@ -14,6 +27,26 @@ const app = Elm.Main.init({
     todos: initialTodos,
     contexts: initialContexts,
   },
+})
+
+let lastActiveElement = document.activeElement
+
+const recordActiveElement = debounce(function recordActiveElement() {
+  if (lastActiveElement !== document.activeElement) {
+    lastActiveElement = document.activeElement
+    const parentIds = compose(reject(isEmpty), unfold(node => node ? [node.id, node.parentElement] : false),
+    )(document.activeElement)
+
+    send(parentIds, 'activeElementsParentIdList', app)
+  }
+}, 300, { trailing: true, leading: false })
+
+window.addEventListener('focusout', function (e) {
+  recordActiveElement()
+})
+
+window.addEventListener('focusin', function (e) {
+  recordActiveElement()
 })
 
 window.addEventListener('wheel', function (e) {
