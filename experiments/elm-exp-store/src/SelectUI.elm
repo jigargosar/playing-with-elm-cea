@@ -75,7 +75,11 @@ update config message model =
                 _ =
                     Debug.log "ActiveElementParentIds" ids
             in
-            pure model
+            if List.member "" ids then
+                pure model
+
+            else
+                pure model |> andThenUpdate Close
 
         SetOpen bool ->
             pure { model | open = bool }
@@ -92,7 +96,11 @@ update config message model =
                 |> addMsgCmd (config.onSelect item)
 
         OnFocusOut ->
-            pure model |> nextTick (config.toMsg Close)
+            pure model
+
+
+
+{- |> nextTick (config.toMsg Close) -}
 
 
 view : Config msg item -> Maybe item -> List item -> Model -> Html (Msg item)
@@ -138,6 +146,7 @@ viewItem config maybeSelectedItem item =
         ]
         [ txtA
             [ class "ph3 pv2 "
+            , tabindex 0
             , classList [ ( "b", isSelected ) ]
             , onClick <| ItemClicked item
             ]

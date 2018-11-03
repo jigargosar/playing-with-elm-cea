@@ -40,7 +40,7 @@ const recordActiveElement = debounce(function recordActiveElement() {
 
     send(parentIds, 'activeElementsParentIdList', app)
   }
-}, 300, { trailing: true, leading: false })
+}, 0, { trailing: true, leading: false })
 
 window.addEventListener('focusout', function (e) {
   recordActiveElement()
