@@ -46,6 +46,7 @@ type alias Config msg item =
     { onSelect : item -> msg
     , toMsg : Msg item -> msg
     , toLabel : item -> String
+    , domId : DomId
     }
 
 
@@ -71,7 +72,7 @@ update config message model =
             pure model
 
         ActiveElementParentIds ids ->
-            if List.member "select-context-ui" ids then
+            if List.member config.domId ids then
                 pure model
 
             else
@@ -108,7 +109,7 @@ view config maybeSelectedItem items model =
                 |> Maybe.withDefault "<No Selection>"
     in
     div
-        [ id "select-context-ui"
+        [ id config.domId
         , class "relative"
         , onFocusOut OnFocusOut
         ]
