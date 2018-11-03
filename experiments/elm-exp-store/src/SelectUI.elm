@@ -76,34 +76,35 @@ update config message model =
         andThenUpdate msg =
             andThen (update config msg)
     in
-    pure model
-        |> (case message of
-                NoOp ->
-                    identity
+    (case message of
+        NoOp ->
+            identity
 
-                ActiveElementParentIds ids ->
-                    if List.member config.domId ids then
-                        identity
+        ActiveElementParentIds ids ->
+            if List.member config.domId ids then
+                identity
 
-                    else
-                        andThenUpdate Close
+            else
+                andThenUpdate Close
 
-                SetOpen bool ->
-                    mapModel (setOpen bool)
+        SetOpen bool ->
+            mapModel (setOpen bool)
 
-                Close ->
-                    andThenUpdate (SetOpen False)
+        Close ->
+            andThenUpdate (SetOpen False)
 
-                SelectClicked ->
-                    andThenUpdate (SetOpen <| not model.open)
+        SelectClicked ->
+            andThenUpdate (SetOpen <| not model.open)
 
-                ItemClicked item ->
-                    andThenUpdate Close
-                        >> addMsgCmd (config.onSelect item)
+        ItemClicked item ->
+            andThenUpdate Close
+                >> addMsgCmd (config.onSelect item)
 
-                OnFocusOut ->
-                    identity
-           )
+        OnFocusOut ->
+            identity
+    )
+    <|
+        pure model
 
 
 
