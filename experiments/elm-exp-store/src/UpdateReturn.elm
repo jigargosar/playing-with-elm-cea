@@ -2,7 +2,7 @@ module UpdateReturn exposing
     ( Update3Config
     , addCmd
     , addCmd3
-    , addMsgCmd
+    , addMsg
     , addOutMsg3
     , andThen
     , andThen3
@@ -88,7 +88,7 @@ nextTick msg =
     perform (\_ -> msg) (Process.sleep 0)
 
 
-addMsgCmd msg =
+addMsg msg =
     perform identity (Task.succeed msg)
 
 

@@ -98,17 +98,13 @@ update config message model =
 
         ItemClicked item ->
             andThenUpdate Close
-                >> addMsgCmd (config.onSelect item)
+                >> addMsg (config.onSelect item)
 
         OnFocusOut ->
             identity
     )
     <|
         pure model
-
-
-
-{- |> nextTick (config.toMsg Close) -}
 
 
 view : Config msg item -> Maybe item -> List item -> Model -> Html (Msg item)
