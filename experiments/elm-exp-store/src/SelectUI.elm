@@ -38,6 +38,7 @@ type Msg item
     | SelectClicked
     | ItemClicked item
     | OnFocusOut
+    | OnFocusIn
     | Close
     | SetOpen Bool
 
@@ -102,6 +103,9 @@ update config message model =
 
         OnFocusOut ->
             identity
+
+        OnFocusIn ->
+            identity
     )
     <|
         pure model
@@ -119,6 +123,7 @@ view config maybeSelectedItem items model =
         [ id config.domId
         , class "relative"
         , onFocusOut OnFocusOut
+        , onFocusIn OnFocusIn
         ]
         [ div [ class "flex flex-row" ]
             [ button

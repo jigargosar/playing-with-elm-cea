@@ -17,6 +17,7 @@ module BasicsX exposing
     , maybeBool
     , nowMilli
     , onClickTargetId
+    , onFocusIn
     , onFocusOut
     , optionalOr
     , swap
@@ -65,6 +66,10 @@ type alias DomId =
 
 onFocusOut msg =
     Html.Events.on "focusout" (D.succeed msg)
+
+
+onFocusIn msg =
+    Html.Events.on "focusin" (D.succeed msg)
 
 
 onClickTargetId : (DomId -> msg) -> Html.Attribute msg
