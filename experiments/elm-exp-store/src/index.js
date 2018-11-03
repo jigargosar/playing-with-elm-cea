@@ -38,7 +38,7 @@ const recordActiveElement = debounce(function recordActiveElement() {
     const parentIds = compose(reject(isEmpty), unfold(node => node ? [node.id, node.parentElement] : false),
     )(document.activeElement)
 
-    send(parentIds, 'activeElementsParentIdList', app)
+    sendData(parentIds, 'activeElementsParentIdList', app)
   }
 }, 0, { trailing: true, leading: false })
 
@@ -52,16 +52,12 @@ window.addEventListener('focusin', function (e) {
 
 window.addEventListener('wheel', function (e) {
   // console.log(e)
-  let data = pick(['deltaX', 'deltaY'])(e)
-  // console.log(data)
-  send(data, 'wheel', app)
+  const data = pick(['deltaX', 'deltaY'])(e)
+  sendData(data, 'wheel', app)
 })
 
 subscribe(
   {
-    // logS: data => {
-    //   console.warn(data)
-    // },
     warn: data => {
       console.warn(data)
     },
@@ -80,9 +76,9 @@ registerServiceWorker()
 
 // Helpers
 
-function send(data, port, app) {
-  if (!pathOr(null, ['ports', port, 'send'])(app)) {
-    console.error('send port not found', port, 'data ignored', data)
+function sendData(data, port, app) {
+  if (!pathOr(null, ['ports', port, 'sendData'])(app)) {
+    console.error('sendData port not found', port, 'data ignored', data)
     return
   }
   app.ports[port].send(data)
@@ -99,7 +95,8 @@ function subscribe(options, app) {
       console.error('sub port not found', sub)
       return
     }
-    app.ports[sub].subscribe(data => fn(data, partialRight(send, [app])))
+    // noinspection JSIgnoredPromiseFromCall, JSCheckFunctionSignatures
+    app.ports[sub].subscribe(data => fn(data, partialRight(sendData, [app])))
   })(options)
 }
 
