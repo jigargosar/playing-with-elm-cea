@@ -476,8 +476,12 @@ viewTodoListHeader model =
                 model.selectContextUI
                 |> Html.map SelectContextUIMsg
             ]
-        , boolHtml (isSelectedContextEditable model)
-            (UI.fBtn FeatherIcons.edit3 (startEditingSelectedContextMsg model))
+        , row ""
+            []
+            [ boolHtml (isSelectedContextEditable model)
+                (UI.fBtn FeatherIcons.edit3 (startEditingSelectedContextMsg model))
+            , UI.fBtn FeatherIcons.plus startAddingContextMsg
+            ]
         ]
 
 
