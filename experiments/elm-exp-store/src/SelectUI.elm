@@ -72,11 +72,13 @@ update config message model =
             pure model
 
         ActiveElementParentIds ids ->
-            if List.member config.domId ids then
-                pure model
+            pure model
+                |> (if List.member config.domId ids then
+                        identity
 
-            else
-                pure model |> andThenUpdate Close
+                    else
+                        andThenUpdate Close
+                   )
 
         SetOpen bool ->
             pure { model | open = bool }
