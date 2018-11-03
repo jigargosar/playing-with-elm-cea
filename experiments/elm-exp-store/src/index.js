@@ -51,7 +51,7 @@ window.addEventListener('focusin', function (e) {
 })
 
 window.addEventListener('wheel', function (e) {
-  console.log(e)
+  // console.log(e)
   let data = pick(['deltaX', 'deltaY'])(e)
   // console.log(data)
   send(data, 'wheel', app)
