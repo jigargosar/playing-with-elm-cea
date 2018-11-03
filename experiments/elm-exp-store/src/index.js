@@ -2,21 +2,7 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import {
-  compose,
-  forEachObjIndexed,
-  ifElse,
-  invoker,
-  isEmpty,
-  isNil,
-  partial,
-  partialRight,
-  pathOr,
-  pick,
-  reject,
-  unfold,
-} from 'ramda'
-import debounce from 'lodash.debounce'
+import { forEachObjIndexed, ifElse, invoker, isNil, partial, partialRight, pathOr, pick } from 'ramda'
 
 let initialTodos = storageGetOr({}, 'todos')
 let initialContexts = storageGetOr({}, 'contexts')
@@ -32,25 +18,25 @@ const app = Elm.Main.init({
 
 console.log(app.ports)
 
-let lastActiveElement = document.activeElement
-
-const recordActiveElement = debounce(function recordActiveElement() {
-  if (lastActiveElement !== document.activeElement) {
-    lastActiveElement = document.activeElement
-    const parentIds = compose(reject(isEmpty), unfold(node => node ? [node.id, node.parentElement] : false),
-    )(document.activeElement)
-
-    sendData(parentIds, 'activeElementsParentIdList', app)
-  }
-}, 0, { trailing: true, leading: false })
-
-window.addEventListener('focusout', function (e) {
-  recordActiveElement()
-})
-
-window.addEventListener('focusin', function (e) {
-  recordActiveElement()
-})
+// let lastActiveElement = document.activeElement
+//
+// const recordActiveElement = debounce(function recordActiveElement() {
+//   if (lastActiveElement !== document.activeElement) {
+//     lastActiveElement = document.activeElement
+//     const parentIds = compose(reject(isEmpty), unfold(node => node ? [node.id, node.parentElement] : false),
+//     )(document.activeElement)
+//
+//     sendData(parentIds, 'activeElementsParentIdList', app)
+//   }
+// }, 0, { trailing: true, leading: false })
+//
+// window.addEventListener('focusout', function (e) {
+//   recordActiveElement()
+// })
+//
+// window.addEventListener('focusin', function (e) {
+//   recordActiveElement()
+// })
 
 window.addEventListener('wheel', function (e) {
   // console.log(e)
