@@ -25,11 +25,12 @@ import UpdateReturn exposing (..)
 
 type alias Model =
     { open : Bool
+    , closePid : Maybe Process.Id
     }
 
 
 new =
-    { open = False }
+    { open = False, closePid = Nothing }
 
 
 type Msg item
@@ -38,6 +39,9 @@ type Msg item
     | SelectClicked
     | ItemClicked item
     | OnFocusOut
+    | DebounceClose
+    | Kill
+    | SetClosePid (Maybe Process.Id)
     | OnFocusIn
     | Close
     | SetOpen Bool
@@ -54,17 +58,23 @@ type alias Config msg item =
 subscriptions : Config msg item -> Model -> Sub msg
 subscriptions config model =
     Sub.batch
-        [ if model.open then
-            Port.activeElementsParentIdList ActiveElementParentIds |> Sub.map config.toMsg
+        [ {- if model.open then
+               Port.activeElementsParentIdList ActiveElementParentIds |> Sub.map config.toMsg
 
-          else
-            Sub.none
+             else
+          -}
+          Sub.none
         ]
 
 
 setOpen : Bool -> Model -> Model
 setOpen open model =
     { model | open = open }
+
+
+setClosePid : Maybe Process.Id -> Model -> Model
+setClosePid closePid model =
+    { model | closePid = closePid }
 
 
 mapModel fn =
@@ -101,8 +111,18 @@ update config message model =
             andThenUpdate Close
                 >> addMsg (config.onSelect item)
 
+        Kill ->
+            unwrapMaybe identity (Process.kill >> perform (\_ -> config.toMsg NoOp)) model.closePid
+
+        SetClosePid id ->
+            mapModel <| setClosePid id
+
+        DebounceClose ->
+            perform (Just >> SetClosePid >> config.toMsg) (Process.spawn <| Process.sleep 1)
+
         OnFocusOut ->
-            identity
+            andThenUpdate Kill
+                >> andThenUpdate DebounceClose
 
         OnFocusIn ->
             identity

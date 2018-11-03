@@ -30,6 +30,8 @@ const app = Elm.Main.init({
   },
 })
 
+console.log(app.ports)
+
 let lastActiveElement = document.activeElement
 
 const recordActiveElement = debounce(function recordActiveElement() {
@@ -77,7 +79,7 @@ registerServiceWorker()
 // Helpers
 
 function sendData(data, port, app) {
-  if (!pathOr(null, ['ports', port, 'sendData'])(app)) {
+  if (!pathOr(null, ['ports', port, 'send'])(app)) {
     console.error('sendData port not found', port, 'data ignored', data)
     return
   }
