@@ -66,6 +66,10 @@ setOpen open model =
     { model | open = open }
 
 
+mapModel fn =
+    Tuple.mapFirst fn
+
+
 update : Config msg item -> Msg item -> Model -> ( Model, Cmd msg )
 update config message model =
     let
@@ -86,7 +90,8 @@ update config message model =
                    )
 
         SetOpen bool ->
-            pure { model | open = bool }
+            pure model
+                |> mapModel (setOpen bool)
 
         Close ->
             pure model |> andThenUpdate (SetOpen False)
