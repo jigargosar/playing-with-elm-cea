@@ -137,8 +137,7 @@ viewItem : Config msg item -> Maybe item -> item -> Html (Msg item)
 viewItem config maybeSelectedItem item =
     let
         isSelected =
-            maybeSelectedItem
-                |> unwrapMaybe False (eqs item)
+            maybeSelectedItem |> unwrapMaybe False (eqs item)
     in
     button
         [ class "db f5 normal ttu hover-bg-lightest-blue pa0 ma0 color-inherit"
