@@ -119,7 +119,7 @@ view config maybeSelectedItem items model =
         [ div [ class "flex flex-row" ]
             [ button
                 [ onClick SelectClicked
-                , class "pa0 ma0 flex items-center justify-center color-inherit"
+                , class "pa0 ma0 color-inherit flex items-center justify-center "
                 ]
                 [ div [ class "ttu" ] [ text displayName ]
                 , FeatherIcons.chevronDown |> FeatherIcons.toHtml []
@@ -140,15 +140,14 @@ viewItem config maybeSelectedItem item =
             maybeSelectedItem
                 |> unwrapMaybe False (eqs item)
     in
-    div
-        [ class "hover-bg-lightest-blue pointer"
+    button
+        [ class "db f5 normal ttu hover-bg-lightest-blue pa0 ma0 color-inherit"
         , style "min-width" "8rem"
+        , onClick <| ItemClicked item
         ]
         [ txtA
             [ class "ph3 pv2 "
-            , tabindex 0
             , classList [ ( "b", isSelected ) ]
-            , onClick <| ItemClicked item
             ]
             (config.toLabel item)
         ]
