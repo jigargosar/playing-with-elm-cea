@@ -18,6 +18,7 @@ type Msg item
     | SetLatest (Maybe item)
     | Push item
     | IncCount
+    | SetCount Int
 
 
 type alias Config msg item =
@@ -35,6 +36,11 @@ setLatest latest model =
     { model | latest = latest }
 
 
+setCount : Int -> Debouncer item -> Debouncer item
+setCount count model =
+    { model | count = count }
+
+
 update : Config msg item -> Msg item -> Debouncer item -> ( Debouncer item, Cmd msg )
 update config message model =
     let
@@ -48,8 +54,14 @@ update config message model =
         SetLatest item ->
             Tuple.mapFirst (setLatest item)
 
+        SetCount count ->
+            Tuple.mapFirst (setCount count)
+
         Push item ->
             andThenUpdate (SetLatest <| Just item)
+
+        IncCount ->
+            andThenUpdate (SetCount <| model.count + 1)
     )
     <|
         pure model
