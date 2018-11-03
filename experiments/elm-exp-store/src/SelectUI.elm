@@ -3,6 +3,7 @@ module SelectUI exposing
     , Model
     , Msg
     , new
+    , subscriptions
     , update
     , view
     )
@@ -14,6 +15,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
+import Port
 import Process
 import Task
 import UI exposing (..)
@@ -32,6 +34,7 @@ new =
 
 type Msg item
     = NoOp
+    | ActiveElementParentIds (List DomId)
     | SelectClicked
     | ItemClicked item
     | OnFocusOut
@@ -46,6 +49,11 @@ type alias Config msg item =
     }
 
 
+subscriptions : Config msg item -> Model -> Sub msg
+subscriptions config model =
+    Sub.batch [ Port.activeElementsParentIdList ActiveElementParentIds |> Sub.map config.toMsg ]
+
+
 update : Config msg item -> Msg item -> Model -> ( Model, Cmd msg )
 update config message model =
     let
@@ -54,6 +62,13 @@ update config message model =
     in
     case message of
         NoOp ->
+            pure model
+
+        ActiveElementParentIds ids ->
+            let
+                _ =
+                    Debug.log "ActiveElementParentIds" ids
+            in
             pure model
 
         SetOpen bool ->

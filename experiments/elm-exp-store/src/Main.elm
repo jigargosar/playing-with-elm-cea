@@ -300,6 +300,7 @@ update message model =
 subscriptions model =
     Sub.batch
         [ MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
+        , SelectUI.subscriptions selectContextUIConfig model.selectContextUI
         ]
 
 

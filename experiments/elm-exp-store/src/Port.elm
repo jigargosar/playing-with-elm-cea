@@ -1,4 +1,4 @@
-port module Port exposing (cacheContextStore, cacheTodoStore, focusSelector, warn, wheel)
+port module Port exposing (activeElementsParentIdList, cacheContextStore, cacheTodoStore, focusSelector, warn, wheel)
 
 import Json.Decode as D
 import Json.Encode as E
@@ -17,3 +17,6 @@ port cacheContextStore : E.Value -> Cmd msg
 
 
 port focusSelector : String -> Cmd msg
+
+
+port activeElementsParentIdList : (List String -> msg) -> Sub msg
