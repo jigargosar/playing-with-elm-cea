@@ -100,18 +100,24 @@ view config maybeSelectedItem items model =
             [ class "absolute pv1 bg-white ba b--moon-gray shadow-1"
             , classList [ ( "dn", not model.open ) ]
             ]
-            (List.map (viewOption config) items)
+            (List.map (viewItem config maybeSelectedItem) items)
         ]
 
 
-viewOption : Config msg item -> item -> Html (Msg item)
-viewOption config item =
+viewItem : Config msg item -> Maybe item -> item -> Html (Msg item)
+viewItem config maybeSelectedItem item =
+    let
+        isSelected =
+            maybeSelectedItem
+                |> unwrapMaybe False (eqs item)
+    in
     div
         [ class "hover-bg-lightest-blue pointer"
         , style "min-width" "8rem"
         ]
         [ txtA
             [ class "ph3 pv2 "
+            , classList [ ( "b", isSelected ) ]
             , onClick <| ItemClicked item
             ]
             (config.toLabel item)
