@@ -24,14 +24,26 @@ import Update2
 import UpdateReturn exposing (..)
 
 
-type alias Model item =
+type alias Model =
     { open : Bool
-    , debouncer : Debouncer (Msg item)
+    , debouncer : Debouncer (Msg Bool)
+    }
+
+
+debouncerConfig : Debouncer.Config Msg Bool
+debouncerConfig =
+    { tomsg = DebouncerMsg
+    , wait = 100
+    , onEmit = CloseIfTrue
     }
 
 
 new =
     { open = False, debouncer = Debouncer.init }
+
+
+type alias ShouldClose =
+    Bool
 
 
 type Msg item
@@ -43,6 +55,8 @@ type Msg item
     | OnFocusIn
     | Close
     | SetOpen Bool
+    | DebouncerMsg (Debouncer.Msg ShouldClose)
+    | CloseIfTrue Bool
 
 
 type alias Config msg item =
@@ -53,7 +67,7 @@ type alias Config msg item =
     }
 
 
-subscriptions : Config msg item -> Model item -> Sub msg
+subscriptions : Config msg item -> Model -> Sub msg
 subscriptions config model =
     Sub.batch
         [ {- if model.open then
@@ -65,7 +79,7 @@ subscriptions config model =
         ]
 
 
-setOpen : Bool -> Model item -> Model item
+setOpen : Bool -> Model -> Model
 setOpen open model =
     { model | open = open }
 
@@ -74,7 +88,7 @@ mapModel fn =
     Tuple.mapFirst fn
 
 
-update : Config msg item -> Msg item -> Model item -> ( Model item, Cmd msg )
+update : Config msg item -> Msg item -> Model -> ( Model, Cmd msg )
 update config message model =
     let
         andThenUpdate msg =
@@ -104,6 +118,21 @@ update config message model =
             andThenUpdate Close
                 >> addMsg (config.onSelect item)
 
+        DebouncerMsg msg ->
+            andThen
+                (updateSub (Debouncer.update debouncerConfig)
+                    .debouncer
+                    (\s b -> { b | debouncer = s })
+                    msg
+                )
+
+        CloseIfTrue bool ->
+            if bool then
+                andThenUpdate Close
+
+            else
+                identity
+
         OnFocusOut ->
             identity
 
@@ -114,7 +143,7 @@ update config message model =
         pure model
 
 
-view : Config msg item -> Maybe item -> List item -> Model item -> Html (Msg item)
+view : Config msg item -> Maybe item -> List item -> Model -> Html (Msg item)
 view config maybeSelectedItem items model =
     let
         displayName =
