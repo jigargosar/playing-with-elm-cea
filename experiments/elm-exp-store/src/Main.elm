@@ -372,7 +372,7 @@ view model =
 viewPage model =
     case model.page of
         ContextTodoList ->
-            viewTodoList model
+            viewTodoListPage model
 
         ContextList ->
             viewContextList model
@@ -448,6 +448,39 @@ viewContext { key, name, startEditingName, isNameEditable } =
     )
 
 
+viewTodoListPage : Model -> Html Msg
+viewTodoListPage model =
+    let
+        selectedContextId =
+            getSelectedContextId model
+    in
+    div [ class "w-100 measure-wide" ]
+        [ viewTodoListHeader model
+        , viewTodoList model
+        ]
+
+
+viewTodoListHeader : Model -> Html Msg
+viewTodoListHeader model =
+    let
+        selectedContextId =
+            getSelectedContextId model
+    in
+    row "pa3"
+        []
+        [ div [ class "flex-auto" ]
+            [ ContextItem.viewSelectContext
+                selectContextUIConfig
+                model.contextStore
+                selectedContextId
+                model.selectContextUI
+                |> Html.map SelectContextUIMsg
+            ]
+        , boolHtml (isSelectedContextEditable model)
+            (UI.fBtn FeatherIcons.edit3 (startEditingSelectedContextMsg model))
+        ]
+
+
 viewTodoList : Model -> Html Msg
 viewTodoList model =
     let
@@ -459,22 +492,7 @@ viewTodoList model =
                 |> List.filter (.contextId >> eqs selectedContextId)
                 |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel model.contextStore todo) ))
     in
-    div [ class "w-100 measure-wide" ]
-        [ row "pa3"
-            []
-            [ div [ class "flex-auto" ]
-                [ ContextItem.viewSelectContext
-                    selectContextUIConfig
-                    model.contextStore
-                    selectedContextId
-                    model.selectContextUI
-                    |> Html.map SelectContextUIMsg
-                ]
-            , boolHtml (isSelectedContextEditable model)
-                (UI.fBtn FeatherIcons.edit3 (startEditingSelectedContextMsg model))
-            ]
-        , Html.Keyed.node "div" [] viewTodoListKeyed
-        ]
+    Html.Keyed.node "div" [] viewTodoListKeyed
 
 
 type alias TodoViewModel msg =
