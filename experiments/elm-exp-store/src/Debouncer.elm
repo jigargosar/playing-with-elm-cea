@@ -3,8 +3,8 @@ module Debouncer exposing (Config, Debouncer, Msg, init, push, update)
 import UpdateReturn exposing (..)
 
 
-type alias Debouncer a =
-    { latest : Maybe a
+type alias Debouncer item =
+    { latest : Maybe item
     , count : Int
     }
 
@@ -13,13 +13,13 @@ init =
     Debouncer Nothing 0
 
 
-type Msg a
+type Msg item
     = NoOp
-    | Push a
+    | Push item
 
 
-type alias Config msg =
-    { toMsg : Msg -> msg
+type alias Config msg item =
+    { toMsg : Msg item -> msg
     , delay : Int
     }
 
@@ -28,7 +28,7 @@ push =
     Push
 
 
-update : Config msg -> Msg a -> Debouncer a -> ( Debouncer a, Cmd msg )
+update : Config msg item -> Msg item -> Debouncer item -> ( Debouncer item, Cmd msg )
 update config message model =
     case message of
         NoOp ->
