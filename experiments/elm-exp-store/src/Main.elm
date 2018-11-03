@@ -130,6 +130,18 @@ getCurrentContextItem model =
     ( getNameByContextId model.contextId model, model.contextId )
 
 
+isSelectedContextEditable =
+    getSelectedContextId >> eqs ContextStore.defaultId >> not
+
+
+getSelectedContextId =
+    .contextId
+
+
+getMaybeSelectedContext model =
+    model.contextStore |> ContextStore.get (getSelectedContextId model)
+
+
 
 ---- UPDATE ----
 
@@ -307,6 +319,10 @@ startEditingContextMsg =
     ModeMsg << Mode.startEditingContext
 
 
+startEditingSelectedContextMsg =
+    getMaybeSelectedContext >> unwrapMaybe NoOp startEditingContextMsg
+
+
 startEditingTodoContext =
     ModeMsg << Mode.startEditingTodoContext
 
@@ -436,7 +452,7 @@ viewTodoList : Model -> Html Msg
 viewTodoList model =
     let
         selectedContextId =
-            model.contextId
+            getSelectedContextId model
 
         viewTodoListKeyed =
             getCurrentTodoList model
@@ -448,12 +464,16 @@ viewTodoList model =
             createTodoListHeaderViewModel model.contextStore selectedContextId
         , row "pa3"
             []
-            [ ContextItem.viewSelectContext
-                selectContextUIConfig
-                model.contextStore
-                model.contextId
-                model.selectContextUI
-                |> Html.map SelectContextUIMsg
+            [ div [ class "flex-auto" ]
+                [ ContextItem.viewSelectContext
+                    selectContextUIConfig
+                    model.contextStore
+                    selectedContextId
+                    model.selectContextUI
+                    |> Html.map SelectContextUIMsg
+                ]
+            , boolHtml (isSelectedContextEditable model)
+                (UI.fBtn FeatherIcons.edit3 (startEditingSelectedContextMsg model))
             ]
         , Html.Keyed.node "div" [] viewTodoListKeyed
         ]
