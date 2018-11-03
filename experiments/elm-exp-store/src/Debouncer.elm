@@ -30,9 +30,16 @@ push =
 
 update : Config msg item -> Msg item -> Debouncer item -> ( Debouncer item, Cmd msg )
 update config message model =
-    case message of
+    let
+        andThenUpdate =
+            andThen << update config
+    in
+    (case message of
         NoOp ->
-            ( model, Cmd.none )
+            identity
 
         Push item ->
-            pure model
+            identity
+    )
+    <|
+        pure model
