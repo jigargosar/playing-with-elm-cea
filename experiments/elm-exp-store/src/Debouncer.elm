@@ -1,5 +1,6 @@
 module Debouncer exposing (Config, Debouncer, Msg, init, push, update)
 
+import Process
 import UpdateReturn exposing (..)
 
 
@@ -16,14 +17,17 @@ init =
 type Msg item
     = NoOp
     | SetLatest (Maybe item)
-    | Push item
-    | IncCount
     | SetCount Int
+    | IncCount
+    | ScheduleEmit
+    | EmitIfCountEq Int
+    | Push item
 
 
 type alias Config msg item =
     { toMsg : Msg item -> msg
-    , delay : Int
+    , wait : Float
+    , onEmit : item -> msg
     }
 
 
@@ -31,9 +35,8 @@ push =
     Push
 
 
-setLatest : Maybe item -> Debouncer item -> Debouncer item
-setLatest latest model =
-    { model | latest = latest }
+replaceModel m ( _, c ) =
+    ( m, c )
 
 
 setCount : Int -> Debouncer item -> Debouncer item
@@ -51,17 +54,32 @@ update config message model =
         NoOp ->
             identity
 
-        SetLatest item ->
-            Tuple.mapFirst (setLatest item)
+        SetLatest latest ->
+            replaceModel { model | latest = latest }
 
         SetCount count ->
-            Tuple.mapFirst (setCount count)
-
-        Push item ->
-            andThenUpdate (SetLatest <| Just item)
+            replaceModel { model | count = count }
 
         IncCount ->
             andThenUpdate (SetCount <| model.count + 1)
+
+        ScheduleEmit ->
+            perform (\_ -> EmitIfCountEq model.count |> config.toMsg)
+                (Process.sleep config.wait)
+
+        EmitIfCountEq count ->
+            case ( model.count == count, model.latest ) of
+                ( True, Just item ) ->
+                    addMsg (config.onEmit item)
+                        >> replaceModel init
+
+                _ ->
+                    identity
+
+        Push item ->
+            andThenUpdate (SetLatest <| Just item)
+                >> andThenUpdate IncCount
+                >> andThenUpdate ScheduleEmit
     )
     <|
         pure model
