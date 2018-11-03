@@ -61,6 +61,11 @@ subscriptions config model =
         ]
 
 
+setOpen : Bool -> Model -> Model
+setOpen open model =
+    { model | open = open }
+
+
 update : Config msg item -> Msg item -> Model -> ( Model, Cmd msg )
 update config message model =
     let
