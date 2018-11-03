@@ -15,7 +15,9 @@ init =
 
 type Msg item
     = NoOp
+    | SetLatest (Maybe item)
     | Push item
+    | IncCount
 
 
 type alias Config msg item =
@@ -43,8 +45,11 @@ update config message model =
         NoOp ->
             identity
 
+        SetLatest item ->
+            Tuple.mapFirst (setLatest item)
+
         Push item ->
-            identity
+            andThenUpdate (SetLatest <| Just item)
     )
     <|
         pure model
