@@ -12,6 +12,7 @@ import {
   partial,
   partialRight,
   pathOr,
+  pick,
   reject,
   unfold,
 } from 'ramda'

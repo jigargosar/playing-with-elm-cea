@@ -51,7 +51,13 @@ type alias Config msg item =
 
 subscriptions : Config msg item -> Model -> Sub msg
 subscriptions config model =
-    Sub.batch [ Port.activeElementsParentIdList ActiveElementParentIds |> Sub.map config.toMsg ]
+    Sub.batch
+        [ if model.open then
+            Port.activeElementsParentIdList ActiveElementParentIds |> Sub.map config.toMsg
+
+          else
+            Sub.none
+        ]
 
 
 update : Config msg item -> Msg item -> Model -> ( Model, Cmd msg )
