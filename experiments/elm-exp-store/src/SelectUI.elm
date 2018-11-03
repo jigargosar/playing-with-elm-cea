@@ -9,6 +9,7 @@ module SelectUI exposing
     )
 
 import BasicsX exposing (..)
+import Debouncer exposing (Debouncer)
 import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -23,14 +24,14 @@ import Update2
 import UpdateReturn exposing (..)
 
 
-type alias Model =
+type alias Model item =
     { open : Bool
-    , shouldCloseWhenSetteled : Bool
+    , debouncer : Debouncer (Msg item)
     }
 
 
 new =
-    { open = False, shouldCloseWhenSetteled = False }
+    { open = False, debouncer = Debouncer.init }
 
 
 type Msg item
@@ -52,7 +53,7 @@ type alias Config msg item =
     }
 
 
-subscriptions : Config msg item -> Model -> Sub msg
+subscriptions : Config msg item -> Model item -> Sub msg
 subscriptions config model =
     Sub.batch
         [ {- if model.open then
@@ -64,7 +65,7 @@ subscriptions config model =
         ]
 
 
-setOpen : Bool -> Model -> Model
+setOpen : Bool -> Model item -> Model item
 setOpen open model =
     { model | open = open }
 
@@ -73,7 +74,7 @@ mapModel fn =
     Tuple.mapFirst fn
 
 
-update : Config msg item -> Msg item -> Model -> ( Model, Cmd msg )
+update : Config msg item -> Msg item -> Model item -> ( Model item, Cmd msg )
 update config message model =
     let
         andThenUpdate msg =
@@ -113,7 +114,7 @@ update config message model =
         pure model
 
 
-view : Config msg item -> Maybe item -> List item -> Model -> Html (Msg item)
+view : Config msg item -> Maybe item -> List item -> Model item -> Html (Msg item)
 view config maybeSelectedItem items model =
     let
         displayName =
