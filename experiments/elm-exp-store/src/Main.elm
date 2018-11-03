@@ -175,6 +175,21 @@ selectContextUIConfig =
     }
 
 
+updateSub :
+    (subMsg -> subModel -> ( subModel, Cmd msg ))
+    -> (model -> subModel)
+    -> (subModel -> model -> model)
+    -> subMsg
+    -> model
+    -> ( model, Cmd msg )
+updateSub updateFn getSub setSub subMsg model =
+    let
+        ( sub, cmd ) =
+            updateFn subMsg (getSub model)
+    in
+    ( setSub sub model, cmd )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -209,8 +224,11 @@ update message model =
             pure model |> andThenUpdate (SetPage <| ContextTodoList)
 
         SelectContextUIMsg msg ->
-            SelectUI.update selectContextUIConfig msg model.selectContextUI
-                |> Tuple.mapFirst (\selectContextUI -> { model | selectContextUI = selectContextUI })
+            updateSub (SelectUI.update selectContextUIConfig)
+                .selectContextUI
+                (\s b -> { b | selectContextUI = s })
+                msg
+                model
 
         TodoStoreMsg msg ->
             Update2.lift
