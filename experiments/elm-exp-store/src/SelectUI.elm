@@ -71,10 +71,6 @@ update config message model =
             pure model
 
         ActiveElementParentIds ids ->
-            let
-                _ =
-                    Debug.log "ActiveElementParentIds" ids
-            in
             if List.member "select-context-ui" ids then
                 pure model
 
