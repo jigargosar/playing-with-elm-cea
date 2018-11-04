@@ -2,8 +2,10 @@ module UpdateReturn exposing
     ( Update3Config
     , addCmd
     , addCmd3
+    , addEffect
     , addMsg
     , addOutMsg3
+    , afterTimeout
     , andThen
     , andThen3
     , attempt
@@ -26,6 +28,14 @@ import Random
 import Task
 import Time
 import Update3
+
+
+afterTimeout milli msg =
+    Task.perform (always msg) (Process.sleep milli)
+
+
+addEffect fn ( m, c ) =
+    ( m, Cmd.batch [ c, fn m ] )
 
 
 replaceModel m ( _, c ) =
