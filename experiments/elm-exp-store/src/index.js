@@ -116,10 +116,9 @@ window.addEventListener('blur', winFocusBlur$)
 
 const documentHasFocus$ = flyd.map(compose(() => document.hasFocus()), winFocusBlur$)
 
-const tapLog = tap(console.warn)
-const tapLogM = m => tap(partial(console.warn,[m]))
+const tapLog = m => tap(partial(console.warn,[m]))
 
-flyd.on(compose(sendToApp('documentFocusChanged'), tapLogM('documentFocusChanged')), documentHasFocus$)
+flyd.on(compose(sendToApp('documentFocusChanged'), tapLog('documentFocusChanged')), documentHasFocus$)
 
 // window.addEventListener('focus', function (e) {
 //   console.log("Out",document.hasFocus(), e)
