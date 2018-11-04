@@ -88,11 +88,11 @@ view actions toMsg model =
 viewHelp : Actions msg -> (Msg -> msg) -> Model -> Html msg
 viewHelp actions toMsg model =
     div [ class " fixed  bottom-2", style "left" "50%" ]
-        ([ div [ class "absolute bg-white z-1" ]
-            [ fBtn (ter model.open FeatherIcons.x FeatherIcons.menu) (toMsg Clicked)
-            ]
-         ]
-            ++ viewMenuItems model.open actions
+        (viewMenuItems model.open actions
+            ++ [ div [ class "absolute bg-white" ]
+                    [ fBtn (ter model.open FeatherIcons.x FeatherIcons.menu) (toMsg Clicked)
+                    ]
+               ]
         )
 
 
