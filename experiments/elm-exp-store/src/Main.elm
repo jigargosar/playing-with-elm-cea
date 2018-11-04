@@ -478,7 +478,6 @@ viewTodoListHeader model =
                 model.contextStore
                 selectedContextId
                 model.selectContextUI
-                |> Html.map SelectContextUIMsg
             ]
         , row ""
             []

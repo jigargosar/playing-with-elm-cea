@@ -26,7 +26,7 @@ viewSelectContext :
     -> ContextStore
     -> ContextId
     -> SelectUI.Model
-    -> Html (SelectUI.Msg ContextItem)
+    -> Html msg
 viewSelectContext config contextStore currentContextId selectUIModel =
     SelectUI.view config
         (Just <| createContextItemById contextStore currentContextId)

@@ -125,8 +125,14 @@ update config message model =
         pure model
 
 
-view : Config msg item -> Maybe item -> List item -> Model -> Html (Msg item)
+view : Config msg item -> Maybe item -> List item -> Model -> Html msg
 view config maybeSelectedItem items model =
+    viewInternal config maybeSelectedItem items model
+        |> Html.map config.toMsg
+
+
+viewInternal : Config msg item -> Maybe item -> List item -> Model -> Html (Msg item)
+viewInternal config maybeSelectedItem items model =
     let
         displayName =
             maybeSelectedItem
