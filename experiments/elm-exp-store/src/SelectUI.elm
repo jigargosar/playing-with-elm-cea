@@ -52,7 +52,7 @@ type Msg item
     | ItemClicked item
     | OnFocusOut
     | OnFocusIn
-    | DebouncedClose
+    | DebouncedCloseRecieved
     | Warn Log.Line
     | DebouncerMsg (Debouncer.Msg (BounceMsg item))
     | DocumentFocusChanged Bool
@@ -95,7 +95,7 @@ toggleOpen model =
 
 
 debounceCloseMsg =
-    DebouncerMsg << Debouncer.bounce <| Just DebouncedClose
+    DebouncerMsg << Debouncer.bounce <| Just DebouncedCloseRecieved
 
 
 cancelDebounceMsg =
@@ -112,7 +112,7 @@ update config message =
             andThenUpdate <| DebouncerMsg <| Debouncer.bounce <| maybeMsg
 
         andThenBounceClose =
-            andThenBounce <| Just DebouncedClose
+            andThenBounce <| Just DebouncedCloseRecieved
 
         andThenCancelBounce =
             andThenBounce Nothing
@@ -126,7 +126,7 @@ update config message =
         NoOp ->
             identity
 
-        DebouncedClose ->
+        DebouncedCloseRecieved ->
             mapModel close
 
         Warn logLine ->
