@@ -1,5 +1,6 @@
 module ContextItem exposing (ContextItem, allContextItems, viewSelectContext)
 
+import BasicsX exposing (..)
 import ContextStore exposing (ContextId, ContextStore)
 import Dict
 import Html exposing (Html)
@@ -33,9 +34,12 @@ viewSelectContext config contextStore currentContextId selectUIModel =
         contextNameLookup =
             ContextStore.nameDict contextStore
 
-        currentContext =
+        currentContextItem : ContextItem
+        currentContextItem =
             contextNameLookup
                 |> Dict.get currentContextId
+                |> unwrapMaybe ( ContextStore.defaultName, ContextStore.defaultId )
+                    (\name -> ( name, currentContextId ))
     in
     SelectUI.view config
         (Just <| createContextItemById contextStore currentContextId)
