@@ -11,6 +11,7 @@ module ContextStore exposing
     , getNameOrDefaultById
     , list
     , load
+    , nameDict
     , setName
     , update
     )
@@ -167,6 +168,17 @@ andThenUpdate msg =
 
 list =
     .contextLookup >> Dict.values
+
+
+dict =
+    .contextLookup
+
+
+nameDict : ContextStore -> Dict ContextId ContextName
+nameDict =
+    .contextLookup
+        >> Dict.map (\_ c -> c.name)
+        >> Dict.insert defaultId defaultName
 
 
 getNameOrDefaultById : ContextId -> ContextStore -> ContextName
