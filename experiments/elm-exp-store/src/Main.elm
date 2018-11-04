@@ -398,6 +398,10 @@ viewPage model =
             [ viewContextList model ]
 
 
+
+-- ContextList Page
+
+
 viewContextList : Model -> Html Msg
 viewContextList model =
     let
@@ -432,10 +436,6 @@ createContextViewModel context =
         (SwitchToContextTodoListWithContextId context.id)
 
 
-viewContextNameCA cs attrs name =
-    txtA ([ class ("ttu " ++ cs) ] ++ attrs) ("@" ++ name)
-
-
 viewContext : ContextViewModel msg -> ( String, Html msg )
 viewContext { key, name, startEditingName, isNameEditable, switchToContextTodoList } =
     ( key
@@ -452,21 +452,22 @@ viewContext { key, name, startEditingName, isNameEditable, switchToContextTodoLi
     )
 
 
+
+-- TodoList Page
+
+
 viewTodoListHeader : Model -> Html Msg
 viewTodoListHeader model =
     div
         [ class "flex" ]
-        [ div [ class "flex-auto" ] [ viewSelectContext model ]
+        [ div [ class "flex-auto" ]
+            [ SelectUI.view selectContextUIConfig
+                (Just <| getCurrentContextItem model)
+                (allContextItems model)
+                model.selectContextUI
+            ]
         , UI.fBtn FeatherIcons.plus startAddingTodoMsg
         ]
-
-
-viewSelectContext : Model -> Html Msg
-viewSelectContext model =
-    SelectUI.view selectContextUIConfig
-        (Just <| getCurrentContextItem model)
-        (allContextItems model)
-        model.selectContextUI
 
 
 viewTodoList : Model -> Html Msg
@@ -515,6 +516,9 @@ viewTodo { content, done, contentClicked, markDone, unmarkDone, contextName, con
 
             else
                 fBtnSA [ sClass "gray" ] FeatherIcons.circle markDone
+
+        viewContextNameCA cs attrs name =
+            txtA ([ class ("ttu " ++ cs) ] ++ attrs) ("@" ++ name)
     in
     div
         [ class "pa3 w-100  bb b--light-gray"
