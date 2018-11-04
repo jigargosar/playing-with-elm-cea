@@ -32,7 +32,7 @@ bounce =
     Bounce
 
 
-addEffect fn ( m, c ) =
+effect fn ( m, c ) =
     ( m, Cmd.batch [ c, fn m ] )
 
 
@@ -40,7 +40,7 @@ update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer -> ( Debouncer, 
 update config message model =
     let
         scheduleEmit bouncedItem { count } =
-            Task.perform (\_ -> EmitIfCountEq count bouncedItem |> config.toMsg)
+            Task.perform (\_ -> EmitIfCountEq count bouncedItem)
                 (Process.sleep config.wait)
 
         incCount =
@@ -60,7 +60,7 @@ update config message model =
 
         Bounce bouncedItem ->
             replaceModel incCount
-                >> (addEffect <| scheduleEmit bouncedItem)
+                >> effect (scheduleEmit bouncedItem >> Cmd.map config.toMsg)
     )
     <|
         pure model
