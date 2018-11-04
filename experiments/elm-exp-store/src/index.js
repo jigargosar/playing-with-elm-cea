@@ -1,5 +1,6 @@
 import 'tachyons'
 import './main.css'
+// noinspection ES6CheckImport
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
 import { compose, curry, forEachObjIndexed, isNil, partial, pathOr, pick, tap } from 'ramda'
@@ -9,13 +10,12 @@ import flyd from 'flyd'
 // Helpers
 
 const sendTo = curry(function sendTo(app, port, data) {
-    if (!pathOr(null, ['ports', port, 'send'])(app)) {
-      console.error('sendTo port not found', port, 'data ignored', data)
-      return
-    }
-    app.ports[port].send(data)
-  },
-)
+  if (!pathOr(null, ['ports', port, 'send'])(app)) {
+    console.error('sendTo port not found', port, 'data ignored', data)
+    return
+  }
+  app.ports[port].send(data)
+})
 
 function subscribe(options, app) {
   if (!app || !app.ports) {
@@ -29,7 +29,7 @@ function subscribe(options, app) {
       return
     }
     // noinspection JSIgnoredPromiseFromCall, JSCheckFunctionSignatures
-    app.ports[sub].subscribe(data => fn(data, (sendTo(app))))
+    app.ports[sub].subscribe(data => fn(data, sendTo(app)))
   })(options)
 }
 
@@ -62,6 +62,8 @@ function storageSet(key, value) {
 let initialTodos = storageGetOr({}, 'todos')
 let initialContexts = storageGetOr({}, 'contexts')
 // console.log("initialTodos",initialTodos)
+
+// noinspection JSUnresolvedVariable
 const app = Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
@@ -71,10 +73,9 @@ const app = Elm.Main.init({
   },
 })
 
-const sendToApp = curry(function sendToApp(port, data){
+const sendToApp = curry(function sendToApp(port, data) {
   return sendTo(app)(port)(data)
 })
-
 
 console.log(`sendToApp.name`, sendToApp.name)
 console.log(app.ports)
@@ -91,11 +92,19 @@ winFocusBlur$(document.hasFocus())
 window.addEventListener('focus', winFocusBlur$)
 window.addEventListener('blur', winFocusBlur$)
 
-const documentHasFocus$ = flyd.map(compose(() => document.hasFocus()), winFocusBlur$)
+const documentHasFocus$ = flyd.map(
+  compose(() => document.hasFocus()),
+  winFocusBlur$,
+)
 
-const tapLog = m => tap(partial(console.warn,[m]))
+export const tapLog = m => tap(partial(console.warn, [m]))
 
-flyd.on(compose(sendToApp('documentFocusChanged'), tapLog('documentFocusChanged')), documentHasFocus$)
+flyd.on(
+  compose(
+    sendToApp('documentFocusChanged') /*, tapLog('documentFocusChanged')*/,
+  ),
+  documentHasFocus$,
+)
 
 // window.addEventListener('focus', function (e) {
 //   console.log("Out",document.hasFocus(), e)
@@ -119,7 +128,7 @@ flyd.on(compose(sendToApp('documentFocusChanged'), tapLog('documentFocusChanged'
 //   // recordActiveElement(app)
 // })
 
-window.addEventListener('wheel', function (e) {
+window.addEventListener('wheel', function(e) {
   // console.log(e)
   const data = pick(['deltaX', 'deltaY'])(e)
   sendTo(app, 'wheel', data)
@@ -142,4 +151,3 @@ subscribe(
 )
 
 registerServiceWorker()
-
