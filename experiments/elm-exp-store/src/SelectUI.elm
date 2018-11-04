@@ -53,7 +53,6 @@ type Msg item
     | Close
     | SetOpen Bool
     | DebouncerMsg (Debouncer.Msg (BounceMsg item))
-    | Bounce (BounceMsg item)
     | BounceClose
     | CancelBounce
     | DocumentFocusChanged Bool
@@ -114,14 +113,11 @@ update config message model =
                     >> mapCmd config.toMsg
                 )
 
-        Bounce msg ->
-            andThenUpdate (DebouncerMsg <| Debouncer.bounce msg)
-
         BounceClose ->
-            andThenUpdate <| Bounce <| Just Close
+            andThenUpdate <| DebouncerMsg <| Debouncer.bounce <| Just Close
 
         CancelBounce ->
-            andThenUpdate <| Bounce <| Nothing
+            andThenUpdate <| DebouncerMsg <| Debouncer.bounce <| Nothing
 
         OnFocusOut ->
             andThenUpdate BounceClose
