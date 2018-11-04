@@ -60,7 +60,7 @@ type alias Config msg item =
     }
 
 
-subscriptions : Config msg item -> Model -> Sub msg
+subscriptions : { x | toMsg : Msg item -> msg } -> Model -> Sub msg
 subscriptions config model =
     Sub.batch
         [ {- if model.open then
