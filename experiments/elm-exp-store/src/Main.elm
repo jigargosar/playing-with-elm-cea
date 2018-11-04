@@ -171,6 +171,7 @@ selectContextUIConfig =
     { onSelect = Tuple.second >> SwitchToContextTodoListWithContextId
     , toMsg = SelectContextUIMsg
     , toLabel = Tuple.first
+    , domId = "todo-list-header-select-context-dom-id"
     }
 
 
