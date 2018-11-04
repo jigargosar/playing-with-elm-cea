@@ -494,9 +494,9 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
     , row "pa3 bb b--light-gray"
         []
         [ div [] [ doneIconBtn ]
-        , div [ class "flex-grow-1" ]
+        , div [ class "flex-auto flex flex-column " ]
             [ div
-                [ class " pointer"
+                [ class "pointer"
                 , classList [ ( "strike gray ", done ) ]
                 , onClick contentClicked
                 ]
