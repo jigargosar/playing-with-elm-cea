@@ -18,6 +18,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
+import Log
 import Port
 import Process
 import Task
@@ -52,7 +53,7 @@ type Msg item
     | OnFocusOut
     | OnFocusIn
     | DebouncedClose
-    | FocusResult (Result String ())
+    | Warn Log.Line
     | DebouncerMsg (Debouncer.Msg (BounceMsg item))
     | DocumentFocusChanged Bool
 
@@ -97,8 +98,8 @@ update config message model =
             andThenBounce Nothing
 
         andThenAddFocusSelectCmd =
-            Task.attempt FocusResult
-                (Browser.Dom.focus config.domId |> Task.mapError (\_ -> "Failed To Focus" ++ config.domId))
+            Task.attempt (unpackResult (\_ -> Warn [ "Focus Failed: ", config.domId ]) (always NoOp))
+                (Browser.Dom.focus config.domId)
                 |> Cmd.map config.toMsg
                 |> addCmd
 
@@ -121,15 +122,8 @@ update config message model =
         DebouncedClose ->
             close
 
-        FocusResult (Err msg) ->
-            let
-                _ =
-                    Debug.log "FocusError" msg
-            in
-            identity
-
-        FocusResult _ ->
-            identity
+        Warn logLine ->
+            addCmd (Log.warn "SelectUI" logLine)
 
         SelectClicked ->
             toggleOpen
