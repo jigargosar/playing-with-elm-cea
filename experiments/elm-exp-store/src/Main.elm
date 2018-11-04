@@ -386,8 +386,8 @@ viewPage model =
                 ]
     in
     div [ class "flex flex-row" ]
-        [ div [ class "w-30" ] []
-        , div [ class "flex-auto flex flex-column" ]
+        [ div [ class "w-30-ns min-vh-100" ] []
+        , div [ class "flex-auto flex flex-column vs3" ]
             [ viewPageHeader
             , viewPageContent
             ]
