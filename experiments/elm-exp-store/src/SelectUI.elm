@@ -97,11 +97,10 @@ update config message model =
         andThenCancelBounce =
             andThenBounce Nothing
 
-        addCmdFocusSelectBtn =
+        focusSelectBtn =
             Task.attempt (unpackResult (\_ -> Warn [ "Focus Failed: ", config.domId ]) (always NoOp))
                 (Browser.Dom.focus config.domId)
                 |> Cmd.map config.toMsg
-                |> addCmd
 
         setOpen bool =
             { model | open = bool }
@@ -126,7 +125,7 @@ update config message model =
             replaceModel toggleOpen
 
         ItemClicked item ->
-            replaceModel close >> addCmdFocusSelectBtn >> addMsg (config.onSelect item)
+            replaceModel close >> addCmd focusSelectBtn >> addMsg (config.onSelect item)
 
         DebouncerMsg msg ->
             andThen
