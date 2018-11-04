@@ -32,17 +32,6 @@ const app = Elm.Main.init({
 
 console.log(app.ports)
 
-let lastActiveElement = document.activeElement
-
-const recordActiveElement = debounce(function recordActiveElement() {
-  if (lastActiveElement !== document.activeElement) {
-    lastActiveElement = document.activeElement
-    const parentIds = compose(reject(isEmpty), unfold(node => node ? [node.id, node.parentElement] : false),
-    )(document.activeElement)
-
-    sendData(parentIds, 'activeElementsParentIdList', app)
-  }
-}, 0, { trailing: true, leading: false })
 
 window.addEventListener('focusout', function (e) {
   recordActiveElement()
@@ -125,3 +114,15 @@ function focusSelector(selector) {
     partial(console.warn, ['[focus] selector', selector, 'not found']),
   )(invoker(0, 'focus'))(document.querySelector(selector))
 }
+
+let lastActiveElement = document.activeElement
+
+export const recordActiveElement = debounce(function recordActiveElement() {
+  if (lastActiveElement !== document.activeElement) {
+    lastActiveElement = document.activeElement
+    const parentIds = compose(reject(isEmpty), unfold(node => node ? [node.id, node.parentElement] : false),
+    )(document.activeElement)
+
+    // sendData(parentIds, 'activeElementsParentIdList', app)
+  }
+}, 0, { trailing: true, leading: false })
