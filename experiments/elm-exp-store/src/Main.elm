@@ -386,7 +386,10 @@ viewPage model =
     in
     div [ class " flex-auto flex flex-row" ]
         [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns pv3 vs3 bg-black-05 " ]
-            [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
+            [ div [ class "flex flex-row justify-between pr2" ]
+                [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
+                , UI.fBtn FeatherIcons.plus startAddingContextMsg
+                ]
             , txt "hello"
             , txt "hello"
             , txt "hello"
