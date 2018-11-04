@@ -461,8 +461,8 @@ viewTodoListHeader model =
         selectedContextId =
             getSelectedContextId model
     in
-    row "pa3"
-        []
+    div
+        [ class "ph3 flex" ]
         [ div [ class "flex-auto" ]
             [ viewSelectContext model
             ]
