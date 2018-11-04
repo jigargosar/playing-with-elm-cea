@@ -31,6 +31,7 @@ type alias Config msg bouncedItem =
     }
 
 
+bounce : bouncedItem -> Msg bouncedItem
 bounce =
     Bounce
 
