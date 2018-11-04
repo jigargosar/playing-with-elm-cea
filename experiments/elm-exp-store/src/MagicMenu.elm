@@ -87,15 +87,13 @@ view actions toMsg model =
 
 viewHelp : Actions msg -> (Msg -> msg) -> Model -> Html msg
 viewHelp actions toMsg model =
-    div [ class "flex justify-center" ]
-        [ div [ class "absolute bottom-1 flex flex-column items-center" ]
-            ([ div [ class "bg-white z-1" ]
-                [ fBtn (ter model.open FeatherIcons.x FeatherIcons.menu) (toMsg Clicked)
-                ]
-             ]
-                ++ viewMenuItems model.open actions
-            )
-        ]
+    div [ class " fixed  bottom-2", style "left" "50%" ]
+        ([ div [ class "absolute bg-white z-1" ]
+            [ fBtn (ter model.open FeatherIcons.x FeatherIcons.menu) (toMsg Clicked)
+            ]
+         ]
+            ++ viewMenuItems model.open actions
+        )
 
 
 viewMenuItems isOpen actions =
@@ -124,7 +122,7 @@ viewMenuItems isOpen actions =
             (\idx { icon, msg } ->
                 button
                     [ onClick msg
-                    , class "flex items-center justify-center absolute pa0 ma0"
+                    , class "absolute  flex items-center justify-center pa0 ma0"
                     , Style.transform (ter isOpen (transformForIdx idx) [])
                     , style "transition" ("transform 0.3s " ++ transitionDelayForIdx idx ++ " ease-in")
                     ]
