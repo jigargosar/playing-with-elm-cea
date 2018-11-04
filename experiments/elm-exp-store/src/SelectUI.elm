@@ -86,6 +86,9 @@ update config message model =
     let
         andThenUpdate msg =
             andThen (update config msg)
+
+        andThenBounce maybeMsg =
+            andThenUpdate <| DebouncerMsg <| Debouncer.bounce <| maybeMsg
     in
     (case message of
         NoOp ->
@@ -114,10 +117,10 @@ update config message model =
                 )
 
         BounceClose ->
-            andThenUpdate <| DebouncerMsg <| Debouncer.bounce <| Just Close
+            andThenBounce <| Just Close
 
         CancelBounce ->
-            andThenUpdate <| DebouncerMsg <| Debouncer.bounce <| Nothing
+            andThenBounce Nothing
 
         OnFocusOut ->
             andThenUpdate BounceClose
