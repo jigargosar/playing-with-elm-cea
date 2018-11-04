@@ -17,6 +17,7 @@ const sendTo = curry(function sendTo(app, port, data) {
   app.ports[port].send(data)
 })
 
+console.log("foo")
 function subscribe(options, app) {
   if (!app || !app.ports) {
     console.error('no ports found', app)
