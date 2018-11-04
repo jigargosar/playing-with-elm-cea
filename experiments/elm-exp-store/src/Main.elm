@@ -367,7 +367,8 @@ view model =
         , div [ class "flex row justify-center" ]
             [ div [ class "measure" ]
                 [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
---                , button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
+
+                --                , button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
                 , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
                 , button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
                 ]
@@ -486,7 +487,7 @@ type alias TodoViewModel msg =
     { content : String
     , done : Bool
     , contextName : String
-    , startEditingContent : msg
+    , contentClicked : msg
     , markDone : msg
     , unmarkDone : msg
     , contextClicked : msg
@@ -506,7 +507,7 @@ createTodoViewModel contextStore todo =
 
 
 viewTodo : TodoViewModel msg -> Html msg
-viewTodo { content, done, startEditingContent, markDone, unmarkDone, contextName, contextClicked } =
+viewTodo { content, done, contentClicked, markDone, unmarkDone, contextName, contextClicked } =
     let
         doneIconBtn =
             if done then
@@ -525,7 +526,7 @@ viewTodo { content, done, startEditingContent, markDone, unmarkDone, contextName
                 [ div
                     [ class " pointer"
                     , classList [ ( "strike gray ", done ) ]
-                    , onClick startEditingContent
+                    , onClick contentClicked
                     ]
                     [ txt content ]
                 , viewContextNameCA "f7 gray pointer" [ onClick contextClicked ] contextName
