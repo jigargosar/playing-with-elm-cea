@@ -50,7 +50,7 @@ type Msg item
     | Close
     | SetOpen Bool
     | DebouncerMsg (Debouncer.Msg (Maybe (Msg item)))
-    | DocumentFocus Bool
+    | DocumentFocusChanged Bool
 
 
 type alias Config msg item =
@@ -69,7 +69,7 @@ subscriptions config model =
 
              else
           -}
-          Port.documentFocusChanged DocumentFocus
+          Port.documentFocusChanged DocumentFocusChanged
         , Browser.Events.onVisibilityChange
             (\x ->
                 let
@@ -143,7 +143,7 @@ update config message model =
         OnFocusIn ->
             andThenUpdate (DebouncerMsg <| Debouncer.bounce Nothing)
 
-        DocumentFocus hasFocus ->
+        DocumentFocusChanged hasFocus ->
             if model.open && not hasFocus then
                 andThenUpdate OnFocusIn
 
