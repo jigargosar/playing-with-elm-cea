@@ -115,7 +115,7 @@ update config message model =
                 debouncerConfig : Debouncer.Config msg (Maybe (Msg item))
                 debouncerConfig =
                     { toMsg = DebouncerMsg >> config.toMsg
-                    , wait = 100
+                    , wait = 0
                     , onEmit = unwrapMaybe NoOp identity >> config.toMsg
                     }
             in
