@@ -135,6 +135,7 @@ update config message model =
         OnFocusIn ->
             andThenUpdate (DebouncerMsg <| Debouncer.bounce Nothing)
 
+        --            identity
         DocumentFocusChanged hasFocus ->
             if model.open && not hasFocus then
                 andThenUpdate OnFocusIn
