@@ -368,6 +368,7 @@ view model =
             [ div [ class "measure" ]
                 [ button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
                 , button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
+                , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
                 , button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
                 ]
             ]
