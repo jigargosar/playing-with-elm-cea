@@ -106,9 +106,6 @@ update config message model =
         setOpen bool =
             setModel { model | open = bool }
 
-        open =
-            setOpen True
-
         close =
             setOpen False
 
