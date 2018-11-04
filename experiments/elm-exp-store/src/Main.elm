@@ -385,7 +385,7 @@ view model =
 viewPage model =
     case model.page of
         ContextTodoList ->
-            div [ class "measure w-100" ]
+            div [ class "measure w-100 vs3" ]
                 [ viewTodoListHeader model
                 , viewTodoList model
                 ]
@@ -453,12 +453,8 @@ viewContext { key, name, startEditingName, isNameEditable } =
 
 viewTodoListHeader : Model -> Html Msg
 viewTodoListHeader model =
-    let
-        selectedContextId =
-            getSelectedContextId model
-    in
     div
-        [ class "ph3 flex" ]
+        [ class "flex" ]
         [ div [ class "flex-auto" ] [ viewSelectContext model ]
         , div
             []
