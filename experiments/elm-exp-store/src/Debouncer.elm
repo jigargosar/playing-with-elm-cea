@@ -1,4 +1,4 @@
-module Debouncer exposing (Config, Debouncer, Msg, init, push, update)
+module Debouncer exposing (Config, Debouncer, Msg, bounce, init, update)
 
 import Process
 import UpdateReturn exposing (..)
@@ -31,7 +31,7 @@ type alias Config msg item =
     }
 
 
-push =
+bounce =
     Push
 
 

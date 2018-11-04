@@ -134,10 +134,10 @@ update config message model =
                 identity
 
         OnFocusOut ->
-            andThenUpdate (DebouncerMsg <| Debouncer.push True)
+            andThenUpdate (DebouncerMsg <| Debouncer.bounce True)
 
         OnFocusIn ->
-            andThenUpdate (DebouncerMsg <| Debouncer.push False)
+            andThenUpdate (DebouncerMsg <| Debouncer.bounce False)
     )
     <|
         pure model
