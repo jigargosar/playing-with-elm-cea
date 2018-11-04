@@ -104,7 +104,7 @@ update config message model =
                     .debouncer
                     (\s b -> { b | debouncer = s })
                     msg
-                    >> Tuple.mapSecond (Cmd.map config.toMsg)
+                    >> mapCmd config.toMsg
                 )
 
         OnFocusOut ->

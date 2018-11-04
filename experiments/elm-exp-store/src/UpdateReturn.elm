@@ -8,6 +8,7 @@ module UpdateReturn exposing
     , andThen3
     , foldlOutMsgList
     , generate3
+    , mapCmd
     , nextTick
     , perform
     , perform3
@@ -43,6 +44,10 @@ updateSub updateFn getSub setSub subMsg model =
             updateFn subMsg (getSub model)
     in
     ( setSub sub model, cmd )
+
+
+mapCmd tagger ( m, c ) =
+    ( m, Cmd.map tagger c )
 
 
 pure model =
