@@ -342,14 +342,13 @@ getAllContextsNameIdPairs =
 view : Model -> Html Msg
 view model =
     div [ class "w-100 vs3" ]
-        ([ viewAppBar ]
-            ++ viewPage model
-            ++ [ div [ class "w-100 flex flex-column justify-center items-center" ]
-                    [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
-               , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
-               , SnackBar.view SnackBarMsg { actions = [] } model.snackBar
-               ]
-        )
+        [ viewAppBar
+        , viewPage model
+        , div [ class "w-100 flex flex-column justify-center items-center" ]
+            [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
+        , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
+        , SnackBar.view SnackBarMsg { actions = [] } model.snackBar
+        ]
 
 
 viewAppBar =
@@ -386,9 +385,13 @@ viewPage model =
                     )
                 ]
     in
-    [ viewPageHeader
-    , viewPageContent
-    ]
+    div [ class "flex flex-row" ]
+        [ div [ class "w-30" ] []
+        , div [ class "flex-auto flex flex-column" ]
+            [ viewPageHeader
+            , viewPageContent
+            ]
+        ]
 
 
 
