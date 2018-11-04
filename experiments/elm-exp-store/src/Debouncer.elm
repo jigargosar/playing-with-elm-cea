@@ -15,8 +15,6 @@ init =
 
 type Msg bouncedItem
     = NoOp
-    | SetCount Int
-    | IncCount
     | ScheduleEmit bouncedItem
     | EmitIfCountEq Int bouncedItem
     | Bounce bouncedItem
@@ -39,16 +37,16 @@ update config message model =
     let
         andThenUpdate =
             andThen << update config
+
+        setCount count =
+            { model | count = count }
+
+        incCount =
+            setCount model.count + 1
     in
     (case message of
         NoOp ->
             identity
-
-        SetCount count ->
-            replaceModel { model | count = count }
-
-        IncCount ->
-            andThenUpdate (SetCount <| model.count + 1)
 
         ScheduleEmit bouncedItem ->
             perform (\_ -> EmitIfCountEq model.count bouncedItem |> config.toMsg)
@@ -63,7 +61,7 @@ update config message model =
                 identity
 
         Bounce bouncedItem ->
-            andThenUpdate IncCount
+            replaceModel incCount
                 >> andThenUpdate (ScheduleEmit bouncedItem)
     )
     <|
