@@ -359,7 +359,7 @@ getAllContextsNameIdPairs =
 
 view : Model -> Html Msg
 view model =
-    UI.root
+    div [ class "flex flex-column w-100" ]
         [ div [ class "bg-black white" ]
             [ div [] [ txtC "b pa3" "ELM Experiment Store" ]
             ]
