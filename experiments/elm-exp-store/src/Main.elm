@@ -423,19 +423,6 @@ createContextViewModel context =
         (startEditingContextMsg context)
 
 
-viewInbox : Html msg
-viewInbox =
-    div
-        [ class "pa3 w-100  bb b--light-gray"
-        ]
-        [ row ""
-            []
-            [ txtA [ style "width" "24px" ] ""
-            , txtA [ class "" ] "Inbox"
-            ]
-        ]
-
-
 viewContextNameCA cs attrs name =
     txtA ([ class ("ttu " ++ cs) ] ++ attrs) ("@" ++ name)
 
