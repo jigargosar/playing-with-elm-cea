@@ -367,7 +367,7 @@ view model =
         , div [ class "flex row justify-center" ]
             [ div [ class "measure" ]
                 [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
-                , button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
+--                , button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
                 , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
                 , button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
                 ]
