@@ -2,25 +2,13 @@ module ContextItem exposing (ContextItem, allContextItems, viewSelectContext)
 
 import BasicsX exposing (..)
 import ContextStore exposing (ContextId, ContextStore)
-import Dict
+import Dict exposing (Dict)
 import Html exposing (Html)
 import SelectUI
 
 
 type alias ContextItem =
     ( String, ContextId )
-
-
-allContextItems : ContextStore -> List ContextItem
-allContextItems =
-    ContextStore.list
-        >> List.map (\c -> ( c.name, c.id ))
-        >> (::) ( ContextStore.defaultName, ContextStore.defaultId )
-
-
-createContextItemById : ContextStore -> ContextId -> ContextItem
-createContextItemById contextStore contextId =
-    ( ContextStore.getNameOrDefaultById contextId contextStore, contextId )
 
 
 viewSelectContext :
@@ -31,6 +19,7 @@ viewSelectContext :
     -> Html msg
 viewSelectContext config contextStore currentContextId selectUIModel =
     let
+        contextNameLookup : Dict String String
         contextNameLookup =
             ContextStore.nameDict contextStore
 
@@ -40,8 +29,13 @@ viewSelectContext config contextStore currentContextId selectUIModel =
                 |> Dict.get currentContextId
                 |> unwrapMaybe ( ContextStore.defaultName, ContextStore.defaultId )
                     (\name -> ( name, currentContextId ))
+
+        allContextItems =
+            contextNameLookup
+                |> Dict.toList
+                |> List.map (\k v -> ( v, k ))
     in
     SelectUI.view config
-        (Just <| createContextItemById contextStore currentContextId)
-        (allContextItems contextStore)
+        (Just <| currentContextItem)
+        allContextItems
         selectUIModel
