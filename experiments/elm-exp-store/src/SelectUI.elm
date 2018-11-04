@@ -42,7 +42,6 @@ type alias ShouldClose =
 
 type Msg item
     = NoOp
-    | ActiveElementParentIds (List DomId)
     | SelectClicked
     | ItemClicked item
     | OnFocusOut
@@ -64,20 +63,7 @@ type alias Config msg item =
 subscriptions : { x | toMsg : Msg item -> msg } -> Model -> Sub msg
 subscriptions config model =
     Sub.batch
-        [ {- if model.open then
-               Port.activeElementsParentIdList ActiveElementParentIds |> Sub.map config.toMsg
-
-             else
-          -}
-          Port.documentFocusChanged DocumentFocusChanged
-        , Browser.Events.onVisibilityChange
-            (\x ->
-                let
-                    _ =
-                        Debug.log "x" x
-                in
-                NoOp
-            )
+        [ Port.documentFocusChanged DocumentFocusChanged
         ]
         |> Sub.map config.toMsg
 
@@ -99,13 +85,6 @@ update config message model =
     (case message of
         NoOp ->
             identity
-
-        ActiveElementParentIds ids ->
-            if List.member config.domId ids then
-                identity
-
-            else
-                andThenUpdate Close
 
         SetOpen open ->
             setModel { model | open = open }
@@ -156,8 +135,7 @@ view config maybeSelectedItem items model =
                 |> Maybe.withDefault "<No Selection>"
     in
     div
-        [ id config.domId
-        , class "relative"
+        [ class "relative"
         , onFocusIn OnFocusIn
         , onFocusOut OnFocusOut
         ]
