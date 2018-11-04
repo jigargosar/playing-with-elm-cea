@@ -18,6 +18,8 @@ import {
 } from 'ramda'
 import debounce from 'lodash.debounce'
 
+import flyd from 'flyd'
+
 let initialTodos = storageGetOr({}, 'todos')
 let initialContexts = storageGetOr({}, 'contexts')
 // console.log("initialTodos",initialTodos)
@@ -33,18 +35,33 @@ const app = Elm.Main.init({
 console.log(app.ports)
 
 
-let documentHasFocus = document.hasFocus
+// let documentHasFocus = document.hasFocus
 
-window.addEventListener('focus', function (e) {
-  console.log("Out",document.hasFocus(), e)
-  // recordActiveElement(app)
-})
+// const winFocus$ = flyd.stream()
+// const winBlur$  = flyd.stream()
 
-window.addEventListener('blur', function (e) {
-  console.log("In",document.hasFocus(), e)
 
-  // recordActiveElement(app)
-})
+const winFocusBlur$ = flyd.stream()
+
+winFocusBlur$(document.hasFocus())
+
+window.addEventListener('focus', winFocusBlur$)
+window.addEventListener('blur', winFocusBlur$)
+
+const documentHasFocus$ = flyd.map(compose(()=>document.hasFocus()),winFocusBlur$)
+
+flyd.on(console.warn, documentHasFocus$)
+
+// window.addEventListener('focus', function (e) {
+//   console.log("Out",document.hasFocus(), e)
+//   // recordActiveElement(app)
+// })
+//
+// window.addEventListener('blur', function (e) {
+//   console.log("In",document.hasFocus(), e)
+//
+//   // recordActiveElement(app)
+// })
 
 
 
