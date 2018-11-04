@@ -1,6 +1,7 @@
 module Debouncer exposing (Config, Debouncer, Msg, bounce, init, update)
 
 import Process
+import Task
 import UpdateReturn exposing (..)
 
 
@@ -32,17 +33,28 @@ bounce =
     Bounce
 
 
+addEffect fn ( m, c ) =
+    ( m, Cmd.batch [ c, fn m ] )
+
+
 update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer -> ( Debouncer, Cmd msg )
 update config message model =
     let
         andThenUpdate =
             andThen << update config
 
+        addEmitEffect bouncedItem =
+            addEffect
+                (\{ count } ->
+                    Task.perform (\_ -> EmitIfCountEq model.count bouncedItem |> config.toMsg)
+                        (Process.sleep config.wait)
+                )
+
         setCount count =
             { model | count = count }
 
         incCount =
-            setCount model.count + 1
+            setCount <| model.count + 1
     in
     (case message of
         NoOp ->
@@ -54,15 +66,15 @@ update config message model =
 
         EmitIfCountEq count bouncedItem ->
             if model.count == count then
-                addMsg (config.onEmit bouncedItem)
-                    >> replaceModel init
+                replaceModel init
+                    >> addMsg (config.onEmit bouncedItem)
 
             else
                 identity
 
         Bounce bouncedItem ->
             replaceModel incCount
-                >> andThenUpdate (ScheduleEmit bouncedItem)
+                >> addEmitEffect bouncedItem
     )
     <|
         pure model
