@@ -320,6 +320,10 @@ startEditingTodoContext =
     ModeMsg << Mode.startEditingTodoContext
 
 
+goToInbox =
+    SwitchToContextTodoListWithContextId ContextStore.defaultId
+
+
 mockActions =
     [ FeatherIcons.home
     , FeatherIcons.twitter
@@ -362,11 +366,10 @@ viewPage model =
         viewPageHeader =
             div [ class "flex row justify-center" ]
                 [ div [ class "measure" ]
-                    [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
-
-                    --                , button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
-                    , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
-                    , button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
+                    [ --                    button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
+                      --                , button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
+                      --                    , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
+                      button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
                     ]
                 ]
 
@@ -387,22 +390,14 @@ viewPage model =
     div [ class " flex-auto flex flex-row" ]
         [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns pv3 vs3 bg-black-05 " ]
             [ div [ class "flex flex-row justify-between pr2" ]
+                [ button [ onClick goToInbox ] [ text "Inbox" ]
+
+                --                , UI.fBtn FeatherIcons.plus startAddingContextMsg
+                ]
+            , div [ class "flex flex-row justify-between pr2" ]
                 [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
                 , UI.fBtn FeatherIcons.plus startAddingContextMsg
                 ]
-            , txt "hello"
-            , txt "hello"
-            , txt "hello"
-            , txt "hello"
-            , txt "hello"
-            , txt "hello"
-            , txt "hello"
-            , txt "hello"
-            , txt "hello"
-            , txt "hello"
-            , txt "hello"
-            , txt "hello"
-            , txt "hello"
             ]
         , div [ class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
             [ viewPageHeader
