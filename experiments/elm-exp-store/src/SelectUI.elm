@@ -96,7 +96,7 @@ update config message model =
         andThenCancelBounce =
             andThenBounce Nothing
 
-        andThenFocusSelect =
+        andThenAddFocusSelectCmd =
             Task.attempt FocusResult
                 (Browser.Dom.focus config.domId |> Task.mapError (\_ -> "Failed To Focus" ++ config.domId))
                 |> Cmd.map config.toMsg
@@ -135,7 +135,7 @@ update config message model =
             toggleOpen
 
         ItemClicked item ->
-            close >> andThenFocusSelect >> addMsg (config.onSelect item)
+            close >> andThenAddFocusSelectCmd >> addMsg (config.onSelect item)
 
         DebouncerMsg msg ->
             andThen
