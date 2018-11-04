@@ -386,7 +386,7 @@ viewPage model =
     in
     div [ class " flex-auto flex flex-row" ]
         [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns pv3 vs3 bg-black-05 " ]
-            [ txt "hello"
+            [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
             , txt "hello"
             , txt "hello"
             , txt "hello"
