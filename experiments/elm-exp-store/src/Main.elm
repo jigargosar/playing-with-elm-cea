@@ -341,7 +341,7 @@ getAllContextsNameIdPairs =
 
 view : Model -> Html Msg
 view model =
-    div [ class "w-100 vs3" ]
+    div [ class "w-100" ]
         [ viewAppBar
         , viewPage model
         , div [ class "w-100 flex flex-column justify-center items-center" ]
@@ -386,8 +386,8 @@ viewPage model =
                 ]
     in
     div [ class "flex flex-row" ]
-        [ div [ class "w-30-ns min-vh-100" ] []
-        , div [ class "flex-auto flex flex-column vs3" ]
+        [ div [ class "w-30-ns min-vh-100 pv3 bg-gray" ] [ text "hello" ]
+        , div [ class "flex-auto pv3 flex flex-column vs3" ]
             [ viewPageHeader
             , viewPageContent
             ]
