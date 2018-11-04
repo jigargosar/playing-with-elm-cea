@@ -46,7 +46,7 @@ update config message model =
         addEmitEffect bouncedItem =
             addEffect
                 (\{ count } ->
-                    Task.perform (\_ -> EmitIfCountEq model.count bouncedItem |> config.toMsg)
+                    Task.perform (\_ -> EmitIfCountEq count bouncedItem |> config.toMsg)
                         (Process.sleep config.wait)
                 )
 
