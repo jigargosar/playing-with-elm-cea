@@ -40,6 +40,10 @@ type alias ShouldClose =
     Bool
 
 
+type alias BounceMsg item =
+    Maybe (Msg item)
+
+
 type Msg item
     = NoOp
     | SelectClicked
@@ -48,7 +52,8 @@ type Msg item
     | OnFocusIn
     | Close
     | SetOpen Bool
-    | DebouncerMsg (Debouncer.Msg (Maybe (Msg item)))
+    | DebouncerMsg (Debouncer.Msg (BounceMsg item))
+    | Debounce (BounceMsg item)
     | DocumentFocusChanged Bool
 
 
@@ -107,16 +112,18 @@ update config message model =
                     >> mapCmd config.toMsg
                 )
 
+        Debounce msg ->
+            andThenUpdate (DebouncerMsg <| Debouncer.bounce msg)
+
         OnFocusOut ->
-            andThenUpdate (DebouncerMsg <| Debouncer.bounce (Just Close))
+            andThenUpdate <| Debounce <| Just Close
 
         OnFocusIn ->
-            andThenUpdate (DebouncerMsg <| Debouncer.bounce Nothing)
+            andThenUpdate <| Debounce <| Nothing
 
-        --            identity
         DocumentFocusChanged hasFocus ->
             if model.open && not hasFocus then
-                andThenUpdate OnFocusIn
+                andThenUpdate <| Debounce <| Nothing
 
             else
                 identity
