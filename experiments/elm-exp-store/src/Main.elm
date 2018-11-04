@@ -491,13 +491,9 @@ type alias ContextItem =
 viewSelectContext : Model -> Html Msg
 viewSelectContext model =
     let
-        contextNameLookup : Dict ContextId ContextName
-        contextNameLookup =
-            ContextStore.nameDict model.contextStore
-
         allContextItems : List ContextItem
         allContextItems =
-            contextNameLookup
+            ContextStore.nameDict model.contextStore
                 |> Dict.toList
                 |> List.map swap
     in
