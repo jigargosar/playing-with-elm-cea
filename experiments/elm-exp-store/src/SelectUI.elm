@@ -50,11 +50,8 @@ type Msg item
     | ItemClicked item
     | OnFocusOut
     | OnFocusIn
-    | Close
-    | SetOpen Bool
+    | DebouncedClose
     | DebouncerMsg (Debouncer.Msg (BounceMsg item))
-    | BounceClose
-    | CancelBounce
     | DocumentFocusChanged Bool
 
 
@@ -89,23 +86,37 @@ update config message model =
 
         andThenBounce maybeMsg =
             andThenUpdate <| DebouncerMsg <| Debouncer.bounce <| maybeMsg
+
+        andThenBounceClose =
+            andThenBounce <| Just DebouncedClose
+
+        andThenCancelBounce =
+            andThenBounce Nothing
+
+        setOpen bool =
+            setModel { model | open = bool }
+
+        open =
+            setOpen True
+
+        close =
+            setOpen False
+
+        toggleOpen =
+            setOpen (not model.open)
     in
     (case message of
         NoOp ->
             identity
 
-        SetOpen open ->
-            setModel { model | open = open }
-
-        Close ->
-            andThenUpdate (SetOpen False)
+        DebouncedClose ->
+            close
 
         SelectClicked ->
-            andThenUpdate (SetOpen <| not model.open)
+            toggleOpen
 
         ItemClicked item ->
-            andThenUpdate Close
-                >> addMsg (config.onSelect item)
+            close >> addMsg (config.onSelect item)
 
         DebouncerMsg msg ->
             andThen
@@ -116,21 +127,15 @@ update config message model =
                     >> mapCmd config.toMsg
                 )
 
-        BounceClose ->
-            andThenBounce <| Just Close
-
-        CancelBounce ->
-            andThenBounce Nothing
-
         OnFocusOut ->
-            andThenUpdate BounceClose
+            andThenBounceClose
 
         OnFocusIn ->
-            andThenUpdate CancelBounce
+            andThenCancelBounce
 
         DocumentFocusChanged hasFocus ->
             if model.open && not hasFocus then
-                andThenUpdate CancelBounce
+                andThenCancelBounce
 
             else
                 identity
