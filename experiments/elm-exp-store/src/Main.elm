@@ -44,17 +44,11 @@ type Page
     | ContextList
 
 
-type TodoFilter
-    = DoneFilter Bool
-    | ContextIdFilter ContextId
-
-
 type alias Model =
     { magicMenu : MagicMenu
     , snackBar : SnackBar
     , todoStore : TodoStore
     , contextStore : ContextStore
-    , todoFilters : List TodoFilter
     , contextId : ContextId
     , selectContextUI : SelectUI.Model
     , mode : Mode
@@ -80,7 +74,6 @@ init flags =
         , snackBar = SnackBar.empty
         , todoStore = todoStore
         , contextStore = contextStore
-        , todoFilters = []
         , contextId = ContextStore.defaultId
         , selectContextUI = SelectUI.new
         , mode = Mode.init
@@ -90,26 +83,10 @@ init flags =
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeContextStoreLogLine)
 
 
-filterToFn filter =
-    case filter of
-        DoneFilter done ->
-            .done >> (==) done
-
-        ContextIdFilter contextId ->
-            .contextId >> (==) contextId
-
-
-matchesFilters filters todo =
-    filters
-        |> List.map filterToFn
-        |> allPass todo
-
-
 getCurrentTodoList : Model -> List Todo
 getCurrentTodoList model =
     model.todoStore
         |> TodoStore.list
-        |> List.filter (matchesFilters model.todoFilters)
         |> List.sortBy .createdAt
 
 
