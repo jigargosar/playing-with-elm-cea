@@ -91,7 +91,7 @@ close =
 
 
 toggleOpen model =
-    setOpen (not model.open)
+    setOpen (not model.open) model
 
 
 update : Config msg item -> Msg item -> Model -> ( Model, Cmd msg )
