@@ -342,24 +342,14 @@ getAllContextsNameIdPairs =
 view : Model -> Html Msg
 view model =
     div [ class "w-100 vs3" ]
-        [ viewAppBar
-        , div [ class "flex row justify-center" ]
-            [ div [ class "measure" ]
-                [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
-
-                --                , button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
-                , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
-                , button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
-                ]
-            ]
-        , div [ class "flex row justify-center" ]
-            [ div [ class "measure w-100 vs3" ] (viewPage model)
-            ]
-        , div [ class "w-100 flex flex-column justify-center items-center" ]
-            [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
-        , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
-        , SnackBar.view SnackBarMsg { actions = [] } model.snackBar
-        ]
+        (viewAppBar
+            :: viewPage model
+            ++ [ div [ class "w-100 flex flex-column justify-center items-center" ]
+                    [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
+               , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
+               , SnackBar.view SnackBarMsg { actions = [] } model.snackBar
+               ]
+        )
 
 
 viewAppBar =
@@ -370,14 +360,30 @@ viewAppBar =
 
 
 viewPage model =
-    case model.page of
-        ContextTodoList ->
-            [ viewTodoListHeader model
-            , viewTodoList model
-            ]
+    let
+        viewPageContent =
+            case model.page of
+                ContextTodoList ->
+                    [ viewTodoListHeader model
+                    , viewTodoList model
+                    ]
 
-        ContextList ->
-            [ viewContextList model ]
+                ContextList ->
+                    [ viewContextList model ]
+    in
+    [ div [ class "flex row justify-center" ]
+        [ div [ class "measure" ]
+            [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
+
+            --                , button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
+            , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
+            , button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
+            ]
+        ]
+    , div [ class "flex row justify-center" ]
+        [ div [ class "measure w-100 vs3" ] viewPageContent
+        ]
+    ]
 
 
 
