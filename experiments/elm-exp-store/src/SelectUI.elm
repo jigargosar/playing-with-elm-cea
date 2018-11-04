@@ -69,18 +69,15 @@ subscriptions config model =
 
              else
           -}
-          if model.open then
-            Port.documentFocusChanged DocumentFocus
-
-          else
-            Browser.Events.onVisibilityChange
-                (\x ->
-                    let
-                        _ =
-                            Debug.log "x" x
-                    in
-                    NoOp
-                )
+          Port.documentFocusChanged DocumentFocus
+        , Browser.Events.onVisibilityChange
+            (\x ->
+                let
+                    _ =
+                        Debug.log "x" x
+                in
+                NoOp
+            )
         ]
         |> Sub.map config.toMsg
 
@@ -141,17 +138,17 @@ update config message model =
                 )
 
         OnFocusOut ->
-            if model.documentHasFocus then
-                andThenUpdate (DebouncerMsg <| Debouncer.bounce (Just Close))
-
-            else
-                identity
+            andThenUpdate (DebouncerMsg <| Debouncer.bounce (Just Close))
 
         OnFocusIn ->
             andThenUpdate (DebouncerMsg <| Debouncer.bounce Nothing)
 
         DocumentFocus hasFocus ->
-            replaceModel { model | documentHasFocus = hasFocus }
+            if model.open && not hasFocus then
+                andThenUpdate OnFocusIn
+
+            else
+                identity
     )
     <|
         pure model
