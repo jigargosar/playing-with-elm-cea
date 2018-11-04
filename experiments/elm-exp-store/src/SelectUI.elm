@@ -82,13 +82,12 @@ subscriptions config model =
         |> Sub.map config.toMsg
 
 
-setOpen : Bool -> Model -> Model
-setOpen open model =
-    { model | open = open }
-
-
-mapModel fn =
-    Tuple.mapFirst fn
+debouncerConfig : Debouncer.Config (Msg item) (Maybe (Msg item))
+debouncerConfig =
+    { toMsg = DebouncerMsg
+    , wait = 0
+    , onEmit = unwrapMaybe NoOp identity
+    }
 
 
 update : Config msg item -> Msg item -> Model -> ( Model, Cmd msg )
@@ -108,8 +107,8 @@ update config message model =
             else
                 andThenUpdate Close
 
-        SetOpen bool ->
-            mapModel (setOpen bool)
+        SetOpen open ->
+            setModel { model | open = open }
 
         Close ->
             andThenUpdate (SetOpen False)
@@ -122,19 +121,12 @@ update config message model =
                 >> addMsg (config.onSelect item)
 
         DebouncerMsg msg ->
-            let
-                debouncerConfig : Debouncer.Config msg (Maybe (Msg item))
-                debouncerConfig =
-                    { toMsg = DebouncerMsg >> config.toMsg
-                    , wait = 0
-                    , onEmit = unwrapMaybe NoOp identity >> config.toMsg
-                    }
-            in
             andThen
                 (updateSub (Debouncer.update debouncerConfig)
                     .debouncer
                     (\s b -> { b | debouncer = s })
                     msg
+                    >> Tuple.mapSecond (Cmd.map config.toMsg)
                 )
 
         OnFocusOut ->
