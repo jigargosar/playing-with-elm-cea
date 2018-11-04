@@ -56,7 +56,6 @@ type alias Config msg item =
     { onSelect : item -> msg
     , toMsg : Msg item -> msg
     , toLabel : item -> String
-    , domId : DomId
     }
 
 
