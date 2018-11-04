@@ -489,9 +489,6 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
 
             else
                 fBtnSA [ sClass "gray" ] FeatherIcons.circle markDone
-
-        viewContextNameCA cs attrs name =
-            txtA ([ class ("ttu " ++ cs) ] ++ attrs) ("@" ++ name)
     in
     ( key
     , row "pa3 bb b--light-gray"
@@ -504,7 +501,11 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
                 , onClick contentClicked
                 ]
                 [ txt content ]
-            , viewContextNameCA "f7 gray pointer" [ onClick contextClicked ] contextName
+            , txtA
+                [ class "ttu f7 gray pointer"
+                , onClick contextClicked
+                ]
+                ("@" ++ contextName)
             ]
         ]
     )
