@@ -341,7 +341,7 @@ getAllContextsNameIdPairs =
 
 view : Model -> Html Msg
 view model =
-    div [ class "flex flex-column min-vh-100 w-100" ]
+    div [ class "flex flex-column min-h-100 w-100" ]
         [ viewAppBar
         , viewPage model
         , MagicMenu.view mockActions MagicMenuMsg model.magicMenu
@@ -384,9 +384,11 @@ viewPage model =
                     )
                 ]
     in
-    div [ class "flex-auto flex flex-row" ]
-        [ div [ class "w-30-ns  pv3 bg-gray" ] [ text "hello" ]
-        , div [ class "flex-auto pv3 flex flex-column vs3" ]
+    div [ class " flex-auto flex flex-row" ]
+        [ div [ class "overflow-y-scroll w-30-ns flex-shrink-0 pv3 bg-gray" ]
+            [ txt "hello"
+            ]
+        , div [ class "overflow-y-scroll  flex-auto pv3 flex flex-column vs3" ]
             [ viewPageHeader
             , viewPageContent
             ]
