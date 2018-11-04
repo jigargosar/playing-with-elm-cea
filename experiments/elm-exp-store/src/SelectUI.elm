@@ -26,15 +26,7 @@ import UpdateReturn exposing (..)
 
 type alias Model =
     { open : Bool
-    , debouncer : Debouncer (Msg Bool)
-    }
-
-
-debouncerConfig : Debouncer.Config Msg Bool
-debouncerConfig =
-    { tomsg = DebouncerMsg
-    , wait = 100
-    , onEmit = CloseIfTrue
+    , debouncer : Debouncer Bool
     }
 
 
@@ -119,6 +111,14 @@ update config message model =
                 >> addMsg (config.onSelect item)
 
         DebouncerMsg msg ->
+            let
+                debouncerConfig : Debouncer.Config msg Bool
+                debouncerConfig =
+                    { toMsg = DebouncerMsg >> config.toMsg
+                    , wait = 100
+                    , onEmit = CloseIfTrue >> config.toMsg
+                    }
+            in
             andThen
                 (updateSub (Debouncer.update debouncerConfig)
                     .debouncer

@@ -57,7 +57,7 @@ type alias Model =
     , contextStore : ContextStore
     , todoFilters : List TodoFilter
     , contextId : ContextId
-    , selectContextUI : SelectUI.Model ContextItem
+    , selectContextUI : SelectUI.Model
     , mode : Mode
     , page : Page
     }
