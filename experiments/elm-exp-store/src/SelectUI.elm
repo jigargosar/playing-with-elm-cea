@@ -94,8 +94,16 @@ toggleOpen model =
     setOpen (not model.open) model
 
 
+debounceCloseMsg =
+    DebouncerMsg << Debouncer.bounce <| Just DebouncedClose
+
+
+cancelDebounceMsg =
+    DebouncerMsg << Debouncer.bounce <| Nothing
+
+
 update : Config msg item -> Msg item -> Model -> ( Model, Cmd msg )
-update config message model =
+update config message =
     let
         andThenUpdate msg =
             andThen (update config msg)
@@ -146,14 +154,10 @@ update config message model =
             andThenCancelBounce
 
         DocumentFocusChanged hasFocus ->
-            if model.open && not hasFocus then
-                andThenCancelBounce
-
-            else
-                identity
+            andThenIf (\{ open } -> open && not hasFocus)
+                (update config cancelDebounceMsg)
     )
-    <|
-        pure model
+        << pure
 
 
 view : Config msg item -> Maybe item -> List item -> Model -> Html msg
