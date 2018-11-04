@@ -83,10 +83,11 @@ init flags =
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeContextStoreLogLine)
 
 
-getCurrentTodoList : Model -> List Todo
-getCurrentTodoList model =
+getSelectedContextTodoList : Model -> List Todo
+getSelectedContextTodoList model =
     model.todoStore
         |> TodoStore.list
+        |> List.filter (.contextId >> eqs (getSelectedContextId model))
         |> List.sortBy .createdAt
 
 
@@ -450,12 +451,8 @@ viewTodoListHeader model =
 viewTodoList : Model -> Html Msg
 viewTodoList model =
     let
-        selectedContextId =
-            getSelectedContextId model
-
         viewTodoListKeyed =
-            getCurrentTodoList model
-                |> List.filter (.contextId >> eqs selectedContextId)
+            getSelectedContextTodoList model
                 |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel model.contextStore todo) ))
     in
     Html.Keyed.node "div" [] viewTodoListKeyed
