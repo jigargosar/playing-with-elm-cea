@@ -2,22 +2,7 @@ import 'tachyons'
 import './main.css'
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import {
-  compose,
-  curry,
-  forEachObjIndexed,
-  ifElse,
-  invoker,
-  isEmpty,
-  isNil,
-  partial,
-  pathOr,
-  pick,
-  reject,
-  tap,
-  unfold,
-} from 'ramda'
-import debounce from 'lodash.debounce'
+import { compose, curry, forEachObjIndexed, isNil, partial, pathOr, pick, tap } from 'ramda'
 
 import flyd from 'flyd'
 
@@ -44,7 +29,7 @@ function subscribe(options, app) {
       return
     }
     // noinspection JSIgnoredPromiseFromCall, JSCheckFunctionSignatures
-    app.ports[sub].subscribe(data => fn(data, (sendTo([app]))))
+    app.ports[sub].subscribe(data => fn(data, (sendTo(app))))
   })(options)
 }
 
@@ -66,23 +51,11 @@ function storageSet(key, value) {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
-function focusSelector(selector) {
-  ifElse(isNil)(
-    partial(console.warn, ['[focus] selector', selector, 'not found']),
-  )(invoker(0, 'focus'))(document.querySelector(selector))
-}
-
-let lastActiveElement = document.activeElement
-
-export const recordActiveElement = debounce(function recordActiveElement(app) {
-  if (lastActiveElement !== document.activeElement) {
-    lastActiveElement = document.activeElement
-    const parentIds = compose(reject(isEmpty), unfold(node => node ? [node.id, node.parentElement] : false),
-    )(document.activeElement)
-
-    sendTo(app, 'activeElementsParentIdList', parentIds)
-  }
-}, 0, { trailing: true, leading: false })
+// function focusSelector(selector) {
+//   ifElse(isNil)(
+//     partial(console.warn, ['[focus] selector', selector, 'not found']),
+//   )(invoker(0, 'focus'))(document.querySelector(selector))
+// }
 
 // App
 
@@ -98,8 +71,12 @@ const app = Elm.Main.init({
   },
 })
 
-const sendToApp = partial(sendTo, [app])
+const sendToApp = curry(function sendToApp(port, data){
+  return sendTo(app)(port)(data)
+})
 
+
+console.log(`sendToApp.name`, sendToApp.name)
 console.log(app.ports)
 
 // let documentHasFocus = document.hasFocus
