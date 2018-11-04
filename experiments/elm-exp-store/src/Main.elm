@@ -344,7 +344,7 @@ view model =
     div [ class "w-100 vs3" ]
         [ div [ class "flex row justify-center bg-black white" ]
             [ div [ class "w-100 measure" ]
-                [ div [] [ txtC "b pa3" "ELM Experiment Store" ] ]
+                [ div [ class "flex flex-row pa3" ] [ txtC "b" "ELM", txtC "fw3" "DONE" ] ]
             ]
         , div [ class "flex row justify-center" ]
             [ div [ class "measure" ]
