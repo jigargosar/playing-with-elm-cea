@@ -397,7 +397,7 @@ viewContextList model =
     let
         inboxViewModel : ContextViewModel Msg
         inboxViewModel =
-            ContextViewModel "Inbox" "Inbox" False NoOp
+            ContextViewModel "Inbox" "Inbox" False NoOp (SwitchToContextTodoListWithContextId ContextStore.defaultId)
 
         viewPrimaryListKeyed =
             getCurrentContextList model
@@ -412,6 +412,7 @@ type alias ContextViewModel msg =
     , name : String
     , isNameEditable : Bool
     , startEditingName : msg
+    , switchToContextTodoList : msg
     }
 
 
@@ -422,6 +423,7 @@ createContextViewModel context =
         (defaultEmptyStringTo "<empty context name>" context.name)
         True
         (startEditingContextMsg context)
+        (SwitchToContextTodoListWithContextId context.id)
 
 
 viewContextNameCA cs attrs name =
@@ -429,15 +431,14 @@ viewContextNameCA cs attrs name =
 
 
 viewContext : ContextViewModel msg -> ( String, Html msg )
-viewContext { key, name, startEditingName, isNameEditable } =
+viewContext { key, name, startEditingName, isNameEditable, switchToContextTodoList } =
     ( key
     , row "pa3 w-100  bb b--light-gray"
         []
         [ txtA [ style "width" "24px" ] ""
         , button
-            [ class "flex-auto pa0 ma0 tl ttu color-inherit normal underline"
-            , classList [ ( "pointer", isNameEditable ) ]
-            , onClick startEditingName
+            [ class "flex-auto pa0 ma0 tl ttu color-inherit normal underline pointer"
+            , onClick switchToContextTodoList
             ]
             [ text <| "@" ++ name ]
         , boolHtml isNameEditable <| UI.fBtn FeatherIcons.edit3 startEditingName
