@@ -9,6 +9,7 @@ module SelectUI exposing
     )
 
 import BasicsX exposing (..)
+import Browser.Dom
 import Browser.Events
 import Debouncer exposing (Debouncer)
 import FeatherIcons
@@ -51,6 +52,7 @@ type Msg item
     | OnFocusOut
     | OnFocusIn
     | DebouncedClose
+    | FocusResult (Result String ())
     | DebouncerMsg (Debouncer.Msg (BounceMsg item))
     | DocumentFocusChanged Bool
 
@@ -94,6 +96,12 @@ update config message model =
         andThenCancelBounce =
             andThenBounce Nothing
 
+        andThenFocusSelect =
+            Task.attempt FocusResult
+                (Browser.Dom.focus config.domId |> Task.mapError (\_ -> "Failed To Focus" ++ config.domId))
+                |> Cmd.map config.toMsg
+                |> addCmd
+
         setOpen bool =
             setModel { model | open = bool }
 
@@ -113,11 +121,21 @@ update config message model =
         DebouncedClose ->
             close
 
+        FocusResult (Err msg) ->
+            let
+                _ =
+                    Debug.log "FocusError" msg
+            in
+            identity
+
+        FocusResult _ ->
+            identity
+
         SelectClicked ->
             toggleOpen
 
         ItemClicked item ->
-            close >> addMsg (config.onSelect item)
+            close >> andThenFocusSelect >> addMsg (config.onSelect item)
 
         DebouncerMsg msg ->
             andThen
@@ -160,14 +178,14 @@ viewInternal config maybeSelectedItem items model =
                 |> Maybe.withDefault "<No Selection>"
     in
     div
-        [ id config.domId
-        , class "relative"
+        [ class "relative"
         , onFocusIn OnFocusIn
         , onFocusOut OnFocusOut
         ]
         [ div [ class "flex flex-row" ]
             [ button
                 [ onClick SelectClicked
+                , id config.domId
                 , class "pa0 ma0 color-inherit flex items-center justify-center "
                 ]
                 [ div [ class "ttu" ] [ text displayName ]

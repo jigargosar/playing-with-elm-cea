@@ -6,6 +6,7 @@ module UpdateReturn exposing
     , addOutMsg3
     , andThen
     , andThen3
+    , attempt
     , foldlOutMsgList
     , generate3
     , mapCmd
@@ -92,6 +93,10 @@ perform3 toMsg =
 
 perform toMsg =
     Task.perform toMsg >> addCmd
+
+
+attempt toMsg =
+    Task.attempt toMsg >> addCmd
 
 
 nextTick msg =
