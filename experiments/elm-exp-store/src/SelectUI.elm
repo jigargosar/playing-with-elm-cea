@@ -104,7 +104,7 @@ update config message model =
                 |> addCmd
 
         setOpen bool =
-            setModel { model | open = bool }
+            replaceModel { model | open = bool }
 
         close =
             setOpen False

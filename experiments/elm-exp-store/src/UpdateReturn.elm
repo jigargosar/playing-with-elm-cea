@@ -16,7 +16,7 @@ module UpdateReturn exposing
     , performWithNow
     , pure
     , pure3
-    , setModel
+    , replaceModel
     , update3
     , updateSub
     )
@@ -28,7 +28,7 @@ import Time
 import Update3
 
 
-setModel m ( _, c ) =
+replaceModel m ( _, c ) =
     ( m, c )
 
 

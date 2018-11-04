@@ -45,7 +45,7 @@ update config message model =
             identity
 
         SetCount count ->
-            setModel { model | count = count }
+            replaceModel { model | count = count }
 
         IncCount ->
             andThenUpdate (SetCount <| model.count + 1)
@@ -57,7 +57,7 @@ update config message model =
         EmitIfCountEq count bouncedItem ->
             if model.count == count then
                 addMsg (config.onEmit bouncedItem)
-                    >> setModel init
+                    >> replaceModel init
 
             else
                 identity
