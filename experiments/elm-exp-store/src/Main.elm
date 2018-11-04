@@ -431,18 +431,16 @@ viewContextNameCA cs attrs name =
 viewContext : ContextViewModel msg -> ( String, Html msg )
 viewContext { key, name, startEditingName, isNameEditable } =
     ( key
-    , div
-        [ class "pa3 w-100  bb b--light-gray"
-        ]
-        [ row ""
-            []
-            [ txtA [ style "width" "24px" ] ""
-            , viewContextNameCA "flex-auto"
-                [ classList [ ( "pointer", isNameEditable ) ]
-                , onClick startEditingName
-                ]
-                name
+    , row "pa3 w-100  bb b--light-gray"
+        []
+        [ txtA [ style "width" "24px" ] ""
+        , button
+            [ class "flex-auto pa0 ma0 tl ttu color-inherit normal underline"
+            , classList [ ( "pointer", isNameEditable ) ]
+            , onClick startEditingName
             ]
+            [ text <| "@" ++ name ]
+        , boolHtml isNameEditable <| UI.fBtn FeatherIcons.edit3 startEditingName
         ]
     )
 
