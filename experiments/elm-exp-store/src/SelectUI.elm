@@ -108,15 +108,6 @@ update config message =
         andThenUpdate msg =
             andThen (update config msg)
 
-        andThenBounce maybeMsg =
-            andThenUpdate <| DebouncerMsg <| Debouncer.bounce <| maybeMsg
-
-        andThenBounceClose =
-            andThenBounce <| Just DebouncedCloseRecieved
-
-        andThenCancelBounce =
-            andThenBounce Nothing
-
         focusSelectBtn =
             Task.attempt (unpackResult (\_ -> Warn [ "Focus Failed: ", config.domId ]) (always NoOp))
                 (Browser.Dom.focus config.domId)
@@ -136,7 +127,9 @@ update config message =
             mapModel toggleOpen
 
         ItemClicked item ->
-            mapModel close >> addCmd focusSelectBtn >> addMsg (config.onSelect item)
+            mapModel close
+                >> addCmd focusSelectBtn
+                >> addMsg (config.onSelect item)
 
         DebouncerMsg msg ->
             andThen
