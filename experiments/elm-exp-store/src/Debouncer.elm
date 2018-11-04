@@ -1,5 +1,6 @@
 module Debouncer exposing (Config, Debouncer, Msg, bounce, init, update)
 
+import BasicsX exposing (..)
 import Process
 import Task
 import UpdateReturn exposing (..)
@@ -12,6 +13,10 @@ type alias Debouncer =
 
 init =
     Debouncer 0
+
+
+incCount model =
+    { model | count = model.count + 1 }
 
 
 type Msg bouncedItem
@@ -33,25 +38,17 @@ bounce =
 
 
 update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer -> ( Debouncer, Cmd msg )
-update config message model =
-    let
-        incCount =
-            { model | count = model.count + 1 }
-    in
+update config message =
     (case message of
         NoOp ->
             identity
 
         EmitIfCountEq bouncedItem count ->
-            if model.count == count then
-                replaceModel init
-                    >> addMsg (config.onEmit bouncedItem)
-
-            else
-                identity
+            andThenIf (.count >> eqs count)
+                (\_ -> pure init |> addMsg (config.onEmit bouncedItem))
 
         Bounce bouncedItem ->
-            replaceModel incCount
+            mapModel incCount
                 >> addEffect
                     (.count
                         >> EmitIfCountEq bouncedItem
@@ -59,5 +56,4 @@ update config message model =
                         >> Cmd.map config.toMsg
                     )
     )
-    <|
-        pure model
+        << pure

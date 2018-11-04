@@ -8,10 +8,12 @@ module UpdateReturn exposing
     , afterTimeout
     , andThen
     , andThen3
+    , andThenIf
     , attempt
     , foldlOutMsgList
     , generate3
     , mapCmd
+    , mapModel
     , nextTick
     , perform
     , perform3
@@ -28,6 +30,18 @@ import Random
 import Task
 import Time
 import Update3
+
+
+mapModel fn ( m, c ) =
+    ( fn m, c )
+
+
+andThenIf modelPred fn ( m, c ) =
+    if modelPred m then
+        andThen fn ( m, c )
+
+    else
+        ( m, c )
 
 
 afterTimeout milli msg =
