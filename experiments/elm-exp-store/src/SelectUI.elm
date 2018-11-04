@@ -104,7 +104,7 @@ update config message model =
                 |> addCmd
 
         setOpen bool =
-            replaceModel { model | open = bool }
+            { model | open = bool }
 
         close =
             setOpen False
@@ -117,16 +117,16 @@ update config message model =
             identity
 
         DebouncedClose ->
-            close
+            replaceModel close
 
         Warn logLine ->
             addCmd (Log.warn "SelectUI" logLine)
 
         SelectClicked ->
-            toggleOpen
+            replaceModel toggleOpen
 
         ItemClicked item ->
-            close >> andThenAddFocusSelectCmd >> addMsg (config.onSelect item)
+            replaceModel close >> andThenAddFocusSelectCmd >> addMsg (config.onSelect item)
 
         DebouncerMsg msg ->
             andThen
