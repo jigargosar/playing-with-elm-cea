@@ -35,10 +35,6 @@ bounce =
 update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer -> ( Debouncer, Cmd msg )
 update config message model =
     let
-        scheduleEmit bouncedItem { count } =
-            afterTimeout config.wait (EmitIfCountEq bouncedItem count)
-                |> Cmd.map config.toMsg
-
         incCount =
             { model | count = model.count + 1 }
     in
@@ -56,7 +52,12 @@ update config message model =
 
         Bounce bouncedItem ->
             replaceModel incCount
-                >> addEffect (.count >> EmitIfCountEq bouncedItem >> afterTimeout config.wait >> Cmd.map config.toMsg)
+                >> addEffect
+                    (.count
+                        >> EmitIfCountEq bouncedItem
+                        >> afterTimeout config.wait
+                        >> Cmd.map config.toMsg
+                    )
     )
     <|
         pure model
