@@ -54,6 +54,8 @@ type Msg item
     | SetOpen Bool
     | DebouncerMsg (Debouncer.Msg (BounceMsg item))
     | Debounce (BounceMsg item)
+    | BounceClose
+    | CancelBounceClose
     | DocumentFocusChanged Bool
 
 
@@ -115,15 +117,21 @@ update config message model =
         Debounce msg ->
             andThenUpdate (DebouncerMsg <| Debouncer.bounce msg)
 
-        OnFocusOut ->
+        BounceClose ->
             andThenUpdate <| Debounce <| Just Close
 
-        OnFocusIn ->
+        CancelBounceClose ->
             andThenUpdate <| Debounce <| Nothing
+
+        OnFocusOut ->
+            andThenUpdate BounceClose
+
+        OnFocusIn ->
+            andThenUpdate CancelBounceClose
 
         DocumentFocusChanged hasFocus ->
             if model.open && not hasFocus then
-                andThenUpdate <| Debounce <| Nothing
+                andThenUpdate CancelBounceClose
 
             else
                 identity
