@@ -1,4 +1,4 @@
-module ContextItem exposing (ContextItem, allContextItems, viewSelectContext)
+module ContextItem exposing (ContextItem, viewSelectContext)
 
 import BasicsX exposing (..)
 import ContextStore exposing (ContextId, ContextStore)
@@ -30,10 +30,11 @@ viewSelectContext config contextStore currentContextId selectUIModel =
                 |> unwrapMaybe ( ContextStore.defaultName, ContextStore.defaultId )
                     (\name -> ( name, currentContextId ))
 
+        allContextItems : List ContextItem
         allContextItems =
             contextNameLookup
                 |> Dict.toList
-                |> List.map (\k v -> ( v, k ))
+                |> List.map swap
     in
     SelectUI.view config
         (Just <| currentContextItem)
