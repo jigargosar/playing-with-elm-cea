@@ -360,17 +360,18 @@ getAllContextsNameIdPairs =
 view : Model -> Html Msg
 view model =
     UI.root
-        [ viewToolbar model
-        , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
-            [ row ""
-                []
-                [ button [ onClick startAddingTodoMsg ] [ text "Add Taskf" ]
+        [ div [ class "bg-black white" ]
+            [ div [] [ txtC "b pa3" "ELM Experiment Store" ]
+            ]
+        , div []
+            [ div [ class "pa3 " ]
+                [ button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
                 , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
                 , button [ onClick <| SwitchToContextTodoList ] [ text "Inbox" ]
                 , button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
                 ]
-            , viewPage model
             ]
+        , viewPage model
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
@@ -448,11 +449,7 @@ viewContext { key, name, startEditingName, isNameEditable } =
 
 viewTodoListPage : Model -> Html Msg
 viewTodoListPage model =
-    let
-        selectedContextId =
-            getSelectedContextId model
-    in
-    div [ class "w-100 measure-wide" ]
+    div [ class "" ]
         [ viewTodoListHeader model
         , viewTodoList model
         ]
