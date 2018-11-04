@@ -364,7 +364,7 @@ view model =
         , div [ class "w-100 flex flex-column justify-center items-center vs3 pv3" ]
             [ row ""
                 []
-                [ button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
+                [ button [ onClick startAddingTodoMsg ] [ text "Add Taskf" ]
                 , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
                 , button [ onClick <| SwitchToContextTodoList ] [ text "Inbox" ]
                 , button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
