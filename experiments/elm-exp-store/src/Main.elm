@@ -451,9 +451,7 @@ viewTodoListHeader model =
     div
         [ class "flex" ]
         [ div [ class "flex-auto" ] [ viewSelectContext model ]
-        , boolHtml (isSelectedContextEditable model)
-            (UI.fBtn FeatherIcons.edit3 (startEditingSelectedContextMsg model))
-        , UI.fBtn FeatherIcons.plus startAddingContextMsg
+        , UI.fBtn FeatherIcons.plus startAddingTodoMsg
         ]
 
 
