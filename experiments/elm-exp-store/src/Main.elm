@@ -385,7 +385,10 @@ view model =
 viewPage model =
     case model.page of
         ContextTodoList ->
-            viewTodoListPage model
+            div [ class "measure w-100" ]
+                [ viewTodoListHeader model
+                , viewTodoList model
+                ]
 
         ContextList ->
             viewContextList model
@@ -446,14 +449,6 @@ viewContext { key, name, startEditingName, isNameEditable } =
             ]
         ]
     )
-
-
-viewTodoListPage : Model -> Html Msg
-viewTodoListPage model =
-    div [ class "measure w-100" ]
-        [ viewTodoListHeader model
-        , viewTodoList model
-        ]
 
 
 viewTodoListHeader : Model -> Html Msg
