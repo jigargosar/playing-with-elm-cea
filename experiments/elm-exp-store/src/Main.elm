@@ -495,12 +495,6 @@ viewSelectContext model =
         contextNameLookup =
             ContextStore.nameDict model.contextStore
 
-        --        currentContextItem : ContextItem
-        --        currentContextItem =
-        --            contextNameLookup
-        --                |> Dict.get model.contextId
-        --                |> unwrapMaybe ( ContextStore.defaultName, ContextStore.defaultId )
-        --                    (\name -> ( name, currentContextId ))
         allContextItems : List ContextItem
         allContextItems =
             contextNameLookup
