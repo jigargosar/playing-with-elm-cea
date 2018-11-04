@@ -474,11 +474,10 @@ viewTodoListHeader model =
     row "pa3"
         []
         [ div [ class "flex-auto" ]
-            [ ContextItem.viewSelectContext
-                selectContextUIConfig
+            [ viewSelectContext
                 model.contextStore
                 selectedContextId
-                model.selectContextUI
+                model
             ]
         , row ""
             []
@@ -494,12 +493,11 @@ type alias ContextItem =
 
 
 viewSelectContext :
-    SelectUI.Config msg ContextItem
-    -> ContextStore
+    ContextStore
     -> ContextId
-    -> SelectUI.Model
-    -> Html msg
-viewSelectContext config contextStore currentContextId selectUIModel =
+    -> Model
+    -> Html Msg
+viewSelectContext contextStore currentContextId model =
     let
         contextNameLookup : Dict ContextId ContextName
         contextNameLookup =
@@ -518,10 +516,10 @@ viewSelectContext config contextStore currentContextId selectUIModel =
                 |> Dict.toList
                 |> List.map swap
     in
-    SelectUI.view config
+    SelectUI.view selectContextUIConfig
         (Just <| currentContextItem)
         allContextItems
-        selectUIModel
+        model.selectContextUI
 
 
 viewTodoList : Model -> Html Msg
