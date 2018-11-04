@@ -47,7 +47,7 @@ type Msg item
     | OnFocusIn
     | Close
     | SetOpen Bool
-    | DebouncerMsg (Debouncer.Msg ShouldClose)
+    | DebouncerMsg (Debouncer.Msg (Maybe (Msg item)))
     | CloseIfTrue Bool
 
 
@@ -112,11 +112,11 @@ update config message model =
 
         DebouncerMsg msg ->
             let
-                debouncerConfig : Debouncer.Config msg Bool
+                debouncerConfig : Debouncer.Config msg (Maybe (Msg item))
                 debouncerConfig =
                     { toMsg = DebouncerMsg >> config.toMsg
                     , wait = 100
-                    , onEmit = CloseIfTrue >> config.toMsg
+                    , onEmit = unwrapMaybe NoOp identity >> config.toMsg
                     }
             in
             andThen
@@ -134,10 +134,10 @@ update config message model =
                 identity
 
         OnFocusOut ->
-            andThenUpdate (DebouncerMsg <| Debouncer.bounce True)
+            andThenUpdate (DebouncerMsg <| Debouncer.bounce (Just Close))
 
         OnFocusIn ->
-            andThenUpdate (DebouncerMsg <| Debouncer.bounce False)
+            andThenUpdate (DebouncerMsg <| Debouncer.bounce Nothing)
     )
     <|
         pure model
