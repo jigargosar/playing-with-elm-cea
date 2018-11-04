@@ -463,10 +463,8 @@ viewTodoListHeader model =
     in
     div
         [ class "ph3 flex" ]
-        [ div [ class "flex-auto" ]
-            [ viewSelectContext model
-            ]
-        , row ""
+        [ div [ class "flex-auto" ] [ viewSelectContext model ]
+        , div
             []
             [ boolHtml (isSelectedContextEditable model)
                 (UI.fBtn FeatherIcons.edit3 (startEditingSelectedContextMsg model))
