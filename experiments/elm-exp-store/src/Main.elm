@@ -129,6 +129,13 @@ getCurrentContextItem model =
     ( getNameByContextId model.contextId model, model.contextId )
 
 
+allContextItems : Model -> List ContextItem
+allContextItems model =
+    ContextStore.nameDict model.contextStore
+        |> Dict.toList
+        |> List.map swap
+
+
 isSelectedContextEditable =
     getSelectedContextId >> eqs ContextStore.defaultId >> not
 
@@ -490,16 +497,9 @@ type alias ContextItem =
 
 viewSelectContext : Model -> Html Msg
 viewSelectContext model =
-    let
-        allContextItems : List ContextItem
-        allContextItems =
-            ContextStore.nameDict model.contextStore
-                |> Dict.toList
-                |> List.map swap
-    in
     SelectUI.view selectContextUIConfig
         (Just <| getCurrentContextItem model)
-        allContextItems
+        (allContextItems model)
         model.selectContextUI
 
 
