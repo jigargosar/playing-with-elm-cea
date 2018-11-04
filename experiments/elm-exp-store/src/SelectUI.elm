@@ -163,13 +163,13 @@ view config maybeSelectedItem items model =
     div
         [ id config.domId
         , class "relative"
-        , onFocusOut OnFocusOut
-        , onFocusIn OnFocusIn
         ]
         [ div [ class "flex flex-row" ]
             [ button
                 [ onClick SelectClicked
                 , class "pa0 ma0 color-inherit flex items-center justify-center "
+                , Html.Events.onFocus OnFocusIn
+                , Html.Events.onBlur OnFocusOut
                 ]
                 [ div [ class "ttu" ] [ text displayName ]
                 , FeatherIcons.chevronDown |> FeatherIcons.toHtml []
@@ -193,6 +193,8 @@ viewItem config maybeSelectedItem item =
         [ class "db f5 normal ttu hover-bg-lightest-blue pa0 ma0 color-inherit"
         , style "min-width" "8rem"
         , onClick <| ItemClicked item
+        , Html.Events.onFocus OnFocusIn
+        , Html.Events.onBlur OnFocusOut
         ]
         [ txtA
             [ class "ph3 pv2 "

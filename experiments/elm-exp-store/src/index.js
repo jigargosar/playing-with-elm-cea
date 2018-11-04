@@ -34,11 +34,13 @@ console.log(app.ports)
 
 
 window.addEventListener('focusout', function (e) {
-  recordActiveElement()
+  console.log("Out",e)
+  // recordActiveElement(app)
 })
 
 window.addEventListener('focusin', function (e) {
-  recordActiveElement()
+  console.log("In",e)
+  // recordActiveElement(app)
 })
 
 window.addEventListener('wheel', function (e) {
@@ -117,12 +119,12 @@ function focusSelector(selector) {
 
 let lastActiveElement = document.activeElement
 
-export const recordActiveElement = debounce(function recordActiveElement() {
+export const recordActiveElement = debounce(function recordActiveElement(app) {
   if (lastActiveElement !== document.activeElement) {
     lastActiveElement = document.activeElement
     const parentIds = compose(reject(isEmpty), unfold(node => node ? [node.id, node.parentElement] : false),
     )(document.activeElement)
 
-    // sendData(parentIds, 'activeElementsParentIdList', app)
+    sendData(parentIds, 'activeElementsParentIdList', app)
   }
 }, 0, { trailing: true, leading: false })
