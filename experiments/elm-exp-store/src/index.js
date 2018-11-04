@@ -7,7 +7,13 @@ import { compose, curry, forEachObjIndexed, isNil, partial, pathOr, pick, tap } 
 
 import flyd from 'flyd'
 
+// console.log = (partial(console.log, ['[LogWrapper]']))
+
 // Helpers
+export const tapLog = m => tap(partial(console.log, [m]))
+
+// tapLog("foo")("bar","james")
+// console.log("foo","bar","james")
 
 const sendTo = curry(function sendTo(app, port, data) {
   if (!pathOr(null, ['ports', port, 'send'])(app)) {
@@ -17,7 +23,6 @@ const sendTo = curry(function sendTo(app, port, data) {
   app.ports[port].send(data)
 })
 
-console.log("foo")
 function subscribe(options, app) {
   if (!app || !app.ports) {
     console.error('no ports found', app)
@@ -98,7 +103,7 @@ const documentHasFocus$ = flyd.map(
   winFocusBlur$,
 )
 
-export const tapLog = m => tap(partial(console.warn, [m]))
+
 
 flyd.on(
   compose(
