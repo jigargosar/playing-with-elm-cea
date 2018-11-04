@@ -160,7 +160,8 @@ viewInternal config maybeSelectedItem items model =
                 |> Maybe.withDefault "<No Selection>"
     in
     div
-        [ class "relative"
+        [ id config.domId
+        , class "relative"
         , onFocusIn OnFocusIn
         , onFocusOut OnFocusOut
         ]
