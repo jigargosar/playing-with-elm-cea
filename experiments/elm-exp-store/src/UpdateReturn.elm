@@ -6,6 +6,7 @@ module UpdateReturn exposing
     , addMsg
     , addOutMsg3
     , afterTimeout
+    , andMapIf
     , andThen
     , andThen3
     , andThenIf
@@ -39,6 +40,14 @@ mapModel fn ( m, c ) =
 andThenIf modelPred fn ( m, c ) =
     if modelPred m then
         andThen fn ( m, c )
+
+    else
+        ( m, c )
+
+
+andMapIf modelPred fn ( m, c ) =
+    if modelPred m then
+        fn ( m, c )
 
     else
         ( m, c )

@@ -147,8 +147,8 @@ update config message =
             andThenUpdate cancelDebounceMsg
 
         DocumentFocusChanged hasFocus ->
-            andThenIf (\{ open } -> open && not hasFocus)
-                (update config cancelDebounceMsg)
+            andMapIf (\{ open } -> open && not hasFocus)
+                (andThenUpdate cancelDebounceMsg)
     )
         << pure
 
