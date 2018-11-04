@@ -372,26 +372,25 @@ view model =
                 , button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
                 ]
             ]
-        , div [ class "flex row justify-center" ] [ viewPage model ]
+        , div [ class "flex row justify-center" ]
+            [ div [ class "measure w-100 vs3" ] (viewPage model)
+            ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         , SnackBar.view SnackBarMsg { actions = [] } model.snackBar
-
-        --        , SnackBar.view SnackBarMsg { actions = [ ( "View", NoOp ) ] } model.snackBar
         ]
 
 
 viewPage model =
     case model.page of
         ContextTodoList ->
-            div [ class "measure w-100 vs3" ]
-                [ viewTodoListHeader model
-                , viewTodoList model
-                ]
+            [ viewTodoListHeader model
+            , viewTodoList model
+            ]
 
         ContextList ->
-            div [ class "measure w-100 vs3" ] [ viewContextList model ]
+            [ viewContextList model ]
 
 
 viewContextList : Model -> Html Msg
