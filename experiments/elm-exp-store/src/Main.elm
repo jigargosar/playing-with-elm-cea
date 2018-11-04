@@ -450,14 +450,11 @@ viewContext { key, name, startEditingName, isNameEditable } =
 viewTodoListHeader : Model -> Html Msg
 viewTodoListHeader model =
     div
-        [ class "flex justify-center" ]
+        [ class "flex" ]
         [ div [ class "flex-auto" ] [ viewSelectContext model ]
-        , div
-            []
-            [ boolHtml (isSelectedContextEditable model)
-                (UI.fBtn FeatherIcons.edit3 (startEditingSelectedContextMsg model))
-            , UI.fBtn FeatherIcons.plus startAddingContextMsg
-            ]
+        , boolHtml (isSelectedContextEditable model)
+            (UI.fBtn FeatherIcons.edit3 (startEditingSelectedContextMsg model))
+        , UI.fBtn FeatherIcons.plus startAddingContextMsg
         ]
 
 
