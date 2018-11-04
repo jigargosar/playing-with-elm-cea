@@ -50,7 +50,6 @@ type Msg item
     | Close
     | SetOpen Bool
     | DebouncerMsg (Debouncer.Msg (Maybe (Msg item)))
-    | CloseIfTrue Bool
     | DocumentFocus Bool
 
 
@@ -141,15 +140,12 @@ update config message model =
                     msg
                 )
 
-        CloseIfTrue bool ->
-            if bool then
-                andThenUpdate Close
+        OnFocusOut ->
+            if model.documentHasFocus then
+                andThenUpdate (DebouncerMsg <| Debouncer.bounce (Just Close))
 
             else
                 identity
-
-        OnFocusOut ->
-            andThenUpdate (DebouncerMsg <| Debouncer.bounce (Just Close))
 
         OnFocusIn ->
             andThenUpdate (DebouncerMsg <| Debouncer.bounce Nothing)
@@ -172,8 +168,8 @@ view config maybeSelectedItem items model =
     div
         [ id config.domId
         , class "relative"
-        , Html.Events.onFocus OnFocusIn
-        , Html.Events.onBlur OnFocusOut
+        , onFocusIn OnFocusIn
+        , onFocusOut OnFocusOut
         ]
         [ div [ class "flex flex-row" ]
             [ button
