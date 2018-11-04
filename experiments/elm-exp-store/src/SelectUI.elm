@@ -82,6 +82,18 @@ debouncerConfig =
     }
 
 
+setOpen bool model =
+    { model | open = bool }
+
+
+close =
+    setOpen False
+
+
+toggleOpen model =
+    setOpen (not model.open)
+
+
 update : Config msg item -> Msg item -> Model -> ( Model, Cmd msg )
 update config message model =
     let
@@ -101,31 +113,22 @@ update config message model =
             Task.attempt (unpackResult (\_ -> Warn [ "Focus Failed: ", config.domId ]) (always NoOp))
                 (Browser.Dom.focus config.domId)
                 |> Cmd.map config.toMsg
-
-        setOpen bool =
-            { model | open = bool }
-
-        close =
-            setOpen False
-
-        toggleOpen =
-            setOpen (not model.open)
     in
     (case message of
         NoOp ->
             identity
 
         DebouncedClose ->
-            replaceModel close
+            mapModel close
 
         Warn logLine ->
             addCmd (Log.warn "SelectUI" logLine)
 
         SelectClicked ->
-            replaceModel toggleOpen
+            mapModel toggleOpen
 
         ItemClicked item ->
-            replaceModel close >> addCmd focusSelectBtn >> addMsg (config.onSelect item)
+            mapModel close >> addCmd focusSelectBtn >> addMsg (config.onSelect item)
 
         DebouncerMsg msg ->
             andThen
