@@ -14,37 +14,37 @@ init =
     Debouncer Nothing 0
 
 
-type Msg item
+type Msg bouncedItem
     = NoOp
-    | SetLatest (Maybe item)
+    | SetLatest (Maybe bouncedItem)
     | SetCount Int
     | IncCount
     | ScheduleEmit
     | EmitIfCountEq Int
-    | Push item
+    | Bounce bouncedItem
 
 
-type alias Config msg item =
-    { toMsg : Msg item -> msg
+type alias Config msg bouncedItem =
+    { toMsg : Msg bouncedItem -> msg
     , wait : Float
-    , onEmit : item -> msg
+    , onEmit : bouncedItem -> msg
     }
 
 
 bounce =
-    Push
+    Bounce
 
 
 replaceModel m ( _, c ) =
     ( m, c )
 
 
-setCount : Int -> Debouncer item -> Debouncer item
+setCount : Int -> Debouncer bouncedItem -> Debouncer bouncedItem
 setCount count model =
     { model | count = count }
 
 
-update : Config msg item -> Msg item -> Debouncer item -> ( Debouncer item, Cmd msg )
+update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer bouncedItem -> ( Debouncer bouncedItem, Cmd msg )
 update config message model =
     let
         andThenUpdate =
@@ -69,15 +69,15 @@ update config message model =
 
         EmitIfCountEq count ->
             case ( model.count == count, model.latest ) of
-                ( True, Just item ) ->
-                    addMsg (config.onEmit item)
+                ( True, Just bouncedItem ) ->
+                    addMsg (config.onEmit bouncedItem)
                         >> replaceModel init
 
                 _ ->
                     identity
 
-        Push item ->
-            andThenUpdate (SetLatest <| Just item)
+        Bounce bouncedItem ->
+            andThenUpdate (SetLatest <| Just bouncedItem)
                 >> andThenUpdate IncCount
                 >> andThenUpdate ScheduleEmit
     )
