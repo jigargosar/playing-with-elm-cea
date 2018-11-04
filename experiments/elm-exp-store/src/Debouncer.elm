@@ -4,23 +4,21 @@ import Process
 import UpdateReturn exposing (..)
 
 
-type alias Debouncer item =
-    { latest : Maybe item
-    , count : Int
+type alias Debouncer =
+    { count : Int
     }
 
 
 init =
-    Debouncer Nothing 0
+    Debouncer 0
 
 
 type Msg bouncedItem
     = NoOp
-    | SetLatest (Maybe bouncedItem)
     | SetCount Int
     | IncCount
-    | ScheduleEmit
-    | EmitIfCountEq Int
+    | ScheduleEmit bouncedItem
+    | EmitIfCountEq Int bouncedItem
     | Bounce bouncedItem
 
 
@@ -40,12 +38,7 @@ replaceModel m ( _, c ) =
     ( m, c )
 
 
-setCount : Int -> Debouncer bouncedItem -> Debouncer bouncedItem
-setCount count model =
-    { model | count = count }
-
-
-update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer bouncedItem -> ( Debouncer bouncedItem, Cmd msg )
+update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer -> ( Debouncer, Cmd msg )
 update config message model =
     let
         andThenUpdate =
@@ -55,32 +48,27 @@ update config message model =
         NoOp ->
             identity
 
-        SetLatest latest ->
-            replaceModel { model | latest = latest }
-
         SetCount count ->
             replaceModel { model | count = count }
 
         IncCount ->
             andThenUpdate (SetCount <| model.count + 1)
 
-        ScheduleEmit ->
-            perform (\_ -> EmitIfCountEq model.count |> config.toMsg)
+        ScheduleEmit bouncedItem ->
+            perform (\_ -> EmitIfCountEq model.count bouncedItem |> config.toMsg)
                 (Process.sleep config.wait)
 
-        EmitIfCountEq count ->
-            case ( model.count == count, model.latest ) of
-                ( True, Just bouncedItem ) ->
-                    addMsg (config.onEmit bouncedItem)
-                        >> replaceModel init
+        EmitIfCountEq count bouncedItem ->
+            if model.count == count then
+                addMsg (config.onEmit bouncedItem)
+                    >> replaceModel init
 
-                _ ->
-                    identity
+            else
+                identity
 
         Bounce bouncedItem ->
-            andThenUpdate (SetLatest <| Just bouncedItem)
-                >> andThenUpdate IncCount
-                >> andThenUpdate ScheduleEmit
+            andThenUpdate IncCount
+                >> andThenUpdate (ScheduleEmit bouncedItem)
     )
     <|
         pure model

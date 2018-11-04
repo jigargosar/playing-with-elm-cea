@@ -26,7 +26,7 @@ import UpdateReturn exposing (..)
 
 type alias Model =
     { open : Bool
-    , debouncer : Debouncer Bool
+    , debouncer : Debouncer
     }
 
 
