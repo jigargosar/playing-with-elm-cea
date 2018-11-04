@@ -39,10 +39,9 @@ addEffect fn ( m, c ) =
 update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer -> ( Debouncer, Cmd msg )
 update config message model =
     let
-        scheduleEmit bouncedItem =
-            \{ count } ->
-                Task.perform (\_ -> EmitIfCountEq count bouncedItem |> config.toMsg)
-                    (Process.sleep config.wait)
+        scheduleEmit bouncedItem { count } =
+            Task.perform (\_ -> EmitIfCountEq count bouncedItem |> config.toMsg)
+                (Process.sleep config.wait)
 
         incCount =
             { model | count = model.count + 1 }
