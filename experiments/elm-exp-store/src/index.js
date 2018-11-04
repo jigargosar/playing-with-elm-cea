@@ -106,28 +106,6 @@ flyd.on(
   documentHasFocus$,
 )
 
-// window.addEventListener('focus', function (e) {
-//   console.log("Out",document.hasFocus(), e)
-//   // recordActiveElement(app)
-// })
-//
-// window.addEventListener('blur', function (e) {
-//   console.log("In",document.hasFocus(), e)
-//
-//   // recordActiveElement(app)
-// })
-
-// window.document.addEventListener('focusout', function (e) {
-//   console.log("Out",document.hasFocus(), e)
-//   // recordActiveElement(app)
-// })
-//
-// window.document.addEventListener('focusin', function (e) {
-//   console.log("In",document.hasFocus(), e)
-//
-//   // recordActiveElement(app)
-// })
-
 window.addEventListener('wheel', function(e) {
   // console.log(e)
   const data = pick(['deltaX', 'deltaY'])(e)
