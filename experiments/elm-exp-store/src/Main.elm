@@ -342,10 +342,7 @@ getAllContextsNameIdPairs =
 view : Model -> Html Msg
 view model =
     div [ class "w-100 vs3" ]
-        [ div [ class "flex row justify-center bg-black white" ]
-            [ div [ class "w-100 measure" ]
-                [ div [ class "flex flex-row pa3" ] [ txtC "b" "ELM", txtC "fw3" "DONE" ] ]
-            ]
+        [ viewAppBar
         , div [ class "flex row justify-center" ]
             [ div [ class "measure" ]
                 [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
@@ -362,6 +359,13 @@ view model =
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         , SnackBar.view SnackBarMsg { actions = [] } model.snackBar
+        ]
+
+
+viewAppBar =
+    div [ class "flex row justify-center bg-black white" ]
+        [ div [ class "w-100 measure" ]
+            [ div [ class "flex flex-row pa3" ] [ txtC "b" "ELM", txtC "fw3" "DONE" ] ]
         ]
 
 
