@@ -351,7 +351,7 @@ view model =
 
 
 viewAppBar =
-    div [ class "flex-shrink-0 flex flex-row justify-center bg-black white" ]
+    div [ class "flex-shrink-0 flex flex-row justify-center bg-black white shadow-1" ]
         [ div [ class "w-100 measure" ]
             [ div [ class "flex flex-row pa3" ] [ txtC "b" "ELM", txtC "fw3" "DONE" ] ]
         ]
@@ -385,7 +385,7 @@ viewPage model =
                 ]
     in
     div [ class " flex-auto flex flex-row" ]
-        [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns pv3 bg-gray vs3" ]
+        [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns pv3 vs3 bg-black-05 " ]
             [ txt "hello"
             , txt "hello"
             , txt "hello"
