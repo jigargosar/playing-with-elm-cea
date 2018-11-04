@@ -391,7 +391,7 @@ viewPage model =
                 ]
 
         ContextList ->
-            viewContextList model
+            div [ class "measure w-100 vs3" ] [ viewContextList model ]
 
 
 viewContextList : Model -> Html Msg
@@ -406,9 +406,7 @@ viewContextList model =
                 |> List.map (createContextViewModel >> viewContext)
                 |> (::) (viewContext inboxViewModel)
     in
-    div [ class "w-100 measure-wide" ]
-        [ Html.Keyed.node "div" [] viewPrimaryListKeyed
-        ]
+    Html.Keyed.node "div" [] viewPrimaryListKeyed
 
 
 type alias ContextViewModel msg =
