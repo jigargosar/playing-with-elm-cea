@@ -359,13 +359,13 @@ getAllContextsNameIdPairs =
 
 view : Model -> Html Msg
 view model =
-    div [ class "flex flex-column w-100 justify-center" ]
+    div [ class "flex flex-column w-100 vs3" ]
         [ div [ class "flex justify-center bg-black white" ]
             [ div [ class "w-100 measure" ]
                 [ div [] [ txtC "b pa3" "ELM Experiment Store" ] ]
             ]
-        , div []
-            [ div [ class "pa3 " ]
+        , div [ class "flex justify-center" ]
+            [ div [ class "ph3 w-100 measure" ]
                 [ button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
                 , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
                 , button [ onClick <| SwitchToContextTodoList ] [ text "Inbox" ]
