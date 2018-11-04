@@ -437,7 +437,7 @@ viewContext { key, name, startEditingName, isNameEditable, switchToContextTodoLi
 viewTodoListHeader : Model -> Html Msg
 viewTodoListHeader model =
     div
-        [ class "flex" ]
+        [ class "flex flex-row" ]
         [ div [ class "flex-auto" ]
             [ SelectUI.view selectContextUIConfig
                 (Just <| getCurrentContextItem model)
