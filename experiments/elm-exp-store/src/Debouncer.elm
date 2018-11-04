@@ -34,10 +34,6 @@ bounce =
     Bounce
 
 
-replaceModel m ( _, c ) =
-    ( m, c )
-
-
 update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer -> ( Debouncer, Cmd msg )
 update config message model =
     let

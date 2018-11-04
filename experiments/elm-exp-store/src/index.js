@@ -33,21 +33,38 @@ const app = Elm.Main.init({
 console.log(app.ports)
 
 
-window.addEventListener('focusout', function (e) {
-  console.log("Out",e)
+let documentHasFocus = document.hasFocus
+
+window.addEventListener('focus', function (e) {
+  console.log("Out",document.hasFocus(), e)
   // recordActiveElement(app)
 })
 
-window.addEventListener('focusin', function (e) {
-  console.log("In",e)
+window.addEventListener('blur', function (e) {
+  console.log("In",document.hasFocus(), e)
+
   // recordActiveElement(app)
 })
+
+
+
+// window.document.addEventListener('focusout', function (e) {
+//   console.log("Out",document.hasFocus(), e)
+//   // recordActiveElement(app)
+// })
+//
+// window.document.addEventListener('focusin', function (e) {
+//   console.log("In",document.hasFocus(), e)
+//
+//   // recordActiveElement(app)
+// })
 
 window.addEventListener('wheel', function (e) {
   // console.log(e)
   const data = pick(['deltaX', 'deltaY'])(e)
   sendData(data, 'wheel', app)
 })
+
 
 subscribe(
   {

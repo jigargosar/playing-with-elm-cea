@@ -28,6 +28,7 @@ import UpdateReturn exposing (..)
 type alias Model =
     { open : Bool
     , debouncer : Debouncer
+    , windowHasFocus : True
     }
 
 
@@ -50,6 +51,7 @@ type Msg item
     | SetOpen Bool
     | DebouncerMsg (Debouncer.Msg (Maybe (Msg item)))
     | CloseIfTrue Bool
+    | WindowFocus Bool
 
 
 type alias Config msg item =
@@ -68,14 +70,18 @@ subscriptions config model =
 
              else
           -}
-          Browser.Events.onVisibilityChange
-            (\x ->
-                let
-                    _ =
-                        Debug.log "x" x
-                in
-                NoOp
-            )
+          if model.open then
+            Port.windowFocusChanged WindowFocus |> Sub.map config.toMsg
+
+          else
+            Browser.Events.onVisibilityChange
+                (\x ->
+                    let
+                        _ =
+                            Debug.log "x" x
+                    in
+                    NoOp
+                )
         ]
         |> Sub.map config.toMsg
 
@@ -147,6 +153,9 @@ update config message model =
 
         OnFocusIn ->
             andThenUpdate (DebouncerMsg <| Debouncer.bounce Nothing)
+
+        WindowFocus hasFocus ->
+            replaceModel { model | windowHasFocus = hasFocus }
     )
     <|
         pure model
@@ -163,13 +172,13 @@ view config maybeSelectedItem items model =
     div
         [ id config.domId
         , class "relative"
+        , Html.Events.onFocus OnFocusIn
+        , Html.Events.onBlur OnFocusOut
         ]
         [ div [ class "flex flex-row" ]
             [ button
                 [ onClick SelectClicked
                 , class "pa0 ma0 color-inherit flex items-center justify-center "
-                , Html.Events.onFocus OnFocusIn
-                , Html.Events.onBlur OnFocusOut
                 ]
                 [ div [ class "ttu" ] [ text displayName ]
                 , FeatherIcons.chevronDown |> FeatherIcons.toHtml []
@@ -193,8 +202,6 @@ viewItem config maybeSelectedItem item =
         [ class "db f5 normal ttu hover-bg-lightest-blue pa0 ma0 color-inherit"
         , style "min-width" "8rem"
         , onClick <| ItemClicked item
-        , Html.Events.onFocus OnFocusIn
-        , Html.Events.onBlur OnFocusOut
         ]
         [ txtA
             [ class "ph3 pv2 "

@@ -14,6 +14,7 @@ module UpdateReturn exposing
     , performWithNow
     , pure
     , pure3
+    , replaceModel
     , update3
     , updateSub
     )
@@ -23,6 +24,10 @@ import Random
 import Task
 import Time
 import Update3
+
+
+replaceModel m ( _, c ) =
+    ( m, c )
 
 
 updateSub :
