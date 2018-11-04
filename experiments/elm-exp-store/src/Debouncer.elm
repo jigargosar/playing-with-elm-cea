@@ -16,7 +16,6 @@ init =
 
 type Msg bouncedItem
     = NoOp
-    | ScheduleEmit bouncedItem
     | EmitIfCountEq Int bouncedItem
     | Bounce bouncedItem
 
@@ -40,9 +39,6 @@ addEffect fn ( m, c ) =
 update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer -> ( Debouncer, Cmd msg )
 update config message model =
     let
-        andThenUpdate =
-            andThen << update config
-
         addEmitEffect bouncedItem =
             addEffect
                 (\{ count } ->
@@ -50,19 +46,12 @@ update config message model =
                         (Process.sleep config.wait)
                 )
 
-        setCount count =
-            { model | count = count }
-
         incCount =
-            setCount <| model.count + 1
+            { model | count = model.count + 1 }
     in
     (case message of
         NoOp ->
             identity
-
-        ScheduleEmit bouncedItem ->
-            perform (\_ -> EmitIfCountEq model.count bouncedItem |> config.toMsg)
-                (Process.sleep config.wait)
 
         EmitIfCountEq count bouncedItem ->
             if model.count == count then
