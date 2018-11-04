@@ -351,7 +351,7 @@ view model =
 
 
 viewAppBar =
-    div [ class "flex-shrink-0 flex row justify-center bg-black white" ]
+    div [ class "flex-shrink-0 flex flex-row justify-center bg-black white" ]
         [ div [ class "w-100 measure" ]
             [ div [ class "flex flex-row pa3" ] [ txtC "b" "ELM", txtC "fw3" "DONE" ] ]
         ]
