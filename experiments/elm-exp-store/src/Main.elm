@@ -494,21 +494,17 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
             txtA ([ class ("ttu " ++ cs) ] ++ attrs) ("@" ++ name)
     in
     ( key
-    , div
-        [ class "pa3 w-100  bb b--light-gray"
-        ]
-        [ row ""
-            []
-            [ div [] [ doneIconBtn ]
-            , div [ class "flex-grow-1" ]
-                [ div
-                    [ class " pointer"
-                    , classList [ ( "strike gray ", done ) ]
-                    , onClick contentClicked
-                    ]
-                    [ txt content ]
-                , viewContextNameCA "f7 gray pointer" [ onClick contextClicked ] contextName
+    , row "pa3 bb b--light-gray"
+        []
+        [ div [] [ doneIconBtn ]
+        , div [ class "flex-grow-1" ]
+            [ div
+                [ class " pointer"
+                , classList [ ( "strike gray ", done ) ]
+                , onClick contentClicked
                 ]
+                [ txt content ]
+            , viewContextNameCA "f7 gray pointer" [ onClick contextClicked ] contextName
             ]
         ]
     )
