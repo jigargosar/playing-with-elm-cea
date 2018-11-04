@@ -359,20 +359,20 @@ getAllContextsNameIdPairs =
 
 view : Model -> Html Msg
 view model =
-    div [ class "flex flex-column w-100 vs3" ]
-        [ div [ class "flex justify-center bg-black white" ]
+    div [ class "w-100 vs3" ]
+        [ div [ class "flex row justify-center bg-black white" ]
             [ div [ class "w-100 measure" ]
                 [ div [] [ txtC "b pa3" "ELM Experiment Store" ] ]
             ]
-        , div [ class "flex justify-center" ]
-            [ div [ class "ph3 w-100 measure" ]
+        , div [ class "flex row justify-center" ]
+            [ div [ class "measure" ]
                 [ button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
                 , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
                 , button [ onClick <| SwitchToContextTodoList ] [ text "Inbox" ]
                 , button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
                 ]
             ]
-        , div [ class "flex justify-center" ] [ viewPage model ]
+        , div [ class "flex row justify-center" ] [ viewPage model ]
         , div [ class "w-100 flex flex-column justify-center items-center" ]
             [ MagicMenu.view mockActions MagicMenuMsg model.magicMenu ]
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
@@ -454,7 +454,7 @@ viewContext { key, name, startEditingName, isNameEditable } =
 viewTodoListHeader : Model -> Html Msg
 viewTodoListHeader model =
     div
-        [ class "flex" ]
+        [ class "flex justify-center" ]
         [ div [ class "flex-auto" ] [ viewSelectContext model ]
         , div
             []
