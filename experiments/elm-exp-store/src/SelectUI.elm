@@ -148,10 +148,10 @@ update config message =
                 )
 
         OnFocusOut ->
-            andThenBounceClose
+            andThenUpdate debounceCloseMsg
 
         OnFocusIn ->
-            andThenCancelBounce
+            andThenUpdate cancelDebounceMsg
 
         DocumentFocusChanged hasFocus ->
             andThenIf (\{ open } -> open && not hasFocus)
