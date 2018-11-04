@@ -172,6 +172,10 @@ type Msg
     | ModeOutMsg Mode.OutMsg
 
 
+type alias ContextItem =
+    ( String, ContextId )
+
+
 selectContextUIConfig : SelectUI.Config Msg ContextItem
 selectContextUIConfig =
     { onSelect = Tuple.second >> SwitchToContextTodoListWithContextId
@@ -457,10 +461,6 @@ viewTodoListHeader model =
         ]
 
 
-type alias ContextItem =
-    ( String, ContextId )
-
-
 viewSelectContext : Model -> Html Msg
 viewSelectContext model =
     SelectUI.view selectContextUIConfig
@@ -532,16 +532,6 @@ viewTodo { content, done, contentClicked, markDone, unmarkDone, contextName, con
                 , viewContextNameCA "f7 gray pointer" [ onClick contextClicked ] contextName
                 ]
             ]
-        ]
-
-
-
---- Toolbar
-
-
-viewToolbar model =
-    UI.toolbar
-        [ txtC "b pa3" "ELM Experiment Store"
         ]
 
 
