@@ -14,6 +14,7 @@ import {
   pathOr,
   pick,
   reject,
+  tap,
   unfold,
 } from 'ramda'
 import debounce from 'lodash.debounce'
@@ -115,8 +116,10 @@ window.addEventListener('blur', winFocusBlur$)
 
 const documentHasFocus$ = flyd.map(compose(() => document.hasFocus()), winFocusBlur$)
 
-flyd.on(console.warn, documentHasFocus$)
-flyd.on(sendToApp('documentFocusChanged'), documentHasFocus$)
+const tapLog = tap(console.warn)
+const tapLogM = m => tap(partial(console.warn,[m]))
+
+flyd.on(compose(sendToApp('documentFocusChanged'), tapLogM('documentFocusChanged')), documentHasFocus$)
 
 // window.addEventListener('focus', function (e) {
 //   console.log("Out",document.hasFocus(), e)
