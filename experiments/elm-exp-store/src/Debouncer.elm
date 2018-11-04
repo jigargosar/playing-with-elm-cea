@@ -20,8 +20,7 @@ incCount model =
 
 
 type Msg bouncedItem
-    = NoOp
-    | EmitIfCountEq bouncedItem Int
+    = EmitIfCountEq bouncedItem Int
     | Bounce bouncedItem
 
 
@@ -40,9 +39,6 @@ bounce =
 update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer -> ( Debouncer, Cmd msg )
 update config message =
     (case message of
-        NoOp ->
-            identity
-
         EmitIfCountEq bouncedItem count ->
             andThenIf (.count >> eqs count)
                 (\_ -> pure init |> addMsg (config.onEmit bouncedItem))
