@@ -385,7 +385,7 @@ viewPage model =
                 ]
     in
     div [ class " flex-auto flex flex-row" ]
-        [ div [ class "overflow-y-scroll w-30-ns flex-shrink-0 pv3 bg-gray vs3" ]
+        [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns pv3 bg-gray vs3" ]
             [ txt "hello"
             , txt "hello"
             , txt "hello"
@@ -401,7 +401,7 @@ viewPage model =
             , txt "hello"
             , txt "hello"
             ]
-        , div [ class "overflow-y-scroll  flex-auto pv3 flex flex-column vs3" ]
+        , div [ class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
             [ viewPageHeader
             , viewPageContent
             ]
