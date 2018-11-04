@@ -5,8 +5,8 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import ContextItem exposing (ContextItem)
-import ContextStore exposing (Context, ContextId, ContextStore)
-import Dict
+import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
+import Dict exposing (Dict)
 import FeatherIcons
 import HotKey
 import Html exposing (..)
@@ -487,6 +487,41 @@ viewTodoListHeader model =
             , UI.fBtn FeatherIcons.plus startAddingContextMsg
             ]
         ]
+
+
+type alias ContextItem =
+    ( String, ContextId )
+
+
+viewSelectContext :
+    SelectUI.Config msg ContextItem
+    -> ContextStore
+    -> ContextId
+    -> SelectUI.Model
+    -> Html msg
+viewSelectContext config contextStore currentContextId selectUIModel =
+    let
+        contextNameLookup : Dict ContextId ContextName
+        contextNameLookup =
+            ContextStore.nameDict contextStore
+
+        currentContextItem : ContextItem
+        currentContextItem =
+            contextNameLookup
+                |> Dict.get currentContextId
+                |> unwrapMaybe ( ContextStore.defaultName, ContextStore.defaultId )
+                    (\name -> ( name, currentContextId ))
+
+        allContextItems : List ContextItem
+        allContextItems =
+            contextNameLookup
+                |> Dict.toList
+                |> List.map swap
+    in
+    SelectUI.view config
+        (Just <| currentContextItem)
+        allContextItems
+        selectUIModel
 
 
 viewTodoList : Model -> Html Msg
