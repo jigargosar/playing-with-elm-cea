@@ -4,7 +4,6 @@ import BasicsX exposing (..)
 import Browser
 import Browser.Dom
 import Browser.Events
-import ContextItem exposing (ContextItem)
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Dict exposing (Dict)
 import FeatherIcons
@@ -474,10 +473,7 @@ viewTodoListHeader model =
     row "pa3"
         []
         [ div [ class "flex-auto" ]
-            [ viewSelectContext
-                model.contextStore
-                selectedContextId
-                model
+            [ viewSelectContext model
             ]
         , row ""
             []
@@ -492,24 +488,19 @@ type alias ContextItem =
     ( String, ContextId )
 
 
-viewSelectContext :
-    ContextStore
-    -> ContextId
-    -> Model
-    -> Html Msg
-viewSelectContext contextStore currentContextId model =
+viewSelectContext : Model -> Html Msg
+viewSelectContext model =
     let
         contextNameLookup : Dict ContextId ContextName
         contextNameLookup =
-            ContextStore.nameDict contextStore
+            ContextStore.nameDict model.contextStore
 
-        currentContextItem : ContextItem
-        currentContextItem =
-            contextNameLookup
-                |> Dict.get currentContextId
-                |> unwrapMaybe ( ContextStore.defaultName, ContextStore.defaultId )
-                    (\name -> ( name, currentContextId ))
-
+        --        currentContextItem : ContextItem
+        --        currentContextItem =
+        --            contextNameLookup
+        --                |> Dict.get model.contextId
+        --                |> unwrapMaybe ( ContextStore.defaultName, ContextStore.defaultId )
+        --                    (\name -> ( name, currentContextId ))
         allContextItems : List ContextItem
         allContextItems =
             contextNameLookup
@@ -517,7 +508,7 @@ viewSelectContext contextStore currentContextId model =
                 |> List.map swap
     in
     SelectUI.view selectContextUIConfig
-        (Just <| currentContextItem)
+        (Just <| getCurrentContextItem model)
         allContextItems
         model.selectContextUI
 
