@@ -360,8 +360,9 @@ getAllContextsNameIdPairs =
 view : Model -> Html Msg
 view model =
     div [ class "flex flex-column w-100 justify-center" ]
-        [ div [ class "bg-black white" ]
-            [ div [] [ txtC "b pa3" "ELM Experiment Store" ]
+        [ div [ class "flex justify-center bg-black white" ]
+            [ div [ class "w-100 measure" ]
+                [ div [] [ txtC "b pa3" "ELM Experiment Store" ] ]
             ]
         , div []
             [ div [ class "pa3 " ]
