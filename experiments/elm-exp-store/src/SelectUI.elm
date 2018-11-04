@@ -28,12 +28,12 @@ import UpdateReturn exposing (..)
 type alias Model =
     { open : Bool
     , debouncer : Debouncer
-    , windowHasFocus : True
+    , documentHasFocus : Bool
     }
 
 
 new =
-    { open = False, debouncer = Debouncer.init }
+    { open = False, debouncer = Debouncer.init, documentHasFocus = True }
 
 
 type alias ShouldClose =
@@ -51,7 +51,7 @@ type Msg item
     | SetOpen Bool
     | DebouncerMsg (Debouncer.Msg (Maybe (Msg item)))
     | CloseIfTrue Bool
-    | WindowFocus Bool
+    | DocumentFocus Bool
 
 
 type alias Config msg item =
@@ -71,7 +71,7 @@ subscriptions config model =
              else
           -}
           if model.open then
-            Port.windowFocusChanged WindowFocus |> Sub.map config.toMsg
+            Port.documentFocusChanged DocumentFocus
 
           else
             Browser.Events.onVisibilityChange
@@ -154,8 +154,8 @@ update config message model =
         OnFocusIn ->
             andThenUpdate (DebouncerMsg <| Debouncer.bounce Nothing)
 
-        WindowFocus hasFocus ->
-            replaceModel { model | windowHasFocus = hasFocus }
+        DocumentFocus hasFocus ->
+            replaceModel { model | documentHasFocus = hasFocus }
     )
     <|
         pure model
