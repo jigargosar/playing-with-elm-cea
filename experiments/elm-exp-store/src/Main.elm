@@ -450,16 +450,14 @@ viewTodoListHeader model =
 
 viewTodoList : Model -> Html Msg
 viewTodoList model =
-    let
-        viewTodoListKeyed =
-            getSelectedContextTodoList model
-                |> List.map (\todo -> ( todo.id, viewTodo (createTodoViewModel model.contextStore todo) ))
-    in
-    Html.Keyed.node "div" [] viewTodoListKeyed
+    getSelectedContextTodoList model
+        |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
+        |> Html.Keyed.node "div" []
 
 
 type alias TodoViewModel msg =
-    { content : String
+    { key : String
+    , content : String
     , done : Bool
     , contextName : String
     , contentClicked : msg
@@ -472,6 +470,7 @@ type alias TodoViewModel msg =
 createTodoViewModel : ContextStore -> Todo -> TodoViewModel Msg
 createTodoViewModel contextStore todo =
     TodoViewModel
+        todo.id
         (defaultEmptyStringTo "<empty task>" todo.content)
         todo.done
         (ContextStore.getNameOrDefaultById todo.contextId contextStore)
@@ -481,8 +480,8 @@ createTodoViewModel contextStore todo =
         (startEditingTodoContext todo)
 
 
-viewTodo : TodoViewModel msg -> Html msg
-viewTodo { content, done, contentClicked, markDone, unmarkDone, contextName, contextClicked } =
+viewKeyedTodo : TodoViewModel msg -> ( String, Html msg )
+viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contextName, contextClicked } =
     let
         doneIconBtn =
             if done then
@@ -494,7 +493,8 @@ viewTodo { content, done, contentClicked, markDone, unmarkDone, contextName, con
         viewContextNameCA cs attrs name =
             txtA ([ class ("ttu " ++ cs) ] ++ attrs) ("@" ++ name)
     in
-    div
+    ( key
+    , div
         [ class "pa3 w-100  bb b--light-gray"
         ]
         [ row ""
@@ -511,6 +511,7 @@ viewTodo { content, done, contentClicked, markDone, unmarkDone, contextName, con
                 ]
             ]
         ]
+    )
 
 
 
