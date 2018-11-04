@@ -375,7 +375,7 @@ viewPage model =
 
         viewPageContent =
             div [ class "flex row justify-center" ]
-                [ div [ class "measure w-100 vs3" ]
+                [ div [ class "measure w-100" ]
                     (case model.page of
                         ContextTodoList ->
                             [ viewTodoListHeader model
@@ -467,7 +467,7 @@ viewContext { key, name, startEditingName, isNameEditable, switchToContextTodoLi
 viewTodoListHeader : Model -> Html Msg
 viewTodoListHeader model =
     div
-        [ class "flex flex-row" ]
+        [ class "ph3 flex flex-row" ]
         [ div [ class "flex-auto" ]
             [ SelectUI.view selectContextUIConfig
                 (Just <| getCurrentContextItem model)
