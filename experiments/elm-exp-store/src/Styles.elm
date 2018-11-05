@@ -11,6 +11,7 @@ module Styles exposing
     , pointer
     , px
     , rem
+    , ttu
     , vs
     , w100P
     , zero
@@ -53,6 +54,10 @@ ma0 =
 
 bw0 =
     Css.border zero
+
+
+ttu =
+    Css.textTransform Css.uppercase
 
 
 w100P =

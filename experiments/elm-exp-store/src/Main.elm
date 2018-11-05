@@ -45,7 +45,7 @@ import Random
 import SelectUI
 import Set exposing (Set)
 import SnackBar exposing (SnackBar, SnackBarTitle)
-import Styles
+import Styles exposing (ttu)
 import Svg.Attributes
 import Task
 import Time
@@ -499,7 +499,11 @@ viewSidebar model =
                 ]
 
         viewUserDefinedContext { key, name } =
-            ( key, div [] [ text name ] )
+            ( key
+            , listItem []
+                [ liTextButton [ css [ ttu ], onClick NoOp ] [ text <| "@" ++ name ]
+                ]
+            )
     in
     div [ class "min-h-100 bg-black-05" ]
         [ viewListItem ( "Inbox", goToInbox ) Nothing
