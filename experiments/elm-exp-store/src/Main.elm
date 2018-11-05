@@ -11,7 +11,7 @@ import Css.Global exposing (global)
 import Dict exposing (Dict)
 import FeatherIcons
 import HotKey
-import Html.Styled as Html exposing (Attribute, Html, button, div, styled, text)
+import Html.Styled as Html exposing (Attribute, Html, button, div, span, styled, text)
 import Html.Styled.Attributes exposing (class, classList, css, style)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as HKeyed
@@ -82,6 +82,15 @@ init flags =
         }
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeTodoStoreLogLine)
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeContextStoreLogLine)
+
+
+isCurrentPageContextTodoListWithContextId contextId model =
+    case model.page of
+        ContextTodoList ->
+            getSelectedContextId model == contextId
+
+        ContextList ->
+            False
 
 
 getSelectedContextTodoList : Model -> List Todo
@@ -408,6 +417,7 @@ type alias ContextListItemViewModel msg =
     , name : ContextName
     , navigateToTodoList : msg
     , activeTodoCount : Int
+    , isSelected : Bool
     }
 
 
@@ -422,6 +432,7 @@ createUserDefinedContextListViewModel model =
                 , navigateToTodoList =
                     SwitchToContextTodoListWithContextId c.id
                 , activeTodoCount = getActiveTodoListCountForContextId c.id model
+                , isSelected = isCurrentPageContextTodoListWithContextId c.id model
                 }
             )
 
@@ -480,19 +491,28 @@ viewSidebar model =
                 , maybeHtml (\( icon, iconMsg ) -> UI.Btn.icon icon iconMsg) maybeAction
                 ]
 
-        viewUserDefinedContext { key, name, navigateToTodoList, activeTodoCount } =
+        viewUserDefinedContext { key, name, navigateToTodoList, activeTodoCount, isSelected } =
             ( key
             , listItem []
                 [ liTextButton
                     [ css
                         [ ttu
-                        , Styles.flexRow
-                        , Css.justifyContent Css.spaceBetween
+                        , Styles.rowCY
+
+                        --                        , Css.justifyContent Css.spaceBetween
                         ]
                     , onClick navigateToTodoList
                     ]
                     [ text <| "@" ++ name
-                    , badge [] [ text <| String.fromInt activeTodoCount ]
+                    , div
+                        [ css
+                            [ Css.fontSize (em 0.8)
+                            , Css.alignSelf Css.flexEnd
+                            , Css.fontWeight Css.bold
+                            , Css.property "color" "gray"
+                            ]
+                        ]
+                        [ text <| String.fromInt activeTodoCount ]
                     ]
                 ]
             )

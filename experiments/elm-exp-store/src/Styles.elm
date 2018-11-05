@@ -11,6 +11,8 @@ module Styles exposing
     , pointer
     , px
     , rem
+    , rowBottomY
+    , rowCY
     , ttu
     , vs
     , w100P
@@ -66,6 +68,14 @@ w100P =
 
 flexRow =
     Css.batch [ Css.displayFlex, Css.flexDirection Css.row ]
+
+
+rowCY =
+    Css.batch [ flexRow, Css.alignItems Css.center ]
+
+
+rowBottomY =
+    Css.batch [ flexRow, Css.alignItems Css.flexEnd ]
 
 
 flexAuto =
