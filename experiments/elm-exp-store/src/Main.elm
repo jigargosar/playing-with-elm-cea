@@ -476,6 +476,23 @@ createUserDefinedContextListViewModel model =
 
 viewSidebar model =
     let
+        badge =
+            let
+                sizeVal =
+                    Css.em 1.3
+            in
+            styled div
+                [ Css.borderRadius (pct 50)
+                , Css.backgroundColor <| Css.hsla 190 1 0.5 0.6
+                , Css.fontSize (rem 1)
+                , Css.lineHeight (num 1)
+                , Css.width sizeVal
+                , Css.height sizeVal
+                , Styles.flexRow
+                , Css.alignItems Css.center
+                , Css.justifyContent Css.center
+                ]
+
         liTextButton =
             styled button
                 [ padding zero
@@ -499,7 +516,7 @@ viewSidebar model =
                 ]
 
         listItem =
-            styled UILayout.gRow [ padding (rem 0.5) ]
+            styled UILayout.gRow [ padding (rem 0.5), Css.alignItems Css.center ]
 
         viewListItem ( title, titleMsg ) maybeAction =
             listItem []
@@ -511,7 +528,7 @@ viewSidebar model =
             ( key
             , listItem []
                 [ liTextButton [ css [ ttu ], onClick navigateToTodoList ] [ text <| "@" ++ name ]
-                , div [] [ text <| String.fromInt activeTodoCount ]
+                , badge [] [ text <| String.fromInt activeTodoCount ]
                 ]
             )
     in
