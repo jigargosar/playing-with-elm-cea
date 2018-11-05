@@ -446,14 +446,15 @@ btn2 =
     styled btn [ Css.width (Css.pct 100) ]
 
 
-type alias ContextListItemViewModel =
+type alias ContextListItemViewModel msg =
     { key : String
     , id : ContextId
     , name : ContextName
+    , switchToContextTodoList : msg
     }
 
 
-createUserDefinedContextListViewModel : Model -> List ContextListItemViewModel
+createUserDefinedContextListViewModel : Model -> List (ContextListItemViewModel Msg)
 createUserDefinedContextListViewModel model =
     getUserDefinedContextList model
         |> List.map
@@ -461,6 +462,7 @@ createUserDefinedContextListViewModel model =
                 { key = c.id
                 , id = c.id
                 , name = c.name
+                , switchToContextTodoList = SwitchToContextTodoListWithContextId c.id
                 }
             )
 
