@@ -1,4 +1,20 @@
-module Styles exposing (bw0, flexAuto, flexRow, hs, ma0, margin, pa0, padding, pct, pointer, rem, vs, w100P, zero)
+module Styles exposing
+    ( bw0
+    , flexAuto
+    , flexRow
+    , hs
+    , ma0
+    , margin
+    , pa0
+    , padding
+    , pct
+    , pointer
+    , px
+    , rem
+    , vs
+    , w100P
+    , zero
+    )
 
 import Css
 
@@ -21,6 +37,10 @@ pct =
 
 rem =
     Css.rem
+
+
+px =
+    Css.px
 
 
 pa0 =
