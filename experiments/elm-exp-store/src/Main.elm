@@ -334,7 +334,7 @@ startEditingTodoContext =
     ModeMsg << Mode.startEditingTodoContext
 
 
-goToInbox =
+navigateToInbox =
     SwitchToContextTodoListWithContextId ContextStore.defaultId
 
 
@@ -437,20 +437,15 @@ createUserDefinedContextItemViewModel model =
             )
 
 
-createInboxContextItemViewModel : Model -> List (ContextItemViewModel Msg)
+createInboxContextItemViewModel : Model -> ContextItemViewModel Msg
 createInboxContextItemViewModel model =
-    getUserDefinedContextList model
-        |> List.map
-            (\c ->
-                { key = c.id
-                , id = c.id
-                , name = c.name
-                , navigateToTodoList =
-                    SwitchToContextTodoListWithContextId c.id
-                , activeTodoCount = getActiveTodoListCountForContextId c.id model
-                , isSelected = isCurrentPageContextTodoListWithContextId c.id model
-                }
-            )
+    { key = ContextStore.defaultId
+    , id = ContextStore.defaultId
+    , name = ContextStore.defaultName
+    , navigateToTodoList = navigateToInbox
+    , activeTodoCount = getActiveTodoListCountForContextId ContextStore.defaultId model
+    , isSelected = isCurrentPageContextTodoListWithContextId ContextStore.defaultId model
+    }
 
 
 viewSidebar model =
@@ -532,7 +527,7 @@ viewSidebar model =
             )
     in
     div [ class "min-h-100 bg-black-05" ]
-        [ viewListItem ( "Inbox", goToInbox ) (Just ( FeatherIcons.plus, startAddingTodoMsg ))
+        [ viewListItem ( "Inbox", navigateToInbox ) (Just ( FeatherIcons.plus, startAddingTodoMsg ))
         , viewListItem ( "Contexts", SetPage ContextList )
             (Just ( FeatherIcons.folderPlus, startAddingContextMsg ))
         , HKeyed.node "div"
