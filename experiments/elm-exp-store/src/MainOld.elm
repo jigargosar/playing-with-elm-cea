@@ -7,10 +7,10 @@ import Browser.Events
 import Dict
 import FeatherIcons
 import HotKey
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
 import Html.Keyed
+import Html.Styled as Html exposing (..)
+import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
 import ListFilter exposing (Filter)

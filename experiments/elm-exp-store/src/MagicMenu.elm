@@ -2,9 +2,9 @@ module MagicMenu exposing (Action, Actions, MagicMenu, Msg, initial, subscriptio
 
 import BasicsX exposing (flip, ter, unpackResult, unwrapDecodeResult)
 import FeatherIcons
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
+import Html.Styled as Html exposing (..)
+import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (..)
 import Json.Decode as D
 import Json.Encode as E
 import Log
@@ -123,8 +123,8 @@ viewMenuItems isOpen actions =
                 button
                     [ onClick msg
                     , class "absolute  flex items-center justify-center pa0 ma0"
-                    , Style.transform (ter isOpen (transformForIdx idx) [])
+                    , Style.transform (ter isOpen (transformForIdx idx) []) |> Html.Styled.Attributes.fromUnstyled
                     , style "transition" ("transform 0.3s " ++ transitionDelayForIdx idx ++ " ease-in")
                     ]
-                    [ icon |> FeatherIcons.toHtml [] ]
+                    [ icon |> FeatherIcons.toHtml [] |> Html.fromUnstyled ]
             )

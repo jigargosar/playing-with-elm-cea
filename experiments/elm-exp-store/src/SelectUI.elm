@@ -13,9 +13,9 @@ import Browser.Dom
 import Browser.Events
 import Debouncer exposing (Debouncer)
 import FeatherIcons
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Styled as Html exposing (..)
+import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (onClick)
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
 import Log
@@ -179,7 +179,7 @@ viewInternal config maybeSelectedItem items model =
                 , class "pa0 ma0 color-inherit flex items-center justify-center "
                 ]
                 [ div [ class "ttu" ] [ text displayName ]
-                , FeatherIcons.chevronDown |> FeatherIcons.toHtml []
+                , FeatherIcons.chevronDown |> FeatherIcons.toHtml [] |> Html.fromUnstyled
                 ]
             ]
         , div

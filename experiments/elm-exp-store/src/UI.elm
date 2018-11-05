@@ -20,9 +20,9 @@ module UI exposing
 
 import BasicsX exposing (unwrapMaybe)
 import FeatherIcons
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
+import Html.Styled as Html exposing (..)
+import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (..)
 import Svg.Attributes
 
 
@@ -48,7 +48,7 @@ fBtn fIcon msg =
         [ onClick msg
         , class "flex items-center justify-center pa0 ma0"
         ]
-        [ fIcon |> FeatherIcons.toHtml [] ]
+        [ fIcon |> FeatherIcons.toHtml [] |> Html.fromUnstyled ]
 
 
 sClass =
@@ -60,7 +60,7 @@ fBtnSA svgAttrs fIcon msg =
         [ onClick msg
         , class "flex items-center justify-center pa0 ma0"
         ]
-        [ fIcon |> FeatherIcons.toHtml svgAttrs ]
+        [ fIcon |> FeatherIcons.toHtml svgAttrs |> Html.fromUnstyled ]
 
 
 type alias Disabled =

@@ -8,10 +8,10 @@ import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Dict exposing (Dict)
 import FeatherIcons
 import HotKey
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Html.Keyed
+import Html.Styled as Html exposing (..)
+import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (..)
+import Html.Styled.Keyed as HKeyed
 import Json.Decode as D
 import Json.Encode as E
 import JsonCodecX exposing (Value)
@@ -429,7 +429,7 @@ viewContextList model =
                 |> List.map (createContextViewModel >> viewContext)
                 |> (::) (viewContext inboxViewModel)
     in
-    Html.Keyed.node "div" [] viewPrimaryListKeyed
+    HKeyed.node "div" [] viewPrimaryListKeyed
 
 
 type alias ContextViewModel msg =
@@ -490,7 +490,7 @@ viewTodoList : Model -> Html Msg
 viewTodoList model =
     getSelectedContextTodoList model
         |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
-        |> Html.Keyed.node "div" []
+        |> HKeyed.node "div" []
 
 
 type alias TodoViewModel msg =
@@ -556,7 +556,7 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
 main : Program Flags Model Msg
 main =
     Browser.element
-        { view = view
+        { view = Html.toUnstyled << view
         , init = init
         , update = update
         , subscriptions = subscriptions

@@ -33,8 +33,8 @@ module BasicsX exposing
     )
 
 import Browser.Dom
-import Html exposing (Html)
-import Html.Events
+import Html.Styled as Html exposing (Html)
+import Html.Styled.Events as HEvents
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E exposing (Value)
 import Log
@@ -65,11 +65,11 @@ type alias DomId =
 
 
 onFocusOut msg =
-    Html.Events.on "focusout" (D.succeed msg)
+    HEvents.on "focusout" (D.succeed msg)
 
 
 onFocusIn msg =
-    Html.Events.on "focusin" (D.succeed msg)
+    HEvents.on "focusin" (D.succeed msg)
 
 
 onClickTargetId : (DomId -> msg) -> Html.Attribute msg
@@ -79,7 +79,7 @@ onClickTargetId toMsg =
         targetIdDecoder =
             D.at [ "target", "id" ] D.string
     in
-    Html.Events.on "click" <| D.map toMsg targetIdDecoder
+    HEvents.on "click" <| D.map toMsg targetIdDecoder
 
 
 domIdDecoder : Decoder DomId

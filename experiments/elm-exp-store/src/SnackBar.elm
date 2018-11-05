@@ -1,9 +1,9 @@
 module SnackBar exposing (Msg, SnackBar, SnackBarTitle, empty, show, update, view)
 
 import BasicsX exposing (..)
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
+import Html.Styled as Html exposing (..)
+import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (..)
 import Log
 import Process
 import Task
