@@ -5,36 +5,54 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
-import Css exposing (Color, backgroundColor, color, fontWeight, hex, hover, margin, margin2, normal, num, padding, padding2, pct, px, rem, rgb, textDecoration, underline, zero)
+import Css
+    exposing
+        ( Color
+        , backgroundColor
+        , color
+        , fontWeight
+        , hex
+        , hover
+        , margin
+        , margin2
+        , normal
+        , num
+        , padding
+        , padding2
+        , pct
+        , px
+        , rem
+        , rgb
+        , textDecoration
+        , underline
+        , zero
+        )
 import Css.Global exposing (global)
 import Dict exposing (Dict)
 import FeatherIcons
 import HotKey
-import Html.Styled as Html exposing (..)
+import Html.Styled as Html exposing (Attribute, Html, button, div, styled, text)
 import Html.Styled.Attributes exposing (class, classList, css, style)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as HKeyed
-import Json.Decode as D
-import Json.Encode as E
 import JsonCodecX exposing (Value)
 import Log
 import MagicMenu exposing (MagicMenu)
 import Mode exposing (Mode)
 import Port
-import Process
 import Random
 import SelectUI
 import Set exposing (Set)
 import SnackBar exposing (SnackBar, SnackBarTitle)
+import Styles
 import Svg.Attributes
 import Task
 import Time
 import TodoStore exposing (Todo, TodoStore)
 import UI exposing (..)
+import UILayout
 import Update2
-import Update3
 import UpdateReturn exposing (..)
-import WheelEvent exposing (WheelEvent)
 
 
 
@@ -348,8 +366,7 @@ getAllContextsNameIdPairs =
 view : Model -> Html Msg
 view model =
     div [ class "flex flex-column min-h-100 w-100" ]
-        [ vsGlobal
-        , viewAppBar
+        [ viewAppBar
         , viewPage model
         , MagicMenu.view mockActions MagicMenuMsg model.magicMenu
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
@@ -427,59 +444,6 @@ btn2 =
     styled btn [ Css.width (Css.pct 100) ]
 
 
-w100P =
-    Css.width (pct 100)
-
-
-flexRow =
-    Css.batch [ Css.displayFlex, Css.flexDirection Css.row ]
-
-
-gRow =
-    styled div [ flexRow, flexAuto ]
-
-
-flexAuto =
-    Css.batch [ Css.flex Css.auto ]
-
-
-vsGlobal =
-    global
-        [ Css.Global.class "vs"
-            [ Css.Global.children
-                [ Css.Global.everything
-                    [ Css.marginBottom (rem 0.5)
-                    , Css.lastChild [ Css.marginBottom zero ]
-                    ]
-                ]
-            ]
-        ]
-
-
-hsGlobal =
-    global
-        [ Css.Global.class "hs"
-            [ Css.Global.children
-                [ Css.Global.everything
-                    [ Css.marginRight (rem 0.5)
-                    , Css.lastChild [ Css.marginRight zero ]
-                    ]
-                ]
-            ]
-        ]
-
-
-hs =
-    Css.batch
-        [ Css.marginRight (rem 0.5)
-        , Css.lastChild [ Css.marginRight zero ]
-        ]
-
-
-pointer =
-    Css.cursor Css.pointer
-
-
 viewSidebar model =
     let
         liTextButton =
@@ -493,19 +457,19 @@ viewSidebar model =
                 , margin zero
 
                 --
-                , hs
-                , flexAuto
+                , Styles.hs
+                , Styles.flexAuto
                 , Css.textAlign Css.left
                 , Css.property "-webkit-appearance" "none"
                 , Css.backgroundColor Css.transparent
                 , Css.border zero
-                , pointer
+                , Styles.pointer
                 , Css.lineHeight (num 1.5)
                 , Css.fontSize (px 16)
                 ]
 
         listItem =
-            styled gRow [ padding (rem 0.5) ]
+            styled UILayout.gRow [ padding (rem 0.5) ]
 
         viewListItem ( title, titleMsg ) maybeAction =
             listItem []
