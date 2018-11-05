@@ -1,4 +1,4 @@
-module ContextType exposing (ContextType(..))
+module ContextType exposing (ContextType(..), list)
 
 import ContextStore exposing (Context)
 import Dict

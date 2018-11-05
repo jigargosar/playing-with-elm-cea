@@ -5,6 +5,7 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
+import ContextType
 import Css
     exposing
         ( Color
@@ -112,8 +113,8 @@ getSelectedContextTodoList model =
         |> List.sortBy .createdAt
 
 
-getCurrentContextList : Model -> List Context
-getCurrentContextList model =
+getUserDefinedContextList : Model -> List Context
+getUserDefinedContextList model =
     model.contextStore
         |> ContextStore.list
         |> List.sortBy .createdAt
@@ -445,6 +446,25 @@ btn2 =
     styled btn [ Css.width (Css.pct 100) ]
 
 
+type alias ContextListItemViewModel =
+    { key : String
+    , id : ContextId
+    , name : ContextName
+    }
+
+
+createUserDefinedContextListViewModel : Model -> List ContextListItemViewModel
+createUserDefinedContextListViewModel model =
+    getUserDefinedContextList model
+        |> List.map
+            (\c ->
+                { key = c.id
+                , id = c.id
+                , name = c.name
+                }
+            )
+
+
 viewSidebar model =
     let
         liTextButton =
@@ -477,11 +497,19 @@ viewSidebar model =
                 [ liTextButton [ onClick titleMsg ] [ text title ]
                 , maybeHtml (\( icon, iconMsg ) -> UI.Btn.icon icon iconMsg) maybeAction
                 ]
+
+        viewUserDefinedContext { key, name } =
+            ( key, div [] [ text name ] )
     in
     div [ class "min-h-100 bg-black-05" ]
         [ viewListItem ( "Inbox", goToInbox ) Nothing
         , viewListItem ( "Contexts", SetPage ContextList )
             (Just ( FeatherIcons.plus, startAddingContextMsg ))
+        , HKeyed.node "div"
+            []
+            (List.map viewUserDefinedContext
+                (createUserDefinedContextListViewModel model)
+            )
         ]
 
 
@@ -497,7 +525,7 @@ viewContextList model =
             ContextViewModel "Inbox" "Inbox" False NoOp (SwitchToContextTodoListWithContextId ContextStore.defaultId)
 
         viewPrimaryListKeyed =
-            getCurrentContextList model
+            getUserDefinedContextList model
                 |> List.map (createContextViewModel >> viewContext)
                 |> (::) (viewContext inboxViewModel)
     in
