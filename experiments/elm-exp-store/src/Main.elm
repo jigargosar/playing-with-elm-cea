@@ -5,7 +5,8 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
-import Css exposing (Color, backgroundColor, color, hex, hover, margin, padding, padding2, pct, px, rem, rgb, textDecoration, underline, zero)
+import Css exposing (Color, backgroundColor, color, fontWeight, hex, hover, margin, margin2, normal, num, padding, padding2, pct, px, rem, rgb, textDecoration, underline, zero)
+import Css.Global exposing (global)
 import Dict exposing (Dict)
 import FeatherIcons
 import HotKey
@@ -347,7 +348,8 @@ getAllContextsNameIdPairs =
 view : Model -> Html Msg
 view model =
     div [ class "flex flex-column min-h-100 w-100" ]
-        [ viewAppBar
+        [ vsGlobal
+        , viewAppBar
         , viewPage model
         , MagicMenu.view mockActions MagicMenuMsg model.magicMenu
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
@@ -433,25 +435,77 @@ flexRow =
     Css.batch [ Css.displayFlex, Css.flexDirection Css.row ]
 
 
+gRow =
+    styled div [ flexRow, flexAuto ]
+
+
 flexAuto =
     Css.batch [ Css.flex Css.auto ]
+
+
+vsGlobal =
+    global
+        [ Css.Global.class "vs"
+            [ Css.Global.children
+                [ Css.Global.everything
+                    [ Css.marginBottom (rem 0.5)
+                    , Css.lastChild [ Css.marginBottom zero ]
+                    ]
+                ]
+            ]
+        ]
+
+
+hsGlobal =
+    global
+        [ Css.Global.class "hs"
+            [ Css.Global.children
+                [ Css.Global.everything
+                    [ Css.marginRight (rem 0.5)
+                    , Css.lastChild [ Css.marginRight zero ]
+                    ]
+                ]
+            ]
+        ]
+
+
+hs =
+    Css.batch
+        [ Css.marginRight (rem 0.5)
+        , Css.lastChild [ Css.marginRight zero ]
+        ]
+
+
+pointer =
+    Css.cursor Css.pointer
 
 
 viewSidebar model =
     let
         liTextButton =
             styled button
-                [ padding (rem 0.5)
+                [ padding zero
+                , padding (rem 0.5)
+                , padding zero
+
+                --
+                , margin2 zero (rem 0.5)
                 , margin zero
-                , w100P
+
+                --
+                , hs
+                , flexAuto
                 , Css.textAlign Css.left
                 , Css.property "-webkit-appearance" "none"
                 , Css.backgroundColor Css.transparent
                 , Css.border zero
+                , pointer
+                , Css.lineHeight (num 1.5)
+                , Css.fontSize (px 16)
                 ]
 
         listItem =
-            styled div [ flexRow ]
+            styled gRow [ padding (rem 0.5) ]
 
         viewListItem ( title, titleMsg ) maybeAction =
             listItem []
