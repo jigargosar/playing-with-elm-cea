@@ -492,6 +492,10 @@ viewSidebar model =
                 , Styles.pointer
                 , Css.lineHeight (num 1.5)
                 , Css.fontSize (px 16)
+                , Css.focus
+                    [ Css.outlineWidth (px 2)
+                    , Css.outlineOffset (px 2)
+                    ]
                 ]
 
         listItem =
