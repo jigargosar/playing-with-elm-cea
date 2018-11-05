@@ -506,7 +506,14 @@ viewSidebar model =
         viewUserDefinedContext { key, name, navigateToTodoList, activeTodoCount } =
             ( key
             , listItem []
-                [ liTextButton [ css [ ttu, Styles.flexRow, Css.justifyContent Css.spaceBetween ], onClick navigateToTodoList ]
+                [ liTextButton
+                    [ css
+                        [ ttu
+                        , Styles.flexRow
+                        , Css.justifyContent Css.spaceBetween
+                        ]
+                    , onClick navigateToTodoList
+                    ]
                     [ text <| "@" ++ name
                     , badge [] [ text <| String.fromInt activeTodoCount ]
                     ]
