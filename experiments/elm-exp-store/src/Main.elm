@@ -24,7 +24,7 @@ import Random
 import SelectUI
 import Set exposing (Set)
 import SnackBar exposing (SnackBar, SnackBarTitle)
-import Styles exposing (ttu)
+import Styles exposing (rowCY, ttu)
 import Svg.Attributes
 import Task
 import Time
@@ -497,9 +497,7 @@ viewSidebar model =
                 [ liTextButton
                     [ css
                         [ ttu
-                        , Styles.rowCY
-
-                        --                        , Css.justifyContent Css.spaceBetween
+                        , rowCY
                         ]
                     , onClick navigateToTodoList
                     ]
