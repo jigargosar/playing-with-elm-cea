@@ -405,32 +405,6 @@ viewPage model =
         ]
 
 
-theme : { secondary : Color, primary : Color }
-theme =
-    { primary = hex "55af6a"
-    , secondary = rgb 250 240 230
-    }
-
-
-{-| A reusable button which has some styles pre-applied to it.
--}
-btn : List (Attribute msg) -> List (Html msg) -> Html msg
-btn =
-    styled button
-        [ margin (px 12)
-
-        --        , color (rgb 250 250 250)
-        , hover
-            [ backgroundColor theme.primary
-            , textDecoration underline
-            ]
-        ]
-
-
-btn2 =
-    styled btn [ Css.width (Css.pct 100) ]
-
-
 type alias ContextListItemViewModel msg =
     { key : String
     , id : ContextId
