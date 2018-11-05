@@ -17,6 +17,10 @@ icon i msg =
         , Styles.pointer
         , Css.lineHeight zero
         , Css.fontSize (px 0)
+        , Css.focus
+            [ Css.outlineWidth (px 2)
+            , Css.outlineOffset (px 2)
+            ]
         ]
         [ onClick msg ]
         [ i |> FeatherIcons.toHtml [] >> fromUnstyled ]
