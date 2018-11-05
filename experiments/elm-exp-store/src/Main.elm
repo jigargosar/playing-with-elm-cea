@@ -9,9 +9,9 @@ import ContextType
 import Css exposing (Color, backgroundColor, color, em, fontWeight, hex, hover, margin, margin2, normal, num, padding, padding2, pct, px, rem, rgb, textDecoration, underline, zero)
 import Css.Global exposing (global)
 import Dict exposing (Dict)
-import FeatherIcons
+import FeatherIcons as Icon
 import HotKey
-import Html.Styled as Html exposing (Attribute, Html, button, div, span, styled, text)
+import Html.Styled as Html exposing (Attribute, Html, button, div, fromUnstyled, span, styled, text)
 import Html.Styled.Attributes exposing (class, classList, css, style)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as HKeyed
@@ -339,15 +339,15 @@ navigateToInbox =
 
 
 mockActions =
-    [ FeatherIcons.home
-    , FeatherIcons.twitter
-    , FeatherIcons.scissors
-    , FeatherIcons.edit
-    , FeatherIcons.moon
+    [ Icon.home
+    , Icon.twitter
+    , Icon.scissors
+    , Icon.edit
+    , Icon.moon
     ]
         |> List.map (\icon -> MagicMenu.Action icon NoOp)
-        |> (::) (MagicMenu.Action FeatherIcons.trash2 NoOp)
-        |> (::) (MagicMenu.Action FeatherIcons.filePlus startAddingTodoMsg)
+        |> (::) (MagicMenu.Action Icon.trash2 NoOp)
+        |> (::) (MagicMenu.Action Icon.filePlus startAddingTodoMsg)
 
 
 getAllContextsNameIdPairs =
@@ -527,9 +527,9 @@ viewSidebar model =
             )
     in
     div [ class "min-h-100 bg-black-05" ]
-        [ viewListItem ( "Inbox", navigateToInbox ) (Just ( FeatherIcons.plus, startAddingTodoMsg ))
+        [ viewListItem ( "Inbox", navigateToInbox ) (Just ( Icon.plus, startAddingTodoMsg ))
         , viewListItem ( "Contexts", SetPage ContextList )
-            (Just ( FeatherIcons.folderPlus, startAddingContextMsg ))
+            (Just ( Icon.folderPlus, startAddingContextMsg ))
         , HKeyed.node "div"
             []
             (List.map viewUserDefinedContext
@@ -587,7 +587,7 @@ viewContext { key, name, startEditingName, isNameEditable, switchToContextTodoLi
             , onClick switchToContextTodoList
             ]
             [ text <| "@" ++ name ]
-        , boolHtml isNameEditable <| UI.fBtn FeatherIcons.edit3 startEditingName
+        , boolHtml isNameEditable <| UI.fBtn Icon.edit3 startEditingName
         ]
     )
 
@@ -608,7 +608,7 @@ viewTodoListHeader model =
              -}
             ]
 
-        --        , UI.fBtn FeatherIcons.plus startAddingTodoMsg
+        --        , UI.fBtn Icon.plus startAddingTodoMsg
         ]
 
 
@@ -619,7 +619,7 @@ viewTodoList model =
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
             |> HKeyed.node "div" [ css [ Styles.vs ] ]
         , div [ css [ rowCY, Styles.vs ] ]
-            [ UI.Btn.btn [] [ text "Add Task" ]
+            [ UI.Btn.iconButton [] [ Icon.plus |> Icon.toHtml [] |> fromUnstyled, text "Add Task" ]
             ]
         ]
 
@@ -654,10 +654,10 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
     let
         doneIconBtn =
             if done then
-                fBtnSA [ sClass "green" ] FeatherIcons.checkCircle unmarkDone
+                fBtnSA [ sClass "green" ] Icon.checkCircle unmarkDone
 
             else
-                fBtnSA [ sClass "gray" ] FeatherIcons.circle markDone
+                fBtnSA [ sClass "gray" ] Icon.circle markDone
     in
     ( key
     , UI.row "pa3 bb b--light-gray"

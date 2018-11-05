@@ -1,4 +1,4 @@
-module UI.Btn exposing (btn, icon)
+module UI.Btn exposing (btn, icon, iconButton)
 
 import Css
 import FeatherIcons
@@ -33,6 +33,20 @@ icon i msg =
 
 
 btn =
+    styled button
+        [ resetButton
+        , padding (rem 0.5)
+        , tl
+        , flexAuto
+        , Css.fontSize (rem 0.8)
+        , Css.property "color" "gray"
+        , Css.hover
+            [ Css.property "color" "red"
+            ]
+        ]
+
+
+iconButton =
     styled button
         [ resetButton
         , padding (rem 0.5)
