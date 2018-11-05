@@ -4,7 +4,7 @@ import Css
 import FeatherIcons
 import Html.Styled exposing (button, fromUnstyled, styled)
 import Html.Styled.Events exposing (onClick)
-import Styles exposing (bw0, ma0, pa0, padding, px, rem, zero)
+import Styles exposing (bw0, flexAuto, ma0, pa0, padding, px, rem, tl, zero)
 
 
 resetButton =
@@ -34,4 +34,4 @@ icon i msg =
 
 btn =
     styled button
-        [ resetButton, padding (rem 0.5) ]
+        [ resetButton, padding (rem 0.5), tl ]

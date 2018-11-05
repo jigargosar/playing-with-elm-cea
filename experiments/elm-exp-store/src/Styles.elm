@@ -13,6 +13,7 @@ module Styles exposing
     , rem
     , rowBottomY
     , rowCY
+    , tl
     , ttu
     , vs
     , w100P
@@ -60,6 +61,10 @@ bw0 =
 
 ttu =
     Css.textTransform Css.uppercase
+
+
+tl =
+    Css.textAlign Css.left
 
 
 w100P =
