@@ -34,4 +34,10 @@ icon i msg =
 
 btn =
     styled button
-        [ resetButton, padding (rem 0.5), tl, flexAuto ]
+        [ resetButton
+        , padding (rem 0.5)
+        , tl
+        , flexAuto
+        , Css.fontSize (rem 0.8)
+        , Css.property "color" "gray"
+        ]
