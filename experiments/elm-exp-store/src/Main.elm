@@ -400,19 +400,14 @@ viewPage model =
 
 viewSidebar model =
     let
-        viewListItem =
-            div [ class "flex flex-row justify-between pr2" ]
+        --        , UI.fBtn FeatherIcons.plus startAddingContextMsg
+        viewListItem onClickMsg title =
+            div [ class "flex flex-row" ]
+                [ button [ class "pa2 flex-auto tl normal ", onClick onClickMsg ] [ text title ] ]
     in
-    div [ class "min-h-100 pv3 vs3 bg-black-05" ]
-        [ viewListItem
-            [ button [ onClick goToInbox ] [ text "Inbox" ]
-
-            --                , UI.fBtn FeatherIcons.plus startAddingContextMsg
-            ]
-        , viewListItem
-            [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
-            , UI.fBtn FeatherIcons.plus startAddingContextMsg
-            ]
+    div [ class "min-h-100 bg-black-05" ]
+        [ viewListItem goToInbox "Inbox"
+        , viewListItem (SetPage ContextList) "Contexts"
         ]
 
 
