@@ -41,6 +41,6 @@ btn =
         , Css.fontSize (rem 0.8)
         , Css.property "color" "gray"
         , Css.hover
-            [ Css.property "color" "gray"
+            [ Css.property "color" "red"
             ]
         ]
