@@ -50,6 +50,7 @@ import Task
 import Time
 import TodoStore exposing (Todo, TodoStore)
 import UI exposing (..)
+import UI.Btn
 import UILayout
 import Update2
 import UpdateReturn exposing (..)
@@ -474,7 +475,7 @@ viewSidebar model =
         viewListItem ( title, titleMsg ) maybeAction =
             listItem []
                 [ liTextButton [ onClick titleMsg ] [ text title ]
-                , maybeHtml (\( icon, iconMsg ) -> UI.fBtn icon iconMsg) maybeAction
+                , maybeHtml (\( icon, iconMsg ) -> UI.Btn.icon icon iconMsg) maybeAction
                 ]
     in
     div [ class "min-h-100 bg-black-05" ]

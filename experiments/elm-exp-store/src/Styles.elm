@@ -1,6 +1,38 @@
-module Styles exposing (flexAuto, flexRow, hs, pointer, vs, w100P)
+module Styles exposing (bw0, flexAuto, flexRow, hs, ma0, margin, pa0, padding, pct, pointer, rem, vs, w100P, zero)
 
-import Css exposing (pct, rem, zero)
+import Css
+
+
+padding =
+    Css.padding
+
+
+zero =
+    Css.zero
+
+
+margin =
+    Css.margin
+
+
+pct =
+    Css.pct
+
+
+rem =
+    Css.rem
+
+
+pa0 =
+    padding zero
+
+
+ma0 =
+    margin zero
+
+
+bw0 =
+    Css.border zero
 
 
 w100P =
