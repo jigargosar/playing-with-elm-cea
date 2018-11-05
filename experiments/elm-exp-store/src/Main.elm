@@ -371,10 +371,10 @@ viewPage model =
         viewPageHeader =
             div [ class "flex row justify-center" ]
                 [ div [ class "measure" ]
-                    [ --                    button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
-                      --                , button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
-                      --                    , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
-                      button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
+                    [--                    button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
+                     --                , button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
+                     --                    , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
+                     --                      button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
                     ]
                 ]
 
@@ -397,8 +397,10 @@ viewPage model =
             [ viewSidebar model
             ]
         , div [ class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
-            [ viewPageHeader
-            , viewPageContent
+            [ {- viewPageHeader
+                 ,
+              -}
+              viewPageContent
             ]
         ]
 
@@ -525,9 +527,9 @@ viewSidebar model =
             )
     in
     div [ class "min-h-100 bg-black-05" ]
-        [ viewListItem ( "Inbox", goToInbox ) Nothing
+        [ viewListItem ( "Inbox", goToInbox ) (Just ( FeatherIcons.plus, startAddingTodoMsg ))
         , viewListItem ( "Contexts", SetPage ContextList )
-            (Just ( FeatherIcons.plus, startAddingContextMsg ))
+            (Just ( FeatherIcons.folderPlus, startAddingContextMsg ))
         , HKeyed.node "div"
             []
             (List.map viewUserDefinedContext
