@@ -399,13 +399,17 @@ viewPage model =
 
 
 viewSidebar model =
+    let
+        viewListItem =
+            div [ class "flex flex-row justify-between pr2" ]
+    in
     div [ class "min-h-100 pv3 vs3 bg-black-05" ]
-        [ div [ class "flex flex-row justify-between pr2" ]
+        [ viewListItem
             [ button [ onClick goToInbox ] [ text "Inbox" ]
 
             --                , UI.fBtn FeatherIcons.plus startAddingContextMsg
             ]
-        , div [ class "flex flex-row justify-between pr2" ]
+        , viewListItem
             [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
             , UI.fBtn FeatherIcons.plus startAddingContextMsg
             ]
