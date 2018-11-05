@@ -388,15 +388,17 @@ viewPage model =
                 ]
     in
     div [ class " flex-auto flex flex-row" ]
-        [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns pv3 vs3 bg-black-05 " ]
-            [ div [ class "flex flex-row justify-between pr2" ]
-                [ button [ onClick goToInbox ] [ text "Inbox" ]
+        [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns " ]
+            [ div [ class "min-h-100 pv3 vs3 bg-black-05" ]
+                [ div [ class "flex flex-row justify-between pr2" ]
+                    [ button [ onClick goToInbox ] [ text "Inbox" ]
 
-                --                , UI.fBtn FeatherIcons.plus startAddingContextMsg
-                ]
-            , div [ class "flex flex-row justify-between pr2" ]
-                [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
-                , UI.fBtn FeatherIcons.plus startAddingContextMsg
+                    --                , UI.fBtn FeatherIcons.plus startAddingContextMsg
+                    ]
+                , div [ class "flex flex-row justify-between pr2" ]
+                    [ button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
+                    , UI.fBtn FeatherIcons.plus startAddingContextMsg
+                    ]
                 ]
             ]
         , div [ class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
@@ -474,7 +476,8 @@ viewTodoListHeader model =
                 (allContextItems model)
                 model.selectContextUI
             ]
-        , UI.fBtn FeatherIcons.plus startAddingTodoMsg
+
+        --        , UI.fBtn FeatherIcons.plus startAddingTodoMsg
         ]
 
 
