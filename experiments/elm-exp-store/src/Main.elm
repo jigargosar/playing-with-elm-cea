@@ -403,7 +403,7 @@ viewSidebar model =
         viewListItem ( title, titleMsg ) maybeAction =
             div [ class "flex flex-row" ]
                 [ button [ class "pa2 flex-auto tl normal ", onClick titleMsg ] [ text title ]
-                , maybeHtml (\( icon, iconMsg ) -> UI.fBtn icon iconMsg)
+                , maybeHtml (\( icon, iconMsg ) -> UI.fBtn icon iconMsg) maybeAction
                 ]
     in
     div [ class "min-h-100 bg-black-05" ]
