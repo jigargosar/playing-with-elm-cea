@@ -450,7 +450,8 @@ type alias ContextListItemViewModel msg =
     { key : String
     , id : ContextId
     , name : ContextName
-    , switchToContextTodoList : msg
+    , navigateToTodoList :
+        msg
     }
 
 
@@ -462,7 +463,8 @@ createUserDefinedContextListViewModel model =
                 { key = c.id
                 , id = c.id
                 , name = c.name
-                , switchToContextTodoList = SwitchToContextTodoListWithContextId c.id
+                , navigateToTodoList =
+                    SwitchToContextTodoListWithContextId c.id
                 }
             )
 
@@ -500,10 +502,10 @@ viewSidebar model =
                 , maybeHtml (\( icon, iconMsg ) -> UI.Btn.icon icon iconMsg) maybeAction
                 ]
 
-        viewUserDefinedContext { key, name } =
+        viewUserDefinedContext { key, name, navigateToTodoList } =
             ( key
             , listItem []
-                [ liTextButton [ css [ ttu ], onClick NoOp ] [ text <| "@" ++ name ]
+                [ liTextButton [ css [ ttu ], onClick navigateToTodoList ] [ text <| "@" ++ name ]
                 ]
             )
     in
