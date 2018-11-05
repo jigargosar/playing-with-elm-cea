@@ -5,24 +5,12 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
-import Css
-    exposing
-        ( Color
-        , backgroundColor
-        , color
-        , hex
-        , hover
-        , margin
-        , px
-        , rgb
-        , textDecoration
-        , underline
-        )
+import Css exposing (Color, backgroundColor, color, hex, hover, margin, padding, padding2, pct, px, rem, rgb, textDecoration, underline, zero)
 import Dict exposing (Dict)
 import FeatherIcons
 import HotKey
 import Html.Styled as Html exposing (..)
-import Html.Styled.Attributes exposing (class, classList, style)
+import Html.Styled.Attributes exposing (class, classList, css, style)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as HKeyed
 import Json.Decode as D
@@ -437,11 +425,37 @@ btn2 =
     styled btn [ Css.width (Css.pct 100) ]
 
 
+w100P =
+    Css.width (pct 100)
+
+
+flexRow =
+    Css.batch [ Css.displayFlex, Css.flexDirection Css.row ]
+
+
+flexAuto =
+    Css.batch [ Css.flex Css.auto ]
+
+
 viewSidebar model =
     let
+        liTextButton =
+            styled button
+                [ padding (rem 0.5)
+                , margin zero
+                , w100P
+                , Css.textAlign Css.left
+                , Css.property "-webkit-appearance" "none"
+                , Css.backgroundColor Css.transparent
+                , Css.border zero
+                ]
+
+        listItem =
+            styled div [ flexRow ]
+
         viewListItem ( title, titleMsg ) maybeAction =
-            div [ class "flex flex-row" ]
-                [ btn2 [ onClick titleMsg ] [ text title ]
+            listItem []
+                [ liTextButton [ onClick titleMsg ] [ text title ]
                 , maybeHtml (\( icon, iconMsg ) -> UI.fBtn icon iconMsg) maybeAction
                 ]
     in
@@ -493,7 +507,7 @@ createContextViewModel context =
 viewContext : ContextViewModel msg -> ( String, Html msg )
 viewContext { key, name, startEditingName, isNameEditable, switchToContextTodoList } =
     ( key
-    , row "pa3 w-100  bb b--light-gray"
+    , UI.row "pa3 w-100  bb b--light-gray"
         []
         [ txtA [ style "width" "24px" ] ""
         , button
@@ -568,7 +582,7 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
                 fBtnSA [ sClass "gray" ] FeatherIcons.circle markDone
     in
     ( key
-    , row "pa3 bb b--light-gray"
+    , UI.row "pa3 bb b--light-gray"
         []
         [ div [] [ doneIconBtn ]
         , div [ class "flex-auto flex flex-column " ]
