@@ -599,10 +599,11 @@ viewTodoListHeader model =
     div
         [ class "ph3 flex flex-row" ]
         [ div [ class "flex-auto" ]
-            [ SelectUI.view selectContextUIConfig
+            [{- SelectUI.view selectContextUIConfig
                 (Just <| getCurrentContextItem model)
                 (allContextItems model)
                 model.selectContextUI
+             -}
             ]
 
         --        , UI.fBtn FeatherIcons.plus startAddingTodoMsg
