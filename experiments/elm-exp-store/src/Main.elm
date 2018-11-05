@@ -614,9 +614,14 @@ viewTodoListHeader model =
 
 viewTodoList : Model -> Html Msg
 viewTodoList model =
-    getSelectedContextTodoList model
-        |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
-        |> HKeyed.node "div" []
+    div [ css [] ]
+        [ getSelectedContextTodoList model
+            |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
+            |> HKeyed.node "div" [ css [ Styles.vs ] ]
+        , div [ css [ rowCY, Styles.vs ] ]
+            [ button [] [ text "Add Task" ]
+            ]
+        ]
 
 
 type alias TodoViewModel msg =
