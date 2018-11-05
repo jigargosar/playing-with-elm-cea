@@ -397,10 +397,7 @@ viewPage model =
             [ viewSidebar model
             ]
         , div [ class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
-            [ {- viewPageHeader
-                 ,
-              -}
-              viewPageContent
+            [ viewPageContent
             ]
         ]
 
