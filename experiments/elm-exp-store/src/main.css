@@ -36,13 +36,13 @@ body > :nth-child(4) {
   font-size: 0.5rem;
 }
 
-a {
+a.quick {
   color: dodgerblue;
   font-weight: bold;
   text-decoration: none;
 }
 
-button {
+button.quick {
   color: dodgerblue;
   font-weight: bold;
   background: none;
