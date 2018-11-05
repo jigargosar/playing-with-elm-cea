@@ -435,10 +435,10 @@ createUserDefinedContextItemViewModel model =
                 , isSelected = isCurrentPageContextTodoListWithContextId c.id model
                 }
             )
-createUserDefinedContextItemViewModel : Model -> List (ContextItemViewModel Msg)
 
 
-createUserDefinedContextListViewModel model =
+createInboxContextItemViewModel : Model -> List (ContextItemViewModel Msg)
+createInboxContextItemViewModel model =
     getUserDefinedContextList model
         |> List.map
             (\c ->
