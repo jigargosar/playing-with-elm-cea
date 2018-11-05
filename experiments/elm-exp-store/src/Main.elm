@@ -113,6 +113,10 @@ getSelectedContextTodoList model =
         |> List.sortBy .createdAt
 
 
+getActiveTodoListCountForContextId cid =
+    .todoStore >> TodoStore.list >> List.filter (.contextId >> eqs cid) >> List.length
+
+
 getUserDefinedContextList : Model -> List Context
 getUserDefinedContextList model =
     model.contextStore
@@ -450,8 +454,8 @@ type alias ContextListItemViewModel msg =
     { key : String
     , id : ContextId
     , name : ContextName
-    , navigateToTodoList :
-        msg
+    , navigateToTodoList : msg
+    , activeTodoCount : Int
     }
 
 
@@ -465,6 +469,7 @@ createUserDefinedContextListViewModel model =
                 , name = c.name
                 , navigateToTodoList =
                     SwitchToContextTodoListWithContextId c.id
+                , activeTodoCount = getActiveTodoListCountForContextId c.id model
                 }
             )
 
@@ -502,10 +507,11 @@ viewSidebar model =
                 , maybeHtml (\( icon, iconMsg ) -> UI.Btn.icon icon iconMsg) maybeAction
                 ]
 
-        viewUserDefinedContext { key, name, navigateToTodoList } =
+        viewUserDefinedContext { key, name, navigateToTodoList, activeTodoCount } =
             ( key
             , listItem []
                 [ liTextButton [ css [ ttu ], onClick navigateToTodoList ] [ text <| "@" ++ name ]
+                , div [] [ text <| String.fromInt activeTodoCount ]
                 ]
             )
     in
