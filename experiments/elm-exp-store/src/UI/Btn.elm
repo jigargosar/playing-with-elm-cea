@@ -34,4 +34,4 @@ icon i msg =
 
 btn =
     styled button
-        [ resetButton, padding (rem 0.5), tl ]
+        [ resetButton, padding (rem 0.5), tl, flexAuto ]
