@@ -6,28 +6,7 @@ import Browser.Dom
 import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import ContextType
-import Css
-    exposing
-        ( Color
-        , backgroundColor
-        , color
-        , fontWeight
-        , hex
-        , hover
-        , margin
-        , margin2
-        , normal
-        , num
-        , padding
-        , padding2
-        , pct
-        , px
-        , rem
-        , rgb
-        , textDecoration
-        , underline
-        , zero
-        )
+import Css exposing (Color, backgroundColor, color, em, fontWeight, hex, hover, margin, margin2, normal, num, padding, padding2, pct, px, rem, rgb, textDecoration, underline, zero)
 import Css.Global exposing (global)
 import Dict exposing (Dict)
 import FeatherIcons
@@ -479,13 +458,13 @@ viewSidebar model =
         badge =
             let
                 sizeVal =
-                    Css.em 1.3
+                    em 1.4
             in
             styled div
                 [ Css.borderRadius (pct 50)
                 , Css.backgroundColor <| Css.hsla 190 1 0.5 0.6
-                , Css.fontSize (rem 1)
-                , Css.lineHeight (num 1)
+                , Css.fontSize (px 14)
+                , Css.lineHeight sizeVal
                 , Css.width sizeVal
                 , Css.height sizeVal
                 , Styles.flexRow
@@ -527,8 +506,10 @@ viewSidebar model =
         viewUserDefinedContext { key, name, navigateToTodoList, activeTodoCount } =
             ( key
             , listItem []
-                [ liTextButton [ css [ ttu ], onClick navigateToTodoList ] [ text <| "@" ++ name ]
-                , badge [] [ text <| String.fromInt activeTodoCount ]
+                [ liTextButton [ css [ ttu, Styles.flexRow, Css.justifyContent Css.spaceBetween ], onClick navigateToTodoList ]
+                    [ text <| "@" ++ name
+                    , badge [] [ text <| String.fromInt activeTodoCount ]
+                    ]
                 ]
             )
     in
