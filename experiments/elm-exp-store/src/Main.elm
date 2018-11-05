@@ -5,12 +5,25 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
+import Css
+    exposing
+        ( Color
+        , backgroundColor
+        , color
+        , hex
+        , hover
+        , margin
+        , px
+        , rgb
+        , textDecoration
+        , underline
+        )
 import Dict exposing (Dict)
 import FeatherIcons
 import HotKey
 import Html.Styled as Html exposing (..)
-import Html.Styled.Attributes exposing (..)
-import Html.Styled.Events exposing (..)
+import Html.Styled.Attributes exposing (class, classList, style)
+import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as HKeyed
 import Json.Decode as D
 import Json.Encode as E
@@ -398,11 +411,37 @@ viewPage model =
         ]
 
 
+theme : { secondary : Color, primary : Color }
+theme =
+    { primary = hex "55af6a"
+    , secondary = rgb 250 240 230
+    }
+
+
+{-| A reusable button which has some styles pre-applied to it.
+-}
+btn : List (Attribute msg) -> List (Html msg) -> Html msg
+btn =
+    styled button
+        [ margin (px 12)
+
+        --        , color (rgb 250 250 250)
+        , hover
+            [ backgroundColor theme.primary
+            , textDecoration underline
+            ]
+        ]
+
+
+btn2 =
+    styled btn [ Css.width (Css.pct 100) ]
+
+
 viewSidebar model =
     let
         viewListItem ( title, titleMsg ) maybeAction =
             div [ class "flex flex-row" ]
-                [ button [ class "pa2 flex-auto tl normal ", onClick titleMsg ] [ text title ]
+                [ btn2 [ onClick titleMsg ] [ text title ]
                 , maybeHtml (\( icon, iconMsg ) -> UI.fBtn icon iconMsg) maybeAction
                 ]
     in
