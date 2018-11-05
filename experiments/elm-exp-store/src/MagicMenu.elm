@@ -9,7 +9,7 @@ import Json.Decode as D
 import Json.Encode as E
 import Log
 import Port
-import Style exposing (Transform(..), Unit(..))
+import StyleOld exposing (Transform(..), Unit(..))
 import Tuple exposing (pair)
 import UI exposing (boolHtml, fBtn)
 import Update2
@@ -123,7 +123,7 @@ viewMenuItems isOpen actions =
                 button
                     [ onClick msg
                     , class "absolute  flex items-center justify-center pa0 ma0"
-                    , Style.transform (ter isOpen (transformForIdx idx) []) |> Html.Styled.Attributes.fromUnstyled
+                    , StyleOld.transform (ter isOpen (transformForIdx idx) []) |> Html.Styled.Attributes.fromUnstyled
                     , style "transition" ("transform 0.3s " ++ transitionDelayForIdx idx ++ " ease-in")
                     ]
                     [ icon |> FeatherIcons.toHtml [] |> Html.fromUnstyled ]
