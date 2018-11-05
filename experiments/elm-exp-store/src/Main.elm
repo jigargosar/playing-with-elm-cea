@@ -400,14 +400,16 @@ viewPage model =
 
 viewSidebar model =
     let
-        --        , UI.fBtn FeatherIcons.plus startAddingContextMsg
-        viewListItem onClickMsg title =
+        viewListItem ( title, titleMsg ) maybeAction =
             div [ class "flex flex-row" ]
-                [ button [ class "pa2 flex-auto tl normal ", onClick onClickMsg ] [ text title ] ]
+                [ button [ class "pa2 flex-auto tl normal ", onClick titleMsg ] [ text title ]
+                , maybeHtml (\( icon, iconMsg ) -> UI.fBtn icon iconMsg)
+                ]
     in
     div [ class "min-h-100 bg-black-05" ]
-        [ viewListItem goToInbox "Inbox"
-        , viewListItem (SetPage ContextList) "Contexts"
+        [ viewListItem ( "Inbox", goToInbox ) Nothing
+        , viewListItem ( "Contexts", SetPage ContextList )
+            (Just ( FeatherIcons.plus, startAddingContextMsg ))
         ]
 
 
