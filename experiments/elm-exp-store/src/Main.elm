@@ -411,7 +411,7 @@ viewPage model =
         ]
 
 
-type alias ContextListItemViewModel msg =
+type alias ContextItemViewModel msg =
     { key : String
     , id : ContextId
     , name : ContextName
@@ -421,7 +421,23 @@ type alias ContextListItemViewModel msg =
     }
 
 
-createUserDefinedContextListViewModel : Model -> List (ContextListItemViewModel Msg)
+createUserDefinedContextItemViewModel : Model -> List (ContextItemViewModel Msg)
+createUserDefinedContextItemViewModel model =
+    getUserDefinedContextList model
+        |> List.map
+            (\c ->
+                { key = c.id
+                , id = c.id
+                , name = c.name
+                , navigateToTodoList =
+                    SwitchToContextTodoListWithContextId c.id
+                , activeTodoCount = getActiveTodoListCountForContextId c.id model
+                , isSelected = isCurrentPageContextTodoListWithContextId c.id model
+                }
+            )
+createUserDefinedContextItemViewModel : Model -> List (ContextItemViewModel Msg)
+
+
 createUserDefinedContextListViewModel model =
     getUserDefinedContextList model
         |> List.map
@@ -522,7 +538,7 @@ viewSidebar model =
         , HKeyed.node "div"
             []
             (List.map viewUserDefinedContext
-                (createUserDefinedContextListViewModel model)
+                (createUserDefinedContextItemViewModel model)
             )
         ]
 
