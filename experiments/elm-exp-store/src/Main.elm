@@ -88,12 +88,11 @@ init flags =
 
 
 isCurrentPageContextTodoListWithContextId contextId model =
-    case model.page of
-        ContextTodoList ->
-            getSelectedContextId model == contextId
+    model.page == ContextTodoList && getSelectedContextId model == contextId
 
-        ContextList ->
-            False
+
+isCurrentPageContextList model =
+    model.page == ContextList
 
 
 getSelectedContextTodoList : Model -> List Todo
