@@ -491,7 +491,6 @@ viewSidebar model =
                 [ btnReset
                 , hs
                 , fa
-                , ptr
                 , fBody
                 ]
 

@@ -2,7 +2,6 @@ module CssAtoms exposing
     ( aic
     , aife
     , b0
-    , btnReset
     , dFlex
     , fDCol
     , fDRow
@@ -82,21 +81,6 @@ fa =
 
 ptr =
     cursor pointer
-
-
-btnReset =
-    batch
-        [ p0
-        , m0
-        , tl
-        , property "-webkit-appearance" "none"
-        , backgroundColor transparent
-        , b0
-        , focus
-            [ outlineWidth (px 2)
-            , outlineOffset (px 2)
-            ]
-        ]
 
 
 lh0 =
