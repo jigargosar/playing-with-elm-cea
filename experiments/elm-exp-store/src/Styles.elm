@@ -109,7 +109,7 @@ btnReset =
         , fBody
         , focus
             [ outlineWidth (px 2)
-            , outlineOffset (px 2)
+            , outlineOffset (px 0)
             ]
         ]
 
