@@ -1,4 +1,4 @@
-module Styles exposing (b0, btnDefault, btnReset, centerCenter, dFlexRow, fBody, fZero, flexAuto, fz, fz0, fzPx, hs, lh, lh0, lhNum, m0, mRm, p0, pRm, pct, pointer, px, rem, rowBottomY, rowC, rowCY, spacing0, tl, ttu, vs, w100)
+module Styles exposing (b0, btnDefault, btnReset, centerCenter, dFlex, dFlexCol, dFlexRow, fBody, fDCol, fDRow, fDir, fZero, flexAuto, fz, fz0, fzPx, hs, lh, lh0, lhNum, m0, mRm, p0, pRm, pct, pointer, px, rem, rowBottomY, rowC, rowCY, spacing0, tl, ttu, vs, w100)
 
 import Css exposing (..)
 
