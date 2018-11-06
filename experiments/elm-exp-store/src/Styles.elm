@@ -47,6 +47,10 @@ tl =
     textAlign left
 
 
+tc =
+    textAlign center
+
+
 w100 =
     width (pct 100)
 
