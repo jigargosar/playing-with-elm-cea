@@ -135,9 +135,14 @@ isDone =
     propEq .done True
 
 
+allPass : PredList a -> Pred a
+allPass plist a =
+    List.all (applyTo a) plist
+
+
 getActiveTodoListCountForContextId : ContextId -> Model -> Int
 getActiveTodoListCountForContextId cid =
-    .todoStore >> TodoStore.list >> List.filter (contextIdEq cid) >> List.length
+    .todoStore >> TodoStore.list >> List.filter (allPass [ contextIdEq cid, notPred isDone ]) >> List.length
 
 
 getUserDefinedContextList : Model -> List Context
