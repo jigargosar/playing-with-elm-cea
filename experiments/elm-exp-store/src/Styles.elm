@@ -1,5 +1,7 @@
 module Styles exposing
-    ( btnReset
+    ( bc
+    , bg
+    , btnReset
     , centerCenter
     , dFlexCol
     , dFlexRow
@@ -136,3 +138,11 @@ fBody =
 
 fZero =
     batch [ fz0, lh0 ]
+
+
+bg =
+    property "background-color"
+
+
+bc =
+    backgroundColor

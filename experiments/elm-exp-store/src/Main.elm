@@ -7,7 +7,7 @@ import Browser.Events
 import Btn
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import ContextType
-import Css exposing (Color, backgroundColor, color, em, fontWeight, hex, hover, margin2, normal, num, padding2, paddingLeft, rgb, textDecoration, underline, zero)
+import Css exposing (Color, backgroundColor, color, em, fontWeight, hex, hover, hsla, margin2, normal, num, padding2, paddingLeft, rgb, textDecoration, underline, zero)
 import Css.Global exposing (global)
 import CssAtoms exposing (fa, pl0, ptr, ttu)
 import Dict exposing (Dict)
@@ -482,14 +482,26 @@ viewSidebar model =
             styled div [ fa, rowCY, pRm 0.5 ]
 
         viewListItem ( title, titleMsg ) maybeAction =
-            listItem []
+            ( title
+            , listItem []
                 [ liTextButton [ onClick titleMsg ] [ text title ]
                 , maybeHtml (\( icon, iconMsg ) -> Btn.iconMsg icon iconMsg) maybeAction
                 ]
+            )
 
-        viewUserDefinedContext { key, name, navigateToTodoList, activeTodoCount, isSelected } =
+        viewKeyedLIContext { key, name, navigateToTodoList, activeTodoCount, isSelected } =
             ( key
-            , listItem []
+            , listItem
+                [ css
+                    [ Css.batch
+                        (if isSelected then
+                            [ bc <| hsla 210 1 0.56 0.3 ]
+
+                         else
+                            []
+                        )
+                    ]
+                ]
                 [ liTextButton
                     [ css
                         [ ttu
@@ -497,7 +509,7 @@ viewSidebar model =
                         ]
                     , onClick navigateToTodoList
                     ]
-                    [ text <| "@" ++ name
+                    [ text <| name
                     , div
                         [ css
                             [ Css.fontSize (em 0.8)
@@ -511,16 +523,15 @@ viewSidebar model =
                 ]
             )
     in
-    div [ class "min-h-100 bg-black-05" ]
-        [ viewListItem ( "Inbox", navigateToInbox ) (Just ( Icon.plus, startAddingTodoMsg ))
-        , viewListItem ( "Contexts", SetPage ContextList )
+    HKeyed.node "div"
+        [ class "min-h-100 bg-black-05" ]
+        ([ viewKeyedLIContext <| createInboxContextItemViewModel model
+         , viewListItem ( "Inbox", navigateToInbox ) (Just ( Icon.plus, startAddingTodoMsg ))
+         , viewListItem ( "Contexts", SetPage ContextList )
             (Just ( Icon.folderPlus, startAddingContextMsg ))
-        , HKeyed.node "div"
-            []
-            (List.map viewUserDefinedContext
-                (createUserDefinedContextItemViewModel model)
-            )
-        ]
+         ]
+            ++ List.map viewKeyedLIContext (createUserDefinedContextItemViewModel model)
+        )
 
 
 
