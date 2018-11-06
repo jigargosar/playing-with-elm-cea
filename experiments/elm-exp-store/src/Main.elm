@@ -485,11 +485,9 @@ viewSidebar model =
                 isSelected =
                     isCurrentPageContextList model
             in
-            listItem
-                [ css
-                    [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ]
-                    ]
-                ]
+            styled listItem
+                [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
+                []
                 [ liTextButton [ css [ fwb ], onClick <| SetPage ContextList ] [ text "Contexts" ]
                 , Btn.iconMsg Icon.folderPlus startAddingContextMsg
                 ]
@@ -497,13 +495,10 @@ viewSidebar model =
         viewKeyedContextItem style vm =
             ( vm.key, viewContextItem style vm )
 
-        viewContextItem style { name, navigateToTodoList, activeTodoCount, isSelected } =
+        viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected } =
             styled listItem
-                [ style ]
-                [ css
-                    [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ]
-                    ]
-                ]
+                [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
+                []
                 [ liTextButton
                     [ css
                         [ ttu
