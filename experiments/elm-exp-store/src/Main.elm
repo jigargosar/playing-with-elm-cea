@@ -637,7 +637,7 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
                 Btn.icon [ onClick unmarkDone ] [ Icons.withStyle [ fg "green" ] Icons.checkCircle ]
 
             else
-                Btn.icon [ onClick markDone ] [ Icons.withStyle [ fg "gray" ] Icons.circle ]
+                styled Btn.icon [ fg "gray" ] [ onClick markDone ] [ Icons.medium Icons.circle ]
     in
     ( key
     , UI.row "pa3 bb b--light-gray"
