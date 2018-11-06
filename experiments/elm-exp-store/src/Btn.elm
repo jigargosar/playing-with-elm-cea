@@ -1,4 +1,4 @@
-module Btn exposing (flat, flatPl0, icon, sIcon)
+module Btn exposing (flat, flatPl0, flatPr0, icon, sIcon)
 
 import Css exposing (hover)
 import CssAtoms exposing (fgGray)
@@ -33,6 +33,10 @@ flat =
 
 flatPl0 =
     styled flat [ plRm 0 ]
+
+
+flatPr0 =
+    styled flat [ prRm 0 ]
 
 
 

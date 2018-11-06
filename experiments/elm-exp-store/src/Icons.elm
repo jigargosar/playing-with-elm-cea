@@ -6,6 +6,7 @@ module Icons exposing
     , check
     , checkCircle
     , checkDefault
+    , chevronDownDefault
     , circle
     , circleDefault
     , create
@@ -174,6 +175,16 @@ circle =
     svgFeatherIcon "circle"
         [ Svg.circle [ cx "12", cy "12", r "10" ] []
         ]
+
+
+chevronDown =
+    svgFeatherIcon "chevron-down"
+        [ Svg.polyline [ points "6 9 12 15 18 9" ] []
+        ]
+
+
+chevronDownDefault =
+    default chevronDown
 
 
 archiveDefault =

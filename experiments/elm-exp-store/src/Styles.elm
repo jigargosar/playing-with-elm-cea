@@ -21,6 +21,7 @@ module Styles exposing
     , pRm
     , pct
     , plRm
+    , prRm
     , px
     , rem
     , rowBottomY
@@ -56,6 +57,10 @@ p2Rm v1 v2 =
 
 plRm =
     paddingLeft << rem
+
+
+prRm =
+    paddingRight << rem
 
 
 mRm =
