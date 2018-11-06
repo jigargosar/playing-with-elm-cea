@@ -1,4 +1,4 @@
-module Icons exposing (archive, create)
+module Icons exposing (Icon, SvgAttrs, archive, create, defaultAttrs, plus, toSvg)
 
 import Html.Styled exposing (Html)
 import Svg.Styled as Svg exposing (Attribute, Svg, svg)
@@ -60,12 +60,24 @@ create iconName src =
     Icon iconName src defaultAttrs
 
 
-toSvg : Icon -> List (Attribute msg) -> Html msg
-toSvg icon attrs =
-    svg attrs (List.map (Svg.map never) icon.src)
+toSvg : List (Attribute msg) -> Icon -> Html msg
+toSvg attrs icon =
+    svg
+        [ class <| "feather-icon feather-icon-" ++ icon.name
+        , fill "none"
+        , height "24"
+        , stroke "currentColor"
+        , strokeLinecap "round"
+        , strokeLinejoin "round"
+        , strokeWidth "1.5px"
+        , viewBox "0 0 24 24"
+        , width "24"
+        ]
+        (List.map (Svg.map never) icon.src)
 
 
 
+--        (List.map (Svg.map never) icon.src)
 --        [ class <| "feather-icon feather-icon-" ++ iconName
 --        , fill "none"
 --        , height "24"

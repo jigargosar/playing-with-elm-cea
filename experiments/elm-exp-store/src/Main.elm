@@ -32,6 +32,7 @@ import Html.Styled as Html exposing (Attribute, Html, button, div, fromUnstyled,
 import Html.Styled.Attributes exposing (class, classList, css, style)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as HKeyed
+import Icons
 import JsonCodecX exposing (Value)
 import Log
 import MagicMenu exposing (MagicMenu)
@@ -620,7 +621,8 @@ viewTodoList model =
             |> HKeyed.node "div" [ css [ Styles.vs ] ]
         , div [ css [ rowCY, Styles.vs ] ]
             [ UI.Btn.flat [ css [ rowCY ] ]
-                [ Icon.plus |> UI.Icon.withDefault
+                [ --                Icon.plus |> UI.Icon.withDefault
+                  Icons.plus |> Icons.toSvg []
                 , div [] [ text "Add Task" ]
                 ]
             ]
