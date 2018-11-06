@@ -1,4 +1,4 @@
-module Icons exposing (Icon, archive, plus, withAttrs, withDefaultAttrs)
+module Icons exposing (Icon, archive, normal, plus, withAttrs)
 
 import Html.Styled exposing (Html)
 import Svg.Styled as Svg exposing (Attribute, Svg, svg)
@@ -66,8 +66,8 @@ create iconName src =
 {- defaultAttrs -}
 
 
-withDefaultAttrs : Icon -> Html msg
-withDefaultAttrs =
+normal : Icon -> Html msg
+normal =
     withAttrs []
 
 
