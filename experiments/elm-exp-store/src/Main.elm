@@ -95,14 +95,6 @@ isCurrentPageContextList model =
     model.page == ContextList
 
 
-getSelectedContextTodoList : Model -> List Todo
-getSelectedContextTodoList model =
-    model.todoStore
-        |> TodoStore.list
-        |> List.filter (.contextId >> eqs (getSelectedContextId model))
-        |> List.sortBy .createdAt
-
-
 type alias Pred a =
     a -> Bool
 
@@ -142,6 +134,11 @@ isNotDone =
 allPass : PredList a -> Pred a
 allPass plist a =
     List.all (applyTo a) plist
+
+
+getSelectedContextActiveTodoList : Model -> List Todo
+getSelectedContextActiveTodoList model =
+    getActiveTodoListForContextId model.contextId model
 
 
 getActiveTodoListCountForContextId : ContextId -> Model -> Int
@@ -636,7 +633,7 @@ viewTodoListHeader model =
 viewTodoList : Model -> Html Msg
 viewTodoList model =
     div [ css [] ]
-        [ getSelectedContextTodoList model
+        [ getSelectedContextActiveTodoList model
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY, vs ], class "ph3" ]
