@@ -4,6 +4,7 @@ import BasicsX exposing (..)
 import Browser
 import Browser.Dom
 import Browser.Events
+import Btn
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import ContextType
 import Css
@@ -49,7 +50,6 @@ import Task
 import Time
 import TodoStore exposing (Todo, TodoStore)
 import UI exposing (..)
-import UI.Btn
 import UI.Icon
 import Update2
 import UpdateReturn exposing (..)
@@ -501,7 +501,7 @@ viewSidebar model =
         viewListItem ( title, titleMsg ) maybeAction =
             listItem []
                 [ liTextButton [ onClick titleMsg ] [ text title ]
-                , maybeHtml (\( icon, iconMsg ) -> UI.Btn.iconMsg icon iconMsg) maybeAction
+                , maybeHtml (\( icon, iconMsg ) -> Btn.iconMsg icon iconMsg) maybeAction
                 ]
 
         viewUserDefinedContext { key, name, navigateToTodoList, activeTodoCount, isSelected } =
@@ -621,7 +621,7 @@ viewTodoList model =
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY, vs ] ]
-            [ UI.Btn.flat []
+            [ Btn.flat []
                 [ Icons.withStyleAndAttr [ hs ] [] Icons.plus
                 , div [] [ text "Add Task" ]
                 ]

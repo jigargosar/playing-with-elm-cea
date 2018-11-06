@@ -1,4 +1,4 @@
-module UI.Btn exposing (flat, iconMsg)
+module Btn exposing (flat, iconMsg)
 
 import Css
 import CssAtoms exposing (fgGray)
