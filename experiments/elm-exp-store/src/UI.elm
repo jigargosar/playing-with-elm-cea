@@ -30,8 +30,8 @@ link url lbl =
     a [ href url ] [ text lbl ]
 
 
-rowS3 classes attrs =
-    div (class ("flex flex-row hs3 items-center " ++ classes) :: attrs)
+rowS3 classes attrs c =
+    div (class ("flex flex-row hs3 items-center " ++ classes) :: attrs) c
 
 
 row =
