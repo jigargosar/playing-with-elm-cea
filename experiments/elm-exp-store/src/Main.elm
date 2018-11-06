@@ -490,15 +490,16 @@ viewSidebar model =
                     [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ]
                     ]
                 ]
-                [ liTextButton [ onClick <| SetPage ContextList ] [ text "Contexts" ]
+                [ liTextButton [ css [ fwb ], onClick <| SetPage ContextList ] [ text "Contexts" ]
                 , Btn.iconMsg Icon.folderPlus startAddingContextMsg
                 ]
 
-        viewKeyedContextItem vm =
-            ( vm.key, viewContextItem vm )
+        viewKeyedContextItem style vm =
+            ( vm.key, viewContextItem style vm )
 
-        viewContextItem { name, navigateToTodoList, activeTodoCount, isSelected } =
-            listItem
+        viewContextItem style { name, navigateToTodoList, activeTodoCount, isSelected } =
+            styled listItem
+                [ style ]
                 [ css
                     [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ]
                     ]
@@ -525,10 +526,10 @@ viewSidebar model =
     in
     div
         [ class "min-h-100 bg-black-05" ]
-        [ viewContextItem <| createInboxContextItemViewModel model
+        [ viewContextItem (Css.batch []) <| createInboxContextItemViewModel model
         , viewContextsItem
         , node "div" [] <|
-            List.map viewKeyedContextItem (createUserDefinedContextItemViewModel model)
+            List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) (createUserDefinedContextItemViewModel model)
         ]
 
 
