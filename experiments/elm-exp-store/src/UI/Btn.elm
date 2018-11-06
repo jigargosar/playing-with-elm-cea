@@ -20,7 +20,6 @@ btn =
     styled button
         [ btnReset
         , pRm 0.5
-        , Css.fontSize (rem 0.8)
         , Css.property "color" "gray"
         , Css.hover
             [ Css.property "color" "red"

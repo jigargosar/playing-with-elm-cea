@@ -101,6 +101,7 @@ btnReset =
         , backgroundColor transparent
         , b0
         , ptr
+        , fBody
         , focus
             [ outlineWidth (px 2)
             , outlineOffset (px 2)
