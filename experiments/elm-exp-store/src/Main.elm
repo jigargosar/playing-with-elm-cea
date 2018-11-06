@@ -637,10 +637,13 @@ viewTodoList model =
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY, vs ], class "ph3" ]
-            [ Btn.flatPl0 [ onClick startAddingTodoMsg ]
+            [ styled Btn.flatPl0
+                [ fa ]
+                [ onClick startAddingTodoMsg ]
                 [ Icons.plusDefault
                 , text "Add Task"
                 ]
+            , Btn.icon [] [ Icons.rotateCcwDefault ]
             ]
         ]
 

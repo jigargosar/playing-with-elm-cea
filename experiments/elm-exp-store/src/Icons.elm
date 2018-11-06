@@ -3,6 +3,7 @@ module Icons exposing
     , SvgAttrs
     , archive
     , archiveDefault
+    , check
     , checkCircle
     , checkDefault
     , circle
@@ -12,6 +13,7 @@ module Icons exposing
     , defaultAttrs
     , plus
     , plusDefault
+    , rotateCcwDefault
     )
 
 import Css
@@ -148,6 +150,21 @@ checkCircle =
         ]
 
 
+check : Icon
+check =
+    svgFeatherIcon "check"
+        [ Svg.polyline [ points "20 6 9 17 4 12" ] []
+        ]
+
+
+rotateCcw : Icon
+rotateCcw =
+    svgFeatherIcon "rotate-ccw"
+        [ Svg.polyline [ points "1 4 1 10 7 10" ] []
+        , Svg.path [ d "M3.51 15a9 9 0 1 0 2.13-9.36L1 10" ] []
+        ]
+
+
 svgFeatherIcon =
     create
 
@@ -167,9 +184,13 @@ circleDefault =
     default circle
 
 
-checkDefault =
-    default checkCircle
-
-
 plusDefault =
     default plus
+
+
+checkDefault =
+    default check
+
+
+rotateCcwDefault =
+    default rotateCcw
