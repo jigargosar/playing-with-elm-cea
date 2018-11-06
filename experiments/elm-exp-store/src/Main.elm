@@ -481,7 +481,15 @@ viewSidebar model =
             styled div [ fa, rowCY, pRm 0.5 ]
 
         viewContextsItem ( title, titleMsg ) maybeAction =
-            listItem []
+            let
+                isSelected =
+                    isCurrentPageContextList model
+            in
+            listItem
+                [ css
+                    [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ]
+                    ]
+                ]
                 [ liTextButton [ onClick <| SetPage ContextList ] [ text "Contexts" ]
                 , Btn.iconMsg Icon.folderPlus startAddingContextMsg
                 ]
