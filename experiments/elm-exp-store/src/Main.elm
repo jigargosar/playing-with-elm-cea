@@ -103,9 +103,41 @@ getSelectedContextTodoList model =
         |> List.sortBy .createdAt
 
 
+type alias Pred a =
+    a -> Bool
+
+
+type alias PredList a =
+    List (Pred a)
+
+
+notPred : Pred a -> Pred a
+notPred pred =
+    pred >> not
+
+
+type alias Getter big small =
+    big -> small
+
+
+propEq : Getter big small -> small -> Pred big
+propEq getter small =
+    getter >> eqs small
+
+
+contextIdEq : ContextId -> Pred { a | contextId : ContextId }
+contextIdEq cid =
+    propEq .contextId cid
+
+
+isDone : Pred { a | done : Bool }
+isDone =
+    propEq .done True
+
+
 getActiveTodoListCountForContextId : ContextId -> Model -> Int
 getActiveTodoListCountForContextId cid =
-    .todoStore >> TodoStore.list >> List.filter (.contextId >> eqs cid) >> List.length
+    .todoStore >> TodoStore.list >> List.filter (contextIdEq cid) >> List.length
 
 
 getUserDefinedContextList : Model -> List Context
