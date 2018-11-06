@@ -621,7 +621,7 @@ viewTodoList model =
             |> HKeyed.node "div" [ css [ Styles.vs ] ]
         , div [ css [ rowCY, Styles.vs ] ]
             [ UI.Btn.flat [ css [ rowCY ] ]
-                [ Icons.plus |> Icons.normal
+                [ Icons.normal Icons.plus
                 , div [] [ text "Add Task" ]
                 ]
             ]
