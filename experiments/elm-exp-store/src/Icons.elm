@@ -1,4 +1,4 @@
-module Icons exposing (Icon, SvgAttrs, archive, create, defaultAttrs, plus, toSvg)
+module Icons exposing (Icon, archive, plus, toSvg)
 
 import Html.Styled exposing (Html)
 import Svg.Styled as Svg exposing (Attribute, Svg, svg)
@@ -35,29 +35,35 @@ type alias SvgAttrs =
 type alias Icon =
     { name : String
     , src : List (Svg Never)
-    , attrs : SvgAttrs
+
+    --    , attrs : SvgAttrs
     }
 
 
-defaultAttrs : SvgAttrs
-defaultAttrs =
-    let
-        size =
-            "24"
-    in
-    { fill = "none"
-    , width = size
-    , height = size
-    , stroke = "currentColor"
-    , strokeLinecap = "round"
-    , strokeWidth = "2"
-    , viewBox = [ "0 0", size, size ] |> String.join " "
-    }
+
+--defaultAttrs : SvgAttrs
+--defaultAttrs =
+--    let
+--        size =
+--            "24"
+--    in
+--    { fill = "none"
+--    , width = size
+--    , height = size
+--    , stroke = "currentColor"
+--    , strokeLinecap = "round"
+--    , strokeWidth = "2"
+--    , viewBox = [ "0 0", size, size ] |> String.join " "
+--    }
 
 
 create : String -> List (Svg Never) -> Icon
 create iconName src =
-    Icon iconName src defaultAttrs
+    Icon iconName src
+
+
+
+{- defaultAttrs -}
 
 
 toSvg : List (Attribute msg) -> Icon -> Html msg
@@ -69,7 +75,7 @@ toSvg attrs icon =
         , stroke "currentColor"
         , strokeLinecap "round"
         , strokeLinejoin "round"
-        , strokeWidth "1.5px"
+        , strokeWidth "1.5"
         , viewBox "0 0 24 24"
         , width "24"
         ]
