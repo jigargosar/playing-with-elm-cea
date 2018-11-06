@@ -9,7 +9,7 @@ import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import ContextType
 import Css exposing (Color, backgroundColor, color, em, fontWeight, hex, hover, hsla, margin2, normal, num, padding2, paddingLeft, rgb, textDecoration, underline, zero)
 import Css.Global exposing (global)
-import CssAtoms exposing (fa, pl0, ptr, ttu)
+import CssAtoms exposing (fa, fgGray, pl0, ptr, ttu)
 import Dict exposing (Dict)
 import FeatherIcons as Icon
 import HotKey
@@ -643,7 +643,7 @@ viewTodoList model =
                 [ Icons.plusDefault
                 , text "Add Task"
                 ]
-            , Btn.icon [] [ Icons.rotateCcwDefault ]
+            , Btn.sIcon [ Css.opacity (num 0.7) ] [] [ Icons.rotateCcwDefault ]
             ]
         ]
 
