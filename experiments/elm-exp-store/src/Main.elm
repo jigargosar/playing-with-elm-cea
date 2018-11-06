@@ -146,7 +146,12 @@ allPass plist a =
 
 getActiveTodoListCountForContextId : ContextId -> Model -> Int
 getActiveTodoListCountForContextId cid =
-    .todoStore >> TodoStore.list >> List.filter (allPass [ contextIdEq cid, isNotDone ]) >> List.length
+    getActiveTodoListForContextId cid >> List.length
+
+
+getActiveTodoListForContextId : ContextId -> Model -> List Todo
+getActiveTodoListForContextId cid =
+    .todoStore >> TodoStore.list >> List.filter (allPass [ contextIdEq cid, isNotDone ])
 
 
 getUserDefinedContextList : Model -> List Context
