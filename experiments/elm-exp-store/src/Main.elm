@@ -15,19 +15,13 @@ import Css
         , fontWeight
         , hex
         , hover
-        , margin
         , margin2
         , normal
         , num
-        , padding
         , padding2
-        , pct
-        , px
-        , rem
         , rgb
         , textDecoration
         , underline
-        , zero
         )
 import Css.Global exposing (global)
 import Dict exposing (Dict)
@@ -46,14 +40,13 @@ import Random
 import SelectUI
 import Set exposing (Set)
 import SnackBar exposing (SnackBar, SnackBarTitle)
-import Styles exposing (rowCY, ttu)
+import Styles exposing (..)
 import Svg.Attributes
 import Task
 import Time
 import TodoStore exposing (Todo, TodoStore)
 import UI exposing (..)
 import UI.Btn
-import UILayout
 import Update2
 import UpdateReturn exposing (..)
 
@@ -123,6 +116,7 @@ getSelectedContextTodoList model =
         |> List.sortBy .createdAt
 
 
+getActiveTodoListCountForContextId : ContextId -> Model -> Int
 getActiveTodoListCountForContextId cid =
     .todoStore >> TodoStore.list >> List.filter (.contextId >> eqs cid) >> List.length
 
@@ -134,6 +128,7 @@ getUserDefinedContextList model =
         |> List.sortBy .createdAt
 
 
+getNameByContextId : ContextId -> Model -> ContextName
 getNameByContextId contextId =
     .contextStore >> ContextStore.getNameOrDefaultById contextId
 
@@ -484,8 +479,7 @@ viewSidebar model =
                 , Css.lineHeight sizeVal
                 , Css.width sizeVal
                 , Css.height sizeVal
-                , Styles.flexRow
-                , Css.alignItems Css.center
+                , rowCY
                 , Css.justifyContent Css.center
                 ]
 
@@ -516,7 +510,7 @@ viewSidebar model =
                 ]
 
         listItem =
-            styled UILayout.gRow [ padding (rem 0.5), Css.alignItems Css.center ]
+            styled div [ flexAuto, rowCY, pr 0.5 ]
 
         viewListItem ( title, titleMsg ) maybeAction =
             listItem []

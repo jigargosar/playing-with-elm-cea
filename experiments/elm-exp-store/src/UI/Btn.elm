@@ -4,13 +4,13 @@ import Css
 import FeatherIcons
 import Html.Styled exposing (button, fromUnstyled, styled)
 import Html.Styled.Events exposing (onClick)
-import Styles exposing (bw0, flexAuto, ma0, pa0, padding, px, rem, tl, zero)
+import Styles exposing (bw0, flexAuto, m0, p0, padding, px, rem, tl, zero)
 
 
 resetButton =
     Css.batch
-        [ pa0
-        , ma0
+        [ p0
+        , m0
         , Css.property "-webkit-appearance" "none"
         , Css.backgroundColor Css.transparent
         , bw0

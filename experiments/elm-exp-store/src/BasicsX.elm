@@ -147,6 +147,7 @@ maybeBool bool value =
         Nothing
 
 
+unwrapMaybe : b -> (a -> b) -> Maybe a -> b
 unwrapMaybe dv fn =
     Maybe.map fn >> Maybe.withDefault dv
 

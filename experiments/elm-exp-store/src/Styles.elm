@@ -1,18 +1,22 @@
 module Styles exposing
     ( bw0
+    , centerCenter
+    , dFlexRow
     , flexAuto
-    , flexRow
     , hs
-    , ma0
+    , m0
     , margin
-    , pa0
+    , p0
     , padding
     , pct
     , pointer
+    , pr
     , px
     , rem
     , rowBottomY
+    , rowC
     , rowCY
+    , spacing0
     , tl
     , ttu
     , vs
@@ -20,7 +24,7 @@ module Styles exposing
     , zero
     )
 
-import Css
+import Css exposing (batch)
 
 
 padding =
@@ -47,12 +51,16 @@ px =
     Css.px
 
 
-pa0 =
+p0 =
     padding zero
 
 
-ma0 =
+m0 =
     margin zero
+
+
+spacing0 =
+    batch [ p0, m0 ]
 
 
 bw0 =
@@ -71,16 +79,28 @@ w100P =
     Css.width (pct 100)
 
 
-flexRow =
+dFlexRow =
     Css.batch [ Css.displayFlex, Css.flexDirection Css.row ]
 
 
 rowCY =
-    Css.batch [ flexRow, Css.alignItems Css.center ]
+    Css.batch [ dFlexRow, Css.alignItems Css.center ]
+
+
+centerCenter =
+    Css.batch [ dFlexRow, Css.alignItems Css.center ]
+
+
+rowC =
+    batch [ dFlexRow, centerCenter ]
+
+
+pr value =
+    padding (rem value)
 
 
 rowBottomY =
-    Css.batch [ flexRow, Css.alignItems Css.flexEnd ]
+    Css.batch [ dFlexRow, Css.alignItems Css.flexEnd ]
 
 
 flexAuto =
