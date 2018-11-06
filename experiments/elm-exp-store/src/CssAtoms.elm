@@ -1,5 +1,6 @@
 module CssAtoms exposing
     ( aic
+    , aife
     , b0
     , btnReset
     , dFlex
@@ -67,6 +68,10 @@ aic =
 
 jcc =
     justifyContent center
+
+
+aife =
+    alignItems flexEnd
 
 
 fa =

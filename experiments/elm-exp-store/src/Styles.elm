@@ -1,6 +1,30 @@
-module Styles exposing (b0, btnDefault, btnReset, centerCenter, dFlex, dFlexCol, dFlexRow, fBody, fDCol, fDRow, fDir, fZero, flexAuto, fz, fz0, fzPx, hs, lh, lh0, lhNum, m0, mRm, p0, pRm, pct, pointer, px, rem, rowBottomY, rowC, rowCY, spacing0, tl, ttu, vs, w100)
+module Styles exposing
+    ( btnReset
+    , centerCenter
+    , dFlexCol
+    , dFlexRow
+    , fBody
+    , fDir
+    , fZero
+    , fz
+    , fzPx
+    , hs
+    , lh
+    , lhNum
+    , mRm
+    , pRm
+    , pct
+    , px
+    , rem
+    , rowBottomY
+    , rowCXY
+    , rowCY
+    , spacing0
+    , vs
+    )
 
 import Css exposing (..)
+import CssAtoms exposing (aic, b0, dFlex, fDCol, fDRow, fz0, jcc, lh0, m0, p0, ptr, tl)
 
 
 pct =
@@ -15,10 +39,6 @@ px =
     Css.px
 
 
-p0 =
-    padding zero
-
-
 pRm value =
     padding (rem value)
 
@@ -27,48 +47,12 @@ mRm =
     margin << rem
 
 
-m0 =
-    margin zero
-
-
 spacing0 =
     batch [ p0, m0 ]
 
 
-b0 =
-    border zero
-
-
-ttu =
-    textTransform uppercase
-
-
-tl =
-    textAlign left
-
-
-tc =
-    textAlign center
-
-
-w100 =
-    width (pct 100)
-
-
-dFlex =
-    displayFlex
-
-
 fDir =
     flexDirection
-
-
-fDCol =
-    fDir column
-
-
-fDRow =
-    fDir row
 
 
 dFlexRow =
@@ -80,23 +64,19 @@ dFlexCol =
 
 
 rowCY =
-    batch [ dFlexRow, alignItems center ]
+    batch [ dFlexRow, aic ]
 
 
 centerCenter =
-    batch [ dFlexRow, alignItems center ]
+    batch [ aic, jcc ]
 
 
-rowC =
+rowCXY =
     batch [ dFlexRow, centerCenter ]
 
 
 rowBottomY =
     batch [ dFlexRow, alignItems flexEnd ]
-
-
-flexAuto =
-    batch [ flex auto ]
 
 
 vs =
@@ -113,10 +93,6 @@ hs =
         ]
 
 
-pointer =
-    cursor Css.pointer
-
-
 btnReset =
     batch
         [ spacing0
@@ -124,6 +100,7 @@ btnReset =
         , property "-webkit-appearance" "none"
         , backgroundColor transparent
         , b0
+        , ptr
         , focus
             [ outlineWidth (px 2)
             , outlineOffset (px 2)
@@ -137,14 +114,6 @@ fzPx =
 
 lhNum =
     lineHeight << num
-
-
-lh0 =
-    lineHeight zero
-
-
-fz0 =
-    fzPx 0
 
 
 fz =
@@ -161,7 +130,3 @@ fBody =
 
 fZero =
     batch [ fz0, lh0 ]
-
-
-btnDefault =
-    batch [ btnReset, pointer ]

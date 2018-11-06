@@ -20,8 +20,6 @@ btn =
     styled button
         [ btnReset
         , pRm 0.5
-        , tl
-        , flexAuto
         , Css.fontSize (rem 0.8)
         , Css.property "color" "gray"
         , Css.hover
@@ -34,7 +32,8 @@ iconButton =
     styled button
         [ btnReset
         , pRm 0.5
-        , flexAuto
+
+        --        , flexAuto
         , Css.fontSize (rem 0.8)
         , Css.property "color" "gray"
         , Css.hover

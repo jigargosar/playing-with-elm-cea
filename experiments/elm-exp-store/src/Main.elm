@@ -24,6 +24,7 @@ import Css
         , underline
         )
 import Css.Global exposing (global)
+import CssAtoms exposing (fa, ptr, ttu)
 import Dict exposing (Dict)
 import FeatherIcons as Icon
 import HotKey
@@ -479,20 +480,20 @@ viewSidebar model =
                 , Css.lineHeight sizeVal
                 , Css.width sizeVal
                 , Css.height sizeVal
-                , rowC
+                , rowCXY
                 ]
 
         liTextButton =
             styled button
                 [ btnReset
                 , hs
-                , Styles.flexAuto
-                , Styles.pointer
+                , fa
+                , ptr
                 , fBody
                 ]
 
         listItem =
-            styled div [ flexAuto, rowCY, pRm 0.5 ]
+            styled div [ fa, rowCY, pRm 0.5 ]
 
         viewListItem ( title, titleMsg ) maybeAction =
             listItem []
