@@ -1,6 +1,6 @@
 module Btn exposing (flat, icon)
 
-import Css
+import Css exposing (hover)
 import CssAtoms exposing (fgGray)
 import FeatherIcons
 import Html.Styled exposing (button, fromUnstyled, styled)
@@ -12,6 +12,7 @@ icon =
     styled button
         [ btnReset
         , fZero
+        , hover [ fg "red" ]
         ]
 
 
@@ -21,9 +22,7 @@ flat =
         , p2Rm 0 0.5
         , fgGray
         , rowCY
-        , Css.hover
-            [ Css.property "color" "red"
-            ]
+        , hover [ fg "red" ]
         ]
 
 

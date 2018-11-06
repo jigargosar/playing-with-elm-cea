@@ -9,6 +9,7 @@ module Styles exposing
     , fBody
     , fDir
     , fZero
+    , fg
     , fwb
     , fz
     , fzPx
@@ -149,6 +150,10 @@ fZero =
 
 bg =
     property "background-color"
+
+
+fg =
+    property "color"
 
 
 bc =
