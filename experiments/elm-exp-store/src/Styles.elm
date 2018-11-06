@@ -1,5 +1,6 @@
 module Styles exposing
-    ( bw0
+    ( btnReset
+    , bw0
     , centerCenter
     , dFlexRow
     , flexAuto
@@ -24,7 +25,7 @@ module Styles exposing
     , zero
     )
 
-import Css exposing (batch)
+import Css exposing (..)
 
 
 padding =
@@ -64,31 +65,31 @@ spacing0 =
 
 
 bw0 =
-    Css.border zero
+    border zero
 
 
 ttu =
-    Css.textTransform Css.uppercase
+    textTransform uppercase
 
 
 tl =
-    Css.textAlign Css.left
+    textAlign left
 
 
 w100P =
-    Css.width (pct 100)
+    width (pct 100)
 
 
 dFlexRow =
-    Css.batch [ Css.displayFlex, Css.flexDirection Css.row ]
+    batch [ displayFlex, flexDirection row ]
 
 
 rowCY =
-    Css.batch [ dFlexRow, Css.alignItems Css.center ]
+    batch [ dFlexRow, alignItems center ]
 
 
 centerCenter =
-    Css.batch [ dFlexRow, Css.alignItems Css.center ]
+    batch [ dFlexRow, alignItems center ]
 
 
 rowC =
@@ -100,26 +101,40 @@ pr value =
 
 
 rowBottomY =
-    Css.batch [ dFlexRow, Css.alignItems Css.flexEnd ]
+    batch [ dFlexRow, alignItems flexEnd ]
 
 
 flexAuto =
-    Css.batch [ Css.flex Css.auto ]
+    batch [ flex auto ]
 
 
 vs =
-    Css.batch
-        [ Css.marginBottom (rem 0.5)
-        , Css.lastChild [ Css.marginBottom zero ]
+    batch
+        [ marginBottom (rem 0.5)
+        , lastChild [ marginBottom zero ]
         ]
 
 
 hs =
-    Css.batch
-        [ Css.marginRight (rem 0.5)
-        , Css.lastChild [ Css.marginRight zero ]
+    batch
+        [ marginRight (rem 0.5)
+        , lastChild [ marginRight zero ]
         ]
 
 
 pointer =
-    Css.cursor Css.pointer
+    cursor Css.pointer
+
+
+btnReset =
+    batch
+        [ spacing0
+        , tl
+        , property "-webkit-appearance" "none"
+        , backgroundColor transparent
+        , border zero
+        , focus
+            [ outlineWidth (px 2)
+            , outlineOffset (px 2)
+            ]
+        ]

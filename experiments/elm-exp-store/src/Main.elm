@@ -479,34 +479,17 @@ viewSidebar model =
                 , Css.lineHeight sizeVal
                 , Css.width sizeVal
                 , Css.height sizeVal
-                , rowCY
-                , Css.justifyContent Css.center
+                , rowC
                 ]
 
         liTextButton =
             styled button
-                [ padding zero
-                , padding (rem 0.5)
-                , padding zero
-
-                --
-                , margin2 zero (rem 0.5)
-                , margin zero
-
-                --
-                , Styles.hs
+                [ btnReset
+                , hs
                 , Styles.flexAuto
-                , Css.textAlign Css.left
-                , Css.property "-webkit-appearance" "none"
-                , Css.backgroundColor Css.transparent
-                , Css.border zero
                 , Styles.pointer
                 , Css.lineHeight (num 1.5)
                 , Css.fontSize (px 16)
-                , Css.focus
-                    [ Css.outlineWidth (px 2)
-                    , Css.outlineOffset (px 2)
-                    ]
                 ]
 
         listItem =
