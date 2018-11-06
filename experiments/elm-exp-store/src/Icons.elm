@@ -21,13 +21,43 @@ import Svg.Styled.Attributes exposing (..)
 --        ]
 
 
+type alias SvgAttrs =
+    { fill : String
+    , width : String
+    , height : String
+    , stroke : String
+    , strokeLinecap : String
+    , strokeWidth : String
+    , viewBox : String
+    }
+
+
 type alias Icon msg =
-    { name : String, src : List (Svg msg) }
+    { name : String
+    , src : List (Svg msg)
+    , attrs : SvgAttrs
+    }
+
+
+defaultAttrs : SvgAttrs
+defaultAttrs =
+    let
+        size =
+            "24"
+    in
+    { fill = "none"
+    , width = size
+    , height = size
+    , stroke = "currentColor"
+    , strokeLinecap = "round"
+    , strokeWidth = "1"
+    , viewBox = [ "0 0", size, size ] |> String.join " "
+    }
 
 
 createBuilder : String -> List (Svg msg) -> Icon msg
 createBuilder iconName src =
-    { name = iconName, src = src }
+    Icon iconName src defaultAttrs
 
 
 archive : Icon msg
