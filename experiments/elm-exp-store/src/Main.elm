@@ -643,7 +643,7 @@ viewTodoList model =
                 [ Icons.plusDefault
                 , text "Add Task"
                 ]
-            , Btn.sIcon [ Css.opacity (num 0.7) ] [] [ Icons.rotateCcwDefault ]
+            , Btn.sIcon [ Css.opacity (num 0.6) ] [] [ Icons.rotateCcwDefault ]
             ]
         ]
 
