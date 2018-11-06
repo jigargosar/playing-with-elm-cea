@@ -12,6 +12,7 @@ module Styles exposing
     , lh
     , lhNum
     , mRm
+    , p2Rm
     , pRm
     , pct
     , px
@@ -41,6 +42,10 @@ px =
 
 pRm value =
     padding (rem value)
+
+
+p2Rm v1 v2 =
+    padding2 (rem v1) (rem v2)
 
 
 mRm =

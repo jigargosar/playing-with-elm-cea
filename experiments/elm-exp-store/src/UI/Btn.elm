@@ -20,7 +20,7 @@ iconMsg i msg =
 flat =
     styled button
         [ btnReset
-        , pRm 0.5
+        , p2Rm 0 0.5
         , fgGray
         , Css.hover
             [ Css.property "color" "red"
