@@ -22,6 +22,7 @@ flat =
         [ btnReset
         , p2Rm 0 0.5
         , fgGray
+        , rowCY
         , Css.hover
             [ Css.property "color" "red"
             ]
