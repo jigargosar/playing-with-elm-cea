@@ -7,25 +7,9 @@ import Browser.Events
 import Btn
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import ContextType
-import Css
-    exposing
-        ( Color
-        , backgroundColor
-        , color
-        , em
-        , fontWeight
-        , hex
-        , hover
-        , margin2
-        , normal
-        , num
-        , padding2
-        , rgb
-        , textDecoration
-        , underline
-        )
+import Css exposing (Color, backgroundColor, color, em, fontWeight, hex, hover, margin2, normal, num, padding2, paddingLeft, rgb, textDecoration, underline, zero)
 import Css.Global exposing (global)
-import CssAtoms exposing (fa, ptr, ttu)
+import CssAtoms exposing (fa, pl0, ptr, ttu)
 import Dict exposing (Dict)
 import FeatherIcons as Icon
 import HotKey
@@ -620,7 +604,7 @@ viewTodoList model =
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY, vs ] ]
-            [ Btn.flat []
+            [ Btn.flat [ css [ pl0 ] ]
                 [ Icons.withStyleAndAttr [ hs ] [] Icons.plus
                 , div [] [ text "Add Task" ]
                 ]

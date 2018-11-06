@@ -13,6 +13,7 @@ module CssAtoms exposing
     , m0
     , p0
     , pColor
+    , pl0
     , ptr
     , tc
     , tl
@@ -25,6 +26,10 @@ import Css exposing (..)
 
 p0 =
     padding zero
+
+
+pl0 =
+    paddingLeft zero
 
 
 m0 =
