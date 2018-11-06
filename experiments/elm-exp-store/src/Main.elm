@@ -625,7 +625,6 @@ viewTodoList model =
                 [ Icons.withStyleAndAttr [ hs ] [] Icons.plus
                 , div [] [ text "Add Task" ]
                 ]
-            , UI.Btn.flat [] [ div [] [ text "aabbccddee " ] ]
             ]
         ]
 
