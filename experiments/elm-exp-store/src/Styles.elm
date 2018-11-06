@@ -51,8 +51,28 @@ w100 =
     width (pct 100)
 
 
+dFlex =
+    displayFlex
+
+
+fDir =
+    flexDirection
+
+
+fDCol =
+    fDir column
+
+
+fDRow =
+    fDir row
+
+
 dFlexRow =
-    batch [ displayFlex, flexDirection row ]
+    batch [ dFlex, fDRow ]
+
+
+dFlexCol =
+    batch [ dFlex, fDCol ]
 
 
 rowCY =
