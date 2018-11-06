@@ -634,10 +634,10 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
     let
         doneIconBtn =
             if done then
-                fBtnSA [ sClass "green" ] Icon.checkCircle unmarkDone
+                Btn.icon [ onClick unmarkDone ] [ Icons.withStyle [ fg "green" ] Icons.checkCircle ]
 
             else
-                fBtnSA [ sClass "gray" ] Icon.circle markDone
+                Btn.icon [ onClick markDone ] [ Icons.withStyle [ fg "gray" ] Icons.circle ]
     in
     ( key
     , UI.row "pa3 bb b--light-gray"

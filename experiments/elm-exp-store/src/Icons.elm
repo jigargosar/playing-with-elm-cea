@@ -1,4 +1,4 @@
-module Icons exposing (Icon, archive, plus, withStyle, withStyleAndAttr)
+module Icons exposing (Icon, archive, checkCircle, circle, plus, withStyle, withStyleAndAttr)
 
 import Css
 import Html.Styled exposing (Html)
@@ -123,4 +123,23 @@ plus =
     create "plus"
         [ Svg.line [ x1 "12", y1 "5", x2 "12", y2 "19" ] []
         , Svg.line [ x1 "5", y1 "12", x2 "19", y2 "12" ] []
+        ]
+
+
+checkCircle : Icon
+checkCircle =
+    create "check-circle"
+        [ Svg.path [ d "M22 11.08V12a10 10 0 1 1-5.93-9.14" ] []
+        , Svg.polyline [ points "22 4 12 14.01 9 11.01" ] []
+        ]
+
+
+svgFeatherIcon =
+    create
+
+
+circle : Icon
+circle =
+    svgFeatherIcon "circle"
+        [ Svg.circle [ cx "12", cy "12", r "10" ] []
         ]
