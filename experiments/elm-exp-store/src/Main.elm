@@ -16,7 +16,7 @@ import HotKey
 import Html.Styled as Html exposing (Attribute, Html, button, div, fromUnstyled, span, styled, text)
 import Html.Styled.Attributes exposing (class, classList, css, style)
 import Html.Styled.Events exposing (onClick)
-import Html.Styled.Keyed as HKeyed
+import Html.Styled.Keyed as HKeyed exposing (node)
 import Icons
 import JsonCodecX exposing (Value)
 import Log
@@ -480,7 +480,7 @@ viewSidebar model =
         listItem =
             styled div [ fa, rowCY, pRm 0.5 ]
 
-        viewContextsItem ( title, titleMsg ) maybeAction =
+        viewContextsItem =
             let
                 isSelected =
                     isCurrentPageContextList model
@@ -494,7 +494,7 @@ viewSidebar model =
                 , Btn.iconMsg Icon.folderPlus startAddingContextMsg
                 ]
 
-        viewKeyedContext vm =
+        viewKeyedContextItem vm =
             ( vm.key, viewContextItem vm )
 
         viewContextItem { name, navigateToTodoList, activeTodoCount, isSelected } =
@@ -525,12 +525,11 @@ viewSidebar model =
     in
     div
         [ class "min-h-100 bg-black-05" ]
-        ([ viewContextItem <| createInboxContextItemViewModel model
-         , viewContextsItem ( "Contexts", SetPage ContextList )
-            (Just ( Icon.folderPlus, startAddingContextMsg ))
-         ]
-            ++ List.map viewContextItem (createUserDefinedContextItemViewModel model)
-        )
+        [ viewContextItem <| createInboxContextItemViewModel model
+        , viewContextsItem
+        , node "div" [] <|
+            List.map viewKeyedContextItem (createUserDefinedContextItemViewModel model)
+        ]
 
 
 
