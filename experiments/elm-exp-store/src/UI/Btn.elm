@@ -4,29 +4,13 @@ import Css
 import FeatherIcons
 import Html.Styled exposing (button, fromUnstyled, styled)
 import Html.Styled.Events exposing (onClick)
-import Styles exposing (b0, flexAuto, m0, p0, padding, px, rem, tl, zero)
-
-
-resetButton =
-    Css.batch
-        [ p0
-        , m0
-        , Css.property "-webkit-appearance" "none"
-        , Css.backgroundColor Css.transparent
-        , b0
-        , Styles.pointer
-        , Css.focus
-            [ Css.outlineWidth (px 2)
-            , Css.outlineOffset (px 2)
-            ]
-        ]
+import Styles exposing (..)
 
 
 icon i msg =
     styled button
-        [ resetButton
-        , Css.lineHeight zero
-        , Css.fontSize (px 0)
+        [ btnReset
+        , fZero
         ]
         [ onClick msg ]
         [ i |> FeatherIcons.toHtml [] >> fromUnstyled ]
@@ -34,8 +18,8 @@ icon i msg =
 
 btn =
     styled button
-        [ resetButton
-        , padding (rem 0.5)
+        [ btnReset
+        , pRm 0.5
         , tl
         , flexAuto
         , Css.fontSize (rem 0.8)
@@ -48,9 +32,8 @@ btn =
 
 iconButton =
     styled button
-        [ resetButton
-        , padding (rem 0.5)
-        , tl
+        [ btnReset
+        , pRm 0.5
         , flexAuto
         , Css.fontSize (rem 0.8)
         , Css.property "color" "gray"

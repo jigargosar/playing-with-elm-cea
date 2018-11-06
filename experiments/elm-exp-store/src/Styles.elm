@@ -1,43 +1,6 @@
-module Styles exposing
-    ( b0
-    , btnReset
-    , centerCenter
-    , dFlexRow
-    , flexAuto
-    , hs
-    , m0
-    , margin
-    , p0
-    , padding
-    , pct
-    , pointer
-    , pr
-    , px
-    , rem
-    , rowBottomY
-    , rowC
-    , rowCY
-    , spacing0
-    , tl
-    , ttu
-    , vs
-    , w100
-    , zero
-    )
+module Styles exposing (b0, btnDefault, btnReset, centerCenter, dFlexRow, fBody, fZero, flexAuto, fz, fz0, fzPx, hs, lh, lh0, lhNum, m0, mRm, p0, pRm, pct, pointer, px, rem, rowBottomY, rowC, rowCY, spacing0, tl, ttu, vs, w100)
 
 import Css exposing (..)
-
-
-padding =
-    Css.padding
-
-
-zero =
-    Css.zero
-
-
-margin =
-    Css.margin
 
 
 pct =
@@ -54,6 +17,14 @@ px =
 
 p0 =
     padding zero
+
+
+pRm value =
+    padding (rem value)
+
+
+mRm =
+    margin << rem
 
 
 m0 =
@@ -96,10 +67,6 @@ rowC =
     batch [ dFlexRow, centerCenter ]
 
 
-pr value =
-    padding (rem value)
-
-
 rowBottomY =
     batch [ dFlexRow, alignItems flexEnd ]
 
@@ -138,3 +105,39 @@ btnReset =
             , outlineOffset (px 2)
             ]
         ]
+
+
+fzPx =
+    fontSize << px
+
+
+lhNum =
+    lineHeight << num
+
+
+lh0 =
+    lineHeight zero
+
+
+fz0 =
+    fzPx 0
+
+
+fz =
+    fzPx 16
+
+
+lh =
+    lhNum 1.5
+
+
+fBody =
+    batch [ fz, lh ]
+
+
+fZero =
+    batch [ fz0, lh0 ]
+
+
+btnDefault =
+    batch [ btnReset, pointer ]

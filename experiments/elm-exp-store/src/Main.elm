@@ -488,12 +488,11 @@ viewSidebar model =
                 , hs
                 , Styles.flexAuto
                 , Styles.pointer
-                , Css.lineHeight (num 1.5)
-                , Css.fontSize (px 16)
+                , fBody
                 ]
 
         listItem =
-            styled div [ flexAuto, rowCY, pr 0.5 ]
+            styled div [ flexAuto, rowCY, pRm 0.5 ]
 
         viewListItem ( title, titleMsg ) maybeAction =
             listItem []
