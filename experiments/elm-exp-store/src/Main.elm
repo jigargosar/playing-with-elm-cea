@@ -595,7 +595,7 @@ viewTodoList model =
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY, vs ], class "ph3" ]
             [ Btn.flat [ css [ pl0 ], onClick startAddingTodoMsg ]
-                [ Icons.withStyleAndAttr [] [] Icons.plus
+                [ Icons.plusDefault
                 , div [] [ text "Add Task" ]
                 ]
             ]
@@ -632,10 +632,10 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
     let
         doneIconBtn =
             if done then
-                Btn.sIcon [ fg "green" ] [ onClick unmarkDone ] Icons.checkCircle
+                Btn.sIcon [ fg "green" ] [ onClick unmarkDone ] [ Icons.checkCircle |> Icons.default ]
 
             else
-                Btn.sIcon [ fg "gray" ] [ onClick markDone ] Icons.circle
+                Btn.sIcon [ fg "gray" ] [ onClick markDone ] [ Icons.circle |> Icons.default ]
     in
     ( key
     , UI.row "pa3 bb b--light-gray"

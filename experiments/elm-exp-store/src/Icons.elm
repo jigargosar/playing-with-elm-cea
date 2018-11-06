@@ -1,4 +1,18 @@
-module Icons exposing (Icon, archive, checkCircle, circle, default, plus, withStyle, withStyleAndAttr)
+module Icons exposing
+    ( Icon
+    , SvgAttrs
+    , archive
+    , archiveDefault
+    , checkCircle
+    , checkDefault
+    , circle
+    , circleDefault
+    , create
+    , default
+    , defaultAttrs
+    , plus
+    , plusDefault
+    )
 
 import Css
 import Html.Styled exposing (Html)
@@ -84,10 +98,6 @@ default =
     withStyleAndAttr [] []
 
 
-withStyle s =
-    withStyleAndAttr s []
-
-
 withStyleAndAttr : List Css.Style -> List (Attribute msg) -> Icon -> Html msg
 withStyleAndAttr styles_ attrs icon =
     Svg.styled Svg.svg
@@ -147,3 +157,19 @@ circle =
     svgFeatherIcon "circle"
         [ Svg.circle [ cx "12", cy "12", r "10" ] []
         ]
+
+
+archiveDefault =
+    default archive
+
+
+circleDefault =
+    default circle
+
+
+checkDefault =
+    default checkCircle
+
+
+plusDefault =
+    default plus
