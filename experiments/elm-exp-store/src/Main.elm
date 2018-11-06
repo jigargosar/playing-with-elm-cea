@@ -48,6 +48,7 @@ import Time
 import TodoStore exposing (Todo, TodoStore)
 import UI exposing (..)
 import UI.Btn
+import UI.Icon
 import Update2
 import UpdateReturn exposing (..)
 
@@ -618,8 +619,8 @@ viewTodoList model =
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
             |> HKeyed.node "div" [ css [ Styles.vs ] ]
         , div [ css [ rowCY, Styles.vs ] ]
-            [ UI.Btn.flatIcon [ css [ rowCY ] ]
-                [ Icon.plus |> Icon.withSize 16 |> Icon.toHtml [] |> fromUnstyled
+            [ UI.Btn.flat [ css [ rowCY ] ]
+                [ Icon.plus |> UI.Icon.withDefault
                 , div [] [ text "Add Task" ]
                 ]
             ]

@@ -1,4 +1,4 @@
-module UI.Btn exposing (flat, flatIcon, iconMsg)
+module UI.Btn exposing (flat, iconMsg)
 
 import Css
 import CssAtoms exposing (fgGray)
@@ -28,15 +28,16 @@ flat =
         ]
 
 
-flatIcon =
-    styled button
-        [ btnReset
-        , pRm 0.5
 
-        --        , flexAuto
-        , Css.fontSize (rem 0.8)
-        , Css.property "color" "gray"
-        , Css.hover
-            [ Css.property "color" "red"
-            ]
-        ]
+--flat =
+--    styled button
+--        [ btnReset
+--        , pRm 0.5
+--
+--        --        , flexAuto
+--        , Css.fontSize (rem 0.8)
+--        , Css.property "color" "gray"
+--        , Css.hover
+--            [ Css.property "color" "red"
+--            ]
+--        ]
