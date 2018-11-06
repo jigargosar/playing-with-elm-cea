@@ -1,4 +1,4 @@
-module Btn exposing (flat, iconMsg)
+module Btn exposing (flat, icon)
 
 import Css
 import CssAtoms exposing (fgGray)
@@ -8,13 +8,11 @@ import Html.Styled.Events exposing (onClick)
 import Styles exposing (..)
 
 
-iconMsg i msg =
+icon =
     styled button
         [ btnReset
         , fZero
         ]
-        [ onClick msg ]
-        [ i |> FeatherIcons.toHtml [] >> fromUnstyled ]
 
 
 flat =
