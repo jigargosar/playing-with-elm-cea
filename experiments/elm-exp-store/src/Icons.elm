@@ -50,7 +50,7 @@ defaultAttrs =
     , height = size
     , stroke = "currentColor"
     , strokeLinecap = "round"
-    , strokeWidth = "1"
+    , strokeWidth = "2"
     , viewBox = [ "0 0", size, size ] |> String.join " "
     }
 
