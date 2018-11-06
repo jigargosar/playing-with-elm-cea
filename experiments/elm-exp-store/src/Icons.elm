@@ -1,4 +1,4 @@
-module Icons exposing (archive, createBuilder)
+module Icons exposing (archive, createDefaultBuilder)
 
 import Html.Styled exposing (Html)
 import Svg.Styled as Svg exposing (Svg, svg)
@@ -55,14 +55,14 @@ defaultAttrs =
     }
 
 
-createBuilder : String -> List (Svg msg) -> Icon msg
-createBuilder iconName src =
+createDefaultBuilder : String -> List (Svg msg) -> Icon msg
+createDefaultBuilder iconName src =
     Icon iconName src defaultAttrs
 
 
 archive : Icon msg
 archive =
-    createBuilder "archive"
+    createDefaultBuilder "archive"
         [ Svg.polyline [ points "21 8 21 21 3 21 3 8" ] []
         , Svg.rect [ x "1", y "3", width "22", height "5" ] []
         , Svg.line [ x1 "10", y1 "12", x2 "14", y2 "12" ] []
@@ -71,7 +71,7 @@ archive =
 
 plus : Icon msg
 plus =
-    createBuilder "plus"
+    createDefaultBuilder "plus"
         [ Svg.line [ x1 "12", y1 "5", x2 "12", y2 "19" ] []
         , Svg.line [ x1 "5", y1 "12", x2 "19", y2 "12" ] []
         ]
