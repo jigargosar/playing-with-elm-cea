@@ -1,4 +1,4 @@
-module Icons exposing (Icon, archive, checkCircle, circle, medium, plus, withStyle, withStyleAndAttr)
+module Icons exposing (Icon, archive, checkCircle, circle, default, plus, withStyle, withStyleAndAttr)
 
 import Css
 import Html.Styled exposing (Html)
@@ -80,7 +80,7 @@ defaultAttrs =
     ]
 
 
-medium =
+default =
     withStyleAndAttr [] []
 
 

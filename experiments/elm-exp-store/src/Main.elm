@@ -474,7 +474,7 @@ viewSidebar model =
                 [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
                 []
                 [ liTextButton [ css [ fwb ], onClick <| SetPage ContextList ] [ text "Contexts" ]
-                , Btn.icon [ onClick startAddingContextMsg ] Icons.plus
+                , Btn.icon [ onClick startAddingContextMsg ] [ Icons.plus |> Icons.default ]
                 ]
 
         viewKeyedContextItem style vm =

@@ -9,7 +9,7 @@ import Icons
 import Styles exposing (..)
 
 
-iconBase =
+icon =
     styled button
         [ btnReset
         , fZero
@@ -17,12 +17,8 @@ iconBase =
         ]
 
 
-icon attrs icon_ =
-    sIcon [] attrs icon_
-
-
-sIcon moreStyles attrs icon_ =
-    styled iconBase moreStyles attrs [ Icons.medium icon_ ]
+sIcon =
+    styled icon
 
 
 flat =
