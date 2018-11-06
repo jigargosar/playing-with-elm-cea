@@ -66,19 +66,26 @@ create iconName src =
 {- defaultAttrs -}
 
 
+withDefaults : Icon -> Html msg
+withDefaults =
+    toSvg []
+
+
 toSvg : List (Attribute msg) -> Icon -> Html msg
 toSvg attrs icon =
     svg
-        [ class <| "feather-icon feather-icon-" ++ icon.name
-        , fill "none"
-        , height "24"
-        , stroke "currentColor"
-        , strokeLinecap "round"
-        , strokeLinejoin "round"
-        , strokeWidth "1.5"
-        , viewBox "0 0 24 24"
-        , width "24"
-        ]
+        ([ class <| "feather-icon feather-icon-" ++ icon.name
+         , fill "none"
+         , height "24"
+         , stroke "currentColor"
+         , strokeLinecap "round"
+         , strokeLinejoin "round"
+         , strokeWidth "1.5"
+         , viewBox "0 0 24 24"
+         , width "24"
+         ]
+            ++ attrs
+        )
         (List.map (Svg.map never) icon.src)
 
 
