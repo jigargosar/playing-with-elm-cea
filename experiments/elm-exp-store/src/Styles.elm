@@ -1,6 +1,6 @@
 module Styles exposing
-    ( btnReset
-    , bw0
+    ( b0
+    , btnReset
     , centerCenter
     , dFlexRow
     , flexAuto
@@ -21,7 +21,7 @@ module Styles exposing
     , tl
     , ttu
     , vs
-    , w100P
+    , w100
     , zero
     )
 
@@ -64,7 +64,7 @@ spacing0 =
     batch [ p0, m0 ]
 
 
-bw0 =
+b0 =
     border zero
 
 
@@ -76,7 +76,7 @@ tl =
     textAlign left
 
 
-w100P =
+w100 =
     width (pct 100)
 
 
@@ -132,7 +132,7 @@ btnReset =
         , tl
         , property "-webkit-appearance" "none"
         , backgroundColor transparent
-        , border zero
+        , b0
         , focus
             [ outlineWidth (px 2)
             , outlineOffset (px 2)
