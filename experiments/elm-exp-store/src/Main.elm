@@ -44,6 +44,7 @@ import Set exposing (Set)
 import SnackBar exposing (SnackBar, SnackBarTitle)
 import Styles exposing (..)
 import Svg.Attributes
+import Svg.Styled exposing (svg)
 import Task
 import Time
 import TodoStore exposing (Todo, TodoStore)
@@ -621,7 +622,7 @@ viewTodoList model =
             |> HKeyed.node "div" [ css [ Styles.vs ] ]
         , div [ css [ rowCY, Styles.vs ] ]
             [ UI.Btn.flat [ css [ rowCY ] ]
-                [ Icons.normal Icons.plus
+                [ Icons.styled [ hs ] Icons.defaultAttrs Icons.plusC
                 , div [] [ text "Add Task" ]
                 ]
             ]
