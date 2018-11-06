@@ -6,7 +6,29 @@ import Browser.Dom
 import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import ContextType
-import Css exposing (Color, backgroundColor, color, em, fontWeight, hex, hover, margin, margin2, normal, num, padding, padding2, pct, px, rem, rgb, textDecoration, underline, zero)
+import Css
+    exposing
+        ( Color
+        , backgroundColor
+        , color
+        , em
+        , fontWeight
+        , hex
+        , hover
+        , margin
+        , margin2
+        , normal
+        , num
+        , padding
+        , padding2
+        , pct
+        , px
+        , rem
+        , rgb
+        , textDecoration
+        , underline
+        , zero
+        )
 import Css.Global exposing (global)
 import Dict exposing (Dict)
 import FeatherIcons as Icon
