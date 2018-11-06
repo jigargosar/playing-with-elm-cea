@@ -454,21 +454,6 @@ createInboxContextItemViewModel model =
 
 viewSidebar model =
     let
-        badge =
-            let
-                sizeVal =
-                    em 1.4
-            in
-            styled div
-                [ Css.borderRadius (pct 50)
-                , Css.backgroundColor <| Css.hsla 190 1 0.5 0.6
-                , Css.fontSize (px 14)
-                , Css.lineHeight sizeVal
-                , Css.width sizeVal
-                , Css.height sizeVal
-                , rowCXY
-                ]
-
         liTextButton =
             styled button
                 [ btnReset
@@ -508,15 +493,15 @@ viewSidebar model =
                         ]
                     , onClick navigateToTodoList
                     ]
-                    [ text <| name
-                    , div
-                        [ css
-                            [ Css.fontSize (em 0.8)
-                            , Css.alignSelf Css.flexEnd
-                            , Css.fontWeight Css.bold
-                            , Css.property "color" "gray"
-                            ]
+                    [ styled div [] [] [ text <| name ]
+                    , styled div
+                        [ plRm 0.1
+                        , Css.fontSize (em 0.8)
+                        , Css.alignSelf Css.flexEnd
+                        , Css.fontWeight Css.bold
+                        , Css.property "color" "gray"
                         ]
+                        []
                         [ text <| String.fromInt activeTodoCount ]
                     ]
                 ]
