@@ -638,16 +638,16 @@ viewTodoList model =
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY, hs ], class "ph3" ]
             [ styled Btn.flatPl0
-                [ fa ]
+                [ fa, fzPx 14 ]
                 [ onClick startAddingTodoMsg ]
                 [ Icons.plusDefault
                 , text "Add Task"
                 ]
             , styled Btn.flatPr0
-                []
+                [ fzPx 14 ]
                 [ onClick startAddingTodoMsg ]
                 [ text "Show Completed"
-                , Icons.chevronDownDefault
+                , Icons.chevronLeftDefault
                 ]
             ]
         ]

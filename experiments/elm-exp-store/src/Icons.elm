@@ -7,6 +7,7 @@ module Icons exposing
     , checkCircle
     , checkDefault
     , chevronDownDefault
+    , chevronLeftDefault
     , circle
     , circleDefault
     , create
@@ -181,6 +182,16 @@ chevronDown =
     svgFeatherIcon "chevron-down"
         [ Svg.polyline [ points "6 9 12 15 18 9" ] []
         ]
+
+
+chevronLeft =
+    svgFeatherIcon "chevron-left"
+        [ Svg.polyline [ points "15 18 9 12 15 6" ] []
+        ]
+
+
+chevronLeftDefault =
+    default chevronLeft
 
 
 chevronDownDefault =
