@@ -498,7 +498,7 @@ viewSidebar model =
         viewListItem ( title, titleMsg ) maybeAction =
             listItem []
                 [ liTextButton [ onClick titleMsg ] [ text title ]
-                , maybeHtml (\( icon, iconMsg ) -> UI.Btn.icon icon iconMsg) maybeAction
+                , maybeHtml (\( icon, iconMsg ) -> UI.Btn.iconMsg icon iconMsg) maybeAction
                 ]
 
         viewUserDefinedContext { key, name, navigateToTodoList, activeTodoCount, isSelected } =
@@ -618,7 +618,7 @@ viewTodoList model =
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
             |> HKeyed.node "div" [ css [ Styles.vs ] ]
         , div [ css [ rowCY, Styles.vs ] ]
-            [ UI.Btn.iconButton [ css [ rowCY ] ]
+            [ UI.Btn.flatIcon [ css [ rowCY ] ]
                 [ Icon.plus |> Icon.withSize 16 |> Icon.toHtml [] |> fromUnstyled
                 , div [] [ text "Add Task" ]
                 ]

@@ -1,13 +1,14 @@
-module UI.Btn exposing (btn, icon, iconButton)
+module UI.Btn exposing (flat, flatIcon, iconMsg)
 
 import Css
+import CssAtoms exposing (fgGray)
 import FeatherIcons
 import Html.Styled exposing (button, fromUnstyled, styled)
 import Html.Styled.Events exposing (onClick)
 import Styles exposing (..)
 
 
-icon i msg =
+iconMsg i msg =
     styled button
         [ btnReset
         , fZero
@@ -16,18 +17,18 @@ icon i msg =
         [ i |> FeatherIcons.toHtml [] >> fromUnstyled ]
 
 
-btn =
+flat =
     styled button
         [ btnReset
         , pRm 0.5
-        , Css.property "color" "gray"
+        , fgGray
         , Css.hover
             [ Css.property "color" "red"
             ]
         ]
 
 
-iconButton =
+flatIcon =
     styled button
         [ btnReset
         , pRm 0.5

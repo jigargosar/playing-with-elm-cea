@@ -7,11 +7,13 @@ module CssAtoms exposing
     , fDCol
     , fDRow
     , fa
+    , fgGray
     , fz0
     , jcc
     , lh0
     , m0
     , p0
+    , pColor
     , ptr
     , tc
     , tl
@@ -103,3 +105,11 @@ lh0 =
 
 fz0 =
     fontSize (px 0)
+
+
+pColor =
+    property "color"
+
+
+fgGray =
+    pColor "gray"
