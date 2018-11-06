@@ -1,4 +1,4 @@
-module Icons exposing (Icon, archive, plus, toSvg)
+module Icons exposing (Icon, archive, plus, withAttrs, withDefaultAttrs)
 
 import Html.Styled exposing (Html)
 import Svg.Styled as Svg exposing (Attribute, Svg, svg)
@@ -66,13 +66,13 @@ create iconName src =
 {- defaultAttrs -}
 
 
-withDefaults : Icon -> Html msg
-withDefaults =
-    toSvg []
+withDefaultAttrs : Icon -> Html msg
+withDefaultAttrs =
+    withAttrs []
 
 
-toSvg : List (Attribute msg) -> Icon -> Html msg
-toSvg attrs icon =
+withAttrs : List (Attribute msg) -> Icon -> Html msg
+withAttrs attrs icon =
     svg
         ([ class <| "feather-icon feather-icon-" ++ icon.name
          , fill "none"

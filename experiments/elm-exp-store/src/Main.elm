@@ -622,7 +622,7 @@ viewTodoList model =
         , div [ css [ rowCY, Styles.vs ] ]
             [ UI.Btn.flat [ css [ rowCY ] ]
                 [ --                Icon.plus |> UI.Icon.withDefault
-                  Icons.plus |> Icons.toSvg []
+                  Icons.plus |> Icons.withDefaultAttrs
                 , div [] [ text "Add Task" ]
                 ]
             ]
