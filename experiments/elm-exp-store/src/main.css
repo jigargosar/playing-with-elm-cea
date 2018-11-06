@@ -37,7 +37,7 @@ body > :nth-child(4) {
 }
 
 a.quick {
-  color: hsl(210, 100%, 56%);
+  color: hsla(210, 100%, 56%, 0.3);
   color: dodgerblue;
   font-weight: bold;
   text-decoration: none;

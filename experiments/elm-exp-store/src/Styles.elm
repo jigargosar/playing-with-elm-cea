@@ -1,6 +1,7 @@
 module Styles exposing
     ( bc
     , bg
+    , boolCss
     , btnReset
     , centerCenter
     , dFlexCol
@@ -8,6 +9,7 @@ module Styles exposing
     , fBody
     , fDir
     , fZero
+    , fwb
     , fz
     , fzPx
     , hs
@@ -146,3 +148,15 @@ bg =
 
 bc =
     backgroundColor
+
+
+boolCss bool t =
+    if bool then
+        Css.batch t
+
+    else
+        Css.batch []
+
+
+fwb =
+    fontWeight bold

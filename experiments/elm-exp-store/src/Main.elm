@@ -481,25 +481,19 @@ viewSidebar model =
         listItem =
             styled div [ fa, rowCY, pRm 0.5 ]
 
-        viewListItem ( title, titleMsg ) maybeAction =
-            ( title
-            , listItem []
-                [ liTextButton [ onClick titleMsg ] [ text title ]
-                , maybeHtml (\( icon, iconMsg ) -> Btn.iconMsg icon iconMsg) maybeAction
+        viewContextsItem ( title, titleMsg ) maybeAction =
+            listItem []
+                [ liTextButton [ onClick <| SetPage ContextList ] [ text "Contexts" ]
+                , Btn.iconMsg Icon.folderPlus startAddingContextMsg
                 ]
-            )
 
-        viewKeyedLIContext { key, name, navigateToTodoList, activeTodoCount, isSelected } =
-            ( key
-            , listItem
+        viewKeyedContext vm =
+            ( vm.key, viewContextItem vm )
+
+        viewContextItem { name, navigateToTodoList, activeTodoCount, isSelected } =
+            listItem
                 [ css
-                    [ Css.batch
-                        (if isSelected then
-                            [ bc <| hsla 210 1 0.56 0.3 ]
-
-                         else
-                            []
-                        )
+                    [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ]
                     ]
                 ]
                 [ liTextButton
@@ -521,16 +515,14 @@ viewSidebar model =
                         [ text <| String.fromInt activeTodoCount ]
                     ]
                 ]
-            )
     in
-    HKeyed.node "div"
+    div
         [ class "min-h-100 bg-black-05" ]
-        ([ viewKeyedLIContext <| createInboxContextItemViewModel model
-         , viewListItem ( "Inbox", navigateToInbox ) (Just ( Icon.plus, startAddingTodoMsg ))
-         , viewListItem ( "Contexts", SetPage ContextList )
+        ([ viewContextItem <| createInboxContextItemViewModel model
+         , viewContextsItem ( "Contexts", SetPage ContextList )
             (Just ( Icon.folderPlus, startAddingContextMsg ))
          ]
-            ++ List.map viewKeyedLIContext (createUserDefinedContextItemViewModel model)
+            ++ List.map viewContextItem (createUserDefinedContextItemViewModel model)
         )
 
 
