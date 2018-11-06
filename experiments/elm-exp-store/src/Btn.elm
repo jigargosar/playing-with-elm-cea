@@ -1,19 +1,28 @@
-module Btn exposing (flat, icon)
+module Btn exposing (flat, icon, sIcon)
 
 import Css exposing (hover)
 import CssAtoms exposing (fgGray)
 import FeatherIcons
 import Html.Styled exposing (button, fromUnstyled, styled)
 import Html.Styled.Events exposing (onClick)
+import Icons
 import Styles exposing (..)
 
 
-icon =
+iconBase =
     styled button
         [ btnReset
         , fZero
         , hover [ fg "red" ]
         ]
+
+
+icon attrs icon_ =
+    sIcon [] attrs icon_
+
+
+sIcon moreStyles attrs icon_ =
+    styled iconBase moreStyles attrs [ Icons.medium icon_ ]
 
 
 flat =

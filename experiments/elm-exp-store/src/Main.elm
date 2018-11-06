@@ -474,9 +474,7 @@ viewSidebar model =
                 [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
                 []
                 [ liTextButton [ css [ fwb ], onClick <| SetPage ContextList ] [ text "Contexts" ]
-                , Btn.icon [ onClick startAddingContextMsg ]
-                    [ Icons.withStyleAndAttr [] [] Icons.plus
-                    ]
+                , Btn.icon [ onClick startAddingContextMsg ] Icons.plus
                 ]
 
         viewKeyedContextItem style vm =
@@ -634,10 +632,10 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
     let
         doneIconBtn =
             if done then
-                Btn.icon [ onClick unmarkDone ] [ Icons.withStyle [ fg "green" ] Icons.checkCircle ]
+                Btn.sIcon [ fg "green" ] [ onClick unmarkDone ] Icons.checkCircle
 
             else
-                styled Btn.icon [ fg "gray" ] [ onClick markDone ] [ Icons.medium Icons.circle ]
+                Btn.sIcon [ fg "gray" ] [ onClick markDone ] Icons.circle
     in
     ( key
     , UI.row "pa3 bb b--light-gray"
