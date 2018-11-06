@@ -619,7 +619,10 @@ viewTodoList model =
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
             |> HKeyed.node "div" [ css [ Styles.vs ] ]
         , div [ css [ rowCY, Styles.vs ] ]
-            [ UI.Btn.iconButton [] [ Icon.plus |> Icon.toHtml [] |> fromUnstyled, text "Add Task" ]
+            [ UI.Btn.iconButton [ css [ rowCY ] ]
+                [ Icon.plus |> Icon.withSize 16 |> Icon.toHtml [] |> fromUnstyled
+                , div [] [ text "Add Task" ]
+                ]
             ]
         ]
 
