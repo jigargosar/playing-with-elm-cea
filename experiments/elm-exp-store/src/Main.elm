@@ -645,7 +645,7 @@ viewTodoList model =
                 ]
             , styled Btn.flatPr0
                 [ fzPx 14 ]
-                [ onClick startAddingTodoMsg ]
+                [ onClick NoOp ]
                 [ text "Show Completed"
                 , Icons.chevronLeftDefault
                 ]
