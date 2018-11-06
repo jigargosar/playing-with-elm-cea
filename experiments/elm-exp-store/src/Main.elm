@@ -619,12 +619,13 @@ viewTodoList model =
     div [ css [] ]
         [ getSelectedContextTodoList model
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
-            |> HKeyed.node "div" [ css [ Styles.vs ] ]
-        , div [ css [ rowCY, Styles.vs ] ]
+            |> HKeyed.node "div" [ css [ vs ] ]
+        , div [ css [ rowCY, vs ] ]
             [ UI.Btn.flat []
                 [ Icons.withStyleAndAttr [ hs ] [] Icons.plus
                 , div [] [ text "Add Task" ]
                 ]
+            , UI.Btn.flat [] [ div [] [ text "aabbccddee " ] ]
             ]
         ]
 
