@@ -1,4 +1,4 @@
-module Icons exposing (Icon, archive, defaultAttrs, normal, plus, plusC, styled, styledWithAttrs)
+module Icons exposing (Icon, archive, plus, withStyle, withStyleAndAttr)
 
 import Css
 import Html.Styled exposing (Html)
@@ -67,17 +67,9 @@ create iconName src =
 {- defaultAttrs -}
 
 
-normal : Icon -> Html msg
-normal =
-    styledWithAttrs [] []
-
-
-normalStyled styles_ =
-    styledWithAttrs styles_ []
-
-
 defaultAttrs =
-    [ fill "none"
+    [ class "feather-icon"
+    , fill "none"
     , height "24"
     , stroke "currentColor"
     , strokeLinecap "round"
@@ -88,23 +80,16 @@ defaultAttrs =
     ]
 
 
-styled =
+withStyle s =
+    withStyleAndAttr s []
+
+
+withStyleAndAttr : List Css.Style -> List (Attribute msg) -> Icon -> Html msg
+withStyleAndAttr styles_ attrs icon =
     Svg.styled Svg.svg
-
-
-styledWithAttrs : List Css.Style -> List (Attribute msg) -> Icon -> Html msg
-styledWithAttrs styles_ attrs icon =
-    styled styles_
-        ([ class <| "feather-icon feather-icon-" ++ icon.name
-         , fill "none"
-         , height "24"
-         , stroke "currentColor"
-         , strokeLinecap "round"
-         , strokeLinejoin "round"
-         , strokeWidth "1.5"
-         , viewBox "0 0 24 24"
-         , width "24"
-         ]
+        styles_
+        (defaultAttrs
+            ++ [ class <| "feather-icon-" ++ icon.name ]
             ++ attrs
         )
         (List.map (Svg.map never) icon.src)
@@ -135,10 +120,7 @@ archive =
 
 plus : Icon
 plus =
-    create "plus" plusC
-
-
-plusC =
-    [ Svg.line [ x1 "12", y1 "5", x2 "12", y2 "19" ] []
-    , Svg.line [ x1 "5", y1 "12", x2 "19", y2 "12" ] []
-    ]
+    create "plus"
+        [ Svg.line [ x1 "12", y1 "5", x2 "12", y2 "19" ] []
+        , Svg.line [ x1 "5", y1 "12", x2 "19", y2 "12" ] []
+        ]
