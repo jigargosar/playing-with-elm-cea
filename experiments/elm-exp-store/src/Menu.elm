@@ -4,13 +4,13 @@ import Html.Styled exposing (Html, div)
 import Html.Styled.Keyed exposing (node)
 
 
-type alias Config child msg =
+type alias ViewConfig child msg =
     { children : List child
     , childContent : child -> List (Html msg)
     }
 
 
-render : Config child msg -> Html msg
+render : ViewConfig child msg -> Html msg
 render config =
     div []
         (config.children
