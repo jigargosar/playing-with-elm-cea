@@ -173,6 +173,14 @@ getMaybeSelectedContext model =
     model.contextStore |> ContextStore.get (getSelectedContextId model)
 
 
+contextMoreMenuRefDomId cid =
+    "context-more-menu-reference-" ++ cid
+
+
+contextMoreMenuPopperDomId =
+    "context-more-menu-popper"
+
+
 
 ---- UPDATE ----
 
@@ -279,7 +287,7 @@ update message model =
 
         ContextMoreClicked cid ->
             pure { model | popup = Just cid }
-                |> addCmd (Port.createContextPopper cid)
+                |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId ))
 
 
 
@@ -340,7 +348,7 @@ viewPopup model =
     let
         render _ =
             Menu.render
-                { domId = "context-menu-popper"
+                { domId = contextMoreMenuPopperDomId
                 , children = [ "Rename", "Delete" ]
                 , containerStyles =
                     [ pRm 0.5
@@ -475,7 +483,7 @@ viewSidebar model =
         viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, cid } =
             styled listItem
                 [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
-                [ id <| "context-menu-trigger-" ++ cid
+                [ id <| contextMoreMenuRefDomId cid
                 , class "hide-child"
                 ]
                 [ liTextButton

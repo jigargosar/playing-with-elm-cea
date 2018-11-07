@@ -131,13 +131,13 @@ subscribe(
       storageSet('contexts', contexts)
     },
     // focusSelector,
-    createContextPopper: cid => {
+    createPopper: ([refDomId, popperDomId])=> {
       if (popper) {
         popper.destroy()
       }
       requestAnimationFrame(() => {
-        const refEl = document.getElementById(`context-menu-trigger-${cid}`)
-        const popEl = document.getElementById(`context-menu-popper`)
+        const refEl = document.getElementById(refDomId)
+        const popEl = document.getElementById(popperDomId)
         if (!refEl || !popEl) {
           debugger
         }

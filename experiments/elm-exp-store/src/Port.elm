@@ -2,7 +2,7 @@ port module Port exposing
     ( activeElementsParentIdList
     , cacheContextStore
     , cacheTodoStore
-    , createContextPopper
+    , createPopper
     , documentFocusChanged
     , focusSelector
     , warn
@@ -35,4 +35,12 @@ port activeElementsParentIdList : (List String -> msg) -> Sub msg
 port documentFocusChanged : (Bool -> msg) -> Sub msg
 
 
-port createContextPopper : DomId -> Cmd msg
+type alias RefDomId =
+    DomId
+
+
+type alias PopperDomId =
+    DomId
+
+
+port createPopper : ( RefDomId, PopperDomId ) -> Cmd msg
