@@ -349,9 +349,14 @@ view model =
         ]
 
 
-contextMenuConfig : Menu.Config Msg String
+contextMenuConfig : Menu.Config Msg ContextMoreMenuAction
 contextMenuConfig =
     { toMsg = \_ -> NoOp, selected = \_ -> NoOp }
+
+
+type ContextMoreMenuAction
+    = CMMRename
+    | CMMDelete
 
 
 viewPopup model =
@@ -361,7 +366,7 @@ viewPopup model =
                 { config = contextMenuConfig
                 , state = state
                 , domId = contextMoreMenuPopperDomId
-                , children = [ "Rename", "Delete" ]
+                , children = [ CMMRename, CMMDelete ]
                 , containerStyles =
                     [ pRm 0.5
                     , minWidth (rem 20)
@@ -373,7 +378,15 @@ viewPopup model =
                             [ styled button
                                 [ btnReset, p2Rm 0.5 1, w100 ]
                                 []
-                                [ text child ]
+                                [ text
+                                    (case child of
+                                        CMMRename ->
+                                            "Rename"
+
+                                        CMMDelete ->
+                                            "Delete"
+                                    )
+                                ]
                             ]
                         ]
                 }
