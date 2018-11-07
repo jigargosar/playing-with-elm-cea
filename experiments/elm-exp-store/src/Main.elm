@@ -215,7 +215,7 @@ type Msg
     | ContextNameUpdatedOutMsg ContextId ContextName
     | ContextMoreClicked ContextId
     | UpdatePopup PopupMsg
-    | ContextPopupMsg ContextPopup.Msg
+    | UpdateContextPopup ContextPopup.Msg
 
 
 type PopupMsg
@@ -312,15 +312,15 @@ update message model =
             update (ContextStoreMsg <| ContextStore.setName id name) model
 
         ContextMoreClicked cid ->
-            pure { model | popup = ContextMorePopup cid PopupMenu.opened }
+            pure { model | popupType = ContextIdPopup cid, popupMenu = PopupMenu.opened }
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId cid ))
 
-        ContextPopupMsg msg ->
+        UpdateContextPopup msg ->
             case model.popupType of
                 ContextIdPopup cid ->
                     let
                         config =
-                            { toMsg = ContextPopupMsg
+                            { toMsg = UpdateContextPopup
                             , selected =
                                 \action ->
                                     case action of
@@ -419,11 +419,11 @@ contextMoreMenuConfig =
 
 
 viewPopup model =
-    case model.popup of
-        ContextMorePopup cid state ->
-            ContextPopup.view contextMoreMenuConfig cid state
+    case model.popupType of
+        ContextIdPopup cid ->
+            ContextPopup.view cid UpdateContextPopup model.popupMenu
 
-        NoPopup ->
+        NoPopUpMenu ->
             noHtml
 
 

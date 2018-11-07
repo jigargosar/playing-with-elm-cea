@@ -50,9 +50,9 @@ contextMoreMenuRefDomId cid =
     "context-more-menu-reference-" ++ cid
 
 
-view config cid state =
+view cid toMsg state =
     PopupMenu.render
-        { config = config
+        { toMsg = toMsg
         , state = state
         , domId = contextMoreMenuPopperDomId cid
         , children = actions

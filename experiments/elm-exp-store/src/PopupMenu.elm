@@ -47,7 +47,7 @@ update config message model =
 
 
 type alias ViewConfig child msg =
-    { config : Config msg child
+    { toMsg : Msg child -> msg
     , state : State
     , domId : DomId
     , children : List child
@@ -57,10 +57,10 @@ type alias ViewConfig child msg =
 
 
 render : ViewConfig child msg -> Html msg
-render { config, children, containerStyles, domId, childContent, state } =
+render { toMsg, children, containerStyles, domId, childContent, state } =
     let
         attrToMsg =
-            HA.map config.toMsg
+            HA.map toMsg
 
         viewChild child =
             div [ (onClick <| ChildSelected child) |> attrToMsg ] (childContent child)
