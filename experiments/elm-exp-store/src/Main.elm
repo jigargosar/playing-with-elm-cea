@@ -41,12 +41,7 @@ import UpdateReturn exposing (..)
 
 type Popup
     = NoPopup
-    | ContextMorePopup ContextId PopupMenu.State
-
-
-type PopupType
-    = NoPopUpMenu
-    | ContextIdPopup ContextId
+    | ContextIdPopup ContextId PopupMenu.State
 
 
 type Page
@@ -58,8 +53,6 @@ type alias Model =
     , contextStore : ContextStore
     , contextId : ContextId
     , popup : Popup
-    , popupMenu : PopupMenu.State
-    , popupType : PopupType
     , mode : Mode
     , page : Page
     }
@@ -77,17 +70,18 @@ init flags =
 
         ( maybeContextStoreLogLine, contextStore ) =
             ContextStore.load flags.contexts
+
+        model : Model
+        model =
+            { todoStore = todoStore
+            , contextStore = contextStore
+            , contextId = ContextStore.defaultId
+            , popup = NoPopup
+            , mode = Mode.init
+            , page = ContextTodoList
+            }
     in
-    pure
-        { todoStore = todoStore
-        , contextStore = contextStore
-        , contextId = ContextStore.defaultId
-        , popup = NoPopup
-        , popupMenu = PopupMenu.closed
-        , popupType = NoPopUpMenu
-        , mode = Mode.init
-        , page = ContextTodoList
-        }
+    pure model
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeTodoStoreLogLine)
         |> andThenUpdate (unwrapMaybe NoOp Warn maybeContextStoreLogLine)
 
@@ -214,13 +208,7 @@ type Msg
     | SetTodoContextOutMsg TodoId ContextId
     | ContextNameUpdatedOutMsg ContextId ContextName
     | ContextMoreClicked ContextId
-    | UpdatePopup PopupMsg
     | UpdateContextPopup ContextPopup.Msg
-
-
-type PopupMsg
-    = ContextMoreMsg ContextPopup.Msg
-    | ContextMoreActionMsg ContextPopup.Action
 
 
 type alias ContextItem =
@@ -312,12 +300,12 @@ update message model =
             update (ContextStoreMsg <| ContextStore.setName id name) model
 
         ContextMoreClicked cid ->
-            pure { model | popupType = ContextIdPopup cid, popupMenu = PopupMenu.opened }
+            pure { model | popup = ContextIdPopup cid PopupMenu.opened }
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId cid ))
 
         UpdateContextPopup msg ->
-            case model.popupType of
-                ContextIdPopup cid ->
+            case model.popup of
+                ContextIdPopup cid state ->
                     let
                         config =
                             { toMsg = UpdateContextPopup
@@ -331,38 +319,11 @@ update message model =
                                             NoOp
                             }
                     in
-                    updateSub (PopupMenu.update config)
-                        .popupMenu
-                        (\s b -> { b | popupMenu = s })
-                        msg
-                        model
-
-                NoPopUpMenu ->
-                    pure model
-
-        UpdatePopup popupMsg ->
-            case model.popup of
-                ContextMorePopup cid state ->
-                    case popupMsg of
-                        ContextMoreMsg msg ->
-                            PopupMenu.update contextMoreMenuConfig msg state
-                                |> Tuple.mapFirst (ContextMorePopup cid >> (\popup -> { model | popup = popup }))
-
-                        ContextMoreActionMsg action ->
-                            let
-                                msg =
-                                    case action of
-                                        ContextPopup.Rename ->
-                                            StartEditingContext cid
-
-                                        ContextPopup.Delete ->
-                                            NoOp
-                            in
-                            update msg model
-                                |> mapModel (\m -> { m | popup = NoPopup })
+                    PopupMenu.update config msg state
+                        |> mapModel (\s -> { model | popup = ContextIdPopup cid s })
 
                 NoPopup ->
-                    ( model, Cmd.none )
+                    pure model
 
 
 
@@ -411,19 +372,12 @@ view model =
         ]
 
 
-contextMoreMenuConfig : PopupMenu.Config Msg ContextPopup.Action
-contextMoreMenuConfig =
-    { toMsg = UpdatePopup << ContextMoreMsg
-    , selected = UpdatePopup << ContextMoreActionMsg
-    }
-
-
 viewPopup model =
-    case model.popupType of
-        ContextIdPopup cid ->
-            ContextPopup.view cid UpdateContextPopup model.popupMenu
+    case model.popup of
+        ContextIdPopup cid state ->
+            ContextPopup.view cid UpdateContextPopup state
 
-        NoPopUpMenu ->
+        NoPopup ->
             noHtml
 
 
