@@ -135,7 +135,7 @@ subscribe(
       if (popper) {
         popper.destroy()
       }
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         const refEl = document.getElementById(`context-menu-trigger-${cid}`)
         const popEl = document.getElementById(`context-menu-popper`)
         if (!refEl || !popEl) {
@@ -147,7 +147,7 @@ subscribe(
             console.log(`onCreate data`, data)
           },
         })
-      }, 0)
+      })
     },
   },
   app,

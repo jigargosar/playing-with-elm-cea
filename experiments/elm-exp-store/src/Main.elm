@@ -331,27 +331,34 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ viewAppBar
         , viewPage model
-        , Menu.render
-            { domId = "context-menu-popper"
-            , children = [ "Rename", "Delete" ]
-            , containerStyles =
-                [ pRm 0.5
-                , minWidth (rem 20)
-                , unwrapMaybe (display none) (\_ -> batch []) model.popup
-                ]
-            , childContent =
-                \child ->
-                    [ sDiv [ p2Rm 0 0 ]
-                        []
-                        [ styled button
-                            [ btnReset, p2Rm 0.5 1, w100 ]
-                            []
-                            [ text child ]
-                        ]
-                    ]
-            }
+        , viewPopup model
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         ]
+
+
+viewPopup model =
+    let
+        render _ =
+            Menu.render
+                { domId = "context-menu-popper"
+                , children = [ "Rename", "Delete" ]
+                , containerStyles =
+                    [ pRm 0.5
+                    , minWidth (rem 20)
+                    ]
+                , childContent =
+                    \child ->
+                        [ sDiv [ p2Rm 0 0 ]
+                            []
+                            [ styled button
+                                [ btnReset, p2Rm 0.5 1, w100 ]
+                                []
+                                [ text child ]
+                            ]
+                        ]
+                }
+    in
+    maybeHtml render model.popup
 
 
 viewAppBar =
