@@ -1,7 +1,7 @@
-module Styles exposing (bc, bg, boolCss, btnReset, centerCenter, dFlexCol, dFlexRow, elevation, fBody, fDir, fZero, fg, fwb, fz, fzPx, hs, lh, lhNum, mRm, p2Rm, pRm, plRm, prRm, rowBottomY, rowCXY, rowCY, spacing0, vs)
+module Styles exposing (absFill, ambient, ambientColor, bc, bcBlackA, bg, blackA, boolCss, btnReset, centerCenter, dFlexCol, dFlexRow, elevation, fBody, fDir, fZero, fg, fwb, fz, fzPx, hs, lh, lhNum, mRm, p2Rm, pRm, penumbra, penumbraColor, plRm, prRm, rowBottomY, rowCXY, rowCY, spacing0, umbra, umbraColor, vs)
 
 import Array
-import BasicsX exposing (unwrapMaybe)
+import BasicsX exposing (..)
 import Css exposing (..)
 import CssAtoms exposing (..)
 import Html.Styled exposing (div, styled, text)
@@ -123,6 +123,18 @@ fg =
 
 bc =
     backgroundColor
+
+
+absFill =
+    [ top, bottom, left, right ] |> List.map (applyTo zero) |> batch
+
+
+bcBlackA =
+    bc << blackA
+
+
+blackA =
+    rgba 0 0 0
 
 
 boolCss bool t =

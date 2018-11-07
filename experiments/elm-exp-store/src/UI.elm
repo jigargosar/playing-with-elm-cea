@@ -1,6 +1,6 @@
 module UI exposing (appBar, backdrop, boolHtml, maybeHtml, noHtml, sDiv, section1, toolbar)
 
-import BasicsX exposing (unwrapMaybe)
+import BasicsX exposing (..)
 import Css exposing (..)
 import CssAtoms exposing (..)
 import FeatherIcons
@@ -38,7 +38,8 @@ toolbar kids =
 
 
 backdrop attrs =
-    div (class "z-2 absolute absolute--fill bg-black-40 flex items-center justify-center" :: attrs)
+    sDiv [ position absolute, absFill, rowCXY, bcBlackA 0.4 ]
+        (class "bg-black-40" :: attrs)
 
 
 appBar =
