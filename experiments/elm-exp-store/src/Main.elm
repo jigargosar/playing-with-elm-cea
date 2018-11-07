@@ -311,16 +311,17 @@ update message model =
             case model.popup of
                 ContextIdPopup cid state ->
                     let
+                        selected action =
+                            case action of
+                                ContextPopup.Rename ->
+                                    StartEditingContext cid
+
+                                ContextPopup.Delete ->
+                                    DeleteContextId cid
+
                         config =
                             { toMsg = UpdateContextPopup
-                            , selected =
-                                \action ->
-                                    case action of
-                                        ContextPopup.Rename ->
-                                            StartEditingContext cid
-
-                                        ContextPopup.Delete ->
-                                            DeleteContextId cid
+                            , selected = selected
                             }
                     in
                     PopupMenu.update config msg state
