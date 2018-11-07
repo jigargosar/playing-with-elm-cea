@@ -1,4 +1,4 @@
-module UI exposing (backdrop, boolHtml, fBtn, maybeHtml, noHtml, sDiv, toolbar, txt, txtA, txtC)
+module UI exposing (backdrop, boolHtml, maybeHtml, noHtml, sDiv, toolbar, txtA, txtC)
 
 import BasicsX exposing (unwrapMaybe)
 import FeatherIcons
@@ -26,19 +26,6 @@ noHtml =
 
 sDiv =
     styled div
-
-
-fBtn : FeatherIcons.Icon -> msg -> Html msg
-fBtn fIcon msg =
-    button
-        [ onClick msg
-        , class "flex items-center justify-center pa0 ma0"
-        ]
-        [ fIcon |> FeatherIcons.toHtml [] |> Html.fromUnstyled ]
-
-
-txt l =
-    div [] [ text l ]
 
 
 txtC c l =

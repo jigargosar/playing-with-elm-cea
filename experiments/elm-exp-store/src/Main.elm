@@ -565,12 +565,12 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
                 , classList [ ( "strike gray ", done ) ]
                 , onClick contentClicked
                 ]
-                [ txt content ]
-            , txtA
+                [ div [] [ text content ] ]
+            , div
                 [ class "ttu f7 gray pointer"
                 , onClick contextClicked
                 ]
-                ("@" ++ contextName)
+                [ text <| "@" ++ contextName ]
             ]
         ]
     )
