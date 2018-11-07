@@ -81,6 +81,16 @@ startEditingContext =
     StartEditingContext
 
 
+type alias UpdateConfig msg =
+    { toMsg : Msg -> msg
+    , addTodo : Maybe (TodoContent -> msg)
+    , setTodoContext : Maybe (TodoId -> ContextId -> msg)
+    , setTodoContent : Maybe (TodoId -> TodoContent -> msg)
+    , addContext : Maybe (ContextName -> msg)
+    , setContextName : Maybe (ContextId -> ContextName -> msg)
+    }
+
+
 type OutMsg
     = AddTodoOutMsg TodoContent
     | AddContextOutMsg ContextName
