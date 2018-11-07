@@ -24,7 +24,6 @@ import MagicMenu exposing (MagicMenu)
 import Mode exposing (Mode)
 import Port
 import Random
-import SelectUI
 import Set exposing (Set)
 import Styles exposing (..)
 import Svg.Attributes
@@ -51,7 +50,6 @@ type alias Model =
     , todoStore : TodoStore
     , contextStore : ContextStore
     , contextId : ContextId
-    , selectContextUI : SelectUI.Model
     , mode : Mode
     , page : Page
     }
@@ -75,7 +73,6 @@ init flags =
         , todoStore = todoStore
         , contextStore = contextStore
         , contextId = ContextStore.defaultId
-        , selectContextUI = SelectUI.new
         , mode = Mode.init
         , page = ContextTodoList
         }
@@ -196,7 +193,6 @@ type Msg
     | Warn Log.Line
     | SetPage Page
     | SetContextId ContextId
-    | SelectContextUIMsg (SelectUI.Msg ContextItem)
     | SwitchToContextTodoListWithContextId ContextId
     | SwitchToContextTodoList
     | TodoStoreMsg TodoStore.Msg
@@ -208,15 +204,6 @@ type Msg
 
 type alias ContextItem =
     ( String, ContextId )
-
-
-selectContextUIConfig : SelectUI.Config Msg ContextItem
-selectContextUIConfig =
-    { onSelect = Tuple.second >> SwitchToContextTodoListWithContextId
-    , toMsg = SelectContextUIMsg
-    , toLabel = Tuple.first
-    , domId = "todo-list-header-select-context-dom-id"
-    }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -241,13 +228,6 @@ update message model =
 
         SwitchToContextTodoList ->
             pure model |> andThenUpdate (SetPage <| ContextTodoList)
-
-        SelectContextUIMsg msg ->
-            updateSub (SelectUI.update selectContextUIConfig)
-                .selectContextUI
-                (\s b -> { b | selectContextUI = s })
-                msg
-                model
 
         TodoStoreMsg msg ->
             Update2.lift
@@ -336,7 +316,6 @@ update message model =
 subscriptions model =
     Sub.batch
         [ MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
-        , SelectUI.subscriptions selectContextUIConfig model.selectContextUI
         ]
 
 

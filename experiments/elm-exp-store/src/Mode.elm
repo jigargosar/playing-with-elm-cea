@@ -14,6 +14,7 @@ module Mode exposing
 
 import BasicsX exposing (..)
 import ContextStore exposing (Context, ContextId, ContextName)
+import DomEvents exposing (DomId, onClickTargetId)
 import HotKey
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)

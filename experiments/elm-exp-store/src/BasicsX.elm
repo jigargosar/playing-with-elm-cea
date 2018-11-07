@@ -1,13 +1,11 @@
 module BasicsX exposing
-    ( DomId
-    , Encoder
+    ( Encoder
     , Millis
     , activeElement
     , allPass
     , applyTo
     , attemptDomIdFocus
     , defaultEmptyStringTo
-    , domIdDecoder
     , eq0
     , eqs
     , everyXSeconds
@@ -16,9 +14,6 @@ module BasicsX exposing
     , isWhitespaceOrEmptyString
     , maybeBool
     , nowMilli
-    , onClickTargetId
-    , onFocusIn
-    , onFocusOut
     , optionalOr
     , swap
     , ter
@@ -33,8 +28,6 @@ module BasicsX exposing
     )
 
 import Browser.Dom
-import Html.Styled as Html exposing (Html)
-import Html.Styled.Events as HEvents
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E exposing (Value)
 import Log
@@ -58,33 +51,6 @@ withNowMilli toMsg =
 
 everyXSeconds seconds toMsg =
     Time.every (1000 * seconds) (Time.posixToMillis >> toMsg)
-
-
-type alias DomId =
-    String
-
-
-onFocusOut msg =
-    HEvents.on "focusout" (D.succeed msg)
-
-
-onFocusIn msg =
-    HEvents.on "focusin" (D.succeed msg)
-
-
-onClickTargetId : (DomId -> msg) -> Html.Attribute msg
-onClickTargetId toMsg =
-    let
-        targetIdDecoder : Decoder DomId
-        targetIdDecoder =
-            D.at [ "target", "id" ] D.string
-    in
-    HEvents.on "click" <| D.map toMsg targetIdDecoder
-
-
-domIdDecoder : Decoder DomId
-domIdDecoder =
-    D.at [ "id" ] D.string
 
 
 activeElement : Decoder a -> Decoder a
