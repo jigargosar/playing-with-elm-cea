@@ -5,6 +5,7 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import Btn
+import ContextMoreMenu
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
 import CssAtoms exposing (fa, fgGray, p0, pl0, ptr, ttu, w100)
@@ -212,7 +213,7 @@ type Msg
     | SetTodoContextOutMsg TodoId ContextId
     | ContextNameUpdatedOutMsg ContextId ContextName
     | ContextMoreClicked ContextId
-    | UpdatePopup (PopupMenu.Msg Msg)
+    | UpdatePopup (PopupMenu.Msg ContextMoreMenu.Action)
 
 
 type alias ContextItem =
@@ -282,7 +283,6 @@ update message model =
             pure model
                 |> (model.contextStore
                         |> ContextStore.get cid
-                        |> Debug.log "Context"
                         |> unwrapMaybe identity (andThenUpdate << ModeMsg << Mode.startEditingContext)
                    )
 
@@ -311,7 +311,7 @@ update message model =
         UpdatePopup msg ->
             case model.popup of
                 ContextMoreMenu cid state ->
-                    PopupMenu.update contextMoreMenuConfig msg state
+                    PopupMenu.update (contextMoreMenuConfig cid) msg state
                         |> Tuple.mapFirst (ContextMoreMenu cid >> (\popup -> { model | popup = popup }))
 
                 NoPopup ->
@@ -364,44 +364,34 @@ view model =
         ]
 
 
-contextMoreMenuConfig : PopupMenu.Config Msg Msg
-contextMoreMenuConfig =
-    { toMsg = UpdatePopup, selected = identity }
+contextMoreMenuConfig : ContextId -> PopupMenu.Config Msg ContextMoreMenu.Action
+contextMoreMenuConfig cid =
+    { toMsg = UpdatePopup
+    , selected =
+        \action ->
+            case action of
+                ContextMoreMenu.Rename ->
+                    StartEditingContext cid
+
+                ContextMoreMenu.Delete ->
+                    NoOp
+    }
 
 
 viewPopup model =
     case model.popup of
         ContextMoreMenu cid state ->
             PopupMenu.render
-                { config = contextMoreMenuConfig
+                { config = contextMoreMenuConfig cid
                 , state = state
                 , domId = contextMoreMenuPopperDomId
-                , children = [ StartEditingContext cid, DeleteContext cid ]
+                , children = ContextMoreMenu.actions
                 , containerStyles =
                     [ pRm 0.5
                     , minWidth (rem 20)
                     ]
                 , childContent =
-                    \child ->
-                        [ sDiv [ p2Rm 0 0 ]
-                            []
-                            [ styled button
-                                [ btnReset, p2Rm 0.5 1, w100 ]
-                                []
-                                [ text
-                                    (case child of
-                                        StartEditingContext _ ->
-                                            "Rename"
-
-                                        DeleteContext _ ->
-                                            "Delete"
-
-                                        _ ->
-                                            "Unknown"
-                                    )
-                                ]
-                            ]
-                        ]
+                    ContextMoreMenu.childContent
                 }
 
         NoPopup ->
