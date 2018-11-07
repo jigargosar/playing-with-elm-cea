@@ -26,7 +26,6 @@ import Port
 import Random
 import SelectUI
 import Set exposing (Set)
-import SnackBar exposing (SnackBar, SnackBarTitle)
 import Styles exposing (..)
 import Svg.Attributes
 import Svg.Styled exposing (svg)
@@ -49,7 +48,6 @@ type Page
 
 type alias Model =
     { magicMenu : MagicMenu
-    , snackBar : SnackBar
     , todoStore : TodoStore
     , contextStore : ContextStore
     , contextId : ContextId
@@ -74,7 +72,6 @@ init flags =
     in
     pure
         { magicMenu = MagicMenu.initial
-        , snackBar = SnackBar.empty
         , todoStore = todoStore
         , contextStore = contextStore
         , contextId = ContextStore.defaultId
@@ -197,7 +194,6 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Line
-    | SnackBarMsg SnackBar.Msg
     | SetPage Page
     | SetContextId ContextId
     | SelectContextUIMsg (SelectUI.Msg ContextItem)
@@ -231,16 +227,6 @@ update message model =
 
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
-                |> andThenUpdate (SnackBarMsg <| SnackBar.show ("Main: " :: logMessages |> String.join ""))
-
-        SnackBarMsg msg ->
-            Update2.lift
-                .snackBar
-                (\s b -> { b | snackBar = s })
-                SnackBarMsg
-                SnackBar.update
-                msg
-                model
 
         SetPage page ->
             pure { model | page = page }
@@ -308,7 +294,6 @@ update message model =
 
                     else
                         update (TodoStoreMsg <| TodoStore.addNew content) model
-                            |> andThenUpdate (SnackBarMsg <| SnackBar.show "Task Added")
 
                 Mode.AddContextOutMsg name ->
                     if isWhitespaceOrEmptyString name then
@@ -316,7 +301,6 @@ update message model =
 
                     else
                         update (ContextStoreMsg <| ContextStore.addNew name) model
-                            |> andThenUpdate (SnackBarMsg <| SnackBar.show "Context Added")
 
                 Mode.TodoContentUpdatedOutMsg id content ->
                     if isWhitespaceOrEmptyString content then
@@ -410,7 +394,6 @@ view model =
         , viewPage model
         , MagicMenu.view mockActions MagicMenuMsg model.magicMenu
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
-        , SnackBar.view SnackBarMsg { actions = [] } model.snackBar
         ]
 
 
