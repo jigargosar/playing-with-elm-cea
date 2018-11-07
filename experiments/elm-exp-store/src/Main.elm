@@ -477,8 +477,8 @@ viewTodoListHeader model =
                     \name ->
                         [ sDiv [ p2Rm 0 0 ]
                             []
-                            [ styled Btn.flat
-                                [ p2Rm 0.5 1, minWidth (rem 10), w100, fg "inherit" ]
+                            [ styled button
+                                [ btnReset, p2Rm 0.5 1, minWidth (rem 10), w100 ]
                                 []
                                 [ text name ]
                             ]
