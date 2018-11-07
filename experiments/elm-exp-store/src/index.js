@@ -114,7 +114,7 @@ flyd.on(
 window.addEventListener('wheel', function (e) {
   // console.log(e)
   const data = pick(['deltaX', 'deltaY'])(e)
-  sendTo(app, 'wheel', data)
+  // sendTo(app, 'wheel', data)
 })
 
 let popper = null
@@ -131,22 +131,23 @@ subscribe(
       storageSet('contexts', contexts)
     },
     // focusSelector,
-    createPopper: ([refDomId, popperDomId])=> {
+    createPopper: ([refDomId, popperDomId]) => {
       if (popper) {
         popper.destroy()
       }
-      requestAnimationFrame(() => {
+      setTimeout(()=>requestAnimationFrame(() => {
         const refEl = document.getElementById(refDomId)
         const popEl = document.getElementById(popperDomId)
         if (!refEl || !popEl) {
           debugger
         }
         popper = new Popper(refEl, popEl, {
+          container: document.getElementById("popper-container"),
           onCreate(data) {
             // console.log(`onCreate data`, data)
           },
         })
-      })
+      }), 0)
     },
   },
   app,
