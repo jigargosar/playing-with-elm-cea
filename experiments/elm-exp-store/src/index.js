@@ -137,12 +137,14 @@ subscribe(
       if(popper){
         popper.destroy()
       }
-      const refEl = document.getElementById(`context-menu-trigger-${cid}`)
-      const popEl =  document.getElementById(`context-menu-popper`)
-      if(!refEl || !popEl){
-        debugger
-      }
-      popper = new Popper(refEl, popEl , {placement:"auto"})
+      setTimeout(()=>{
+        const refEl = document.getElementById(`context-menu-trigger-${cid}`)
+        const popEl =  document.getElementById(`context-menu-popper`)
+        if(!refEl || !popEl){
+          debugger
+        }
+        popper = new Popper(refEl, popEl , {placement:"right"})
+      }, 0)
     }
   },
   app,
