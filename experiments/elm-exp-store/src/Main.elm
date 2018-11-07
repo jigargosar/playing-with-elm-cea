@@ -247,7 +247,7 @@ update message model =
                             { get = .mode
                             , set = \s b -> { b | mode = s }
                             , toMsg = ModeMsg
-                            , update = Mode.update
+                            , update = Mode.update (Mode.updateConfig ModeMsg)
                             , toOutMsg = ModeOutMsg
                             , updateOutMsg = update
                             }

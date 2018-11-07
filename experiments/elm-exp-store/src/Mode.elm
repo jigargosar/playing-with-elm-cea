@@ -2,6 +2,7 @@ module Mode exposing
     ( Mode
     , Msg
     , OutMsg(..)
+    , UpdateConfig
     , init
     , startAddingContext
     , startAddingTodo
@@ -9,6 +10,7 @@ module Mode exposing
     , startEditingTodo
     , startEditingTodoContext
     , update
+    , updateConfig
     , viewModal
     )
 
@@ -91,6 +93,11 @@ type alias UpdateConfig msg =
     }
 
 
+updateConfig : (Msg -> msg) -> UpdateConfig msg
+updateConfig toMsg =
+    UpdateConfig toMsg Nothing Nothing Nothing Nothing Nothing
+
+
 type OutMsg
     = AddTodoOutMsg TodoContent
     | AddContextOutMsg ContextName
@@ -99,12 +106,12 @@ type OutMsg
     | ContextNameUpdatedOutMsg ContextId ContextName
 
 
-andThenUpdate msg =
-    andThen3 (update msg)
-
-
-update : Msg -> Model -> ( Model, Cmd Msg, List OutMsg )
-update message model =
+update : UpdateConfig msg -> Msg -> Model -> ( Model, Cmd Msg, List OutMsg )
+update config message model =
+    let
+        andThenUpdate msg =
+            andThen3 (update config msg)
+    in
     case message of
         NoOp ->
             pure3 model
@@ -143,7 +150,7 @@ update message model =
                     pure3 model
 
         BackdropClicked ->
-            update EndEditMode model
+            update config EndEditMode model
 
         StartEditingTodo todo ->
             case model of
