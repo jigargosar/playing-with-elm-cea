@@ -306,25 +306,27 @@ update message model =
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId ))
 
         UpdatePopup popupMsg ->
-            case ( model.popup, popupMsg ) of
-                ( ContextMorePopup cid state, ContextMoreMsg msg ) ->
-                    PopupMenu.update contextMoreMenuConfig msg state
-                        |> Tuple.mapFirst (ContextMorePopup cid >> (\popup -> { model | popup = popup }))
+            case model.popup of
+                ContextMorePopup cid state ->
+                    case popupMsg of
+                        ContextMoreMsg msg ->
+                            PopupMenu.update contextMoreMenuConfig msg state
+                                |> Tuple.mapFirst (ContextMorePopup cid >> (\popup -> { model | popup = popup }))
 
-                ( ContextMorePopup cid state, ContextMoreActionMsg action ) ->
-                    let
-                        msg =
-                            case action of
-                                ContextMore.Rename ->
-                                    StartEditingContext cid
+                        ContextMoreActionMsg action ->
+                            let
+                                msg =
+                                    case action of
+                                        ContextMore.Rename ->
+                                            StartEditingContext cid
 
-                                ContextMore.Delete ->
-                                    NoOp
-                    in
-                    update msg model
-                        |> mapModel (\m -> { m | popup = NoPopup })
+                                        ContextMore.Delete ->
+                                            NoOp
+                            in
+                            update msg model
+                                |> mapModel (\m -> { m | popup = NoPopup })
 
-                _ ->
+                NoPopup ->
                     ( model, Cmd.none )
 
 
