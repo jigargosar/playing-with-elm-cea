@@ -5,7 +5,7 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import Btn
-import ContextMoreMenu
+import ContextMoreMenu exposing (contextMoreMenuPopperDomId, contextMoreMenuRefDomId)
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
 import CssAtoms exposing (fa, fgGray, p0, pl0, ptr, ttu, w100)
@@ -179,14 +179,6 @@ getMaybeSelectedContext model =
     model.contextStore |> ContextStore.get (getSelectedContextId model)
 
 
-contextMoreMenuRefDomId cid =
-    "context-more-menu-reference-" ++ cid
-
-
-contextMoreMenuPopperDomId =
-    "context-more-menu-popper"
-
-
 
 ---- UPDATE ----
 
@@ -213,6 +205,7 @@ type Msg
     | SetTodoContextOutMsg TodoId ContextId
     | ContextNameUpdatedOutMsg ContextId ContextName
     | ContextMoreClicked ContextId
+    | ContextMoreMenuAction ContextId ContextMoreMenu.Action
     | UpdatePopup (PopupMenu.Msg ContextMoreMenu.Action)
 
 
@@ -308,6 +301,19 @@ update message model =
             pure { model | popup = ContextMoreMenu cid PopupMenu.open }
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId ))
 
+        ContextMoreMenuAction cid action ->
+            let
+                msg =
+                    case action of
+                        ContextMoreMenu.Rename ->
+                            StartEditingContext cid
+
+                        ContextMoreMenu.Delete ->
+                            NoOp
+            in
+            update msg model
+                |> mapModel (\m -> { m | popup = NoPopup })
+
         UpdatePopup msg ->
             case model.popup of
                 ContextMoreMenu cid state ->
@@ -367,14 +373,7 @@ view model =
 contextMoreMenuConfig : ContextId -> PopupMenu.Config Msg ContextMoreMenu.Action
 contextMoreMenuConfig cid =
     { toMsg = UpdatePopup
-    , selected =
-        \action ->
-            case action of
-                ContextMoreMenu.Rename ->
-                    StartEditingContext cid
-
-                ContextMoreMenu.Delete ->
-                    NoOp
+    , selected = ContextMoreMenuAction cid
     }
 
 

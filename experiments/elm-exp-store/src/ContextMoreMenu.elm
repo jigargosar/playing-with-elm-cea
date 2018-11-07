@@ -1,9 +1,11 @@
-module ContextMoreMenu exposing (Action(..), actions, childContent)
+module ContextMoreMenu exposing (Action(..), actions, childContent, contextMoreMenuPopperDomId, contextMoreMenuRefDomId, view)
 
 import BasicsX exposing (..)
 import ContextStore exposing (ContextId)
+import Css exposing (..)
 import CssAtoms exposing (..)
 import Html.Styled exposing (button, styled, text)
+import PopupMenu
 import Styles exposing (..)
 import UI exposing (..)
 
@@ -34,3 +36,25 @@ childContent child =
             ]
         ]
     ]
+
+
+contextMoreMenuPopperDomId =
+    "context-more-menu-popper"
+
+
+contextMoreMenuRefDomId cid =
+    "context-more-menu-reference-" ++ cid
+
+
+view config state =
+    PopupMenu.render
+        { config = config
+        , state = state
+        , domId = contextMoreMenuPopperDomId
+        , children = actions
+        , containerStyles =
+            [ pRm 0.5
+            , minWidth (rem 20)
+            ]
+        , childContent = childContent
+        }
