@@ -102,7 +102,7 @@ fz =
 
 
 lh =
-    lhNum 1.5
+    lineHeight (rem 1.5)
 
 
 fBody =

@@ -505,9 +505,9 @@ viewTodoList model =
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY, hs ], class "ph3" ]
             [ styled Btn.flatPl0
-                [ fa, fzPx 14 ]
+                [ fzPx 14, fa ]
                 [ onClick startAddingTodoMsg ]
-                [ Icons.plusDefault
+                [ Icons.plusSmall
                 , text "Add Task"
                 ]
             , styled Btn.flatPr0

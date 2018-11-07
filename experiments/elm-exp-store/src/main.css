@@ -36,6 +36,10 @@ body > :nth-child(4) {
   font-size: 0.5rem;
 }
 
+.hide-child .child { opacity: 0; transition: opacity .15s ease-in; }
+.hide-child:hover  .child, .hide-child:focus  .child,.hide-child:focus-within  .child, .hide-child:active .child { opacity: 1; transition: opacity .15s ease-in; }
+
+
 a.quick {
   color: hsla(210, 100%, 56%, 0.3);
   color: dodgerblue;

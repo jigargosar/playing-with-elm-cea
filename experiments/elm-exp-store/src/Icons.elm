@@ -17,6 +17,7 @@ module Icons exposing
     , moreHorizontal
     , plus
     , plusDefault
+    , plusSmall
     , rotateCcwDefault
     )
 
@@ -102,6 +103,10 @@ defaultAttrs =
 
 default =
     withStyleAndAttr [] []
+
+
+small =
+    withStyleAndAttr [] [ width "20", height "20" ]
 
 
 withStyleAndAttr : List Css.Style -> List (Attribute msg) -> Icon -> Html msg
@@ -222,6 +227,10 @@ circleDefault =
 
 plusDefault =
     default plus
+
+
+plusSmall =
+    small plus
 
 
 checkDefault =
