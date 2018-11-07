@@ -15,7 +15,11 @@ type alias ViewConfig child msg =
 render : ViewConfig child msg -> Html msg
 render config =
     styled div
-        [ position absolute ]
+        [ position absolute
+        , bg "white"
+        , elevation 4
+        , borderRadius (rem 0.5)
+        ]
         []
         (config.children
             |> List.map (config.childContent >> div [])

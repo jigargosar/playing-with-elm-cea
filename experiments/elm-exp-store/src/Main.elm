@@ -7,7 +7,7 @@ import Browser.Events
 import Btn
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
-import CssAtoms exposing (fa, fgGray, pl0, ptr, ttu, w100)
+import CssAtoms exposing (fa, fgGray, p0, pl0, ptr, ttu, w100)
 import Dict exposing (Dict)
 import FeatherIcons as Icon
 import HotKey
@@ -472,7 +472,7 @@ viewTodoListHeader model =
               -}
               Menu.render
                 { children = [ "Rename", "Delete" ]
-                , childContent = \name -> [ styled Btn.flat [ w100, fg "inherit" ] [] [ text name ] ]
+                , childContent = \name -> [ styled Btn.flat [ p2Rm 0.5 1, minWidth (rem 10), w100, fg "inherit" ] [] [ text name ] ]
                 }
             ]
         ]
