@@ -1,6 +1,7 @@
 module Btn exposing (flat, flatPl0, flatPr0, icon, sIcon)
 
 import Css exposing (hover)
+import Css.Transitions as CT exposing (transition)
 import CssAtoms exposing (fgGray)
 import FeatherIcons
 import Html.Styled exposing (button, fromUnstyled, styled)
@@ -9,11 +10,18 @@ import Icons
 import Styles exposing (..)
 
 
+hoverTransition =
+    Css.batch
+        [ hover [ fg "red" ]
+        , transition [ CT.color3 250 0 CT.easeIn ]
+        ]
+
+
 icon =
     styled button
         [ btnReset
         , fZero
-        , hover [ fg "red" ]
+        , hoverTransition
         ]
 
 
@@ -27,7 +35,7 @@ flat =
         , p2Rm 0 0.5
         , fgGray
         , rowCY
-        , hover [ fg "red" ]
+        , hoverTransition
         ]
 
 
