@@ -3,10 +3,11 @@ module Menu exposing (render)
 import Css exposing (..)
 import DomEvents exposing (..)
 import Html.Styled as Html exposing (Attribute, Html, div, styled)
-import Html.Styled.Attributes exposing (..)
+import Html.Styled.Attributes as HA exposing (..)
 import Html.Styled.Events exposing (..)
 import Html.Styled.Keyed exposing (node)
 import Styles exposing (..)
+import UpdateReturn exposing (..)
 
 
 type alias Model =
@@ -35,6 +36,9 @@ update config message model =
         NoOp ->
             ( model, Cmd.none )
 
+        ChildSelected child ->
+            pure model
+
 
 type alias ViewConfig child msg =
     { config : Config msg child
@@ -47,22 +51,19 @@ type alias ViewConfig child msg =
 
 
 render : ViewConfig child msg -> Html msg
-render vConfig =
+render { config, children, containerStyles, domId, childContent } =
+    let
+        viewChild child =
+            div [ HA.map config.toMsg <| onClick <| ChildSelected child ] (childContent child)
+
+        rootStyles =
+            [ bg "white"
+            , elevation 4
+            , borderRadius (rem 0.5)
+            ]
+                ++ containerStyles
+    in
     styled div
-        ([ bg "white"
-         , elevation 4
-         , borderRadius (rem 0.5)
-         ]
-            ++ vConfig.containerStyles
-        )
-        [ id vConfig.domId ]
-        (vConfig.children
-            |> List.map
-                (\child ->
-                    let
-                        childContent =
-                            vConfig.childContent child
-                    in
-                    div [ onClick <| vConfig.config.toMsg <| ChildSelected child ] childContent
-                )
-        )
+        rootStyles
+        [ id domId ]
+        (children |> List.map viewChild)
