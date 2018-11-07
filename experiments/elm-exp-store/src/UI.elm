@@ -1,8 +1,6 @@
 module UI exposing
     ( backdrop
-    , boolHtml
     , fBtn
-    , maybeHtml
     , row
     , toolbar
     , txt
@@ -33,22 +31,6 @@ fBtn fIcon msg =
         , class "flex items-center justify-center pa0 ma0"
         ]
         [ fIcon |> FeatherIcons.toHtml [] |> Html.fromUnstyled ]
-
-
-noHtml =
-    text ""
-
-
-boolHtml bool html_ =
-    if bool then
-        html_
-
-    else
-        noHtml
-
-
-maybeHtml htmlFn =
-    unwrapMaybe noHtml htmlFn
 
 
 txt l =

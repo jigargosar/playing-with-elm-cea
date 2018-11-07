@@ -18,7 +18,6 @@ import Html.Styled.Keyed as HKeyed exposing (node)
 import Icons
 import JsonCodecX exposing (Value)
 import Log
-import MagicMenu exposing (MagicMenu)
 import Mode exposing (Mode)
 import Port
 import Random
@@ -44,8 +43,7 @@ type Page
 
 
 type alias Model =
-    { magicMenu : MagicMenu
-    , todoStore : TodoStore
+    { todoStore : TodoStore
     , contextStore : ContextStore
     , contextId : ContextId
     , mode : Mode
@@ -67,8 +65,7 @@ init flags =
             ContextStore.load flags.contexts
     in
     pure
-        { magicMenu = MagicMenu.initial
-        , todoStore = todoStore
+        { todoStore = todoStore
         , contextStore = contextStore
         , contextId = ContextStore.defaultId
         , mode = Mode.init
@@ -195,7 +192,6 @@ type Msg
     | SwitchToContextTodoList
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
-    | MagicMenuMsg MagicMenu.Msg
     | ModeMsg Mode.Msg
     | ModeOutMsg Mode.OutMsg
 
@@ -297,15 +293,6 @@ update message model =
                     else
                         update (ContextStoreMsg <| ContextStore.setName id name) model
 
-        MagicMenuMsg msg ->
-            Update2.lift
-                .magicMenu
-                (\s b -> { b | magicMenu = s })
-                MagicMenuMsg
-                MagicMenu.update
-                msg
-                model
-
 
 
 ---- Subscriptions
@@ -313,8 +300,7 @@ update message model =
 
 subscriptions model =
     Sub.batch
-        [ MagicMenu.subscriptions model.magicMenu |> Sub.map MagicMenuMsg
-        ]
+        []
 
 
 
@@ -345,18 +331,6 @@ navigateToInbox =
     SwitchToContextTodoListWithContextId ContextStore.defaultId
 
 
-mockActions =
-    [ Icon.home
-    , Icon.twitter
-    , Icon.scissors
-    , Icon.edit
-    , Icon.moon
-    ]
-        |> List.map (\icon -> MagicMenu.Action icon NoOp)
-        |> (::) (MagicMenu.Action Icon.trash2 NoOp)
-        |> (::) (MagicMenu.Action Icon.filePlus startAddingTodoMsg)
-
-
 getAllContextsNameIdPairs =
     .contextStore
         >> ContextStore.list
@@ -369,7 +343,6 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ viewAppBar
         , viewPage model
-        , MagicMenu.view mockActions MagicMenuMsg model.magicMenu
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         ]
 
