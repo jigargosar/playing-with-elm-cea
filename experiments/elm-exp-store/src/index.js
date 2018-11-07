@@ -135,18 +135,20 @@ subscribe(
       if (popper) {
         popper.destroy()
       }
-      setTimeout(()=>requestAnimationFrame(() => {
+      setTimeout(() => requestAnimationFrame(() => {
         const refEl = document.getElementById(refDomId)
         const popEl = document.getElementById(popperDomId)
         if (!refEl || !popEl) {
           debugger
         }
         popper = new Popper(refEl, popEl, {
-          container: document.getElementById("popper-container"),
+          preventOverflow:{boundariesElement: "viewport"},
+          placement: 'right',
           onCreate(data) {
             // console.log(`onCreate data`, data)
           },
         })
+        popper.scheduleUpdate()
       }), 0)
     },
   },

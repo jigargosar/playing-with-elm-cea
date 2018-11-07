@@ -388,17 +388,6 @@ viewPopup model =
         ContextMorePopup cid state ->
             ContextMore.view contextMoreMenuConfig cid state
 
-        --                { config = contextMoreMenuConfig
-        --                , state = state
-        --                , domId = contextMoreMenuPopperDomId
-        --                , children = ContextMore.actions
-        --                , containerStyles =
-        --                    [ pRm 0.5
-        --                    , minWidth (rem 20)
-        --                    ]
-        --                , childContent =
-        --                    ContextMore.childContent
-        --                }
         NoPopup ->
             noHtml
 
@@ -427,7 +416,7 @@ viewPage model =
         [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns " ]
             [ viewSidebar model
             ]
-        , div [ class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
+        , div [ id "popper-container", class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
             [ viewPageContent
             ]
         ]
