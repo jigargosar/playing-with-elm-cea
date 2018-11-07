@@ -38,6 +38,11 @@ import UpdateReturn exposing (..)
 ---- MODEL ----
 
 
+type Popup
+    = NoPopup
+    | ContextMoreMenu ContextId Menu.Model
+
+
 type Page
     = ContextTodoList
 
@@ -46,7 +51,7 @@ type alias Model =
     { todoStore : TodoStore
     , contextStore : ContextStore
     , contextId : ContextId
-    , popup : Maybe ContextId
+    , popup : Popup
     , mode : Mode
     , page : Page
     }
@@ -69,7 +74,7 @@ init flags =
         { todoStore = todoStore
         , contextStore = contextStore
         , contextId = ContextStore.defaultId
-        , popup = Nothing
+        , popup = NoPopup
         , mode = Mode.init
         , page = ContextTodoList
         }
@@ -286,7 +291,7 @@ update message model =
             update (ContextStoreMsg <| ContextStore.setName id name) model
 
         ContextMoreClicked cid ->
-            pure { model | popup = Just cid }
+            pure { model | popup = ContextMoreMenu cid Menu.init }
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId ))
 
 
@@ -344,11 +349,18 @@ view model =
         ]
 
 
+contextMenuConfig : Menu.Config Msg String
+contextMenuConfig =
+    { toMsg = \_ -> NoOp, selected = \_ -> NoOp }
+
+
 viewPopup model =
-    let
-        render _ =
+    case model.popup of
+        ContextMoreMenu cid state ->
             Menu.render
-                { domId = contextMoreMenuPopperDomId
+                { config = contextMenuConfig
+                , state = state
+                , domId = contextMoreMenuPopperDomId
                 , children = [ "Rename", "Delete" ]
                 , containerStyles =
                     [ pRm 0.5
@@ -365,8 +377,9 @@ viewPopup model =
                             ]
                         ]
                 }
-    in
-    maybeHtml render model.popup
+
+        NoPopup ->
+            noHtml
 
 
 viewAppBar =

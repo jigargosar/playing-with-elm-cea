@@ -1,4 +1,4 @@
-module Menu exposing (render)
+module Menu exposing (Config, Model, Msg, init, render, update)
 
 import Css exposing (..)
 import DomEvents exposing (..)
@@ -7,6 +7,7 @@ import Html.Styled.Attributes as HA exposing (..)
 import Html.Styled.Events exposing (..)
 import Html.Styled.Keyed exposing (node)
 import Styles exposing (..)
+import UI exposing (..)
 import UpdateReturn exposing (..)
 
 
@@ -53,8 +54,11 @@ type alias ViewConfig child msg =
 render : ViewConfig child msg -> Html msg
 render { config, children, containerStyles, domId, childContent } =
     let
+        attrToMsg =
+            HA.map config.toMsg
+
         viewChild child =
-            div [ HA.map config.toMsg <| onClick <| ChildSelected child ] (childContent child)
+            div [ (onClick <| ChildSelected child) |> attrToMsg ] (childContent child)
 
         rootStyles =
             [ bg "white"
@@ -63,7 +67,6 @@ render { config, children, containerStyles, domId, childContent } =
             ]
                 ++ containerStyles
     in
-    styled div
-        rootStyles
+    sDiv rootStyles
         [ id domId ]
         (children |> List.map viewChild)
