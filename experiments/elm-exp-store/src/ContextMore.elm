@@ -42,19 +42,19 @@ childContent child =
     ]
 
 
-contextMoreMenuPopperDomId =
-    "context-more-menu-popper"
+contextMoreMenuPopperDomId cid =
+    "context-more-menu-popper-"
 
 
 contextMoreMenuRefDomId cid =
     "context-more-menu-reference-" ++ cid
 
 
-view config state =
+view config cid state =
     PopupMenu.render
         { config = config
         , state = state
-        , domId = contextMoreMenuPopperDomId
+        , domId = contextMoreMenuPopperDomId cid
         , children = actions
         , containerStyles =
             [ pRm 0.5

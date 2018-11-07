@@ -303,7 +303,7 @@ update message model =
 
         ContextMoreClicked cid ->
             pure { model | popup = ContextMorePopup cid PopupMenu.open }
-                |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId ))
+                |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId cid ))
 
         UpdatePopup popupMsg ->
             case model.popup of
@@ -386,19 +386,19 @@ contextMoreMenuConfig =
 viewPopup model =
     case model.popup of
         ContextMorePopup cid state ->
-            PopupMenu.render
-                { config = contextMoreMenuConfig
-                , state = state
-                , domId = contextMoreMenuPopperDomId
-                , children = ContextMore.actions
-                , containerStyles =
-                    [ pRm 0.5
-                    , minWidth (rem 20)
-                    ]
-                , childContent =
-                    ContextMore.childContent
-                }
+            ContextMore.view contextMoreMenuConfig cid state
 
+        --                { config = contextMoreMenuConfig
+        --                , state = state
+        --                , domId = contextMoreMenuPopperDomId
+        --                , children = ContextMore.actions
+        --                , containerStyles =
+        --                    [ pRm 0.5
+        --                    , minWidth (rem 20)
+        --                    ]
+        --                , childContent =
+        --                    ContextMore.childContent
+        --                }
         NoPopup ->
             noHtml
 
