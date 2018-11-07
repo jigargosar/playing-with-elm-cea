@@ -465,7 +465,7 @@ viewSidebar model =
                         []
                         [ text <| String.fromInt activeTodoCount ]
                     ]
-                , Btn.sIcon [ fgGray ] [] [ Icons.moreHDef ]
+                , Btn.sIcon [ fgGray, opacity zero, hover [ opacity (num 1) ] ] [] [ Icons.moreHDef ]
                 ]
     in
     div
