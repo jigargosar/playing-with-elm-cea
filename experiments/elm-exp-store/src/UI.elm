@@ -1,4 +1,4 @@
-module UI exposing (backdrop, boolHtml, maybeHtml, noHtml, sDiv, toolbar, txtA, txtC)
+module UI exposing (backdrop, boolHtml, maybeHtml, noHtml, sDiv, toolbar, txtC)
 
 import BasicsX exposing (unwrapMaybe)
 import FeatherIcons
@@ -30,10 +30,6 @@ sDiv =
 
 txtC c l =
     div [ class c ] [ text l ]
-
-
-txtA attrs l =
-    div attrs [ text l ]
 
 
 toolbar kids =
