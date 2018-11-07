@@ -6,6 +6,7 @@ import registerServiceWorker from './registerServiceWorker'
 import { compose, curry, forEachObjIndexed, isNil, partial, pathOr, pick, tap } from 'ramda'
 
 import flyd from 'flyd'
+import Popper from 'popper.js'
 
 // console.log = (partial(console.log, ['[LogWrapper]']))
 
@@ -118,6 +119,7 @@ window.addEventListener('wheel', function(e) {
   sendTo(app, 'wheel', data)
 })
 
+let popper = null
 
 subscribe(
   {
@@ -131,6 +133,17 @@ subscribe(
       storageSet('contexts', contexts)
     },
     // focusSelector,
+    createContextPopper: cid =>{
+      if(popper){
+        popper.destroy()
+      }
+      const refEl = document.getElementById(`context-menu-trigger-${cid}`)
+      const popEl =  document.getElementById(`context-menu-popper`)
+      if(!refEl || !popEl){
+        debugger
+      }
+      popper = new Popper(refEl, popEl , {placement:"auto"})
+    }
   },
   app,
 )

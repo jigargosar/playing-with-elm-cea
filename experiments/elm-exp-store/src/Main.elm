@@ -279,7 +279,7 @@ update message model =
 
         ContextMoreClicked cid ->
             pure { model | popup = Just cid }
-                |> addCmd (Port.createContextPopper cid)
+                |> addCmd (Port.createContextPopper (defaultEmptyStringTo "__INBOX__" cid))
 
 
 
@@ -331,31 +331,25 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ viewAppBar
         , viewPage model
-        , case model.popup of
-            Just id ->
-                Menu.render
-                    { domId = "context-menu-popper"
-                    , children = [ "Rename", "Delete" ]
-                    , containerStyles =
-                        [ pRm 0.5
-                        , minWidth (rem 10)
-                        , top (rem 0.5)
-                        , left (px 0)
+        , Menu.render
+            { domId = "context-menu-popper"
+            , children = [ "Rename", "Delete" ]
+            , containerStyles =
+                [ pRm 0.5
+                , minWidth (rem 20)
+                , unwrapMaybe (display none) (\_ -> batch []) model.popup
+                ]
+            , childContent =
+                \child ->
+                    [ sDiv [ p2Rm 0 0 ]
+                        []
+                        [ styled button
+                            [ btnReset, p2Rm 0.5 1, w100 ]
+                            []
+                            [ text child ]
                         ]
-                    , childContent =
-                        \child ->
-                            [ sDiv [ p2Rm 0 0 ]
-                                []
-                                [ styled button
-                                    [ btnReset, p2Rm 0.5 1, w100 ]
-                                    []
-                                    [ text child ]
-                                ]
-                            ]
-                    }
-
-            Nothing ->
-                noHtml
+                    ]
+            }
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         ]
 
@@ -455,7 +449,7 @@ viewSidebar model =
                 ]
 
         listItem =
-            styled div [ fa, rowCY, pRm 0.5, position relative ]
+            styled div [ fa, rowCY, pRm 0.5 ]
 
         viewContextsItem =
             styled listItem
@@ -471,7 +465,9 @@ viewSidebar model =
         viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, id } =
             styled listItem
                 [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
-                [ class "hide-child" ]
+                [ Html.Styled.Attributes.id <| "context-menu-trigger-" ++ defaultEmptyStringTo "__INBOX__" id
+                , class "hide-child"
+                ]
                 [ liTextButton
                     [ css
                         [ ttu
@@ -499,7 +495,10 @@ viewSidebar model =
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
-        [ viewContextItem (Css.batch []) <| createInboxContextItemViewModel model
+        [ node "div" [] <|
+            [ viewKeyedContextItem (Css.batch [])
+                (createInboxContextItemViewModel model)
+            ]
         , viewContextsItem
         , node "div" [] <|
             List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) (createUserDefinedContextItemViewModel model)
