@@ -555,10 +555,11 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
                 Btn.sIcon [ fg "gray" ] [ onClick markDone ] [ Icons.circle |> Icons.default ]
     in
     ( key
-    , UI.row "pa3 bb b--light-gray"
-        []
-        [ div [] [ doneIconBtn ]
-        , div [ class "flex-auto flex flex-column " ]
+    , sDiv [ rowCY ]
+        [ class "pa3 bb b--light-gray" ]
+        [ sDiv [ hs ] [] [ doneIconBtn ]
+        , sDiv [ hs ]
+            [ class "flex-auto flex flex-column " ]
             [ div
                 [ class "pointer"
                 , classList [ ( "strike gray ", done ) ]

@@ -1,4 +1,4 @@
-module UI exposing (backdrop, boolHtml, fBtn, maybeHtml, noHtml, row, rowS3, sDiv, toolbar, txt, txtA, txtC)
+module UI exposing (backdrop, boolHtml, fBtn, maybeHtml, noHtml, sDiv, toolbar, txt, txtA, txtC)
 
 import BasicsX exposing (unwrapMaybe)
 import FeatherIcons
@@ -26,14 +26,6 @@ noHtml =
 
 sDiv =
     styled div
-
-
-rowS3 classes attrs c =
-    div (class ("flex flex-row hs3 items-center " ++ classes) :: attrs) c
-
-
-row =
-    rowS3
 
 
 fBtn : FeatherIcons.Icon -> msg -> Html msg
