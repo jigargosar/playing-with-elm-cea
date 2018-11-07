@@ -472,12 +472,16 @@ viewTodoListHeader model =
               -}
               Menu.render
                 { children = [ "Rename", "Delete" ]
+                , containerStyles = [ pRm 0.5 ]
                 , childContent =
                     \name ->
-                        [ styled Btn.flat
-                            [ p2Rm 0.5 1, minWidth (rem 10), w100, fg "inherit" ]
+                        [ sDiv [ p2Rm 0 0 ]
                             []
-                            [ text name ]
+                            [ styled Btn.flat
+                                [ p2Rm 0.5 1, minWidth (rem 10), w100, fg "inherit" ]
+                                []
+                                [ text name ]
+                            ]
                         ]
                 }
             ]
