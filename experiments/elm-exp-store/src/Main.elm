@@ -344,7 +344,7 @@ view model =
 
 viewAppBar =
     appBar []
-        [ div [ class "w-100 measure" ]
+        [ section1 []
             [ div [ class "flex flex-row pa3" ]
                 [ sDiv [ fwb ] [] [ text "ELM" ], sDiv [ fontWeight lighter ] [] [ text "DONE" ] ]
             ]
