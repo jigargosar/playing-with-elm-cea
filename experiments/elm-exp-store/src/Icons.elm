@@ -13,6 +13,8 @@ module Icons exposing
     , create
     , default
     , defaultAttrs
+    , moreHDef
+    , moreHorizontal
     , plus
     , plusDefault
     , rotateCcwDefault
@@ -188,6 +190,18 @@ chevronLeft =
     svgFeatherIcon "chevron-left"
         [ Svg.polyline [ points "15 18 9 12 15 6" ] []
         ]
+
+
+moreHorizontal =
+    svgFeatherIcon "more-horizontal"
+        [ Svg.circle [ cx "12", cy "12", r "1" ] []
+        , Svg.circle [ cx "19", cy "12", r "1" ] []
+        , Svg.circle [ cx "5", cy "12", r "1" ] []
+        ]
+
+
+moreHDef =
+    default moreHorizontal
 
 
 chevronLeftDefault =
