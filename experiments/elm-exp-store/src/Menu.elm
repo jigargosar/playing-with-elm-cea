@@ -46,7 +46,7 @@ type alias ViewConfig child msg =
     }
 
 
-render : ViewConfig child msg -> Html (Msg child)
+render : ViewConfig child msg -> Html msg
 render vConfig =
     styled div
         ([ bg "white"
@@ -63,10 +63,6 @@ render vConfig =
                         childContent =
                             vConfig.childContent child
                     in
-                    div [ onClick <| ChildSelected child ] childContent
+                    div [ onClick <| vConfig.config.toMsg <| ChildSelected child ] childContent
                 )
         )
-
-
-
---        |> Html.map vConfig.config.toMsg
