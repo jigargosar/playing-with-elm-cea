@@ -28,7 +28,7 @@ import Svg.Attributes
 import Svg.Styled exposing (svg)
 import Task
 import Time
-import TodoStore exposing (Todo, TodoStore)
+import TodoStore exposing (Todo, TodoContent, TodoId, TodoStore)
 import UI exposing (..)
 import Update2
 import UpdateReturn exposing (..)
@@ -189,7 +189,11 @@ type Msg
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
     | ModeMsg Mode.Msg
-    | ModeOutMsg Mode.OutMsg
+    | AddTodoOutMsg TodoContent
+    | AddContextOutMsg ContextName
+    | SetTodoContentOutMsg TodoId TodoContent
+    | SetTodoContextOutMsg TodoId ContextId
+    | ContextNameUpdatedOutMsg ContextId ContextName
 
 
 type alias ContextItem =
@@ -238,28 +242,37 @@ update message model =
                 model
 
         ModeMsg msg ->
-            updateSub (Mode.update <| Mode.updateConfig ModeMsg)
+            let
+                modeUpdateConfig : Mode.UpdateConfig Msg
+                modeUpdateConfig =
+                    { toMsg = ModeMsg
+                    , addTodo = AddTodoOutMsg
+                    , setTodoContext = SetTodoContextOutMsg
+                    , setTodoContent = SetTodoContentOutMsg
+                    , addContext = AddContextOutMsg
+                    , setContextName = ContextNameUpdatedOutMsg
+                    }
+            in
+            updateSub (Mode.update modeUpdateConfig)
                 .mode
                 (\s b -> { b | mode = s })
                 msg
                 model
 
-        ModeOutMsg msg ->
-            case msg of
-                Mode.AddTodoOutMsg content ->
-                    update (TodoStoreMsg <| TodoStore.addNew content) model
+        AddTodoOutMsg content ->
+            update (TodoStoreMsg <| TodoStore.addNew content) model
 
-                Mode.AddContextOutMsg name ->
-                    update (ContextStoreMsg <| ContextStore.addNew name) model
+        AddContextOutMsg name ->
+            update (ContextStoreMsg <| ContextStore.addNew name) model
 
-                Mode.TodoContentUpdatedOutMsg id content ->
-                    update (TodoStoreMsg <| TodoStore.setContent id content) model
+        SetTodoContentOutMsg id content ->
+            update (TodoStoreMsg <| TodoStore.setContent id content) model
 
-                Mode.SetTodoContextOutMsg todoId contextId ->
-                    update (TodoStoreMsg <| TodoStore.setContextId todoId contextId) model
+        SetTodoContextOutMsg todoId contextId ->
+            update (TodoStoreMsg <| TodoStore.setContextId todoId contextId) model
 
-                Mode.ContextNameUpdatedOutMsg id name ->
-                    update (ContextStoreMsg <| ContextStore.setName id name) model
+        ContextNameUpdatedOutMsg id name ->
+            update (ContextStoreMsg <| ContextStore.setName id name) model
 
 
 

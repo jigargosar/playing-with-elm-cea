@@ -10,7 +10,6 @@ module Mode exposing
     , startEditingTodo
     , startEditingTodoContext
     , update
-    , updateConfig
     , viewModal
     )
 
@@ -85,17 +84,12 @@ startEditingContext =
 
 type alias UpdateConfig msg =
     { toMsg : Msg -> msg
-    , addTodo : Maybe (TodoContent -> msg)
-    , setTodoContext : Maybe (TodoId -> ContextId -> msg)
-    , setTodoContent : Maybe (TodoId -> TodoContent -> msg)
-    , addContext : Maybe (ContextName -> msg)
-    , setContextName : Maybe (ContextId -> ContextName -> msg)
+    , addTodo : TodoContent -> msg
+    , setTodoContext : TodoId -> ContextId -> msg
+    , setTodoContent : TodoId -> TodoContent -> msg
+    , addContext : ContextName -> msg
+    , setContextName : ContextId -> ContextName -> msg
     }
-
-
-updateConfig : (Msg -> msg) -> UpdateConfig msg
-updateConfig toMsg =
-    UpdateConfig toMsg Nothing Nothing Nothing Nothing Nothing
 
 
 type OutMsg
@@ -220,12 +214,12 @@ update config message model =
                 EditTodoMode id _ ->
                     EditTodoMode id newValue
                         |> pure
-                        |> addMaybeMsg (config.setTodoContent |> applyMaybeFn2 id newValue)
+                        |> addMsg (config.setTodoContent id newValue)
 
                 EditContextMode id _ ->
                     EditContextMode id newValue
                         |> pure
-                        |> addMaybeMsg (config.setContextName |> applyMaybeFn2 id newValue)
+                        |> addMsg (config.setContextName id newValue)
 
                 Default ->
                     pure model
@@ -247,15 +241,15 @@ update config message model =
             case model of
                 AddTodoMode content ->
                     pure Default
-                        |> addMaybeMsg (config.addTodo |> applyMaybe content)
+                        |> addMsg (config.addTodo content)
 
                 AddContextMode name ->
                     pure Default
-                        |> addMaybeMsg (config.addContext |> applyMaybe name)
+                        |> addMsg (config.addContext name)
 
                 EditTodoContextMode todoId contextId ->
                     pure Default
-                        |> addMaybeMsg (config.setTodoContext |> applyMaybeFn2 todoId contextId)
+                        |> addMsg (config.setTodoContext todoId contextId)
 
                 _ ->
                     pure Default
