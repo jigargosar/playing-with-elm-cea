@@ -446,7 +446,7 @@ viewSidebar model =
         viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected } =
             styled listItem
                 [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
-                []
+                [ class "hide-child" ]
                 [ liTextButton
                     [ css
                         [ ttu
@@ -465,7 +465,7 @@ viewSidebar model =
                         []
                         [ text <| String.fromInt activeTodoCount ]
                     ]
-                , Btn.sIcon [ fgGray, opacity zero, hover [ opacity (num 1) ] ] [] [ Icons.moreHDef ]
+                , Btn.sIcon [ fgGray, opacity zero ] [ class "child" ] [ Icons.moreHDef ]
                 ]
     in
     div
