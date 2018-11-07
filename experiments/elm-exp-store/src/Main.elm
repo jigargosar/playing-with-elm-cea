@@ -445,6 +445,20 @@ viewSidebar model =
                     [ class "child"
                     ]
                     [ Icons.moreHDef ]
+                , Menu.render
+                    { children = [ "Rename", "Delete" ]
+                    , containerStyles = [ pRm 0.5, minWidth (rem 10) ]
+                    , childContent =
+                        \child ->
+                            [ sDiv [ p2Rm 0 0 ]
+                                []
+                                [ styled button
+                                    [ btnReset, p2Rm 0.5 1, w100 ]
+                                    []
+                                    [ text child ]
+                                ]
+                            ]
+                    }
                 ]
     in
     div
@@ -465,25 +479,11 @@ viewTodoListHeader model =
     div
         [ class "ph3 flex flex-row" ]
         [ div [ class "flex-auto" ]
-            [ {- SelectUI.view selectContextUIConfig
-                 (Just <| getCurrentContextItem model)
-                 (allContextItems model)
-                 model.selectContextUI
-              -}
-              Menu.render
-                { children = [ "Rename", "Delete" ]
-                , containerStyles = [ pRm 0.5, minWidth (rem 10) ]
-                , childContent =
-                    \name ->
-                        [ sDiv [ p2Rm 0 0 ]
-                            []
-                            [ styled button
-                                [ btnReset, p2Rm 0.5 1, w100 ]
-                                []
-                                [ text name ]
-                            ]
-                        ]
-                }
+            [{- SelectUI.view selectContextUIConfig
+                (Just <| getCurrentContextItem model)
+                (allContextItems model)
+                model.selectContextUI
+             -}
             ]
         ]
 
