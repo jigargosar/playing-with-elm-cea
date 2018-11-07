@@ -238,23 +238,11 @@ update message model =
                 model
 
         ModeMsg msg ->
-            let
-                updateMode : Mode.Msg -> Model -> ( Model, Cmd Msg )
-                updateMode =
-                    let
-                        config : Update3Config Mode Mode.Msg Mode.OutMsg Model Msg
-                        config =
-                            { get = .mode
-                            , set = \s b -> { b | mode = s }
-                            , toMsg = ModeMsg
-                            , update = Mode.update (Mode.updateConfig ModeMsg)
-                            , toOutMsg = ModeOutMsg
-                            , updateOutMsg = update
-                            }
-                    in
-                    update3 config
-            in
-            updateMode msg model
+            updateSub (Mode.update <| Mode.updateConfig ModeMsg)
+                .mode
+                (\s b -> { b | mode = s })
+                msg
+                model
 
         ModeOutMsg msg ->
             case msg of
