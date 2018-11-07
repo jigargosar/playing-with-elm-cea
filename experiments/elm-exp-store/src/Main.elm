@@ -429,7 +429,7 @@ viewSidebar model =
                 ]
 
         listItem =
-            styled div [ fa, rowCY, pRm 0.5 ]
+            styled div [ fa, rowCY, pRm 0.5, position relative ]
 
         viewContextsItem =
             styled listItem
@@ -470,26 +470,35 @@ viewSidebar model =
                     ]
                     [ Icons.moreHDef ]
                 , if model.popup == Just id then
-                    Menu.render
-                        { children = [ "Rename", "Delete" ]
-                        , containerStyles = [ pRm 0.5, minWidth (rem 10) ]
-                        , childContent =
-                            \child ->
-                                [ sDiv [ p2Rm 0 0 ]
-                                    []
-                                    [ styled button
-                                        [ btnReset, p2Rm 0.5 1, w100 ]
-                                        []
-                                        [ text child ]
-                                    ]
+                    sDiv [ position relative ]
+                        []
+                        [ Menu.render
+                            { children = [ "Rename", "Delete" ]
+                            , containerStyles =
+                                [ pRm 0.5
+                                , minWidth (rem 10)
+                                , zIndex (int 10)
+                                , top (rem 0.5)
+                                , left (px 0)
                                 ]
-                        }
+                            , childContent =
+                                \child ->
+                                    [ sDiv [ p2Rm 0 0 ]
+                                        []
+                                        [ styled button
+                                            [ btnReset, p2Rm 0.5 1, w100 ]
+                                            []
+                                            [ text child ]
+                                        ]
+                                    ]
+                            }
+                        ]
 
                   else
                     noHtml
                 ]
     in
-    div
+    sDiv []
         [ class "min-h-100 bg-black-05" ]
         [ viewContextItem (Css.batch []) <| createInboxContextItemViewModel model
         , viewContextsItem
