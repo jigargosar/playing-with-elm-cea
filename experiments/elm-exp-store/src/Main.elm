@@ -34,7 +34,6 @@ import Task
 import Time
 import TodoStore exposing (Todo, TodoStore)
 import UI exposing (..)
-import UI.Icon
 import Update2
 import UpdateReturn exposing (..)
 
