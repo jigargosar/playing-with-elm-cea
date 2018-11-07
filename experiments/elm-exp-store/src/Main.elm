@@ -5,7 +5,7 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import Btn
-import ContextMoreMenu exposing (contextMoreMenuPopperDomId, contextMoreMenuRefDomId)
+import ContextMore exposing (contextMoreMenuPopperDomId, contextMoreMenuRefDomId)
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
 import CssAtoms exposing (fa, fgGray, p0, pl0, ptr, ttu, w100)
@@ -41,7 +41,7 @@ import UpdateReturn exposing (..)
 
 type Popup
     = NoPopup
-    | ContextMoreMenu ContextId PopupMenu.State
+    | ContextMorePopup ContextId PopupMenu.State
 
 
 type Page
@@ -205,8 +205,12 @@ type Msg
     | SetTodoContextOutMsg TodoId ContextId
     | ContextNameUpdatedOutMsg ContextId ContextName
     | ContextMoreClicked ContextId
-    | ContextMoreMenuAction ContextId ContextMoreMenu.Action
-    | UpdatePopup (PopupMenu.Msg ContextMoreMenu.Action)
+    | UpdatePopup PopupMsg
+
+
+type PopupMsg
+    = ContextMoreMsg ContextMore.Msg
+    | ContextMoreActionMsg ContextMore.Action
 
 
 type alias ContextItem =
@@ -298,29 +302,29 @@ update message model =
             update (ContextStoreMsg <| ContextStore.setName id name) model
 
         ContextMoreClicked cid ->
-            pure { model | popup = ContextMoreMenu cid PopupMenu.open }
+            pure { model | popup = ContextMorePopup cid PopupMenu.open }
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId ))
 
-        ContextMoreMenuAction cid action ->
-            let
-                msg =
-                    case action of
-                        ContextMoreMenu.Rename ->
-                            StartEditingContext cid
+        UpdatePopup popupMsg ->
+            case ( model.popup, popupMsg ) of
+                ( ContextMorePopup cid state, ContextMoreMsg msg ) ->
+                    PopupMenu.update contextMoreMenuConfig msg state
+                        |> Tuple.mapFirst (ContextMorePopup cid >> (\popup -> { model | popup = popup }))
 
-                        ContextMoreMenu.Delete ->
-                            NoOp
-            in
-            update msg model
-                |> mapModel (\m -> { m | popup = NoPopup })
+                ( ContextMorePopup cid state, ContextMoreActionMsg action ) ->
+                    let
+                        msg =
+                            case action of
+                                ContextMore.Rename ->
+                                    StartEditingContext cid
 
-        UpdatePopup msg ->
-            case model.popup of
-                ContextMoreMenu cid state ->
-                    PopupMenu.update (contextMoreMenuConfig cid) msg state
-                        |> Tuple.mapFirst (ContextMoreMenu cid >> (\popup -> { model | popup = popup }))
+                                ContextMore.Delete ->
+                                    NoOp
+                    in
+                    update msg model
+                        |> mapModel (\m -> { m | popup = NoPopup })
 
-                NoPopup ->
+                _ ->
                     ( model, Cmd.none )
 
 
@@ -370,27 +374,27 @@ view model =
         ]
 
 
-contextMoreMenuConfig : ContextId -> PopupMenu.Config Msg ContextMoreMenu.Action
-contextMoreMenuConfig cid =
-    { toMsg = UpdatePopup
-    , selected = ContextMoreMenuAction cid
+contextMoreMenuConfig : PopupMenu.Config Msg ContextMore.Action
+contextMoreMenuConfig =
+    { toMsg = UpdatePopup << ContextMoreMsg
+    , selected = UpdatePopup << ContextMoreActionMsg
     }
 
 
 viewPopup model =
     case model.popup of
-        ContextMoreMenu cid state ->
+        ContextMorePopup cid state ->
             PopupMenu.render
-                { config = contextMoreMenuConfig cid
+                { config = contextMoreMenuConfig
                 , state = state
                 , domId = contextMoreMenuPopperDomId
-                , children = ContextMoreMenu.actions
+                , children = ContextMore.actions
                 , containerStyles =
                     [ pRm 0.5
                     , minWidth (rem 20)
                     ]
                 , childContent =
-                    ContextMoreMenu.childContent
+                    ContextMore.childContent
                 }
 
         NoPopup ->

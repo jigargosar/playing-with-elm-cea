@@ -1,4 +1,4 @@
-module ContextMoreMenu exposing (Action(..), actions, childContent, contextMoreMenuPopperDomId, contextMoreMenuRefDomId, view)
+module ContextMore exposing (Action(..), Msg, actions, childContent, contextMoreMenuPopperDomId, contextMoreMenuRefDomId, view)
 
 import BasicsX exposing (..)
 import ContextStore exposing (ContextId)
@@ -17,6 +17,10 @@ type Action
 
 actions =
     [ Rename, Delete ]
+
+
+type alias Msg =
+    PopupMenu.Msg Action
 
 
 childContent child =
