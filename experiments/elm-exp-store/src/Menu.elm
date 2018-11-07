@@ -38,7 +38,8 @@ update config message model =
             ( model, Cmd.none )
 
         ChildSelected child ->
-            pure model
+            pure { model | open = False }
+                |> addMsg (config.selected child)
 
 
 type alias ViewConfig child msg =

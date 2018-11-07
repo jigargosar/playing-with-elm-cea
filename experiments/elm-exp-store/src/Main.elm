@@ -282,6 +282,7 @@ update message model =
             pure model
                 |> (model.contextStore
                         |> ContextStore.get cid
+                        |> Debug.log "Context"
                         |> unwrapMaybe identity (andThenUpdate << ModeMsg << Mode.startEditingContext)
                    )
 
@@ -308,6 +309,10 @@ update message model =
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId ))
 
         UpdatePopup msg ->
+            let
+                _ =
+                    Debug.log "UpdatePopup" msg
+            in
             case model.popup of
                 ContextMoreMenu cid state ->
                     Menu.update contextMoreMenuConfig msg state
@@ -365,7 +370,7 @@ view model =
 
 contextMoreMenuConfig : Menu.Config Msg Msg
 contextMoreMenuConfig =
-    { toMsg = \_ -> NoOp, selected = identity }
+    { toMsg = UpdatePopup, selected = identity }
 
 
 viewPopup model =
