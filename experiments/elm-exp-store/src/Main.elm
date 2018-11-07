@@ -247,35 +247,19 @@ update message model =
         ModeOutMsg msg ->
             case msg of
                 Mode.AddTodoOutMsg content ->
-                    if isWhitespaceOrEmptyString content then
-                        pure model
-
-                    else
-                        update (TodoStoreMsg <| TodoStore.addNew content) model
+                    update (TodoStoreMsg <| TodoStore.addNew content) model
 
                 Mode.AddContextOutMsg name ->
-                    if isWhitespaceOrEmptyString name then
-                        pure model
-
-                    else
-                        update (ContextStoreMsg <| ContextStore.addNew name) model
+                    update (ContextStoreMsg <| ContextStore.addNew name) model
 
                 Mode.TodoContentUpdatedOutMsg id content ->
-                    if isWhitespaceOrEmptyString content then
-                        pure model
-
-                    else
-                        update (TodoStoreMsg <| TodoStore.setContent id content) model
+                    update (TodoStoreMsg <| TodoStore.setContent id content) model
 
                 Mode.SetTodoContextOutMsg todoId contextId ->
                     update (TodoStoreMsg <| TodoStore.setContextId todoId contextId) model
 
                 Mode.ContextNameUpdatedOutMsg id name ->
-                    if isWhitespaceOrEmptyString name then
-                        pure model
-
-                    else
-                        update (ContextStoreMsg <| ContextStore.setName id name) model
+                    update (ContextStoreMsg <| ContextStore.setName id name) model
 
 
 
