@@ -12,7 +12,7 @@ import Dict exposing (Dict)
 import FeatherIcons as Icon
 import HotKey
 import Html.Styled as Html exposing (Attribute, Html, button, div, fromUnstyled, span, styled, text)
-import Html.Styled.Attributes exposing (class, classList, css, style)
+import Html.Styled.Attributes exposing (class, classList, css, id, style)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as HKeyed exposing (node)
 import Icons
@@ -279,7 +279,7 @@ update message model =
 
         ContextMoreClicked cid ->
             pure { model | popup = Just cid }
-                |> addCmd (Port.createContextPopper (defaultEmptyStringTo "__INBOX__" cid))
+                |> addCmd (Port.createContextPopper cid)
 
 
 
@@ -394,6 +394,7 @@ viewPage model =
 type alias ContextItemViewModel msg =
     { key : String
     , id : ContextId
+    , cid : ContextId
     , name : ContextName
     , navigateToTodoList : msg
     , activeTodoCount : Int
@@ -416,6 +417,7 @@ createUserDefinedContextItemViewModel model =
                 in
                 { key = id
                 , id = id
+                , cid = id
                 , name = name
                 , navigateToTodoList =
                     SwitchToContextTodoListWithContextId id
@@ -437,6 +439,7 @@ createInboxContextItemViewModel model =
     in
     { key = id
     , id = id
+    , cid = id
     , name = name
     , navigateToTodoList = navigateToInbox
     , activeTodoCount = getActiveTodoListCountForContextId id model
@@ -469,10 +472,10 @@ viewSidebar model =
         viewKeyedContextItem style vm =
             ( vm.key, viewContextItem style vm )
 
-        viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, id } =
+        viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, cid } =
             styled listItem
                 [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
-                [ Html.Styled.Attributes.id <| "context-menu-trigger-" ++ defaultEmptyStringTo "__INBOX__" id
+                [ id <| "context-menu-trigger-" ++ cid
                 , class "hide-child"
                 ]
                 [ liTextButton
