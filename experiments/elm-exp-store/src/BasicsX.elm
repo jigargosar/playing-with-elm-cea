@@ -3,7 +3,10 @@ module BasicsX exposing
     , Millis
     , activeElement
     , allPass
+    , applyMaybe
+    , applyMaybeFn2
     , applyTo
+    , applyTo2
     , attemptDomIdFocus
     , defaultEmptyStringTo
     , eq0
@@ -77,6 +80,20 @@ ter b t f =
 
 applyTo a fn =
     fn a
+
+
+applyTo2 : a -> b -> (a -> b -> c) -> c
+applyTo2 a b fn =
+    fn a b
+
+
+applyMaybeFn2 : a -> b -> Maybe (a -> b -> c) -> Maybe c
+applyMaybeFn2 a b =
+    Maybe.map (applyTo2 a b)
+
+
+applyMaybe a =
+    Maybe.map (applyTo a)
 
 
 ifElse b t f v =

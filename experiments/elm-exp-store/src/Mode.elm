@@ -106,48 +106,55 @@ type OutMsg
     | ContextNameUpdatedOutMsg ContextId ContextName
 
 
-update : UpdateConfig msg -> Msg -> Model -> ( Model, Cmd Msg, List OutMsg )
+update : UpdateConfig msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message model =
     let
         andThenUpdate msg =
-            andThen3 (update config msg)
+            andThen (update config msg)
+
+        addMaybeMsg : Maybe msg -> ( Model, Cmd msg ) -> ( Model, Cmd msg )
+        addMaybeMsg maybeMsg =
+            unwrapMaybe identity UpdateReturn.addMsg maybeMsg
+
+        addCmd cmd =
+            UpdateReturn.addCmd cmd >> Tuple.mapSecond (Cmd.map config.toMsg)
     in
     case message of
         NoOp ->
-            pure3 model
+            pure model
 
         Warn logLine ->
-            pure3 model
-                |> addCmd3 (Log.warn "Mode.elm" logLine)
+            pure model
+                |> addCmd (Log.warn "Mode.elm" logLine)
 
         FocusDomId domId ->
-            pure3 model
-                |> addCmd3 (attemptDomIdFocus domId NoOp Warn)
+            pure model
+                |> addCmd (attemptDomIdFocus domId NoOp Warn)
 
         AutoFocus ->
             case model of
                 AddTodoMode content ->
-                    pure3 model
+                    pure model
                         |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
                 AddContextMode name ->
-                    pure3 model
+                    pure model
                         |> andThenUpdate (FocusDomId modalContextInputDomId)
 
                 EditTodoMode id _ ->
-                    pure3 model
+                    pure model
                         |> andThenUpdate (FocusDomId modalTodoInputDomId)
 
                 EditTodoContextMode todoId contextId ->
-                    pure3 model
+                    pure model
                         |> andThenUpdate (FocusDomId modalContextIdSelectDomId)
 
                 EditContextMode id _ ->
-                    pure3 model
+                    pure model
                         |> andThenUpdate (FocusDomId modalContextInputDomId)
 
                 Default ->
-                    pure3 model
+                    pure model
 
         BackdropClicked ->
             update config EndEditMode model
@@ -156,102 +163,102 @@ update config message model =
             case model of
                 Default ->
                     EditTodoMode todo.id todo.content
-                        |> pure3
+                        |> pure
                         |> andThenUpdate AutoFocus
 
                 _ ->
-                    pure3 model
+                    pure model
 
         StartEditingTodoContext todo ->
             case model of
                 Default ->
                     EditTodoContextMode todo.id todo.contextId
-                        |> pure3
+                        |> pure
                         |> andThenUpdate AutoFocus
 
                 _ ->
-                    pure3 model
+                    pure model
 
         StartEditingContext context ->
             case model of
                 Default ->
                     EditContextMode context.id context.name
-                        |> pure3
+                        |> pure
                         |> andThenUpdate AutoFocus
 
                 _ ->
-                    pure3 model
+                    pure model
 
         StartAddingTodo ->
             case model of
                 Default ->
                     AddTodoMode ""
-                        |> pure3
+                        |> pure
                         |> andThenUpdate AutoFocus
 
                 _ ->
-                    pure3 model
+                    pure model
 
         StartAddingContext ->
             case model of
                 Default ->
                     AddContextMode ""
-                        |> pure3
+                        |> pure
                         |> andThenUpdate AutoFocus
 
                 _ ->
-                    pure3 model
+                    pure model
 
         TextInputChanged newValue ->
             case model of
                 AddTodoMode _ ->
-                    pure3 <| AddTodoMode newValue
+                    pure <| AddTodoMode newValue
 
                 AddContextMode _ ->
-                    pure3 <| AddContextMode newValue
+                    pure <| AddContextMode newValue
 
                 EditTodoMode id _ ->
                     EditTodoMode id newValue
-                        |> pure3
-                        |> addOutMsg3 (TodoContentUpdatedOutMsg id newValue)
+                        |> pure
+                        |> addMaybeMsg (config.setTodoContent |> applyMaybeFn2 id newValue)
 
                 EditContextMode id _ ->
                     EditContextMode id newValue
-                        |> pure3
-                        |> addOutMsg3 (ContextNameUpdatedOutMsg id newValue)
+                        |> pure
+                        |> addMaybeMsg (config.setContextName |> applyMaybeFn2 id newValue)
 
                 Default ->
-                    pure3 model
+                    pure model
                         |> andThenUpdate (Warn [ "Invalid Msg TextInputChanged received in Default Mode" ])
 
                 EditTodoContextMode _ _ ->
-                    pure3 model
+                    pure model
 
         ContextIdChanged newContextId ->
             case model of
                 EditTodoContextMode todoId _ ->
-                    pure3 <| EditTodoContextMode todoId newContextId
+                    pure <| EditTodoContextMode todoId newContextId
 
                 _ ->
-                    pure3 model
+                    pure model
                         |> andThenUpdate (Warn [ "Invalid Msg TextInputChanged received in Invalid Mode" ])
 
         EndEditMode ->
             case model of
                 AddTodoMode content ->
-                    pure3 Default
-                        |> addOutMsg3 (AddTodoOutMsg content)
+                    pure Default
+                        |> addMaybeMsg (config.addTodo |> applyMaybe content)
 
                 AddContextMode name ->
-                    pure3 Default
-                        |> addOutMsg3 (AddContextOutMsg name)
+                    pure Default
+                        |> addMaybeMsg (config.addContext |> applyMaybe name)
 
                 EditTodoContextMode todoId contextId ->
-                    pure3 Default
-                        |> addOutMsg3 (SetTodoContextOutMsg todoId contextId)
+                    pure Default
+                        |> addMaybeMsg (config.setTodoContext |> applyMaybeFn2 todoId contextId)
 
                 _ ->
-                    pure3 Default
+                    pure Default
 
 
 modalTodoInputDomId =
