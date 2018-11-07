@@ -37,9 +37,8 @@ toolbar kids =
         ]
 
 
-backdrop attrs =
+backdrop =
     sDiv [ position absolute, absFill, rowCXY, bcBlackA 0.4 ]
-        (class "bg-black-40" :: attrs)
 
 
 appBar =
