@@ -1,4 +1,4 @@
-module PopupMenu exposing (Config, Msg, State, open, render, update)
+module PopupMenu exposing (Config, Msg, State, closed, opened, render, update)
 
 import Css exposing (..)
 import DomEvents exposing (..)
@@ -16,7 +16,11 @@ type alias State =
     }
 
 
-open =
+opened =
+    State True
+
+
+closed =
     State True
 
 

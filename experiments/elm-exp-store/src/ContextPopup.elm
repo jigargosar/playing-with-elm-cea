@@ -1,4 +1,4 @@
-module ContextMore exposing (Action(..), Msg, actions, childContent, contextMoreMenuPopperDomId, contextMoreMenuRefDomId, view)
+module ContextPopup exposing (Action(..), Msg, actions, childContent, contextMoreMenuPopperDomId, contextMoreMenuRefDomId, view)
 
 import BasicsX exposing (..)
 import ContextStore exposing (ContextId)

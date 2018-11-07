@@ -5,7 +5,7 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import Btn
-import ContextMore exposing (contextMoreMenuPopperDomId, contextMoreMenuRefDomId)
+import ContextPopup exposing (contextMoreMenuPopperDomId, contextMoreMenuRefDomId)
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
 import CssAtoms exposing (fa, fgGray, p0, pl0, ptr, ttu, w100)
@@ -44,6 +44,11 @@ type Popup
     | ContextMorePopup ContextId PopupMenu.State
 
 
+type PopupType
+    = NoPopUpMenu
+    | ContextIdPopup ContextId
+
+
 type Page
     = ContextTodoList
 
@@ -53,6 +58,8 @@ type alias Model =
     , contextStore : ContextStore
     , contextId : ContextId
     , popup : Popup
+    , popupMenu : PopupMenu.State
+    , popupType : PopupType
     , mode : Mode
     , page : Page
     }
@@ -76,6 +83,8 @@ init flags =
         , contextStore = contextStore
         , contextId = ContextStore.defaultId
         , popup = NoPopup
+        , popupMenu = PopupMenu.closed
+        , popupType = NoPopUpMenu
         , mode = Mode.init
         , page = ContextTodoList
         }
@@ -206,11 +215,12 @@ type Msg
     | ContextNameUpdatedOutMsg ContextId ContextName
     | ContextMoreClicked ContextId
     | UpdatePopup PopupMsg
+    | ContextPopupMsg ContextPopup.Msg
 
 
 type PopupMsg
-    = ContextMoreMsg ContextMore.Msg
-    | ContextMoreActionMsg ContextMore.Action
+    = ContextMoreMsg ContextPopup.Msg
+    | ContextMoreActionMsg ContextPopup.Action
 
 
 type alias ContextItem =
@@ -302,8 +312,33 @@ update message model =
             update (ContextStoreMsg <| ContextStore.setName id name) model
 
         ContextMoreClicked cid ->
-            pure { model | popup = ContextMorePopup cid PopupMenu.open }
+            pure { model | popup = ContextMorePopup cid PopupMenu.opened }
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId cid ))
+
+        ContextPopupMsg msg ->
+            case model.popupType of
+                ContextIdPopup cid ->
+                    let
+                        config =
+                            { toMsg = ContextPopupMsg
+                            , selected =
+                                \action ->
+                                    case action of
+                                        ContextPopup.Rename ->
+                                            StartEditingContext cid
+
+                                        ContextPopup.Delete ->
+                                            NoOp
+                            }
+                    in
+                    updateSub (PopupMenu.update contextMoreMenuConfig)
+                        .popupMenu
+                        (\s b -> { b | popupMenu = s })
+                        msg
+                        model
+
+                NoPopUpMenu ->
+                    pure model
 
         UpdatePopup popupMsg ->
             case model.popup of
@@ -317,10 +352,10 @@ update message model =
                             let
                                 msg =
                                     case action of
-                                        ContextMore.Rename ->
+                                        ContextPopup.Rename ->
                                             StartEditingContext cid
 
-                                        ContextMore.Delete ->
+                                        ContextPopup.Delete ->
                                             NoOp
                             in
                             update msg model
@@ -376,7 +411,7 @@ view model =
         ]
 
 
-contextMoreMenuConfig : PopupMenu.Config Msg ContextMore.Action
+contextMoreMenuConfig : PopupMenu.Config Msg ContextPopup.Action
 contextMoreMenuConfig =
     { toMsg = UpdatePopup << ContextMoreMsg
     , selected = UpdatePopup << ContextMoreActionMsg
@@ -386,7 +421,7 @@ contextMoreMenuConfig =
 viewPopup model =
     case model.popup of
         ContextMorePopup cid state ->
-            ContextMore.view contextMoreMenuConfig cid state
+            ContextPopup.view contextMoreMenuConfig cid state
 
         NoPopup ->
             noHtml
