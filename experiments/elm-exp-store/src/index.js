@@ -144,7 +144,7 @@ subscribe(
         popper = new Popper(refEl, popEl, {
           placement: 'right',
           onCreate(data) {
-            console.log(`onCreate data`, data)
+            // console.log(`onCreate data`, data)
           },
         })
       })
