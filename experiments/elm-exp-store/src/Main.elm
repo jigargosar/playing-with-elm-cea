@@ -309,10 +309,6 @@ update message model =
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId ))
 
         UpdatePopup msg ->
-            let
-                _ =
-                    Debug.log "UpdatePopup" msg
-            in
             case model.popup of
                 ContextMoreMenu cid state ->
                     PopupMenu.update contextMoreMenuConfig msg state
