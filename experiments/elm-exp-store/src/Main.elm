@@ -472,13 +472,13 @@ viewTodoListHeader model =
               -}
               Menu.render
                 { children = [ "Rename", "Delete" ]
-                , containerStyles = [ pRm 0.5 ]
+                , containerStyles = [ pRm 0.5, minWidth (rem 10) ]
                 , childContent =
                     \name ->
                         [ sDiv [ p2Rm 0 0 ]
                             []
                             [ styled button
-                                [ btnReset, p2Rm 0.5 1, minWidth (rem 10), w100 ]
+                                [ btnReset, p2Rm 0.5 1, w100 ]
                                 []
                                 [ text name ]
                             ]
