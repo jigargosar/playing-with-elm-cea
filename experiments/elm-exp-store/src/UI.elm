@@ -2,13 +2,8 @@ module UI exposing
     ( backdrop
     , boolHtml
     , fBtn
-    , flexV
-    , link
     , maybeHtml
-    , root
     , row
-    , rowS3
-    , spacer
     , toolbar
     , txt
     , txtA
@@ -23,20 +18,12 @@ import Html.Styled.Events exposing (..)
 import Svg.Attributes
 
 
-link url lbl =
-    a [ href url ] [ text lbl ]
-
-
 rowS3 classes attrs c =
     div (class ("flex flex-row hs3 items-center " ++ classes) :: attrs) c
 
 
 row =
     rowS3
-
-
-spacer =
-    div [ class "flex-auto" ] []
 
 
 fBtn : FeatherIcons.Icon -> msg -> Html msg
@@ -76,18 +63,10 @@ txtA attrs l =
     div attrs [ text l ]
 
 
-root =
-    div [ class "flex flex-column w-100" ]
-
-
 toolbar kids =
     div [ class "flex w-100 justify-center bg-black white" ]
         [ div [ class "flex w-100 measure-wide items-center" ] kids
         ]
-
-
-flexV attrs =
-    div (class "flex flex-column" :: attrs)
 
 
 backdrop attrs =
