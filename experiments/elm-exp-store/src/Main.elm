@@ -454,13 +454,13 @@ viewSidebar model =
                         ]
                     , onClick navigateToTodoList
                     ]
-                    [ styled div [] [] [ text <| name ]
-                    , styled div
+                    [ div [] [ text <| name ]
+                    , sDiv
                         [ plRm 0.1
                         , Css.fontSize (em 0.8)
                         , Css.alignSelf Css.flexEnd
-                        , Css.fontWeight Css.bold
-                        , Css.property "color" "gray"
+                        , fwb
+                        , fgGray
                         ]
                         []
                         [ text <| String.fromInt activeTodoCount ]
