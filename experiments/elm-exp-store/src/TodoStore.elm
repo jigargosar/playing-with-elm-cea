@@ -5,6 +5,7 @@ module TodoStore exposing
     , TodoId
     , TodoStore
     , addNew
+    , delete
     , list
     , load
     , markDone
@@ -95,6 +96,7 @@ type TodoMsg
     | SetContextId ContextId
     | MarkDone
     | UnmarkDone
+    | Delete
 
 
 addNew =
@@ -115,6 +117,10 @@ markDone id =
 
 unmarkDone id =
     UpdateTodo id UnmarkDone
+
+
+delete id =
+    UpdateTodo id Delete
 
 
 update : Msg -> TodoStore -> ( TodoStore, Cmd Msg )
@@ -176,6 +182,9 @@ maybeUpdateTodo now msg todo =
 
                 UnmarkDone ->
                     { todo | done = False }
+
+                Delete ->
+                    { todo | deleted = True }
 
                 SetContextId contextId ->
                     { todo | contextId = contextId }

@@ -302,10 +302,10 @@ update message model =
             update (ContextStoreMsg <| ContextStore.setName id name) model
 
         DeleteContextId cid ->
-            pure model
+            update (ContextStoreMsg <| ContextStore.delete cid) model
 
         DeleteTodoId todoId ->
-            pure model
+            update (TodoStoreMsg <| TodoStore.delete todoId) model
 
         ContextMoreClicked cid ->
             pure { model | popup = ContextIdPopup cid PopupMenu.opened }

@@ -7,6 +7,7 @@ module ContextStore exposing
     , addNew
     , defaultId
     , defaultName
+    , delete
     , get
     , getNameOrDefaultById
     , list
@@ -97,6 +98,7 @@ type Msg
 
 type ContextMsg
     = SetName ContextName
+    | Delete
 
 
 addNew =
@@ -105,6 +107,10 @@ addNew =
 
 setName id name =
     UpdateContext id (SetName name)
+
+
+delete id =
+    UpdateContext id Delete
 
 
 update : Msg -> ContextStore -> ( ContextStore, Cmd Msg )
@@ -158,6 +164,9 @@ maybeUpdateContext now msg context =
             case msg of
                 SetName name ->
                     { context | name = name }
+
+                Delete ->
+                    { context | deleted = True }
     in
     maybeBool (updatedContext /= context) { updatedContext | modifiedAt = now }
 
