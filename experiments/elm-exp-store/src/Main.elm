@@ -204,12 +204,15 @@ type Msg
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
     | ModeMsg Mode.Msg
+    | StartEditingContext ContextId
+    | DeleteContext ContextId
     | AddTodoOutMsg TodoContent
     | AddContextOutMsg ContextName
     | SetTodoContentOutMsg TodoId TodoContent
     | SetTodoContextOutMsg TodoId ContextId
     | ContextNameUpdatedOutMsg ContextId ContextName
     | ContextMoreClicked ContextId
+    | UpdatePopup (Menu.Msg Msg)
 
 
 type alias ContextItem =
@@ -275,6 +278,16 @@ update message model =
                 msg
                 model
 
+        StartEditingContext cid ->
+            pure model
+                |> (model.contextStore
+                        |> ContextStore.get cid
+                        |> unwrapMaybe identity (andThenUpdate << ModeMsg << Mode.startEditingContext)
+                   )
+
+        DeleteContext cid ->
+            ( model, Cmd.none )
+
         AddTodoOutMsg content ->
             update (TodoStoreMsg <| TodoStore.addNew content) model
 
@@ -293,6 +306,15 @@ update message model =
         ContextMoreClicked cid ->
             pure { model | popup = ContextMoreMenu cid Menu.init }
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId ))
+
+        UpdatePopup msg ->
+            case model.popup of
+                ContextMoreMenu cid state ->
+                    Menu.update contextMoreMenuConfig msg state
+                        |> Tuple.mapFirst (ContextMoreMenu cid >> (\popup -> { model | popup = popup }))
+
+                NoPopup ->
+                    ( model, Cmd.none )
 
 
 
@@ -314,14 +336,6 @@ startAddingTodoMsg =
 
 startAddingContextMsg =
     ModeMsg Mode.startAddingContext
-
-
-startEditingContextMsg =
-    ModeMsg << Mode.startEditingContext
-
-
-startEditingSelectedContextMsg =
-    getMaybeSelectedContext >> unwrapMaybe NoOp startEditingContextMsg
 
 
 startEditingTodoContext =
@@ -349,24 +363,19 @@ view model =
         ]
 
 
-contextMenuConfig : Menu.Config Msg ContextMoreMenuAction
-contextMenuConfig =
-    { toMsg = \_ -> NoOp, selected = \_ -> NoOp }
-
-
-type ContextMoreMenuAction
-    = CMMRename
-    | CMMDelete
+contextMoreMenuConfig : Menu.Config Msg Msg
+contextMoreMenuConfig =
+    { toMsg = \_ -> NoOp, selected = identity }
 
 
 viewPopup model =
     case model.popup of
         ContextMoreMenu cid state ->
             Menu.render
-                { config = contextMenuConfig
+                { config = contextMoreMenuConfig
                 , state = state
                 , domId = contextMoreMenuPopperDomId
-                , children = [ CMMRename, CMMDelete ]
+                , children = [ StartEditingContext cid, DeleteContext cid ]
                 , containerStyles =
                     [ pRm 0.5
                     , minWidth (rem 20)
@@ -380,11 +389,14 @@ viewPopup model =
                                 []
                                 [ text
                                     (case child of
-                                        CMMRename ->
+                                        StartEditingContext _ ->
                                             "Rename"
 
-                                        CMMDelete ->
+                                        DeleteContext _ ->
                                             "Delete"
+
+                                        _ ->
+                                            "Unknown"
                                     )
                                 ]
                             ]
