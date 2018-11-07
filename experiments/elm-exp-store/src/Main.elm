@@ -331,7 +331,7 @@ update message model =
                                             NoOp
                             }
                     in
-                    updateSub (PopupMenu.update contextMoreMenuConfig)
+                    updateSub (PopupMenu.update config)
                         .popupMenu
                         (\s b -> { b | popupMenu = s })
                         msg
