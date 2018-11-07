@@ -39,7 +39,6 @@ import UpdateReturn exposing (..)
 
 type Page
     = ContextTodoList
-    | ContextList
 
 
 type alias Model =
@@ -77,10 +76,6 @@ init flags =
 
 isCurrentPageContextTodoListWithContextId contextId model =
     model.page == ContextTodoList && getSelectedContextId model == contextId
-
-
-isCurrentPageContextList model =
-    model.page == ContextList
 
 
 type alias Pred a =
@@ -374,9 +369,6 @@ viewPage model =
                             [ viewTodoListHeader model
                             , viewTodoList model
                             ]
-
-                        ContextList ->
-                            [ viewContextList model ]
                     )
                 ]
     in
@@ -441,14 +433,10 @@ viewSidebar model =
             styled div [ fa, rowCY, pRm 0.5 ]
 
         viewContextsItem =
-            let
-                isSelected =
-                    isCurrentPageContextList model
-            in
             styled listItem
-                [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
                 []
-                [ liTextButton [ css [ fwb ], onClick <| SetPage ContextList ] [ text "Contexts" ]
+                []
+                [ sDiv [ fa, fwb ] [] [ text "Contexts" ]
                 , Btn.icon [ onClick startAddingContextMsg ] [ Icons.plus |> Icons.default ]
                 ]
 
@@ -486,60 +474,6 @@ viewSidebar model =
         , node "div" [] <|
             List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) (createUserDefinedContextItemViewModel model)
         ]
-
-
-
--- ContextList Page
-
-
-viewContextList : Model -> Html Msg
-viewContextList model =
-    let
-        inboxViewModel : ContextViewModel Msg
-        inboxViewModel =
-            ContextViewModel "Inbox" "Inbox" False NoOp (SwitchToContextTodoListWithContextId ContextStore.defaultId)
-
-        viewPrimaryListKeyed =
-            getUserDefinedContextList model
-                |> List.map (createContextViewModel >> viewContext)
-                |> (::) (viewContext inboxViewModel)
-    in
-    HKeyed.node "div" [] viewPrimaryListKeyed
-
-
-type alias ContextViewModel msg =
-    { key : String
-    , name : String
-    , isNameEditable : Bool
-    , startEditingName : msg
-    , switchToContextTodoList : msg
-    }
-
-
-createContextViewModel : Context -> ContextViewModel Msg
-createContextViewModel context =
-    ContextViewModel
-        context.id
-        (defaultEmptyStringTo "<empty context name>" context.name)
-        True
-        (startEditingContextMsg context)
-        (SwitchToContextTodoListWithContextId context.id)
-
-
-viewContext : ContextViewModel msg -> ( String, Html msg )
-viewContext { key, name, startEditingName, isNameEditable, switchToContextTodoList } =
-    ( key
-    , UI.row "pa3 w-100  bb b--light-gray"
-        []
-        [ txtA [ style "width" "24px" ] ""
-        , button
-            [ class "flex-auto pa0 ma0 tl ttu color-inherit normal underline pointer"
-            , onClick switchToContextTodoList
-            ]
-            [ text <| "@" ++ name ]
-        , boolHtml isNameEditable <| UI.fBtn Icon.edit3 startEditingName
-        ]
-    )
 
 
 

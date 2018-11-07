@@ -1,9 +1,9 @@
-module Styles exposing (bc, bg, boolCss, boolHtml, btnReset, centerCenter, dFlexCol, dFlexRow, fBody, fDir, fZero, fg, fwb, fz, fzPx, hs, lh, lhNum, mRm, maybeHtml, noHtml, p2Rm, pRm, plRm, prRm, rowBottomY, rowCXY, rowCY, spacing0, vs)
+module Styles exposing (bc, bg, boolCss, btnReset, centerCenter, dFlexCol, dFlexRow, fBody, fDir, fZero, fg, fwb, fz, fzPx, hs, lh, lhNum, mRm, p2Rm, pRm, plRm, prRm, rowBottomY, rowCXY, rowCY, spacing0, vs)
 
 import BasicsX exposing (unwrapMaybe)
 import Css exposing (..)
 import CssAtoms exposing (..)
-import Html.Styled exposing (text)
+import Html.Styled exposing (div, styled, text)
 
 
 pRm value =
@@ -134,19 +134,3 @@ boolCss bool t =
 
 fwb =
     fontWeight bold
-
-
-boolHtml bool html_ =
-    if bool then
-        html_
-
-    else
-        noHtml
-
-
-maybeHtml htmlFn =
-    unwrapMaybe noHtml htmlFn
-
-
-noHtml =
-    text ""

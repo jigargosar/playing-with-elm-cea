@@ -1,4 +1,4 @@
-module IdX exposing (stringIdGenerator, withNewId)
+module RandomId exposing (stringIdGenerator, withNewId)
 
 import Random
 

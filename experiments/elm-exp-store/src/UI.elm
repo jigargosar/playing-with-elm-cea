@@ -1,12 +1,4 @@
-module UI exposing
-    ( backdrop
-    , fBtn
-    , row
-    , toolbar
-    , txt
-    , txtA
-    , txtC
-    )
+module UI exposing (backdrop, boolHtml, fBtn, maybeHtml, noHtml, row, rowS3, sDiv, toolbar, txt, txtA, txtC)
 
 import BasicsX exposing (unwrapMaybe)
 import FeatherIcons
@@ -14,6 +6,26 @@ import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (..)
 import Svg.Attributes
+
+
+boolHtml bool html_ =
+    if bool then
+        html_
+
+    else
+        noHtml
+
+
+maybeHtml htmlFn =
+    unwrapMaybe noHtml htmlFn
+
+
+noHtml =
+    text ""
+
+
+sDiv =
+    styled div
 
 
 rowS3 classes attrs c =
