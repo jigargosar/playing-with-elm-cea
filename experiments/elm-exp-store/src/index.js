@@ -106,7 +106,7 @@ const documentHasFocus$ = flyd.map(
 
 flyd.on(
   compose(
-    identity/*sendToApp('documentFocusChanged') *//*, tapLog('documentFocusChanged')*/,
+    identity /*sendToApp('documentFocusChanged') */ /*, tapLog('documentFocusChanged')*/,
   ),
   documentHasFocus$,
 )
@@ -135,21 +135,42 @@ subscribe(
       if (popper) {
         popper.destroy()
       }
-      setTimeout(() => requestAnimationFrame(() => {
-        const refEl = document.getElementById(refDomId)
-        const popEl = document.getElementById(popperDomId)
-        if (!refEl || !popEl) {
-          debugger
-        }
-        popper = new Popper(refEl, popEl, {
-          preventOverflow:{boundariesElement: "viewport"},
-          placement: 'right',
-          onCreate(data) {
-            // console.log(`onCreate data`, data)
-          },
-        })
-        popper.scheduleUpdate()
-      }), 0)
+      setTimeout(
+        () =>
+          requestAnimationFrame(() => {
+            const refEl = document.getElementById(refDomId)
+            const popEl = document.getElementById(popperDomId)
+            if (!refEl || !popEl) {
+              debugger
+            }
+            popper = new Popper(refEl, popEl, {
+
+              modifiers: {
+                applyStyle: {
+                  // enabled: false,
+                },
+                preventOverflow: {
+                  // boundariesElement: document.getElementById('popper-container'),
+                  boundariesElement: "viewport",
+                },
+              },
+
+              // flip: {
+              // enabled: false,
+              // behavior: ['right']
+              // },
+              placement: 'bottom',
+              // positionFixed:true,
+              onCreate(data) {
+                console.log(`onCreate data`, data)
+              },
+              onUpdate(data) {
+                console.log(`onUpdate data`, data)
+              },
+            })
+          }),
+        0,
+      )
     },
   },
   app,

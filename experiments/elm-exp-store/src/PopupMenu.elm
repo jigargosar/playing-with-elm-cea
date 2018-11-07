@@ -65,6 +65,7 @@ render { config, children, containerStyles, domId, childContent, state } =
             [ bg "white"
             , elevation 4
             , borderRadius (rem 0.5)
+            , position absolute
             ]
                 ++ containerStyles
     in
