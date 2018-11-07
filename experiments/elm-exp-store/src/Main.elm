@@ -330,6 +330,31 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ viewAppBar
         , viewPage model
+        , case model.popup of
+            Just id ->
+                Menu.render
+                    { domId = "context-menu-popper"
+                    , children = [ "Rename", "Delete" ]
+                    , containerStyles =
+                        [ pRm 0.5
+                        , minWidth (rem 10)
+                        , top (rem 0.5)
+                        , left (px 0)
+                        ]
+                    , childContent =
+                        \child ->
+                            [ sDiv [ p2Rm 0 0 ]
+                                []
+                                [ styled button
+                                    [ btnReset, p2Rm 0.5 1, w100 ]
+                                    []
+                                    [ text child ]
+                                ]
+                            ]
+                    }
+
+            Nothing ->
+                noHtml
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         ]
 
@@ -469,33 +494,6 @@ viewSidebar model =
                     , onClick moreClicked
                     ]
                     [ Icons.moreHDef ]
-                , if model.popup == Just id then
-                    sDiv [ position relative ]
-                        []
-                        [ Menu.render
-                            { children = [ "Rename", "Delete" ]
-                            , containerStyles =
-                                [ pRm 0.5
-                                , minWidth (rem 10)
-                                , zIndex (int 10)
-                                , top (rem 0.5)
-                                , left (px 0)
-                                ]
-                            , childContent =
-                                \child ->
-                                    [ sDiv [ p2Rm 0 0 ]
-                                        []
-                                        [ styled button
-                                            [ btnReset, p2Rm 0.5 1, w100 ]
-                                            []
-                                            [ text child ]
-                                        ]
-                                    ]
-                            }
-                        ]
-
-                  else
-                    noHtml
                 ]
     in
     sDiv []
