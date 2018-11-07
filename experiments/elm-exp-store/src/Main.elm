@@ -196,6 +196,7 @@ type Msg
     | SetTodoContentOutMsg TodoId TodoContent
     | SetTodoContextOutMsg TodoId ContextId
     | ContextNameUpdatedOutMsg ContextId ContextName
+    | ContextMoreClicked ContextId
 
 
 type alias ContextItem =
@@ -275,6 +276,9 @@ update message model =
 
         ContextNameUpdatedOutMsg id name ->
             update (ContextStoreMsg <| ContextStore.setName id name) model
+
+        ContextMoreClicked cid ->
+            pure { model | popup = Just cid }
 
 
 
@@ -367,6 +371,7 @@ type alias ContextItemViewModel msg =
     , navigateToTodoList : msg
     , activeTodoCount : Int
     , isSelected : Bool
+    , moreClicked : msg
     }
 
 
@@ -375,25 +380,41 @@ createUserDefinedContextItemViewModel model =
     getUserDefinedContextList model
         |> List.map
             (\c ->
-                { key = c.id
-                , id = c.id
-                , name = c.name
+                let
+                    id =
+                        c.id
+
+                    name =
+                        c.name
+                in
+                { key = id
+                , id = id
+                , name = name
                 , navigateToTodoList =
-                    SwitchToContextTodoListWithContextId c.id
-                , activeTodoCount = getActiveTodoListCountForContextId c.id model
-                , isSelected = isCurrentPageContextTodoListWithContextId c.id model
+                    SwitchToContextTodoListWithContextId id
+                , activeTodoCount = getActiveTodoListCountForContextId id model
+                , isSelected = isCurrentPageContextTodoListWithContextId id model
+                , moreClicked = ContextMoreClicked id
                 }
             )
 
 
 createInboxContextItemViewModel : Model -> ContextItemViewModel Msg
 createInboxContextItemViewModel model =
-    { key = ContextStore.defaultId
-    , id = ContextStore.defaultId
-    , name = ContextStore.defaultName
+    let
+        id =
+            ContextStore.defaultId
+
+        name =
+            ContextStore.defaultName
+    in
+    { key = id
+    , id = id
+    , name = name
     , navigateToTodoList = navigateToInbox
-    , activeTodoCount = getActiveTodoListCountForContextId ContextStore.defaultId model
-    , isSelected = isCurrentPageContextTodoListWithContextId ContextStore.defaultId model
+    , activeTodoCount = getActiveTodoListCountForContextId id model
+    , isSelected = isCurrentPageContextTodoListWithContextId id model
+    , moreClicked = ContextMoreClicked id
     }
 
 
@@ -421,7 +442,7 @@ viewSidebar model =
         viewKeyedContextItem style vm =
             ( vm.key, viewContextItem style vm )
 
-        viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected } =
+        viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked } =
             styled listItem
                 [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
                 [ class "hide-child" ]
@@ -445,6 +466,7 @@ viewSidebar model =
                     ]
                 , Btn.sIcon [ fgGray, opacity zero ]
                     [ class "child"
+                    , onClick moreClicked
                     ]
                     [ Icons.moreHDef ]
                 , case model.popup of
