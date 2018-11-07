@@ -3,7 +3,7 @@ import './main.css'
 // noinspection ES6CheckImport
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { compose, curry, forEachObjIndexed, isNil, partial, pathOr, pick, tap } from 'ramda'
+import { compose, curry, forEachObjIndexed, identity, isNil, partial, pathOr, pick, tap } from 'ramda'
 
 import flyd from 'flyd'
 import Popper from 'popper.js'
@@ -104,16 +104,14 @@ const documentHasFocus$ = flyd.map(
   winFocusBlur$,
 )
 
-
-
 flyd.on(
   compose(
-    sendToApp('documentFocusChanged') /*, tapLog('documentFocusChanged')*/,
+    identity/*sendToApp('documentFocusChanged') *//*, tapLog('documentFocusChanged')*/,
   ),
   documentHasFocus$,
 )
 
-window.addEventListener('wheel', function(e) {
+window.addEventListener('wheel', function (e) {
   // console.log(e)
   const data = pick(['deltaX', 'deltaY'])(e)
   sendTo(app, 'wheel', data)
@@ -133,19 +131,24 @@ subscribe(
       storageSet('contexts', contexts)
     },
     // focusSelector,
-    createContextPopper: cid =>{
-      if(popper){
+    createContextPopper: cid => {
+      if (popper) {
         popper.destroy()
       }
-      setTimeout(()=>{
+      setTimeout(() => {
         const refEl = document.getElementById(`context-menu-trigger-${cid}`)
-        const popEl =  document.getElementById(`context-menu-popper`)
-        if(!refEl || !popEl){
+        const popEl = document.getElementById(`context-menu-popper`)
+        if (!refEl || !popEl) {
           debugger
         }
-        popper = new Popper(refEl, popEl , {placement:"right"})
+        popper = new Popper(refEl, popEl, {
+          placement: 'right',
+          onCreate(data) {
+            console.log(`onCreate data`, data)
+          },
+        })
       }, 0)
-    }
+    },
   },
   app,
 )
