@@ -201,7 +201,6 @@ type Msg
     | ContextStoreMsg ContextStore.Msg
     | ModeMsg Mode.Msg
     | StartEditingContext ContextId
-    | DeleteContext ContextId
     | AddTodoOutMsg TodoContent
     | AddContextOutMsg ContextName
     | SetTodoContentOutMsg TodoId TodoContent
@@ -282,9 +281,6 @@ update message model =
                         |> ContextStore.get cid
                         |> unwrapMaybe identity (andThenUpdate << ModeMsg << Mode.startEditingContext)
                    )
-
-        DeleteContext cid ->
-            ( model, Cmd.none )
 
         AddTodoOutMsg content ->
             update (TodoStoreMsg <| TodoStore.addNew content) model
