@@ -1,16 +1,13 @@
 module UI exposing
-    ( Disabled
-    , backdrop
+    ( backdrop
     , boolHtml
     , fBtn
-    , fBtnSA
     , flexV
     , link
     , maybeHtml
     , root
     , row
     , rowS3
-    , sClass
     , spacer
     , toolbar
     , txt
@@ -49,22 +46,6 @@ fBtn fIcon msg =
         , class "flex items-center justify-center pa0 ma0"
         ]
         [ fIcon |> FeatherIcons.toHtml [] |> Html.fromUnstyled ]
-
-
-sClass =
-    Svg.Attributes.class
-
-
-fBtnSA svgAttrs fIcon msg =
-    button
-        [ onClick msg
-        , class "flex items-center justify-center pa0 ma0"
-        ]
-        [ fIcon |> FeatherIcons.toHtml svgAttrs |> Html.fromUnstyled ]
-
-
-type alias Disabled =
-    Bool
 
 
 noHtml =
