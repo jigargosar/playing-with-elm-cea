@@ -29,7 +29,7 @@ module Styles exposing
     )
 
 import Css exposing (..)
-import CssAtoms exposing (aic, b0, dFlex, fDCol, fDRow, fz0, jcc, lh0, m0, p0, ptr, tl)
+import CssAtoms exposing (..)
 
 
 pRm value =
@@ -152,10 +152,10 @@ bc =
 
 boolCss bool t =
     if bool then
-        Css.batch t
+        batch t
 
     else
-        Css.batch []
+        batch []
 
 
 fwb =
