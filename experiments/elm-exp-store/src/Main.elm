@@ -40,7 +40,7 @@ import UpdateReturn exposing (..)
 
 type Popup
     = NoPopup
-    | ContextMoreMenu ContextId Menu.Model
+    | ContextMoreMenu ContextId Menu.State
 
 
 type Page
@@ -305,7 +305,7 @@ update message model =
             update (ContextStoreMsg <| ContextStore.setName id name) model
 
         ContextMoreClicked cid ->
-            pure { model | popup = ContextMoreMenu cid Menu.init }
+            pure { model | popup = ContextMoreMenu cid Menu.open }
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId ))
 
         UpdatePopup msg ->

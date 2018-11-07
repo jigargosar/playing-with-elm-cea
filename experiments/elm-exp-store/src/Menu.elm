@@ -1,4 +1,4 @@
-module Menu exposing (Config, Model, Msg, init, render, update)
+module Menu exposing (Config, Msg, State, open, render, update)
 
 import Css exposing (..)
 import DomEvents exposing (..)
@@ -11,13 +11,13 @@ import UI exposing (..)
 import UpdateReturn exposing (..)
 
 
-type alias Model =
+type alias State =
     { open : Bool
     }
 
 
-init =
-    Model False
+open =
+    State True
 
 
 type Msg child
@@ -31,7 +31,7 @@ type alias Config msg child =
     }
 
 
-update : Config msg child -> Msg child -> Model -> ( Model, Cmd msg )
+update : Config msg child -> Msg child -> State -> ( State, Cmd msg )
 update config message model =
     case message of
         NoOp ->
@@ -44,7 +44,7 @@ update config message model =
 
 type alias ViewConfig child msg =
     { config : Config msg child
-    , state : Model
+    , state : State
     , domId : DomId
     , children : List child
     , containerStyles : List Css.Style
@@ -53,7 +53,7 @@ type alias ViewConfig child msg =
 
 
 render : ViewConfig child msg -> Html msg
-render { config, children, containerStyles, domId, childContent } =
+render { config, children, containerStyles, domId, childContent, state } =
     let
         attrToMsg =
             HA.map config.toMsg
@@ -68,6 +68,10 @@ render { config, children, containerStyles, domId, childContent } =
             ]
                 ++ containerStyles
     in
-    sDiv rootStyles
-        [ id domId ]
-        (children |> List.map viewChild)
+    if state.open then
+        sDiv rootStyles
+            [ id domId ]
+            (children |> List.map viewChild)
+
+    else
+        noHtml
