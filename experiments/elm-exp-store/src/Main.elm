@@ -320,7 +320,7 @@ update message model =
                                             StartEditingContext cid
 
                                         ContextPopup.Delete ->
-                                            NoOp
+                                            DeleteContextId cid
                             }
                     in
                     PopupMenu.update config msg state
