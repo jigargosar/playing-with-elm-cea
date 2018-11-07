@@ -1,4 +1,4 @@
-module Menu exposing (Config, Msg, State, open, render, update)
+module PopupMenu exposing (Config, Msg, State, open, render, update)
 
 import Css exposing (..)
 import DomEvents exposing (..)

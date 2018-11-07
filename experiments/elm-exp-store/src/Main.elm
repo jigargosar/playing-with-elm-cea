@@ -18,8 +18,8 @@ import Html.Styled.Keyed as HKeyed exposing (node)
 import Icons
 import JsonCodecX exposing (Value)
 import Log
-import Menu
 import Mode exposing (Mode)
+import PopupMenu
 import Port
 import Random
 import Set exposing (Set)
@@ -40,7 +40,7 @@ import UpdateReturn exposing (..)
 
 type Popup
     = NoPopup
-    | ContextMoreMenu ContextId Menu.State
+    | ContextMoreMenu ContextId PopupMenu.State
 
 
 type Page
@@ -212,7 +212,7 @@ type Msg
     | SetTodoContextOutMsg TodoId ContextId
     | ContextNameUpdatedOutMsg ContextId ContextName
     | ContextMoreClicked ContextId
-    | UpdatePopup (Menu.Msg Msg)
+    | UpdatePopup (PopupMenu.Msg Msg)
 
 
 type alias ContextItem =
@@ -305,7 +305,7 @@ update message model =
             update (ContextStoreMsg <| ContextStore.setName id name) model
 
         ContextMoreClicked cid ->
-            pure { model | popup = ContextMoreMenu cid Menu.open }
+            pure { model | popup = ContextMoreMenu cid PopupMenu.open }
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId ))
 
         UpdatePopup msg ->
@@ -315,7 +315,7 @@ update message model =
             in
             case model.popup of
                 ContextMoreMenu cid state ->
-                    Menu.update contextMoreMenuConfig msg state
+                    PopupMenu.update contextMoreMenuConfig msg state
                         |> Tuple.mapFirst (ContextMoreMenu cid >> (\popup -> { model | popup = popup }))
 
                 NoPopup ->
@@ -368,7 +368,7 @@ view model =
         ]
 
 
-contextMoreMenuConfig : Menu.Config Msg Msg
+contextMoreMenuConfig : PopupMenu.Config Msg Msg
 contextMoreMenuConfig =
     { toMsg = UpdatePopup, selected = identity }
 
@@ -376,7 +376,7 @@ contextMoreMenuConfig =
 viewPopup model =
     case model.popup of
         ContextMoreMenu cid state ->
-            Menu.render
+            PopupMenu.render
                 { config = contextMoreMenuConfig
                 , state = state
                 , domId = contextMoreMenuPopperDomId
