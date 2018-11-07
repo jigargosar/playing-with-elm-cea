@@ -18,6 +18,7 @@ import Html.Styled.Keyed as HKeyed exposing (node)
 import Icons
 import JsonCodecX exposing (Value)
 import Log
+import Menu
 import Mode exposing (Mode)
 import Port
 import Random
@@ -351,16 +352,6 @@ viewAppBar =
 
 viewPage model =
     let
-        viewPageHeader =
-            div [ class "flex row justify-center" ]
-                [ div [ class "measure" ]
-                    [--                    button [ onClick <| SetPage ContextList ] [ text "Contexts" ]
-                     --                , button [ onClick <| SwitchToContextTodoList ] [ text "Tasks" ]
-                     --                    , button [ onClick startAddingContextMsg ] [ text "Add Context" ]
-                     --                      button [ onClick startAddingTodoMsg ] [ text "Add Task" ]
-                    ]
-                ]
-
         viewPageContent =
             div [ class "flex row justify-center" ]
                 [ div [ class "measure w-100" ]
@@ -489,14 +480,16 @@ viewTodoListHeader model =
     div
         [ class "ph3 flex flex-row" ]
         [ div [ class "flex-auto" ]
-            [{- SelectUI.view selectContextUIConfig
-                (Just <| getCurrentContextItem model)
-                (allContextItems model)
-                model.selectContextUI
-             -}
+            [ {- SelectUI.view selectContextUIConfig
+                 (Just <| getCurrentContextItem model)
+                 (allContextItems model)
+                 model.selectContextUI
+              -}
+              Menu.render
+                { children = [ "Rename", "Delete" ]
+                , childContent = \name -> [ text name ]
+                }
             ]
-
-        --        , UI.fBtn Icon.plus startAddingTodoMsg
         ]
 
 
