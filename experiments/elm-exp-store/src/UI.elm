@@ -1,4 +1,4 @@
-module UI exposing (appBar, backdrop, boolHtml, maybeHtml, noHtml, sDiv, section1, toolbar)
+module UI exposing (appBar, backdrop, boolHtml, maybeHtml, noHtml, sDiv, section1)
 
 import BasicsX exposing (..)
 import Css exposing (..)
@@ -29,12 +29,6 @@ noHtml =
 
 sDiv =
     styled div
-
-
-toolbar kids =
-    div [ class "flex w-100 justify-center bg-black white" ]
-        [ div [ class "flex w-100 measure-wide items-center" ] kids
-        ]
 
 
 backdrop =
