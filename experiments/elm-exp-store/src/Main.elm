@@ -442,7 +442,7 @@ viewSidebar model =
         viewKeyedContextItem style vm =
             ( vm.key, viewContextItem style vm )
 
-        viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked } =
+        viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, id } =
             styled listItem
                 [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
                 [ class "hide-child" ]
@@ -469,25 +469,24 @@ viewSidebar model =
                     , onClick moreClicked
                     ]
                     [ Icons.moreHDef ]
-                , case model.popup of
-                    Just contextId ->
-                        Menu.render
-                            { children = [ "Rename", "Delete" ]
-                            , containerStyles = [ pRm 0.5, minWidth (rem 10) ]
-                            , childContent =
-                                \child ->
-                                    [ sDiv [ p2Rm 0 0 ]
+                , if model.popup == Just id then
+                    Menu.render
+                        { children = [ "Rename", "Delete" ]
+                        , containerStyles = [ pRm 0.5, minWidth (rem 10) ]
+                        , childContent =
+                            \child ->
+                                [ sDiv [ p2Rm 0 0 ]
+                                    []
+                                    [ styled button
+                                        [ btnReset, p2Rm 0.5 1, w100 ]
                                         []
-                                        [ styled button
-                                            [ btnReset, p2Rm 0.5 1, w100 ]
-                                            []
-                                            [ text child ]
-                                        ]
+                                        [ text child ]
                                     ]
-                            }
+                                ]
+                        }
 
-                    Nothing ->
-                        noHtml
+                  else
+                    noHtml
                 ]
     in
     div
