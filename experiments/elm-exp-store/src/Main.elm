@@ -279,6 +279,7 @@ update message model =
 
         ContextMoreClicked cid ->
             pure { model | popup = Just cid }
+                |> addCmd (Port.createContextPopper cid)
 
 
 
