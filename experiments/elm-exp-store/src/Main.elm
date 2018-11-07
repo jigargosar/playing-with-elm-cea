@@ -207,6 +207,8 @@ type Msg
     | SetTodoContentOutMsg TodoId TodoContent
     | SetTodoContextOutMsg TodoId ContextId
     | ContextNameUpdatedOutMsg ContextId ContextName
+    | DeleteContextId ContextId
+    | DeleteTodoId TodoId
     | ContextMoreClicked ContextId
     | UpdateContextPopup ContextPopup.Msg
 
@@ -298,6 +300,12 @@ update message model =
 
         ContextNameUpdatedOutMsg id name ->
             update (ContextStoreMsg <| ContextStore.setName id name) model
+
+        DeleteContextId cid ->
+            pure model
+
+        DeleteTodoId todoId ->
+            pure model
 
         ContextMoreClicked cid ->
             pure { model | popup = ContextIdPopup cid PopupMenu.opened }
