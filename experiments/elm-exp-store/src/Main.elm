@@ -46,6 +46,7 @@ type alias Model =
     { todoStore : TodoStore
     , contextStore : ContextStore
     , contextId : ContextId
+    , popup : Maybe ContextId
     , mode : Mode
     , page : Page
     }
@@ -68,6 +69,7 @@ init flags =
         { todoStore = todoStore
         , contextStore = contextStore
         , contextId = ContextStore.defaultId
+        , popup = Nothing
         , mode = Mode.init
         , page = ContextTodoList
         }
@@ -445,20 +447,25 @@ viewSidebar model =
                     [ class "child"
                     ]
                     [ Icons.moreHDef ]
-                , Menu.render
-                    { children = [ "Rename", "Delete" ]
-                    , containerStyles = [ pRm 0.5, minWidth (rem 10) ]
-                    , childContent =
-                        \child ->
-                            [ sDiv [ p2Rm 0 0 ]
-                                []
-                                [ styled button
-                                    [ btnReset, p2Rm 0.5 1, w100 ]
-                                    []
-                                    [ text child ]
-                                ]
-                            ]
-                    }
+                , case model.popup of
+                    Just contextId ->
+                        Menu.render
+                            { children = [ "Rename", "Delete" ]
+                            , containerStyles = [ pRm 0.5, minWidth (rem 10) ]
+                            , childContent =
+                                \child ->
+                                    [ sDiv [ p2Rm 0 0 ]
+                                        []
+                                        [ styled button
+                                            [ btnReset, p2Rm 0.5 1, w100 ]
+                                            []
+                                            [ text child ]
+                                        ]
+                                    ]
+                            }
+
+                    Nothing ->
+                        noHtml
                 ]
     in
     div
