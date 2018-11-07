@@ -1,7 +1,8 @@
 module Menu exposing (render)
 
-import Html.Styled exposing (Html, div)
+import Html.Styled exposing (Html, div, styled)
 import Html.Styled.Keyed exposing (node)
+import Styles exposing (..)
 
 
 type alias ViewConfig child msg =
@@ -12,7 +13,9 @@ type alias ViewConfig child msg =
 
 render : ViewConfig child msg -> Html msg
 render config =
-    div []
+    styled div
+        []
+        []
         (config.children
             |> List.map (config.childContent >> div [])
         )
