@@ -58,7 +58,7 @@ view config cid state =
         , children = actions
         , containerStyles =
             [ pRm 0.5
-            , minWidth (rem 20)
+            , minWidth (rem 10)
             ]
         , childContent = childContent
         }
