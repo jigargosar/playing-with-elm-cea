@@ -343,7 +343,7 @@ view model =
 
 
 viewAppBar =
-    div [ class "flex-shrink-0 flex flex-row justify-center bg-black white shadow-1" ]
+    appBar []
         [ div [ class "w-100 measure" ]
             [ div [ class "flex flex-row pa3" ]
                 [ sDiv [ fwb ] [] [ text "ELM" ], sDiv [ fontWeight lighter ] [] [ text "DONE" ] ]

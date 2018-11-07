@@ -1,10 +1,13 @@
-module UI exposing (backdrop, boolHtml, maybeHtml, noHtml, sDiv, toolbar)
+module UI exposing (appBar, backdrop, boolHtml, maybeHtml, noHtml, sDiv, section1, toolbar)
 
 import BasicsX exposing (unwrapMaybe)
+import Css exposing (..)
+import CssAtoms exposing (..)
 import FeatherIcons
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (..)
+import Styles exposing (..)
 import Svg.Attributes
 
 
@@ -36,3 +39,11 @@ toolbar kids =
 
 backdrop attrs =
     div (class "z-2 absolute absolute--fill bg-black-40 flex items-center justify-center" :: attrs)
+
+
+appBar =
+    sDiv [ rowCXY, w100, bg "black", fg "white", elevation 3 ]
+
+
+section1 =
+    sDiv [ rowCXY, w100, maxWidth (px 1024) ]
