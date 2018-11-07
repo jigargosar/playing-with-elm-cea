@@ -19,11 +19,8 @@ module Styles exposing
     , mRm
     , p2Rm
     , pRm
-    , pct
     , plRm
     , prRm
-    , px
-    , rem
     , rowBottomY
     , rowCXY
     , rowCY
@@ -33,18 +30,6 @@ module Styles exposing
 
 import Css exposing (..)
 import CssAtoms exposing (aic, b0, dFlex, fDCol, fDRow, fz0, jcc, lh0, m0, p0, ptr, tl)
-
-
-pct =
-    Css.pct
-
-
-rem =
-    Css.rem
-
-
-px =
-    Css.px
 
 
 pRm value =

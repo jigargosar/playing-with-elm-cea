@@ -6,7 +6,7 @@ import Browser.Dom
 import Browser.Events
 import Btn
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
-import Css exposing (Color, backgroundColor, color, em, fontWeight, hex, hover, hsla, margin2, normal, num, padding2, paddingLeft, rgb, textDecoration, underline, zero)
+import Css exposing (..)
 import CssAtoms exposing (fa, fgGray, pl0, ptr, ttu)
 import Dict exposing (Dict)
 import FeatherIcons as Icon
