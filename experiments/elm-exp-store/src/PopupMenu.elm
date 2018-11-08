@@ -137,8 +137,13 @@ render { toMsg, children, containerStyles, childContent, state } =
         attrToMsg =
             HA.map toMsg
 
+        wrapAttrs =
+            List.map attrToMsg
+
         viewChild child =
-            div [ (onClick <| ChildSelected child) |> attrToMsg ] (childContent child)
+            div
+                (wrapAttrs [ onClick <| ChildSelected child ])
+                (childContent child)
 
         rootStyles =
             [ bg "white"
@@ -151,7 +156,7 @@ render { toMsg, children, containerStyles, childContent, state } =
                 ++ containerStyles
     in
     sDiv rootStyles
-        ([ id state.popperDomId, onFocusOut FocusOut ] |> List.map attrToMsg)
+        (wrapAttrs [ id state.popperDomId, onFocusOut FocusOut ])
         (children |> List.map viewChild)
 
 
