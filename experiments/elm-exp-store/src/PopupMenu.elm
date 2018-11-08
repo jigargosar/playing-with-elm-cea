@@ -115,13 +115,6 @@ update config message =
         << pure
 
 
-
---        BrowserMouseClicked ->
---            pure { model | open = False }
---            pure model
---                |> Port.destroyPopper
-
-
 type alias ViewConfig child msg =
     { toMsg : Msg child -> msg
     , state : State
