@@ -205,7 +205,6 @@ type Msg
     | AddContext ContextName
     | SetTodoContent TodoId TodoContent
     | SetTodoContextOutMsg TodoId ContextId
-    | SetContextName ContextId ContextName
     | DeleteContextId ContextId
     | DeleteTodoId TodoId
     | ContextMoreClicked ContextId
@@ -266,7 +265,7 @@ update message model =
                     , setTodoContext = SetTodoContextOutMsg
                     , setTodoContent = SetTodoContent
                     , addContext = AddContext
-                    , setContextName = SetContextName
+                    , setContextName = \id name -> ContextStoreMsg <| ContextStore.setName id name
                     }
             in
             updateSub (Mode.update modeUpdateConfig)
@@ -293,9 +292,6 @@ update message model =
 
         SetTodoContextOutMsg todoId contextId ->
             update (TodoStoreMsg <| TodoStore.setContextId todoId contextId) model
-
-        SetContextName id name ->
-            update (ContextStoreMsg <| ContextStore.setName id name) model
 
         DeleteContextId cid ->
             update (ContextStoreMsg <| ContextStore.delete cid) model
