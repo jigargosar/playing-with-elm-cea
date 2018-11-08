@@ -32,8 +32,6 @@ import UpdateReturn exposing (..)
 type alias Model =
     { open : Bool
     , bounceCount : Int
-    , bounceMsg : Maybe Msg
-    , debouncer : Debouncer
     , cid : ContextId
     , popperStyles : PopperStyles
     }
@@ -43,8 +41,6 @@ init : ContextId -> Model
 init cid =
     { open = False
     , bounceCount = 0
-    , bounceMsg = Nothing
-    , debouncer = Debouncer.init
     , cid = cid
     , popperStyles = { styles = [], attributes = [] }
     }
@@ -163,9 +159,11 @@ update config message =
                     >> addEffect createPopperCmd
                 )
 
-        EmitIfCountEq count msg ->
+        EmitIfCountEq count maybeMsg ->
             andMapWhen (.bounceCount >> eqs count)
-                (unwrapMaybe identity andThenUpdate msg)
+                (unwrapMaybe identity andThenUpdate maybeMsg
+                    >> mapModel (\model -> { model | bounceCount = 0 })
+                )
 
         DebouncedClose ->
             closeAndDestroyPopper
