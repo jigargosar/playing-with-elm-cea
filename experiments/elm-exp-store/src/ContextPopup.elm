@@ -233,8 +233,13 @@ view toMsg model =
             , onFocusOut <| PopupFocusChanged False
             , onFocusIn <| PopupFocusChanged True
             ]
-                ++ List.map (\( n, v ) -> attribute n v) model.popperStyles.attributes
-                ++ List.map (\( n, v ) -> style n v) model.popperStyles.styles
+                ++ (if model.open then
+                        List.map (\( n, v ) -> attribute n v) model.popperStyles.attributes
+                            ++ List.map (\( n, v ) -> style n v) model.popperStyles.styles
+
+                    else
+                        []
+                   )
     in
     sDiv rootStyles
         (wrapAttrs rootAttributes)
