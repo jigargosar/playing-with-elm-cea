@@ -23,6 +23,14 @@ type alias Msg =
     PopupMenu.Msg Action
 
 
+contextMoreMenuPopperDomId cid =
+    "context-more-menu-popper-"
+
+
+contextMoreMenuRefDomId cid =
+    "context-more-menu-reference-" ++ cid
+
+
 childContent child =
     [ sDiv [ p2Rm 0 0 ]
         []
@@ -40,14 +48,6 @@ childContent child =
             ]
         ]
     ]
-
-
-contextMoreMenuPopperDomId cid =
-    "context-more-menu-popper-"
-
-
-contextMoreMenuRefDomId cid =
-    "context-more-menu-reference-" ++ cid
 
 
 type alias ViewConfig msg =
