@@ -315,6 +315,10 @@ navigateToInbox =
     SwitchToContextTodoListWithContextId ContextStore.defaultId
 
 
+contextMoreClicked =
+    UpdateContextPopup << ContextPopup.openFor
+
+
 getAllContextsNameIdPairs =
     .contextStore
         >> ContextStore.list

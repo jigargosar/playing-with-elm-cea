@@ -4,6 +4,7 @@ module ContextPopup exposing
     , Msg
     , init
     , isOpenForContextId
+    , openFor
     , popperId
     , refId
     , subscriptions
@@ -60,11 +61,15 @@ type alias BounceMsg =
     Maybe Msg
 
 
+openFor =
+    OpenFor
+
+
 type Msg
     = NoOp
     | Warn Log.Line
     | ActionClicked Action
-    | PopOpen
+    | OpenFor ContextId
     | UpdateDebouncer (Debouncer.Msg BounceMsg)
     | DocumentFocusChanged Bool
     | PopupFocusChanged Bool
@@ -94,8 +99,11 @@ update config message =
         cancelDebounceMsg =
             UpdateDebouncer << Debouncer.bounce <| Nothing
 
-        setOpen bool model =
-            { model | open = bool }
+        setClose model =
+            { model | open = False }
+
+        setOpenFor cid model =
+            { model | open = True, cid = cid }
     in
     (case message of
         NoOp ->
@@ -105,16 +113,16 @@ update config message =
             addCmd (Log.warn "Mode.elm" logLine)
 
         ActionClicked child ->
-            mapModel (setOpen False)
+            mapModel setClose
                 >> addMsg (config.selected "" child)
 
-        PopOpen ->
-            mapModel (setOpen True)
+        OpenFor cid ->
+            mapModel (setOpenFor cid)
                 >> addEffect (.focusOnOpenDomId >> unwrapMaybe Cmd.none focusDomId)
                 >> addEffect (\model -> Port.createPopper ( model.refDomId, model.popperDomId ))
 
         DebouncedCloseReceived ->
-            mapModel (setOpen False)
+            mapModel setClose
 
         UpdateDebouncer msg ->
             andThen
