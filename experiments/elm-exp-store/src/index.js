@@ -135,7 +135,7 @@ subscribe(
       if (popper) {
         popper.destroy()
       }
-      requestAnimationFrame(() => {
+      let showPopper = () => {
         const refEl = document.getElementById(refDomId)
         const popEl = document.getElementById(popperDomId)
         if (!refEl || !popEl) {
@@ -150,7 +150,7 @@ subscribe(
             },
             preventOverflow: {
               // boundariesElement: document.getElementById('popper-container'),
-              boundariesElement: "viewport",
+              boundariesElement: 'viewport',
             },
           },
 
@@ -167,7 +167,10 @@ subscribe(
             console.log(`onUpdate data`, data)
           },
         })
-      })    },
+      }
+      requestAnimationFrame(showPopper)
+      // showPopper()
+    },
   },
   app,
 )
