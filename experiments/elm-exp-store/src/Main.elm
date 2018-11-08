@@ -484,10 +484,7 @@ viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelect
         , class "hide-child"
         ]
         [ liTextButton
-            [ css
-                [ ttu
-                , rowCY
-                ]
+            [ css [ ttu, rowCY ]
             , onClick navigateToTodoList
             ]
             [ div [] [ text <| name ]
