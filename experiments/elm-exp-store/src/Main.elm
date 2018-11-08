@@ -202,7 +202,6 @@ type Msg
     | ModeMsg Mode.Msg
     | StartEditingContext ContextId
     | AddTodo TodoContent
-    | AddContext ContextName
     | SetTodoContent TodoId TodoContent
     | SetTodoContextOutMsg TodoId ContextId
     | DeleteContextId ContextId
@@ -264,7 +263,7 @@ update message model =
                     , addTodo = AddTodo
                     , setTodoContext = SetTodoContextOutMsg
                     , setTodoContent = SetTodoContent
-                    , addContext = AddContext
+                    , addContext = ContextStoreMsg << ContextStore.addNew
                     , setContextName = \id name -> ContextStoreMsg <| ContextStore.setName id name
                     }
             in
@@ -283,9 +282,6 @@ update message model =
 
         AddTodo content ->
             update (TodoStoreMsg <| TodoStore.addNew content) model
-
-        AddContext name ->
-            update (ContextStoreMsg <| ContextStore.addNew name) model
 
         SetTodoContent id content ->
             update (TodoStoreMsg <| TodoStore.setContent id content) model
