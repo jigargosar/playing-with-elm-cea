@@ -91,14 +91,23 @@ render { toMsg, children, containerStyles, childContent, state } =
             [ bg "white"
             , elevation 4
             , borderRadius (rem 0.5)
-            , position absolute
+
+            --            , position absolute
+            , boolCss (not state.open) [ display none ]
             ]
                 ++ containerStyles
     in
-    if state.open then
-        sDiv rootStyles
-            [ id state.popperDomId ]
-            (children |> List.map viewChild)
+    sDiv rootStyles
+        [ id state.popperDomId ]
+        (children |> List.map viewChild)
 
-    else
-        noHtml
+
+
+--    if state.open then
+--        sDiv rootStyles
+--            [ id state.popperDomId ]
+--            (children |> List.map viewChild)
+--
+--    else
+--        noHtml
+--
