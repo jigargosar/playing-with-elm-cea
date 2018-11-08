@@ -39,16 +39,11 @@ import UpdateReturn exposing (..)
 ---- MODEL ----
 
 
-type Popup
-    = NoPopup
-    | ContextPopup ContextPopup.Model
-
-
 type alias Model =
     { todoStore : TodoStore
     , contextStore : ContextStore
     , contextId : ContextId
-    , popup : Popup
+    , contextPopup : ContextPopup.Model
     , mode : Mode
     }
 
@@ -71,7 +66,7 @@ init flags =
             { todoStore = todoStore
             , contextStore = contextStore
             , contextId = ContextStore.defaultId
-            , popup = NoPopup
+            , contextPopup = ContextPopup.init ""
             , mode = Mode.init
             }
     in
@@ -176,13 +171,8 @@ getMaybeSelectedContext model =
     model.contextStore |> ContextStore.get (getSelectedContextId model)
 
 
-isMoreMenuOpenForContextId cid model =
-    case model.popup of
-        ContextPopup state ->
-            ContextPopup.isOpenForContextId cid state
-
-        _ ->
-            False
+isContextPopupOpenFor cid =
+    .contextPopup >> ContextPopup.isOpenForContextId cid
 
 
 
@@ -270,24 +260,7 @@ update message model =
                    )
 
         ContextMoreClicked cid ->
-            case model.popup of
-                ContextPopup state ->
-                    if ContextPopup.isOpenForContextId cid state then
-                        pure { model | popup = NoPopup }
-
-                    else
-                        pure
-                            { model
-                                | popup = ContextPopup (ContextPopup.init cid)
-                            }
-                            |> andThenUpdate (UpdateContextPopup PopupMenu.popOpen)
-
-                _ ->
-                    pure
-                        { model
-                            | popup = ContextPopup (ContextPopup.init cid)
-                        }
-                        |> andThenUpdate (UpdateContextPopup PopupMenu.popOpen)
+            pure model
 
         UpdateContextPopup msg ->
             let
@@ -303,13 +276,12 @@ update message model =
                                     ContextStoreMsg <| ContextStore.archive cid
                     }
             in
-            case model.popup of
-                ContextPopup state ->
-                    ContextPopup.update config msg state
-                        |> mapModel (\s -> { model | popup = ContextPopup s })
-
-                _ ->
-                    pure model
+            updateSub
+                (ContextPopup.update config)
+                .contextPopup
+                (\s b -> { b | contextPopup = s })
+                msg
+                model
 
 
 
@@ -319,13 +291,7 @@ update message model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ case model.popup of
-            ContextPopup state ->
-                ContextPopup.subscriptions state
-                    |> Sub.map UpdateContextPopup
-
-            NoPopup ->
-                Sub.none
+        [ ContextPopup.subscriptions model.contextPopup |> Sub.map UpdateContextPopup
         ]
 
 
@@ -367,12 +333,7 @@ view model =
 
 
 viewPopup model =
-    case model.popup of
-        ContextPopup state ->
-            ContextPopup.view { toMsg = UpdateContextPopup, state = state }
-
-        NoPopup ->
-            noHtml
+    ContextPopup.view { toMsg = UpdateContextPopup, state = model.contextPopup }
 
 
 viewAppBar =
@@ -436,7 +397,7 @@ createUserDefinedContextItemViewModel model =
                 , activeTodoCount = getActiveTodoListCountForContextId id model
                 , isSelected = isCurrentPageContextTodoListWithContextId id model
                 , moreClicked = ContextMoreClicked id
-                , moreOpen = isMoreMenuOpenForContextId id model
+                , moreOpen = isContextPopupOpenFor id model
                 }
             )
 
@@ -458,7 +419,7 @@ createInboxContextItemViewModel model =
     , activeTodoCount = getActiveTodoListCountForContextId id model
     , isSelected = isCurrentPageContextTodoListWithContextId id model
     , moreClicked = ContextMoreClicked id
-    , moreOpen = isMoreMenuOpenForContextId id model
+    , moreOpen = isContextPopupOpenFor id model
     }
 
 
