@@ -82,8 +82,14 @@ subscriptions state =
 update : Config msg child -> Msg child -> State -> ( State, Cmd msg )
 update config message =
     let
+        andThenUpdate msg =
+            andThen (update config msg)
+
         focusDomId domId =
             attemptDomIdFocus domId NoOp Warn |> Cmd.map config.toMsg
+
+        bounce action =
+            andThenUpdate (UpdateDebouncer <| Debouncer.bounce action)
     in
     (case message of
         NoOp ->
@@ -124,19 +130,15 @@ update config message =
                 )
 
         DomFocusChanged hasFocus ->
-            identity
+            mapModel (\model -> { model | documentHasFocus = hasFocus })
 
         PopupFocusChanged hasFocus ->
-            andThen
-                (update config
-                    (UpdateDebouncer <|
-                        Debouncer.bounce <|
-                            if hasFocus then
-                                ClearBouncedAction
+            bounce
+                (if hasFocus then
+                    ClearBouncedAction
 
-                            else
-                                ClosePopupBouncedAction
-                    )
+                 else
+                    ClosePopupBouncedAction
                 )
     )
         << pure
