@@ -19,7 +19,7 @@ import CssAtoms exposing (..)
 import Debouncer exposing (Debouncer)
 import DomEvents exposing (DomId, onFocusIn, onFocusOut)
 import Html.Styled exposing (Html, button, div, styled, text)
-import Html.Styled.Attributes as HA exposing (attribute, autofocus, id)
+import Html.Styled.Attributes as HA exposing (attribute, autofocus, id, style)
 import Html.Styled.Events exposing (onClick)
 import Log
 import Port exposing (PopperStyles)
@@ -258,13 +258,17 @@ view toMsg model =
 
               else
                 Css.batch [ opacity (int 0), transitionFadeIn ]
-            , position absolute
             , left (rem -100)
+            , position absolute
             ]
 
         rootAttributes =
-            [ id popperDomId, onFocusOut <| PopupFocusChanged False, onFocusIn <| PopupFocusChanged True ]
+            [ id popperDomId
+            , onFocusOut <| PopupFocusChanged False
+            , onFocusIn <| PopupFocusChanged True
+            ]
                 ++ List.map (\( n, v ) -> attribute n v) model.popperStyles.attributes
+                ++ List.map (\( n, v ) -> style n v) model.popperStyles.styles
     in
     sDiv rootStyles
         (wrapAttrs rootAttributes)
