@@ -31,6 +31,8 @@ import UpdateReturn exposing (..)
 
 type alias Model =
     { open : Bool
+    , bounceCount : Int
+    , bounceMsg : Maybe Msg
     , debouncer : Debouncer
     , cid : ContextId
     , popperStyles : PopperStyles
@@ -40,6 +42,8 @@ type alias Model =
 init : ContextId -> Model
 init cid =
     { open = False
+    , bounceCount = 0
+    , bounceMsg = Nothing
     , debouncer = Debouncer.init
     , cid = cid
     , popperStyles = { styles = [], attributes = [] }
@@ -63,10 +67,11 @@ type Msg
     | Warn Log.Line
     | ActionClicked Action
     | ToggleOpenFor ContextId
-    | UpdateDebouncer (Debouncer.Msg BounceMsg)
+      --    | UpdateDebouncer (Debouncer.Msg BounceMsg)
     | DocumentFocusChanged Bool
     | PopupFocusChanged Bool
-    | DebouncedCloseReceived
+    | DebouncedClose
+    | EmitIfCountEq Int (Maybe Msg)
     | PopperStylesChanged PopperStyles
 
 
@@ -94,20 +99,30 @@ getAutoFocusDomId model =
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message =
     let
+        cancelBounceMsg =
+            bounceMaybeMsg Nothing
+
+        bounceCloseMsg =
+            bounceMaybeMsg <| Just DebouncedClose
+
+        bounceMaybeMsg maybeMsg =
+            andThen
+                (\model ->
+                    let
+                        bounceCount =
+                            model.bounceCount + 1
+                    in
+                    ( { model | bounceCount = bounceCount }
+                    , afterTimeout 0 (EmitIfCountEq bounceCount maybeMsg)
+                    )
+                        |> mapCmd config.toMsg
+                )
+
         andThenUpdate msg =
             andThen (update config msg)
 
         focusDomId domId =
             attemptDomIdFocus domId NoOp Warn |> Cmd.map config.toMsg
-
-        bounce action =
-            andThenUpdate (UpdateDebouncer <| Debouncer.bounce action)
-
-        debounceCloseMsg =
-            UpdateDebouncer << Debouncer.bounce <| Just DebouncedCloseReceived
-
-        cancelDebounceMsg =
-            UpdateDebouncer << Debouncer.bounce <| Nothing
 
         setOpenFor cid model =
             { model | open = True, cid = cid }
@@ -120,6 +135,9 @@ update config message =
                 (mapModel (\model -> { model | open = False })
                     >> addCmd (Port.destroyPopper ())
                 )
+
+        incCount model =
+            { model | bounceCount = model.bounceCount + 1 }
     in
     (case message of
         NoOp ->
@@ -145,46 +163,27 @@ update config message =
                     >> addEffect createPopperCmd
                 )
 
-        DebouncedCloseReceived ->
+        EmitIfCountEq count msg ->
+            andMapWhen (.bounceCount >> eqs count)
+                (unwrapMaybe identity andThenUpdate msg)
+
+        DebouncedClose ->
             closeAndDestroyPopper
 
-        UpdateDebouncer msg ->
-            andThen
-                (updateSub
-                    (Debouncer.update debouncerConfig)
-                    .debouncer
-                    (\s b -> { b | debouncer = s })
-                    msg
-                    >> mapCmd config.toMsg
-                )
-
         DocumentFocusChanged hasFocus ->
-            andThenUpdate cancelDebounceMsg
+            cancelBounceMsg
 
         PopupFocusChanged hasFocus ->
-            andThenUpdate <|
-                if hasFocus then
-                    cancelDebounceMsg
+            if hasFocus then
+                cancelBounceMsg
 
-                else
-                    debounceCloseMsg
+            else
+                bounceCloseMsg
 
         PopperStylesChanged popperStyles ->
-            let
-                _ =
-                    Debug.log "PopperStylesChanged" popperStyles
-            in
             mapModel (\model -> { model | popperStyles = popperStyles })
     )
         << pure
-
-
-debouncerConfig : Debouncer.Config Msg (Maybe Msg)
-debouncerConfig =
-    { toMsg = UpdateDebouncer
-    , wait = 0
-    , onEmit = unwrapMaybe NoOp identity
-    }
 
 
 type Action
