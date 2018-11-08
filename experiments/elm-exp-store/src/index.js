@@ -149,6 +149,7 @@ subscribe(
           debugger
           return
         }
+        let toStringPairs = compose(toPairs, map(val => `${val}`))
         popper = new Popper(refEl, popEl, {
 
           modifiers: {
@@ -168,13 +169,15 @@ subscribe(
           // placement: 'right-start',
           // positionFixed:true,
           onCreate(data) {
-            let toStringPairs = compose(toPairs, map(val => `${val}`))
-            let attributes = toStringPairs(data.attributes)
-            console.log(`onCreate data`, data, attributes)
-            sendToApp("popperStylesChanged",{styles:toStringPairs(data.styles), attributes} )
+
+            let portData = {styles:toStringPairs(data.styles), attributes: toStringPairs(data.attributes)}
+            console.log(`onCreate data`, data, portData)
+            sendToApp("popperStylesChanged",portData )
           },
           onUpdate(data) {
-            console.log(`onUpdate data`, data)
+            let portData = {styles:toStringPairs(data.styles), attributes: toStringPairs(data.attributes)}
+            console.log(`onUpdate data`, data, portData)
+            sendToApp("popperStylesChanged",portData )
           },
         })
       }
