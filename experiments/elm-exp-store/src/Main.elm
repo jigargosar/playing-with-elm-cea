@@ -489,7 +489,7 @@ liTextButton =
         ]
 
 
-viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, cid } =
+viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
     styled listItem
         [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
         [ id <| contextMoreMenuRefDomId cid
@@ -510,8 +510,16 @@ viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelect
                 []
                 [ text <| String.fromInt activeTodoCount ]
             ]
-        , Btn.sIcon [ fgGray, opacity zero, focus [ opacity (int 1) ] ]
+        , Btn.sIcon
+            [ fgGray
+            , focus [ opacity (int 1) ]
+            ]
             [ class "child"
+            , if moreOpen then
+                style "opacity" "1"
+
+              else
+                style "" ""
             , onClick moreClicked
             ]
             [ Icons.moreHDef ]
