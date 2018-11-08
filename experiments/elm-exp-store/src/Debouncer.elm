@@ -40,7 +40,7 @@ update : Config msg bouncedItem -> Msg bouncedItem -> Debouncer -> ( Debouncer, 
 update config message =
     (case message of
         EmitIfCountEq bouncedItem count ->
-            andThenIf (.count >> eqs count)
+            andThenWhen (.count >> eqs count)
                 (\_ -> pure init |> addMsg (config.onEmit bouncedItem))
 
         Bounce bouncedItem ->

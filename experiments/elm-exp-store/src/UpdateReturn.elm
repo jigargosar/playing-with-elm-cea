@@ -7,10 +7,11 @@ module UpdateReturn exposing
     , addMsg
     , addOutMsg3
     , afterTimeout
-    , andMapIf
+    , andMapIfElse
+    , andMapWhen
     , andThen
     , andThen3
-    , andThenIf
+    , andThenWhen
     , attempt
     , foldlOutMsgList
     , generate3
@@ -40,7 +41,7 @@ mapModel fn ( m, c ) =
     ( fn m, c )
 
 
-andThenIf modelPred fn ( m, c ) =
+andThenWhen modelPred fn ( m, c ) =
     if modelPred m then
         andThen fn ( m, c )
 
@@ -48,12 +49,20 @@ andThenIf modelPred fn ( m, c ) =
         ( m, c )
 
 
-andMapIf modelPred fn ( m, c ) =
+andMapWhen modelPred fn ( m, c ) =
     if modelPred m then
         fn ( m, c )
 
     else
         ( m, c )
+
+
+andMapIfElse modelPred tFn fFn ( m, c ) =
+    if modelPred m then
+        tFn ( m, c )
+
+    else
+        fFn ( m, c )
 
 
 afterTimeout milli msg =

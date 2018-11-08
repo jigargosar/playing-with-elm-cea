@@ -4,10 +4,10 @@ module ContextPopup exposing
     , Msg
     , init
     , isOpenForContextId
-    , openFor
     , popperId
     , refId
     , subscriptions
+    , toggleOpenFor
     , update
     , view
     )
@@ -61,15 +61,15 @@ type alias BounceMsg =
     Maybe Msg
 
 
-openFor =
-    OpenFor
+toggleOpenFor =
+    ToggleOpenFor
 
 
 type Msg
     = NoOp
     | Warn Log.Line
     | ActionClicked Action
-    | OpenFor ContextId
+    | ToggleOpenFor ContextId
     | UpdateDebouncer (Debouncer.Msg BounceMsg)
     | DocumentFocusChanged Bool
     | PopupFocusChanged Bool
@@ -116,10 +116,13 @@ update config message =
             mapModel setClose
                 >> addMsg (config.selected "" child)
 
-        OpenFor cid ->
-            mapModel (setOpenFor cid)
-                >> addEffect (.focusOnOpenDomId >> unwrapMaybe Cmd.none focusDomId)
-                >> addEffect (\model -> Port.createPopper ( model.refDomId, model.popperDomId ))
+        ToggleOpenFor cid ->
+            andMapIfElse (isOpenForContextId cid)
+                (mapModel setClose)
+                (mapModel (setOpenFor cid)
+                    >> addEffect (.focusOnOpenDomId >> unwrapMaybe Cmd.none focusDomId)
+                    >> addEffect (\model -> Port.createPopper ( model.refDomId, model.popperDomId ))
+                )
 
         DebouncedCloseReceived ->
             mapModel setClose

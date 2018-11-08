@@ -316,7 +316,7 @@ navigateToInbox =
 
 
 contextMoreClicked =
-    UpdateContextPopup << ContextPopup.openFor
+    UpdateContextPopup << ContextPopup.toggleOpenFor
 
 
 getAllContextsNameIdPairs =
@@ -400,7 +400,7 @@ createUserDefinedContextItemViewModel model =
                     SwitchToContextTodoListWithContextId id
                 , activeTodoCount = getActiveTodoListCountForContextId id model
                 , isSelected = isCurrentPageContextTodoListWithContextId id model
-                , moreClicked = ContextMoreClicked id
+                , moreClicked = contextMoreClicked id
                 , moreOpen = isContextPopupOpenFor id model
                 }
             )
@@ -422,7 +422,7 @@ createInboxContextItemViewModel model =
     , navigateToTodoList = navigateToInbox
     , activeTodoCount = getActiveTodoListCountForContextId id model
     , isSelected = isCurrentPageContextTodoListWithContextId id model
-    , moreClicked = ContextMoreClicked id
+    , moreClicked = contextMoreClicked id
     , moreOpen = isContextPopupOpenFor id model
     }
 
