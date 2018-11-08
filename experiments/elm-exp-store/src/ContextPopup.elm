@@ -223,8 +223,11 @@ view toMsg model =
                 Css.batch [ opacity (int 1), transitionFadeIn ]
 
               else
-                Css.batch [ opacity (int 0), transitionFadeIn ]
-            , left (rem -100)
+                Css.batch
+                    [ opacity (int 0)
+                    , transitionFadeIn
+                    , left (rem -100)
+                    ]
             , position absolute
             ]
 
