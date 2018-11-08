@@ -45,8 +45,8 @@ init cid =
     }
 
 
-isOpenForContextId cid model =
-    model.cid == cid && PopupMenu.isOpen model.popupState
+isOpenForContextId cid state =
+    state.cid == cid && PopupMenu.isOpen state.popupState
 
 
 subscriptions model =
