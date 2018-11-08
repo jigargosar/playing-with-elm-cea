@@ -131,9 +131,16 @@ subscribe(
       storageSet('contexts', contexts)
     },
     // focusSelector,
+    destroyPopper:()=>{
+      if (popper) {
+        popper.destroy()
+        popper = null
+      }
+    },
     createPopper: ([refDomId, popperDomId]) => {
       if (popper) {
         popper.destroy()
+        popper = null
       }
       let showPopper = () => {
         const refEl = document.getElementById(refDomId)

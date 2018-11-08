@@ -105,14 +105,15 @@ update config message =
         cancelDebounceMsg =
             UpdateDebouncer << Debouncer.bounce <| Nothing
 
-        setClose model =
-            { model | open = False }
-
         setOpenFor cid model =
             { model | open = True, cid = cid }
 
         createPopperCmd { cid } =
             Port.createPopper ( refId cid, popperId cid )
+
+        closeAndDestroyPopper =
+            mapModel (\model -> { model | open = False })
+                >> addCmd (Port.destroyPopper ())
     in
     (case message of
         NoOp ->
@@ -127,19 +128,19 @@ update config message =
                 actionSelectedCmd model =
                     Task.perform identity (Task.succeed <| config.selected model.cid child)
             in
-            mapModel setClose
+            closeAndDestroyPopper
                 >> addEffect actionSelectedCmd
 
         ToggleOpenFor cid ->
             andMapIfElse (isOpenForContextId cid)
-                (mapModel setClose)
+                closeAndDestroyPopper
                 (mapModel (setOpenFor cid)
                     >> addEffect (getAutoFocusDomId >> unwrapMaybe Cmd.none focusDomId)
                     >> addEffect createPopperCmd
                 )
 
         DebouncedCloseReceived ->
-            mapModel setClose
+            closeAndDestroyPopper
 
         UpdateDebouncer msg ->
             andThen
@@ -239,13 +240,14 @@ view toMsg model =
             , borderRadius (rem 0.5)
             , pRm 0.5
             , minWidth (rem 10)
-            , if model.open then
-                Css.batch []
 
-              else
-                Css.batch [ display none ]
-
-            --            , position absolute
+            --            , if model.open then
+            --                Css.batch []
+            --
+            --              else
+            --                Css.batch [ display none ]
+            , position absolute
+            , left (rem -100)
             ]
     in
     sDiv rootStyles

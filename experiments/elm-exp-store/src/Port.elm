@@ -3,6 +3,7 @@ port module Port exposing
     , cacheContextStore
     , cacheTodoStore
     , createPopper
+    , destroyPopper
     , documentFocusChanged
     , focusSelector
     , warn
@@ -44,3 +45,6 @@ type alias PopperDomId =
 
 
 port createPopper : ( RefDomId, PopperDomId ) -> Cmd msg
+
+
+port destroyPopper : () -> Cmd msg
