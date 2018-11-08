@@ -154,7 +154,7 @@ subscribe(
 
           modifiers: {
             applyStyle: {
-              // enabled: false,
+              enabled: false,
             },
             preventOverflow: {
               // boundariesElement: document.getElementById('popper-container'),
