@@ -73,9 +73,6 @@ subscriptions state =
 update : Config msg child -> Msg child -> State -> ( State, Cmd msg )
 update config message =
     let
-        andThenUpdate msg =
-            andThen (update config msg)
-
         focusDomId domId =
             attemptDomIdFocus domId NoOp Warn |> Cmd.map config.toMsg
     in
