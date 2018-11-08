@@ -16,6 +16,7 @@ import ContextStore exposing (ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
 import Html.Styled exposing (Html, button, styled, text)
+import Html.Styled.Attributes exposing (autofocus)
 import PopupMenu
 import Styles exposing (..)
 import UI exposing (..)
