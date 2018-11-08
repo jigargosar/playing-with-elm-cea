@@ -1,11 +1,13 @@
-module PopupMenu exposing (Config, Msg, State, init, popOpen, render, update)
+module PopupMenu exposing (Config, Msg, State, init, popOpen, render, subscriptions, update)
 
+import Browser.Events
 import Css exposing (..)
 import DomEvents exposing (..)
 import Html.Styled as Html exposing (Attribute, Html, div, styled)
 import Html.Styled.Attributes as HA exposing (..)
 import Html.Styled.Events exposing (..)
 import Html.Styled.Keyed exposing (node)
+import Json.Decode as D
 import Port
 import Styles exposing (..)
 import UI exposing (..)
@@ -31,12 +33,19 @@ popOpen =
 type Msg child
     = ChildSelected child
     | PopOpen
+    | BrowserMouseClicked
 
 
 type alias Config msg child =
     { toMsg : Msg child -> msg
     , selected : child -> msg
     }
+
+
+subscriptions state =
+    Sub.batch
+        [ Browser.Events.onClick (D.succeed BrowserMouseClicked)
+        ]
 
 
 update : Config msg child -> Msg child -> State -> ( State, Cmd msg )
@@ -50,6 +59,13 @@ update config message model =
         PopOpen ->
             pure { model | open = True }
                 |> addCmd (Port.createPopper ( model.refDomId, model.popperDomId ))
+
+        BrowserMouseClicked ->
+            pure { model | open = False }
+
+
+
+--                |> Port.destroyPopper
 
 
 type alias ViewConfig child msg =

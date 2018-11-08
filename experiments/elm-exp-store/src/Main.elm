@@ -296,9 +296,17 @@ update message model =
 ---- Subscriptions
 
 
+subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        []
+        [ case model.popup of
+            ContextIdPopup state ->
+                ContextPopup.subscriptions state
+                    |> Sub.map UpdateContextPopup
+
+            NoPopup ->
+                Sub.none
+        ]
 
 
 

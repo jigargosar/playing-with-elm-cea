@@ -5,6 +5,7 @@ module ContextPopup exposing
     , contextMoreMenuPopperDomId
     , contextMoreMenuRefDomId
     , init
+    , subscriptions
     , update
     , view
     )
@@ -31,6 +32,10 @@ init cid =
     { popupState = PopupMenu.init (contextMoreMenuRefDomId cid) (contextMoreMenuPopperDomId cid)
     , cid = cid
     }
+
+
+subscriptions model =
+    PopupMenu.subscriptions model.popupState
 
 
 update { toMsg, selected } msg model =
