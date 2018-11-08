@@ -123,7 +123,7 @@ update config message model =
 
         FocusDomId domId ->
             pure model
-                |> addCmd (attemptDomIdFocus domId NoOp Warn)
+                |> addCmd (attemptFocus NoOp Warn domId)
 
         AutoFocus ->
             case model of

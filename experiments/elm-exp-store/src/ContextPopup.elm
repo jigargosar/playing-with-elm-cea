@@ -101,17 +101,8 @@ update config message =
         bouncerConfig =
             { tagger = tagger, emitIfCountMsg = EmitIfBounceCount }
 
-        cancelBounceMsg =
-            Bouncer.cancel bouncerConfig
-
-        bounceCloseMsg =
-            Bouncer.bounce bouncerConfig DebouncedClose
-
         andThenUpdate msg =
             andThen (update config msg)
-
-        focusDomId domId =
-            attemptDomIdFocus domId NoOp Warn
 
         setOpenFor cid model =
             { model | open = True, cid = cid }
@@ -140,7 +131,7 @@ update config message =
             andMapIfElse (isOpenForContextId cid)
                 closeAndDestroyPopper
                 (mapModel (setOpenFor cid)
-                    >> addTaggedEffect tagger (getAutoFocusDomId >> unwrapMaybe Cmd.none focusDomId)
+                    >> addTaggedEffect tagger (getAutoFocusDomId >> attemptFocusMaybeDomId NoOp Warn)
                     >> addEffect createPopperCmd
                 )
 
@@ -151,14 +142,14 @@ update config message =
             closeAndDestroyPopper
 
         DocumentFocusChanged hasFocus ->
-            cancelBounceMsg
+            Bouncer.cancel bouncerConfig
 
         PopupFocusChanged hasFocus ->
             if hasFocus then
-                cancelBounceMsg
+                Bouncer.cancel bouncerConfig
 
             else
-                bounceCloseMsg
+                Bouncer.bounce bouncerConfig DebouncedClose
 
         PopperStylesChanged popperStyles ->
             mapModel (\model -> { model | popperStyles = popperStyles })

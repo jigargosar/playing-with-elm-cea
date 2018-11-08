@@ -7,7 +7,8 @@ module BasicsX exposing
     , applyMaybeFn2
     , applyTo
     , applyTo2
-    , attemptDomIdFocus
+    , attemptFocus
+    , attemptFocusMaybeDomId
     , defaultEmptyStringTo
     , eq0
     , eqs
@@ -61,13 +62,17 @@ activeElement decoder =
     D.at [ "target", "ownerDocument", "activeElement" ] decoder
 
 
-attemptDomIdFocus domId onSuccess onError =
+attemptFocus onSuccess onError domId =
     Browser.Dom.focus domId
         |> Task.attempt
             (unpackResult
                 (\_ -> onError [ "Focus Error: #", domId, " NotFound" ])
                 (\_ -> onSuccess)
             )
+
+
+attemptFocusMaybeDomId onSuccess onError =
+    unwrapMaybe Cmd.none (attemptFocus onSuccess onError)
 
 
 ter b t f =
