@@ -31,8 +31,6 @@ import UpdateReturn exposing (..)
 type alias Model =
     { open : Bool
     , debouncer : Debouncer
-    , refDomId : DomId
-    , popperDomId : DomId
     , focusOnOpenDomId : Maybe DomId
     , cid : ContextId
     }
@@ -46,8 +44,6 @@ init cid =
     in
     { open = False
     , debouncer = Debouncer.init
-    , refDomId = refId cid
-    , popperDomId = popperDomId
     , focusOnOpenDomId = actions |> List.head |> Maybe.map (getChildDomId popperDomId)
     , cid = cid
     }
@@ -238,5 +234,5 @@ view toMsg model =
             ]
     in
     sDiv rootStyles
-        (wrapAttrs [ id model.popperDomId, onFocusOut <| PopupFocusChanged False, onFocusIn <| PopupFocusChanged True ])
+        (wrapAttrs [ id popperDomId, onFocusOut <| PopupFocusChanged False, onFocusIn <| PopupFocusChanged True ])
         (List.map viewChild actions)
