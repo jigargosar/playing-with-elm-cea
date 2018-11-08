@@ -498,7 +498,7 @@ viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelect
                 []
                 [ text <| String.fromInt activeTodoCount ]
             ]
-        , Btn.sIcon [ fgGray, opacity zero ]
+        , Btn.sIcon [ fgGray, opacity zero, focus [ opacity (int 1) ] ]
             [ class "child"
             , onClick moreClicked
             ]
