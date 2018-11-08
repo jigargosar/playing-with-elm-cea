@@ -22,8 +22,9 @@ module UpdateReturn exposing
     , pure
     , pure3
     , replaceModel
-    , update3
-    , updateMaybeSub
+    ,  update3
+       --    , updateMaybeSub
+
     , updateSub
     )
 
@@ -82,17 +83,18 @@ updateSub updateFn getSub setSub subMsg model =
     ( setSub sub model, cmd )
 
 
-updateMaybeSub :
-    (subMsg -> subModel -> ( subModel, Cmd msg ))
-    -> (model -> Maybe subModel)
-    -> (subModel -> model -> model)
-    -> subMsg
-    -> model
-    -> ( model, Cmd msg )
-updateMaybeSub updateFn getMaybeSub setSub subMsg model =
-    unwrapMaybe ( model, Cmd.none )
-        (\sub -> updateSub updateFn (always sub) setSub subMsg model)
-        (getMaybeSub model)
+
+--updateMaybeSub :
+--    (subMsg -> subModel -> ( subModel, Cmd msg ))
+--    -> (model -> Maybe subModel)
+--    -> (subModel -> model -> model)
+--    -> subMsg
+--    -> model
+--    -> ( model, Cmd msg )
+--updateMaybeSub updateFn getMaybeSub setSub subMsg model =
+--    unwrapMaybe ( model, Cmd.none )
+--        (\sub -> updateSub updateFn (always sub) setSub subMsg model)
+--        (getMaybeSub model)
 
 
 mapCmd tagger ( m, c ) =
