@@ -1,5 +1,6 @@
 module PopupMenu exposing (Config, Msg, State, init, isOpen, popOpen, render, subscriptions, update)
 
+import BasicsX exposing (attemptDomIdFocus)
 import Browser.Events
 import Css exposing (..)
 import DomEvents exposing (..)
@@ -8,6 +9,7 @@ import Html.Styled.Attributes as HA exposing (..)
 import Html.Styled.Events exposing (..)
 import Html.Styled.Keyed exposing (node)
 import Json.Decode as D
+import Log
 import Port
 import Styles exposing (..)
 import UI exposing (..)
@@ -35,7 +37,10 @@ isOpen =
 
 
 type Msg child
-    = ChildSelected child
+    = NoOp
+    | Warn Log.Line
+    | FocusDomId DomId
+    | ChildSelected child
     | PopOpen
     | BrowserMouseClicked
 
@@ -55,6 +60,17 @@ subscriptions state =
 update : Config msg child -> Msg child -> State -> ( State, Cmd msg )
 update config message model =
     case message of
+        NoOp ->
+            pure model
+
+        Warn logLine ->
+            pure model
+                |> addCmd (Log.warn "Mode.elm" logLine)
+
+        FocusDomId domId ->
+            pure model
+                |> addMapCmd config.toMsg (attemptDomIdFocus domId NoOp Warn)
+
         ChildSelected child ->
             pure { model | open = False }
                 --                |> Port.destroyPopper

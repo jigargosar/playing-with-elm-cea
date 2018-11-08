@@ -48,8 +48,9 @@ init =
 
 type Msg
     = NoOp
-    | BackdropClicked
     | Warn Log.Line
+    | FocusDomId DomId
+    | BackdropClicked
     | StartAddingTodo
     | StartAddingContext
     | StartEditingTodo Todo
@@ -58,7 +59,6 @@ type Msg
     | TextInputChanged TodoContent
     | ContextIdChanged ContextId
     | EndEditMode
-    | FocusDomId DomId
     | AutoFocus
 
 

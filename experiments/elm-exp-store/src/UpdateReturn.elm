@@ -3,6 +3,7 @@ module UpdateReturn exposing
     , addCmd
     , addCmd3
     , addEffect
+    , addMapCmd
     , addMsg
     , addOutMsg3
     , afterTimeout
@@ -107,6 +108,10 @@ pure model =
 
 addCmd c2 ( m, c1 ) =
     ( m, Cmd.batch [ c1, c2 ] )
+
+
+addMapCmd tagger c2 ( m, c1 ) =
+    ( m, Cmd.batch [ c1, Cmd.map tagger c2 ] )
 
 
 pure3 model =
