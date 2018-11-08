@@ -44,17 +44,12 @@ type Popup
     | ContextIdPopup ContextId PopupMenu.State
 
 
-type Page
-    = ContextTodoList
-
-
 type alias Model =
     { todoStore : TodoStore
     , contextStore : ContextStore
     , contextId : ContextId
     , popup : Popup
     , mode : Mode
-    , page : Page
     }
 
 
@@ -78,7 +73,6 @@ init flags =
             , contextId = ContextStore.defaultId
             , popup = NoPopup
             , mode = Mode.init
-            , page = ContextTodoList
             }
     in
     pure model
@@ -87,7 +81,7 @@ init flags =
 
 
 isCurrentPageContextTodoListWithContextId contextId model =
-    model.page == ContextTodoList && getSelectedContextId model == contextId
+    getSelectedContextId model == contextId
 
 
 type alias Pred a =
@@ -193,10 +187,8 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Line
-    | SetPage Page
     | SetContextId ContextId
     | SwitchToContextTodoListWithContextId ContextId
-    | SwitchToContextTodoList
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
     | ModeMsg Mode.Msg
@@ -218,19 +210,12 @@ update message model =
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
 
-        SetPage page ->
-            pure { model | page = page }
-
         SetContextId contextId ->
             pure { model | contextId = contextId }
 
         SwitchToContextTodoListWithContextId contextId ->
             pure model
-                |> andThenUpdate SwitchToContextTodoList
                 |> andThenUpdate (SetContextId contextId)
-
-        SwitchToContextTodoList ->
-            pure model |> andThenUpdate (SetPage <| ContextTodoList)
 
         TodoStoreMsg msg ->
             Update2.lift
@@ -370,12 +355,9 @@ viewPage model =
         viewPageContent =
             div [ class "flex row justify-center" ]
                 [ div [ class "measure w-100" ]
-                    (case model.page of
-                        ContextTodoList ->
-                            [ viewTodoListHeader model
-                            , viewTodoList model
-                            ]
-                    )
+                    [ viewTodoListHeader model
+                    , viewTodoList model
+                    ]
                 ]
     in
     div [ class " flex-auto flex flex-row" ]
