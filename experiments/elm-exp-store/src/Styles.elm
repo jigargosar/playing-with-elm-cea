@@ -273,7 +273,7 @@ elevation z =
 
 transitionFadeIn =
     transition
-        [ CT.opacity3 1000 1 CT.easeIn
+        [ CT.opacity3 300 1 CT.easeIn
 
         --    ,CT.opacity3 1000 1 CT.easeIn
         ]

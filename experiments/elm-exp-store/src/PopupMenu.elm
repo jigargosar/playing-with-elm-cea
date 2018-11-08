@@ -188,10 +188,10 @@ render { toMsg, children, containerStyles, childContent, state } =
             , elevation 4
             , borderRadius (rem 0.5)
             , if state.open then
-                Css.batch [ display block, opacity (int 1) ]
+                Css.batch [ display block, opacity (int 1), transitionFadeIn ]
 
               else
-                Css.batch [ display none, opacity (int 0) ]
+                Css.batch [ display none, opacity (int 0), transitionFadeIn ]
             , position absolute
             , transitionFadeIn
             ]
