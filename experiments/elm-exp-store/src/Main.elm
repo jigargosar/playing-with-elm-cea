@@ -284,7 +284,7 @@ update message model =
                     PopupMenu.update config msg state
                         |> mapModel (\s -> { model | popup = ContextIdPopup cid s })
 
-                NoPopup ->
+                _ ->
                     pure model
 
 
