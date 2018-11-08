@@ -64,7 +64,7 @@ contextCodec =
                 (D.field "id" D.string)
                 (D.field "createdAt" D.int)
                 (D.field "modifiedAt" D.int)
-                (D.field "deleted" D.bool)
+                (D.oneOf [ D.field "archived" D.bool, D.field "deleted" D.bool ])
                 (D.field "name" D.string)
 
         encoder : Encoder Context
