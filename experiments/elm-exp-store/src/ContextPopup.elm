@@ -2,10 +2,10 @@ module ContextPopup exposing
     ( Action(..)
     , Model
     , Msg
-    , contextMoreMenuPopperDomId
-    , contextMoreMenuRefDomId
     , init
     , isOpenForContextId
+    , popperId
+    , refId
     , subscriptions
     , update
     , view
@@ -34,11 +34,11 @@ init : ContextId -> Model
 init cid =
     let
         popperDomId =
-            contextMoreMenuPopperDomId cid
+            popperId cid
     in
     { popupState =
         PopupMenu.init
-            (contextMoreMenuRefDomId cid)
+            (refId cid)
             popperDomId
             (actions |> List.head |> Maybe.map (getChildDomId popperDomId))
     , cid = cid
@@ -71,11 +71,11 @@ type alias Msg =
     PopupMenu.Msg Action
 
 
-contextMoreMenuPopperDomId cid =
+popperId cid =
     "context-more-menu-popper-" ++ cid
 
 
-contextMoreMenuRefDomId cid =
+refId cid =
     "context-more-menu-reference-" ++ cid
 
 
@@ -113,7 +113,7 @@ view : ViewConfig msg -> Html msg
 view { toMsg, state } =
     let
         popperDomId =
-            contextMoreMenuPopperDomId state.cid
+            popperId state.cid
     in
     PopupMenu.render
         { toMsg = toMsg

@@ -5,7 +5,7 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import Btn
-import ContextPopup exposing (contextMoreMenuPopperDomId, contextMoreMenuRefDomId)
+import ContextPopup exposing (popperId, refId)
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
 import CssAtoms exposing (fa, fgGray, p0, pl0, ptr, ttu, w100)
@@ -491,7 +491,7 @@ liTextButton =
 viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
     styled listItem
         [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
-        [ id <| contextMoreMenuRefDomId cid
+        [ id <| refId cid
         , class "hide-child"
         ]
         [ liTextButton
