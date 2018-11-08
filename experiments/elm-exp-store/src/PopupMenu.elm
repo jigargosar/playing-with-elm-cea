@@ -36,10 +36,15 @@ isOpen =
     .open
 
 
+getAutoFocusDomId =
+    .popperDomId >> (\did -> did ++ "-" ++ "autofocus")
+
+
 type Msg child
     = NoOp
     | Warn Log.Line
     | FocusDomId DomId
+    | AutoFocus
     | ChildSelected child
     | PopOpen
     | BrowserMouseClicked
@@ -59,6 +64,10 @@ subscriptions state =
 
 update : Config msg child -> Msg child -> State -> ( State, Cmd msg )
 update config message model =
+    let
+        andThenUpdate msg =
+            andThen (update config msg)
+    in
     case message of
         NoOp ->
             pure model
@@ -71,6 +80,9 @@ update config message model =
             pure model
                 |> addMapCmd config.toMsg (attemptDomIdFocus domId NoOp Warn)
 
+        AutoFocus ->
+            pure model |> andThenUpdate (FocusDomId <| getAutoFocusDomId model)
+
         ChildSelected child ->
             pure { model | open = False }
                 --                |> Port.destroyPopper
@@ -78,6 +90,7 @@ update config message model =
 
         PopOpen ->
             pure { model | open = True }
+                |> andThenUpdate AutoFocus
                 |> addCmd (Port.createPopper ( model.refDomId, model.popperDomId ))
 
         BrowserMouseClicked ->
