@@ -281,17 +281,16 @@ update message model =
             case model.popup of
                 ContextPopup cpModel ->
                     let
-                        selected cid action =
-                            case action of
-                                ContextPopup.Rename ->
-                                    StartEditingContext cid
-
-                                ContextPopup.Delete ->
-                                    ContextStoreMsg <| ContextStore.delete cid
-
                         config =
                             { toMsg = UpdateContextPopup
-                            , selected = selected
+                            , selected =
+                                \cid action ->
+                                    case action of
+                                        ContextPopup.Rename ->
+                                            StartEditingContext cid
+
+                                        ContextPopup.Delete ->
+                                            ContextStoreMsg <| ContextStore.delete cid
                             }
                     in
                     ContextPopup.update config msg cpModel
