@@ -49,6 +49,9 @@ type Msg child
     | Warn Log.Line
     | ChildSelected child
     | PopOpen
+    | UpdateDebouncer (Debouncer.Msg Bool)
+    | FocusOut
+    | Bounced Bool
 
 
 
@@ -91,6 +94,25 @@ update config message =
             mapModel (\model -> { model | open = True })
                 >> addEffect (.focusOnOpenDomId >> unwrapMaybe Cmd.none focusDomId)
                 >> addEffect (\model -> Port.createPopper ( model.refDomId, model.popperDomId ))
+
+        Bounced msg ->
+            identity
+
+        UpdateDebouncer msg ->
+            let
+                dConfig =
+                    { toMsg = UpdateDebouncer, wait = 0, onEmit = Bounced }
+            in
+            andThen
+                (updateSubMapCmd config.toMsg
+                    (Debouncer.update dConfig)
+                    .debouncer
+                    (\s b -> { b | debouncer = s })
+                    msg
+                )
+
+        FocusOut ->
+            identity
     )
         << pure
 
@@ -131,7 +153,7 @@ render { toMsg, children, containerStyles, childContent, state } =
                 ++ containerStyles
     in
     sDiv rootStyles
-        [ id state.popperDomId ]
+        ([ id state.popperDomId, onFocusOut FocusOut ] |> List.map attrToMsg)
         (children |> List.map viewChild)
 
 

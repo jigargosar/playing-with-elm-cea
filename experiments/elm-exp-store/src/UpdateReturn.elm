@@ -26,6 +26,7 @@ module UpdateReturn exposing
        --    , updateMaybeSub
 
     , updateSub
+    , updateSubMapCmd
     )
 
 import BasicsX exposing (unwrapMaybe)
@@ -77,6 +78,25 @@ updateSub updateFn getSub setSub subMsg model =
             updateFn subMsg (getSub model)
     in
     ( setSub sub model, cmd )
+
+
+
+--updateSubMapCmd :
+--    (msg)
+--    (subMsg -> subModel -> ( subModel, Cmd msg ))
+--    -> (model -> subModel)
+--    -> (subModel -> model -> model)
+--    -> subMsg
+--    -> model
+--    -> ( model, Cmd msg )
+
+
+updateSubMapCmd tagger updateFn getSub setSub subMsg model =
+    let
+        ( sub, cmd ) =
+            updateFn subMsg (getSub model)
+    in
+    ( setSub sub model, Cmd.map tagger cmd )
 
 
 
