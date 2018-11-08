@@ -40,8 +40,6 @@ isOpen =
 type Msg child
     = NoOp
     | Warn Log.Line
-    | FocusDomId DomId
-    | AutoFocus
     | ChildSelected child
     | PopOpen
 
@@ -63,35 +61,32 @@ subscriptions state =
 
 
 update : Config msg child -> Msg child -> State -> ( State, Cmd msg )
-update config message model =
+update config message =
     let
         andThenUpdate msg =
             andThen (update config msg)
+
+        focusDomId domId =
+            attemptDomIdFocus domId NoOp Warn |> Cmd.map config.toMsg
     in
-    case message of
+    (case message of
         NoOp ->
-            pure model
+            identity
 
         Warn logLine ->
-            pure model
-                |> addCmd (Log.warn "Mode.elm" logLine)
-
-        FocusDomId domId ->
-            pure model
-                |> addMapCmd config.toMsg (attemptDomIdFocus domId NoOp Warn)
-
-        AutoFocus ->
-            pure model |> unwrapMaybe identity (andThenUpdate << FocusDomId) model.focusOnOpenDomId
+            addCmd (Log.warn "Mode.elm" logLine)
 
         ChildSelected child ->
-            pure { model | open = False }
+            mapModel (\model -> { model | open = False })
                 --                |> Port.destroyPopper
-                |> addMsg (config.selected child)
+                >> addMsg (config.selected child)
 
         PopOpen ->
-            pure { model | open = True }
-                |> andThenUpdate AutoFocus
-                |> addCmd (Port.createPopper ( model.refDomId, model.popperDomId ))
+            mapModel (\model -> { model | open = True })
+                >> addEffect (.focusOnOpenDomId >> unwrapMaybe Cmd.none focusDomId)
+                >> addEffect (\model -> Port.createPopper ( model.refDomId, model.popperDomId ))
+    )
+        << pure
 
 
 

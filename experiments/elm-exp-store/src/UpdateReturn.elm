@@ -22,7 +22,6 @@ module UpdateReturn exposing
     , performWithNow
     , pure
     , pure3
-    , replaceModel
     ,  update3
        --    , updateMaybeSub
 
@@ -63,10 +62,6 @@ afterTimeout milli msg =
 
 addEffect fn ( m, c ) =
     ( m, Cmd.batch [ c, fn m ] )
-
-
-replaceModel m ( _, c ) =
-    ( m, c )
 
 
 updateSub :
