@@ -1,6 +1,6 @@
 module PopupMenu exposing (Config, Msg, State, init, isOpen, popOpen, render, subscriptions, update)
 
-import BasicsX exposing (attemptDomIdFocus)
+import BasicsX exposing (attemptDomIdFocus, unwrapMaybe)
 import Browser.Events
 import Css exposing (..)
 import DomEvents exposing (..)
@@ -20,12 +20,13 @@ type alias State =
     { open : Bool
     , refDomId : DomId
     , popperDomId : DomId
+    , focusOnOpenDomId : Maybe DomId
     }
 
 
-init : DomId -> DomId -> State
-init refDomId popperDomId =
-    { open = False, refDomId = refDomId, popperDomId = popperDomId }
+init : DomId -> DomId -> Maybe DomId -> State
+init refDomId popperDomId focusOnOpenDomId =
+    { open = False, refDomId = refDomId, popperDomId = popperDomId, focusOnOpenDomId = focusOnOpenDomId }
 
 
 popOpen =
@@ -81,7 +82,7 @@ update config message model =
                 |> addMapCmd config.toMsg (attemptDomIdFocus domId NoOp Warn)
 
         AutoFocus ->
-            pure model |> andThenUpdate (FocusDomId <| getAutoFocusDomId model)
+            pure model |> unwrapMaybe identity (andThenUpdate << FocusDomId) model.focusOnOpenDomId
 
         ChildSelected child ->
             pure { model | open = False }

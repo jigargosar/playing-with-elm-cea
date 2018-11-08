@@ -32,7 +32,15 @@ type alias Model =
 
 init : ContextId -> Model
 init cid =
-    { popupState = PopupMenu.init (contextMoreMenuRefDomId cid) (contextMoreMenuPopperDomId cid)
+    let
+        popperDomId =
+            contextMoreMenuPopperDomId cid
+    in
+    { popupState =
+        PopupMenu.init
+            (contextMoreMenuRefDomId cid)
+            popperDomId
+            (actions |> List.head |> Maybe.map (getChildDomId popperDomId))
     , cid = cid
     }
 
@@ -71,27 +79,27 @@ contextMoreMenuRefDomId cid =
     "context-more-menu-reference-" ++ cid
 
 
-childContent cid child =
+getChildText child =
+    case child of
+        Rename ->
+            "Rename"
+
+        Delete ->
+            "Delete"
+
+
+getChildDomId popperDomId child =
+    popperDomId ++ "-" ++ getChildText child
+
+
+childContent popperDomId child =
     [ sDiv [ p2Rm 0 0 ]
         []
         [ styled button
             [ btnReset, p2Rm 0.5 1, w100 ]
-            [ id <|
-                case child of
-                    Rename ->
-                        contextMoreMenuPopperDomId cid ++ "-" ++ "autofocus"
-
-                    --                        "Rename"
-                    Delete ->
-                        ""
+            [ id <| getChildDomId popperDomId child
             ]
-            [ text <|
-                case child of
-                    Rename ->
-                        "Rename"
-
-                    Delete ->
-                        "Delete"
+            [ text <| getChildText child
             ]
         ]
     ]
@@ -103,6 +111,10 @@ type alias ViewConfig msg =
 
 view : ViewConfig msg -> Html msg
 view { toMsg, state } =
+    let
+        popperDomId =
+            contextMoreMenuPopperDomId state.cid
+    in
     PopupMenu.render
         { toMsg = toMsg
         , state = state.popupState
@@ -111,5 +123,5 @@ view { toMsg, state } =
             [ pRm 0.5
             , minWidth (rem 10)
             ]
-        , childContent = childContent state.cid
+        , childContent = childContent popperDomId
         }
