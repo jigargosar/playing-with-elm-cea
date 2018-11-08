@@ -106,7 +106,7 @@ update config message =
         setOpenFor cid model =
             { model | open = True, cid = cid }
 
-        createPopperCmd { cid } =
+        attachPopperCmd { cid } =
             Port.createPopper ( refId cid, popperId cid )
 
         closeAndDestroyPopper =
@@ -131,7 +131,7 @@ update config message =
                 closeAndDestroyPopper
                 (mapModel (setOpenFor cid)
                     >> addTaggedEffect tagger (getAutoFocusDomId >> attemptFocusMaybeDomId NoOp Warn)
-                    >> addEffect createPopperCmd
+                    >> addEffect attachPopperCmd
                 )
 
         EmitIfBounceCount count maybeMsg ->
