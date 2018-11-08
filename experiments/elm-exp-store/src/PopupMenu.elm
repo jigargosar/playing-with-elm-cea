@@ -55,7 +55,7 @@ toggleOpen model =
 
 
 debounceCloseMsg =
-    UpdateDebouncer << Debouncer.bounce <| Just DebouncedCloseRecieved
+    UpdateDebouncer << Debouncer.bounce <| Just DebouncedCloseReceived
 
 
 cancelDebounceMsg =
@@ -78,7 +78,7 @@ type Msg child
     | UpdateDebouncer (Debouncer.Msg (BounceMsg child))
     | DocumentFocusChanged Bool
     | PopupFocusChanged Bool
-    | DebouncedCloseRecieved
+    | DebouncedCloseReceived
 
 
 
@@ -118,15 +118,15 @@ update config message =
             addCmd (Log.warn "Mode.elm" logLine)
 
         ChildSelected child ->
-            mapModel (\model -> { model | open = False })
+            mapModel close
                 >> addMsg (config.selected child)
 
         PopOpen ->
-            mapModel (\model -> { model | open = True })
+            mapModel (setOpen True)
                 >> addEffect (.focusOnOpenDomId >> unwrapMaybe Cmd.none focusDomId)
                 >> addEffect (\model -> Port.createPopper ( model.refDomId, model.popperDomId ))
 
-        DebouncedCloseRecieved ->
+        DebouncedCloseReceived ->
             mapModel close
 
         UpdateDebouncer msg ->
@@ -144,11 +144,12 @@ update config message =
                 (andThenUpdate cancelDebounceMsg)
 
         PopupFocusChanged hasFocus ->
-            if hasFocus then
-                andThenUpdate cancelDebounceMsg
+            andThenUpdate <|
+                if hasFocus then
+                    cancelDebounceMsg
 
-            else
-                andThenUpdate debounceCloseMsg
+                else
+                    debounceCloseMsg
     )
         << pure
 
