@@ -19,7 +19,7 @@ import CssAtoms exposing (..)
 import Debouncer exposing (Debouncer)
 import DomEvents exposing (DomId, onFocusIn, onFocusOut)
 import Html.Styled exposing (Html, button, div, styled, text)
-import Html.Styled.Attributes as HA exposing (autofocus, id)
+import Html.Styled.Attributes as HA exposing (attribute, autofocus, id)
 import Html.Styled.Events exposing (onClick)
 import Log
 import Port exposing (PopperStyles)
@@ -33,6 +33,7 @@ type alias Model =
     { open : Bool
     , debouncer : Debouncer
     , cid : ContextId
+    , popperStyles : PopperStyles
     }
 
 
@@ -41,6 +42,7 @@ init cid =
     { open = False
     , debouncer = Debouncer.init
     , cid = cid
+    , popperStyles = { styles = [], attributes = [] }
     }
 
 
@@ -167,12 +169,12 @@ update config message =
                 else
                     debounceCloseMsg
 
-        PopperStylesChanged a ->
+        PopperStylesChanged popperStyles ->
             let
                 _ =
-                    Debug.log "PopperStylesChanged" a
+                    Debug.log "PopperStylesChanged" popperStyles
             in
-            identity
+            mapModel (\model -> { model | popperStyles = popperStyles })
     )
         << pure
 
@@ -259,7 +261,11 @@ view toMsg model =
             , position absolute
             , left (rem -100)
             ]
+
+        rootAttributes =
+            [ id popperDomId, onFocusOut <| PopupFocusChanged False, onFocusIn <| PopupFocusChanged True ]
+                ++ List.map (\( n, v ) -> attribute n v) model.popperStyles.attributes
     in
     sDiv rootStyles
-        (wrapAttrs [ id popperDomId, onFocusOut <| PopupFocusChanged False, onFocusIn <| PopupFocusChanged True ])
+        (wrapAttrs rootAttributes)
         (List.map viewChild actions)
