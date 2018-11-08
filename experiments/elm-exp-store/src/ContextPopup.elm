@@ -17,6 +17,7 @@ import Html.Styled exposing (Html, button, styled, text)
 import PopupMenu
 import Styles exposing (..)
 import UI exposing (..)
+import UpdateReturn exposing (mapModel)
 
 
 type alias Model =
@@ -34,6 +35,7 @@ init cid =
 
 update { toMsg, selected } msg model =
     PopupMenu.update { toMsg = toMsg, selected = selected model.cid } msg model.popupState
+        |> mapModel (\s -> { model | popupState = s })
 
 
 type Action

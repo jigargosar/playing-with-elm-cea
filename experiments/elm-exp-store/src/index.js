@@ -142,6 +142,7 @@ subscribe(
             const popEl = document.getElementById(popperDomId)
             if (!refEl || !popEl) {
               debugger
+              return
             }
             popper = new Popper(refEl, popEl, {
 
@@ -159,7 +160,7 @@ subscribe(
               // enabled: false,
               // behavior: ['right']
               // },
-              placement: 'right-start',
+              // placement: 'right-start',
               // positionFixed:true,
               onCreate(data) {
                 console.log(`onCreate data`, data)

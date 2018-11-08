@@ -287,7 +287,7 @@ update message model =
                             }
                     in
                     ContextPopup.update config msg cpModel
-                        |> mapModel (\s -> { model | popup = ContextIdPopup cpModel })
+                        |> mapModel (\s -> { model | popup = ContextIdPopup s })
 
                 _ ->
                     pure model
