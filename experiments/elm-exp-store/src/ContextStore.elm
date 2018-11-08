@@ -19,7 +19,8 @@ module ContextStore exposing
 
 import BasicsX exposing (..)
 import Dict exposing (Dict)
-import Json.Decode
+import Json.Decode as D exposing (Decoder)
+import Json.Encode as E
 import JsonCodec as JC exposing (Codec)
 import JsonCodecX exposing (Value, decodeValue)
 import Log
@@ -56,13 +57,27 @@ type alias Context =
 
 contextCodec : Codec Context
 contextCodec =
-    Context
-        |> JC.first "id" JC.string .id
-        |> JC.next "createdAt" JC.int .createdAt
-        |> JC.next "modifiedAt" JC.int .modifiedAt
-        |> JC.next "archived" JC.bool .archived
-        |> JC.next "name" JC.string .name
-        |> JC.end
+    let
+        decoder : Decoder Context
+        decoder =
+            D.map5 Context
+                (D.field "id" D.string)
+                (D.field "createdAt" D.int)
+                (D.field "modifiedAt" D.int)
+                (D.field "deleted" D.bool)
+                (D.field "name" D.string)
+
+        encoder : Encoder Context
+        encoder model =
+            E.object
+                [ ( "id", E.string model.id )
+                , ( "createdAt", E.int model.createdAt )
+                , ( "modifiedAt", E.int model.modifiedAt )
+                , ( "archived", E.bool model.archived )
+                , ( "name", E.string model.name )
+                ]
+    in
+    JC.init decoder encoder
 
 
 type alias ContextStore =
