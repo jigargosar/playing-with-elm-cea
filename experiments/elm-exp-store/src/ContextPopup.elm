@@ -50,7 +50,11 @@ contextMoreMenuRefDomId cid =
     "context-more-menu-reference-" ++ cid
 
 
-view : { toMsg : PopupMenu.Msg Action -> msg, cid : ContextId, state : PopupMenu.State } -> Html msg
+type alias ViewConfig msg =
+    { toMsg : PopupMenu.Msg Action -> msg, cid : ContextId, state : PopupMenu.State }
+
+
+view : ViewConfig msg -> Html msg
 view { cid, toMsg, state } =
     PopupMenu.render
         { toMsg = toMsg
