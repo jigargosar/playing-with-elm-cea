@@ -71,20 +71,6 @@ contextMoreMenuRefDomId cid =
     "context-more-menu-reference-" ++ cid
 
 
-
---type alias ChildViewModel =
---   {name: String, domId: DomId}
---
---createChildViewModel child =
---    case child of
---        Rename ->
---                 ChildViewModel  "Rename"
---
---        Delete ->
---                                "Delete"
---
-
-
 childContent cid child =
     [ sDiv [ p2Rm 0 0 ]
         []
@@ -97,7 +83,7 @@ childContent cid child =
 
                     --                        "Rename"
                     Delete ->
-                        "Delete"
+                        ""
             ]
             [ text <|
                 case child of
