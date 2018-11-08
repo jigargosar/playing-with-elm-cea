@@ -23,6 +23,7 @@ type alias State =
     , refDomId : DomId
     , popperDomId : DomId
     , focusOnOpenDomId : Maybe DomId
+    , documentHasFocus : Bool
     }
 
 
@@ -33,6 +34,7 @@ init refDomId popperDomId focusOnOpenDomId =
     , refDomId = refDomId
     , popperDomId = popperDomId
     , focusOnOpenDomId = focusOnOpenDomId
+    , documentHasFocus = True
     }
 
 
