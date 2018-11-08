@@ -38,17 +38,36 @@ init refDomId popperDomId focusOnOpenDomId =
     }
 
 
-popOpen =
-    PopOpen
-
-
 isOpen =
     .open
 
 
-type BouncedAction
-    = ClosePopupBouncedAction
-    | ClearBouncedAction
+setOpen bool model =
+    { model | open = bool }
+
+
+close =
+    setOpen False
+
+
+toggleOpen model =
+    setOpen (not model.open) model
+
+
+debounceCloseMsg =
+    UpdateDebouncer << Debouncer.bounce <| Just DebouncedCloseRecieved
+
+
+cancelDebounceMsg =
+    UpdateDebouncer << Debouncer.bounce <| Nothing
+
+
+popOpen =
+    PopOpen
+
+
+type alias BounceMsg child =
+    Maybe (Msg child)
 
 
 type Msg child
@@ -56,10 +75,10 @@ type Msg child
     | Warn Log.Line
     | ChildSelected child
     | PopOpen
-    | UpdateDebouncer (Debouncer.Msg BouncedAction)
-    | DomFocusChanged Bool
+    | UpdateDebouncer (Debouncer.Msg (BounceMsg child))
+    | DocumentFocusChanged Bool
     | PopupFocusChanged Bool
-    | Bounced BouncedAction
+    | DebouncedCloseRecieved
 
 
 
@@ -75,7 +94,7 @@ type alias Config msg child =
 subscriptions state =
     Sub.batch
         [ --        Browser.Events.onClick (D.succeed BrowserMouseClicked)
-          Port.documentFocusChanged DomFocusChanged
+          Port.documentFocusChanged DocumentFocusChanged
         ]
 
 
@@ -107,41 +126,39 @@ update config message =
                 >> addEffect (.focusOnOpenDomId >> unwrapMaybe Cmd.none focusDomId)
                 >> addEffect (\model -> Port.createPopper ( model.refDomId, model.popperDomId ))
 
-        Bounced msg ->
-            case msg of
-                ClosePopupBouncedAction ->
-                    mapModel (\model -> { model | open = False })
-
-                _ ->
-                    identity
+        DebouncedCloseRecieved ->
+            mapModel close
 
         UpdateDebouncer msg ->
-            let
-                dConfig =
-                    { toMsg = UpdateDebouncer, wait = 0, onEmit = Bounced }
-            in
             andThen
                 (updateSub
-                    (Debouncer.update dConfig)
+                    (Debouncer.update debouncerConfig)
                     .debouncer
                     (\s b -> { b | debouncer = s })
                     msg
                     >> mapCmd config.toMsg
                 )
 
-        DomFocusChanged hasFocus ->
-            mapModel (\model -> { model | documentHasFocus = hasFocus })
+        DocumentFocusChanged hasFocus ->
+            andMapIf (\{ open } -> open && not hasFocus)
+                (andThenUpdate cancelDebounceMsg)
 
         PopupFocusChanged hasFocus ->
-            bounce
-                (if hasFocus then
-                    ClearBouncedAction
+            if hasFocus then
+                andThenUpdate cancelDebounceMsg
 
-                 else
-                    ClosePopupBouncedAction
-                )
+            else
+                andThenUpdate debounceCloseMsg
     )
         << pure
+
+
+debouncerConfig : Debouncer.Config (Msg child) (Maybe (Msg child))
+debouncerConfig =
+    { toMsg = UpdateDebouncer
+    , wait = 0
+    , onEmit = unwrapMaybe NoOp identity
+    }
 
 
 type alias ViewConfig child msg =
