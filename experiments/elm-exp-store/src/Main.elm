@@ -41,7 +41,7 @@ import UpdateReturn exposing (..)
 
 type Popup
     = NoPopup
-    | ContextIdPopup ContextPopup.Model
+    | ContextPopup ContextPopup.Model
 
 
 type alias Model =
@@ -176,6 +176,15 @@ getMaybeSelectedContext model =
     model.contextStore |> ContextStore.get (getSelectedContextId model)
 
 
+isMoreMenuOpenForContextId cid model =
+    case model.popup of
+        ContextPopup state ->
+            ContextPopup.isOpenForContextId cid state
+
+        _ ->
+            False
+
+
 
 ---- UPDATE ----
 
@@ -264,13 +273,13 @@ update message model =
             pure
                 { model
                     | popup =
-                        ContextIdPopup (ContextPopup.init cid)
+                        ContextPopup (ContextPopup.init cid)
                 }
                 |> andThenUpdate (UpdateContextPopup PopupMenu.popOpen)
 
         UpdateContextPopup msg ->
             case model.popup of
-                ContextIdPopup cpModel ->
+                ContextPopup cpModel ->
                     let
                         selected cid action =
                             case action of
@@ -286,7 +295,7 @@ update message model =
                             }
                     in
                     ContextPopup.update config msg cpModel
-                        |> mapModel (\s -> { model | popup = ContextIdPopup s })
+                        |> mapModel (\s -> { model | popup = ContextPopup s })
 
                 _ ->
                     pure model
@@ -300,7 +309,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ case model.popup of
-            ContextIdPopup state ->
+            ContextPopup state ->
                 ContextPopup.subscriptions state
                     |> Sub.map UpdateContextPopup
 
@@ -348,7 +357,7 @@ view model =
 
 viewPopup model =
     case model.popup of
-        ContextIdPopup state ->
+        ContextPopup state ->
             ContextPopup.view { toMsg = UpdateContextPopup, state = state }
 
         NoPopup ->
@@ -391,6 +400,7 @@ type alias ContextItemViewModel msg =
     , activeTodoCount : Int
     , isSelected : Bool
     , moreClicked : msg
+    , moreOpen : Bool
     }
 
 
@@ -415,6 +425,7 @@ createUserDefinedContextItemViewModel model =
                 , activeTodoCount = getActiveTodoListCountForContextId id model
                 , isSelected = isCurrentPageContextTodoListWithContextId id model
                 , moreClicked = ContextMoreClicked id
+                , moreOpen = isMoreMenuOpenForContextId id model
                 }
             )
 
@@ -436,6 +447,7 @@ createInboxContextItemViewModel model =
     , activeTodoCount = getActiveTodoListCountForContextId id model
     , isSelected = isCurrentPageContextTodoListWithContextId id model
     , moreClicked = ContextMoreClicked id
+    , moreOpen = isMoreMenuOpenForContextId id model
     }
 
 

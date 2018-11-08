@@ -1,4 +1,4 @@
-module PopupMenu exposing (Config, Msg, State, init, popOpen, render, subscriptions, update)
+module PopupMenu exposing (Config, Msg, State, init, isOpen, popOpen, render, subscriptions, update)
 
 import Browser.Events
 import Css exposing (..)
@@ -28,6 +28,10 @@ init refDomId popperDomId =
 
 popOpen =
     PopOpen
+
+
+isOpen =
+    .open
 
 
 type Msg child

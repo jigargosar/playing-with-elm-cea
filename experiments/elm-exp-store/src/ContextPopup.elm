@@ -5,6 +5,7 @@ module ContextPopup exposing
     , contextMoreMenuPopperDomId
     , contextMoreMenuRefDomId
     , init
+    , isOpenForContextId
     , subscriptions
     , update
     , view
@@ -32,6 +33,10 @@ init cid =
     { popupState = PopupMenu.init (contextMoreMenuRefDomId cid) (contextMoreMenuPopperDomId cid)
     , cid = cid
     }
+
+
+isOpenForContextId cid model =
+    model.cid == cid && PopupMenu.isOpen model.popupState
 
 
 subscriptions model =
