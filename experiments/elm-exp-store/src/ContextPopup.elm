@@ -104,6 +104,9 @@ update config message =
 
         setOpenFor cid model =
             { model | open = True, cid = cid }
+
+        createPopperCmd { cid } =
+            Port.createPopper ( refId cid, popperId cid )
     in
     (case message of
         NoOp ->
@@ -121,7 +124,7 @@ update config message =
                 (mapModel setClose)
                 (mapModel (setOpenFor cid)
                     >> addEffect (.focusOnOpenDomId >> unwrapMaybe Cmd.none focusDomId)
-                    >> addEffect (\model -> Port.createPopper ( model.refDomId, model.popperDomId ))
+                    >> addEffect createPopperCmd
                 )
 
         DebouncedCloseReceived ->
