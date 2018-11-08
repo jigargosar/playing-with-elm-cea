@@ -333,7 +333,7 @@ view model =
 
 
 viewPopup model =
-    ContextPopup.view { toMsg = UpdateContextPopup, state = model.contextPopup }
+    ContextPopup.view UpdateContextPopup model.contextPopup
 
 
 viewAppBar =

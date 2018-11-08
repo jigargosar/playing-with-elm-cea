@@ -15,17 +15,24 @@ import BasicsX exposing (..)
 import ContextStore exposing (ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
-import DomEvents exposing (DomId)
-import Html.Styled exposing (Html, button, styled, text)
-import Html.Styled.Attributes exposing (autofocus, id)
-import PopupMenu
+import Debouncer exposing (Debouncer)
+import DomEvents exposing (DomId, onFocusIn, onFocusOut)
+import Html.Styled exposing (Html, button, div, styled, text)
+import Html.Styled.Attributes as HA exposing (autofocus, id)
+import Html.Styled.Events exposing (onClick)
+import Log
+import Port
 import Styles exposing (..)
 import UI exposing (..)
-import UpdateReturn exposing (mapModel)
+import UpdateReturn exposing (..)
 
 
 type alias Model =
-    { popupState : PopupMenu.State
+    { open : Bool
+    , debouncer : Debouncer
+    , refDomId : DomId
+    , popperDomId : DomId
+    , focusOnOpenDomId : Maybe DomId
     , cid : ContextId
     }
 
@@ -36,26 +43,109 @@ init cid =
         popperDomId =
             popperId cid
     in
-    { popupState =
-        PopupMenu.init
-            (refId cid)
-            popperDomId
-            (actions |> List.head |> Maybe.map (getChildDomId popperDomId))
+    { open = False
+    , debouncer = Debouncer.init
+    , refDomId = refId cid
+    , popperDomId = popperDomId
+    , focusOnOpenDomId = actions |> List.head |> Maybe.map (getChildDomId popperDomId)
     , cid = cid
     }
 
 
-isOpenForContextId cid state =
-    state.cid == cid && PopupMenu.isOpen state.popupState
+isOpenForContextId cid model =
+    model.cid == cid && model.open
+
+
+type alias BounceMsg =
+    Maybe Msg
+
+
+type Msg
+    = NoOp
+    | Warn Log.Line
+    | ActionClicked Action
+    | PopOpen
+    | UpdateDebouncer (Debouncer.Msg BounceMsg)
+    | DocumentFocusChanged Bool
+    | PopupFocusChanged Bool
+    | DebouncedCloseReceived
 
 
 subscriptions model =
-    PopupMenu.subscriptions model.popupState
+    Sub.batch
+        [ Port.documentFocusChanged DocumentFocusChanged
+        ]
 
 
-update { toMsg, selected } msg model =
-    PopupMenu.update { toMsg = toMsg, selected = selected model.cid } msg model.popupState
-        |> mapModel (\s -> { model | popupState = s })
+update config message =
+    let
+        andThenUpdate msg =
+            andThen (update config msg)
+
+        focusDomId domId =
+            attemptDomIdFocus domId NoOp Warn |> Cmd.map config.toMsg
+
+        bounce action =
+            andThenUpdate (UpdateDebouncer <| Debouncer.bounce action)
+
+        debounceCloseMsg =
+            UpdateDebouncer << Debouncer.bounce <| Just DebouncedCloseReceived
+
+        cancelDebounceMsg =
+            UpdateDebouncer << Debouncer.bounce <| Nothing
+
+        setOpen bool model =
+            { model | open = bool }
+    in
+    (case message of
+        NoOp ->
+            identity
+
+        Warn logLine ->
+            addCmd (Log.warn "Mode.elm" logLine)
+
+        ActionClicked child ->
+            mapModel (setOpen False)
+                >> addMsg (config.selected "" child)
+
+        PopOpen ->
+            mapModel (setOpen True)
+                >> addEffect (.focusOnOpenDomId >> unwrapMaybe Cmd.none focusDomId)
+                >> addEffect (\model -> Port.createPopper ( model.refDomId, model.popperDomId ))
+
+        DebouncedCloseReceived ->
+            mapModel (setOpen False)
+
+        UpdateDebouncer msg ->
+            andThen
+                (updateSub
+                    (Debouncer.update debouncerConfig)
+                    .debouncer
+                    (\s b -> { b | debouncer = s })
+                    msg
+                    >> mapCmd config.toMsg
+                )
+
+        DocumentFocusChanged hasFocus ->
+            andThenUpdate cancelDebounceMsg
+
+        PopupFocusChanged hasFocus ->
+            andThenUpdate <|
+                if hasFocus then
+                    cancelDebounceMsg
+
+                else
+                    debounceCloseMsg
+    )
+        << pure
+
+
+debouncerConfig : Debouncer.Config Msg (Maybe Msg)
+debouncerConfig =
+    { toMsg = UpdateDebouncer
+    , wait = 0
+    , onEmit = unwrapMaybe NoOp identity
+    }
 
 
 type Action
@@ -65,10 +155,6 @@ type Action
 
 actions =
     [ Rename, Archive ]
-
-
-type alias Msg =
-    PopupMenu.Msg Action
 
 
 popperId cid =
@@ -105,23 +191,38 @@ childContent popperDomId child =
     ]
 
 
-type alias ViewConfig msg =
-    { toMsg : Msg -> msg, state : Model }
-
-
-view : ViewConfig msg -> Html msg
-view { toMsg, state } =
+view : (Msg -> msg) -> Model -> Html msg
+view toMsg model =
     let
         popperDomId =
-            popperId state.cid
-    in
-    PopupMenu.render
-        { toMsg = toMsg
-        , state = state.popupState
-        , children = actions
-        , containerStyles =
-            [ pRm 0.5
+            popperId model.cid
+
+        attrToMsg =
+            HA.map toMsg
+
+        wrapAttrs =
+            List.map attrToMsg
+
+        viewChild child =
+            div
+                (wrapAttrs [ onClick <| ActionClicked child ])
+                (childContent popperDomId child)
+
+        rootStyles =
+            [ bg "white"
+            , elevation 4
+            , borderRadius (rem 0.5)
+            , pRm 0.5
             , minWidth (rem 10)
+            , if model.open then
+                Css.batch []
+
+              else
+                Css.batch [ display none ]
+
+            --            , position absolute
             ]
-        , childContent = childContent popperDomId
-        }
+    in
+    sDiv rootStyles
+        (wrapAttrs [ id model.popperDomId, onFocusOut <| PopupFocusChanged False, onFocusIn <| PopupFocusChanged True ])
+        (List.map viewChild actions)
