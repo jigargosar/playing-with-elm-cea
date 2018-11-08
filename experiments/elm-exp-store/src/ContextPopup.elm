@@ -112,8 +112,10 @@ update config message =
             Port.createPopper ( refId cid, popperId cid )
 
         closeAndDestroyPopper =
-            mapModel (\model -> { model | open = False })
-                >> addCmd (Port.destroyPopper ())
+            andMapWhen .open
+                (mapModel (\model -> { model | open = False })
+                    >> addCmd (Port.destroyPopper ())
+                )
     in
     (case message of
         NoOp ->
