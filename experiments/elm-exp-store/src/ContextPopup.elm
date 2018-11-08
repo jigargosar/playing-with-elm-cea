@@ -15,8 +15,9 @@ import BasicsX exposing (..)
 import ContextStore exposing (ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
+import DomEvents exposing (DomId)
 import Html.Styled exposing (Html, button, styled, text)
-import Html.Styled.Attributes exposing (autofocus)
+import Html.Styled.Attributes exposing (autofocus, id)
 import PopupMenu
 import Styles exposing (..)
 import UI exposing (..)
@@ -70,20 +71,41 @@ contextMoreMenuRefDomId cid =
     "context-more-menu-reference-" ++ cid
 
 
-childContent child =
+
+--type alias ChildViewModel =
+--   {name: String, domId: DomId}
+--
+--createChildViewModel child =
+--    case child of
+--        Rename ->
+--                 ChildViewModel  "Rename"
+--
+--        Delete ->
+--                                "Delete"
+--
+
+
+childContent cid child =
     [ sDiv [ p2Rm 0 0 ]
         []
         [ styled button
             [ btnReset, p2Rm 0.5 1, w100 ]
-            []
-            [ text
-                (case child of
+            [ id <|
+                case child of
+                    Rename ->
+                        contextMoreMenuPopperDomId cid ++ "-" ++ "autofocus"
+
+                    --                        "Rename"
+                    Delete ->
+                        "Delete"
+            ]
+            [ text <|
+                case child of
                     Rename ->
                         "Rename"
 
                     Delete ->
                         "Delete"
-                )
             ]
         ]
     ]
@@ -103,5 +125,5 @@ view { toMsg, state } =
             [ pRm 0.5
             , minWidth (rem 10)
             ]
-        , childContent = childContent
+        , childContent = childContent state.cid
         }
