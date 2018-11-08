@@ -6,6 +6,7 @@ import Html.Styled as Html exposing (Attribute, Html, div, styled)
 import Html.Styled.Attributes as HA exposing (..)
 import Html.Styled.Events exposing (..)
 import Html.Styled.Keyed exposing (node)
+import Port
 import Styles exposing (..)
 import UI exposing (..)
 import UpdateReturn exposing (..)
@@ -28,8 +29,7 @@ popOpen =
 
 
 type Msg child
-    = NoOp
-    | ChildSelected child
+    = ChildSelected child
     | PopOpen
 
 
@@ -42,15 +42,14 @@ type alias Config msg child =
 update : Config msg child -> Msg child -> State -> ( State, Cmd msg )
 update config message model =
     case message of
-        NoOp ->
-            pure model
-
         ChildSelected child ->
             pure { model | open = False }
+                --                |> Port.destroyPopper
                 |> addMsg (config.selected child)
 
         PopOpen ->
-            pure model
+            pure { model | open = True }
+                |> addCmd (Port.createPopper ( model.refDomId, model.popperDomId ))
 
 
 type alias ViewConfig child msg =
