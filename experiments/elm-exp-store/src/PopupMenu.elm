@@ -61,7 +61,8 @@ update config message model =
                 |> addCmd (Port.createPopper ( model.refDomId, model.popperDomId ))
 
         BrowserMouseClicked ->
-            pure { model | open = False }
+            --            pure { model | open = False }
+            pure model
 
 
 
