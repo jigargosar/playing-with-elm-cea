@@ -16,7 +16,6 @@ import BasicsX exposing (..)
 import ContextStore exposing (ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
-import Debouncer exposing (Debouncer)
 import DomEvents exposing (DomId, onFocusIn, onFocusOut)
 import Html.Styled exposing (Html, button, div, styled, text)
 import Html.Styled.Attributes as HA exposing (attribute, autofocus, id, style)
@@ -67,7 +66,7 @@ type Msg
     | DocumentFocusChanged Bool
     | PopupFocusChanged Bool
     | DebouncedClose
-    | EmitIfBounceCountEq Int (Maybe Msg)
+    | EmitIfBounceCount Int (Maybe Msg)
     | PopperStylesChanged PopperStyles
 
 
@@ -96,12 +95,12 @@ update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message =
     let
         cancelBounceMsg =
-            bounce Nothing
+            bounce EmitIfBounceCount Nothing
 
         bounceCloseMsg =
-            bounce <| Just DebouncedClose
+            bounce EmitIfBounceCount <| Just DebouncedClose
 
-        bounce mag =
+        bounce emitIfCountMsg maybeBounceMsg =
             andThen
                 (\model ->
                     let
@@ -109,7 +108,7 @@ update config message =
                             model.bounceCount + 1
                     in
                     ( { model | bounceCount = bounceCount }
-                    , afterTimeout 0 (EmitIfBounceCountEq bounceCount mag)
+                    , afterTimeout 0 (emitIfCountMsg bounceCount maybeBounceMsg)
                     )
                         |> mapCmd config.toMsg
                 )
@@ -156,7 +155,7 @@ update config message =
                     >> addEffect createPopperCmd
                 )
 
-        EmitIfBounceCountEq count maybeMsg ->
+        EmitIfBounceCount count maybeMsg ->
             andMapWhen (.bounceCount >> eqs count)
                 (unwrapMaybe identity andThenUpdate maybeMsg
                     >> mapModel (\model -> { model | bounceCount = 0 })
