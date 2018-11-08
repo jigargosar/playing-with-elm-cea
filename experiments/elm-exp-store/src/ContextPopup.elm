@@ -59,7 +59,6 @@ view { cid, toMsg, state } =
     PopupMenu.render
         { toMsg = toMsg
         , state = state
-        , domId = contextMoreMenuPopperDomId cid
         , children = actions
         , containerStyles =
             [ pRm 0.5

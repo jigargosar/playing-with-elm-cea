@@ -55,7 +55,6 @@ update config message model =
 type alias ViewConfig child msg =
     { toMsg : Msg child -> msg
     , state : State
-    , domId : DomId
     , children : List child
     , containerStyles : List Css.Style
     , childContent : child -> List (Html msg)
@@ -63,7 +62,7 @@ type alias ViewConfig child msg =
 
 
 render : ViewConfig child msg -> Html msg
-render { toMsg, children, containerStyles, domId, childContent, state } =
+render { toMsg, children, containerStyles, childContent, state } =
     let
         attrToMsg =
             HA.map toMsg
@@ -81,7 +80,7 @@ render { toMsg, children, containerStyles, domId, childContent, state } =
     in
     if state.open then
         sDiv rootStyles
-            [ id domId ]
+            [ id state.popperDomId ]
             (children |> List.map viewChild)
 
     else
