@@ -283,7 +283,11 @@ update message model =
                             |> andThenUpdate (UpdateContextPopup PopupMenu.popOpen)
 
                 _ ->
-                    pure model
+                    pure
+                        { model
+                            | popup = ContextPopup (ContextPopup.init cid)
+                        }
+                        |> andThenUpdate (UpdateContextPopup PopupMenu.popOpen)
 
         UpdateContextPopup msg ->
             let
