@@ -95,8 +95,11 @@ getAutoFocusDomId model =
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message =
     let
+        tagger =
+            config.toMsg
+
         bouncerConfig =
-            { tagger = config.toMsg, emitIfCountMsg = EmitIfBounceCount }
+            { tagger = tagger, emitIfCountMsg = EmitIfBounceCount }
 
         cancelBounceMsg =
             Bouncer.cancel bouncerConfig
@@ -108,7 +111,7 @@ update config message =
             andThen (update config msg)
 
         focusDomId domId =
-            attemptDomIdFocus domId NoOp Warn |> Cmd.map config.toMsg
+            attemptDomIdFocus domId NoOp Warn
 
         setOpenFor cid model =
             { model | open = True, cid = cid }
@@ -137,7 +140,7 @@ update config message =
             andMapIfElse (isOpenForContextId cid)
                 closeAndDestroyPopper
                 (mapModel (setOpenFor cid)
-                    >> addEffect (getAutoFocusDomId >> unwrapMaybe Cmd.none focusDomId)
+                    >> addTaggedEffect tagger (getAutoFocusDomId >> unwrapMaybe Cmd.none focusDomId)
                     >> addEffect createPopperCmd
                 )
 
