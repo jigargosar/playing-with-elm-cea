@@ -192,7 +192,8 @@ render { toMsg, children, containerStyles, childContent, state } =
 
               else
                 Css.batch [ display none ]
-            , position absolute
+
+            --            , position absolute
             ]
                 ++ containerStyles
     in
