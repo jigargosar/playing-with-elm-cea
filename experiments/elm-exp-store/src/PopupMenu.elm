@@ -44,7 +44,10 @@ type Msg child
     | AutoFocus
     | ChildSelected child
     | PopOpen
-    | BrowserMouseClicked
+
+
+
+--    | BrowserMouseClicked
 
 
 type alias Config msg child =
@@ -55,7 +58,7 @@ type alias Config msg child =
 
 subscriptions state =
     Sub.batch
-        [ Browser.Events.onClick (D.succeed BrowserMouseClicked)
+        [--        Browser.Events.onClick (D.succeed BrowserMouseClicked)
         ]
 
 
@@ -90,12 +93,11 @@ update config message model =
                 |> andThenUpdate AutoFocus
                 |> addCmd (Port.createPopper ( model.refDomId, model.popperDomId ))
 
-        BrowserMouseClicked ->
-            --            pure { model | open = False }
-            pure model
 
 
-
+--        BrowserMouseClicked ->
+--            pure { model | open = False }
+--            pure model
 --                |> Port.destroyPopper
 
 
