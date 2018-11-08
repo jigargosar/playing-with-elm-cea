@@ -3,6 +3,7 @@ module PopupMenu exposing (Config, Msg, State, init, isOpen, popOpen, render, su
 import BasicsX exposing (attemptDomIdFocus, unwrapMaybe)
 import Browser.Events
 import Css exposing (..)
+import Debouncer exposing (Debouncer)
 import DomEvents exposing (..)
 import Html.Styled as Html exposing (Attribute, Html, div, styled)
 import Html.Styled.Attributes as HA exposing (..)
@@ -18,6 +19,7 @@ import UpdateReturn exposing (..)
 
 type alias State =
     { open : Bool
+    , debouncer : Debouncer
     , refDomId : DomId
     , popperDomId : DomId
     , focusOnOpenDomId : Maybe DomId
@@ -26,7 +28,12 @@ type alias State =
 
 init : DomId -> DomId -> Maybe DomId -> State
 init refDomId popperDomId focusOnOpenDomId =
-    { open = False, refDomId = refDomId, popperDomId = popperDomId, focusOnOpenDomId = focusOnOpenDomId }
+    { open = False
+    , debouncer = Debouncer.init
+    , refDomId = refDomId
+    , popperDomId = popperDomId
+    , focusOnOpenDomId = focusOnOpenDomId
+    }
 
 
 popOpen =
