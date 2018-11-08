@@ -37,10 +37,6 @@ isOpen =
     .open
 
 
-getAutoFocusDomId =
-    .popperDomId >> (\did -> did ++ "-" ++ "autofocus")
-
-
 type Msg child
     = NoOp
     | Warn Log.Line
