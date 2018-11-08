@@ -240,12 +240,11 @@ view toMsg model =
             , borderRadius (rem 0.5)
             , pRm 0.5
             , minWidth (rem 10)
+            , if model.open then
+                Css.batch [ opacity (int 1), transitionFadeIn ]
 
-            --            , if model.open then
-            --                Css.batch []
-            --
-            --              else
-            --                Css.batch [ display none ]
+              else
+                Css.batch [ opacity (int 0), transitionFadeIn ]
             , position absolute
             , left (rem -100)
             ]

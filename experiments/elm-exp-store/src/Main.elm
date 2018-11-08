@@ -20,7 +20,6 @@ import Icons
 import JsonCodecX exposing (Value)
 import Log
 import Mode exposing (Mode)
-import PopupMenu
 import Port
 import Random
 import Set exposing (Set)
