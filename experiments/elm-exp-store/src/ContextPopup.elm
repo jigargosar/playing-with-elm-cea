@@ -67,7 +67,7 @@ type Msg
     | DocumentFocusChanged Bool
     | PopupFocusChanged Bool
     | DebouncedClose
-    | EmitIfCountEq Int (Maybe Msg)
+    | EmitIfBounceCountEq Int (Maybe Msg)
     | PopperStylesChanged PopperStyles
 
 
@@ -109,7 +109,7 @@ update config message =
                             model.bounceCount + 1
                     in
                     ( { model | bounceCount = bounceCount }
-                    , afterTimeout 0 (EmitIfCountEq bounceCount maybeMsg)
+                    , afterTimeout 0 (EmitIfBounceCountEq bounceCount maybeMsg)
                     )
                         |> mapCmd config.toMsg
                 )
@@ -159,7 +159,7 @@ update config message =
                     >> addEffect createPopperCmd
                 )
 
-        EmitIfCountEq count maybeMsg ->
+        EmitIfBounceCountEq count maybeMsg ->
             andMapWhen (.bounceCount >> eqs count)
                 (unwrapMaybe identity andThenUpdate maybeMsg
                     >> mapModel (\model -> { model | bounceCount = 0 })
