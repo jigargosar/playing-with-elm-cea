@@ -100,9 +100,6 @@ update config message =
         bouncerConfig =
             { tagger = tagger, emitIfCountMsg = EmitIfBounceCount }
 
-        andThenUpdate msg =
-            andThen (update config msg)
-
         setOpenFor cid model =
             { model | open = True, cid = cid }
 
