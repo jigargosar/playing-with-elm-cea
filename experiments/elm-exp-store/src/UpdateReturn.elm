@@ -3,9 +3,9 @@ module UpdateReturn exposing
     , addCmd
     , addCmd3
     , addEffect
-    , addMapCmd
     , addMsg
     , addOutMsg3
+    , addTaggedCmd
     , addTaggedMsg
     , afterTimeout
     , andMapIfElse
@@ -19,6 +19,7 @@ module UpdateReturn exposing
     , mapCmd
     , mapModel
     , maybeAddTaggedMsg
+    , msgToCmd
     , nextTick
     , perform
     , perform3
@@ -79,6 +80,10 @@ addTaggedMsg tagger =
     Task.succeed >> Task.perform tagger >> addCmd
 
 
+msgToCmd =
+    Task.succeed >> Task.perform identity
+
+
 maybeAddTaggedMsg tagger =
     unwrapMaybe identity (addTaggedMsg tagger)
 
@@ -124,7 +129,7 @@ addCmd c2 ( m, c1 ) =
     ( m, Cmd.batch [ c1, c2 ] )
 
 
-addMapCmd tagger c2 ( m, c1 ) =
+addTaggedCmd tagger c2 ( m, c1 ) =
     ( m, Cmd.batch [ c1, Cmd.map tagger c2 ] )
 
 
@@ -160,12 +165,12 @@ perform3 toMsg =
     Task.perform toMsg >> addCmd3
 
 
-perform toMsg =
-    Task.perform toMsg >> addCmd
+perform toMessage =
+    Task.perform toMessage >> addCmd
 
 
-attempt toMsg =
-    Task.attempt toMsg >> addCmd
+attempt resultToMsg =
+    Task.attempt resultToMsg >> addCmd
 
 
 nextTick msg =

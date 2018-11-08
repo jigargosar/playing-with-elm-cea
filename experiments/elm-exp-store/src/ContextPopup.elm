@@ -136,7 +136,7 @@ update config message =
                     Task.perform identity (Task.succeed <| config.selected model.cid child)
             in
             closeAndDestroyPopper
-                >> addEffect actionSelectedCmd
+                >> addEffect (\model -> config.selected model.cid child |> msgToCmd)
 
         ToggleOpenFor cid ->
             andMapIfElse (isOpenForContextId cid)
