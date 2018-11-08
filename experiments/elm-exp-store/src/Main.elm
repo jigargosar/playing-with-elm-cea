@@ -266,7 +266,6 @@ update message model =
                     | popup =
                         ContextIdPopup (ContextPopup.init cid)
                 }
-                --                |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId cid ))
                 |> andThenUpdate (UpdateContextPopup PopupMenu.popOpen)
 
         UpdateContextPopup msg ->
