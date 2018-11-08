@@ -104,11 +104,12 @@ update config message =
                     { toMsg = UpdateDebouncer, wait = 0, onEmit = Bounced }
             in
             andThen
-                (updateSubMapCmd config.toMsg
+                (updateSub
                     (Debouncer.update dConfig)
                     .debouncer
                     (\s b -> { b | debouncer = s })
                     msg
+                    >> mapCmd config.toMsg
                 )
 
         FocusOut ->
