@@ -44,14 +44,20 @@ isOpen =
     .open
 
 
+type BouncedAction
+    = ClosePopupBouncedAction
+    | ClearBouncedAction
+
+
 type Msg child
     = NoOp
     | Warn Log.Line
     | ChildSelected child
     | PopOpen
-    | UpdateDebouncer (Debouncer.Msg Bool)
-    | FocusOut
-    | Bounced Bool
+    | UpdateDebouncer (Debouncer.Msg BouncedAction)
+    | DomFocusChanged Bool
+    | PopupFocusChanged Bool
+    | Bounced BouncedAction
 
 
 
@@ -66,7 +72,8 @@ type alias Config msg child =
 
 subscriptions state =
     Sub.batch
-        [--        Browser.Events.onClick (D.succeed BrowserMouseClicked)
+        [ --        Browser.Events.onClick (D.succeed BrowserMouseClicked)
+          Port.documentFocusChanged DomFocusChanged
         ]
 
 
@@ -93,7 +100,12 @@ update config message =
                 >> addEffect (\model -> Port.createPopper ( model.refDomId, model.popperDomId ))
 
         Bounced msg ->
-            identity
+            case msg of
+                ClosePopupBouncedAction ->
+                    mapModel (\model -> { model | open = False })
+
+                _ ->
+                    identity
 
         UpdateDebouncer msg ->
             let
@@ -109,8 +121,21 @@ update config message =
                     >> mapCmd config.toMsg
                 )
 
-        FocusOut ->
+        DomFocusChanged hasFocus ->
             identity
+
+        PopupFocusChanged hasFocus ->
+            andThen
+                (update config
+                    (UpdateDebouncer <|
+                        Debouncer.bounce <|
+                            if hasFocus then
+                                ClearBouncedAction
+
+                            else
+                                ClosePopupBouncedAction
+                    )
+                )
     )
         << pure
 
@@ -143,9 +168,10 @@ render { toMsg, children, containerStyles, childContent, state } =
             , elevation 4
             , borderRadius (rem 0.5)
             , boolCss (not state.open) [ display none ]
+            , position absolute
             ]
                 ++ containerStyles
     in
     sDiv rootStyles
-        (wrapAttrs [ id state.popperDomId, onFocusOut FocusOut ])
+        (wrapAttrs [ id state.popperDomId, onFocusOut <| PopupFocusChanged False, onFocusIn <| PopupFocusChanged True ])
         (List.map viewChild children)
