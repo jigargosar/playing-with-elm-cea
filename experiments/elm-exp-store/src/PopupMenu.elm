@@ -127,9 +127,15 @@ update config message =
                 )
 
         DocumentFocusChanged hasFocus ->
-            andMapIf (\{ open } -> open && not hasFocus)
-                (andThenUpdate cancelDebounceMsg)
+            --            if hasFocus then
+            --                identity
+            --
+            --            else
+            andThenUpdate cancelDebounceMsg
 
+        --            andMapIf (\{ open } -> open && not hasFocus)
+        --                (andThenUpdate cancelDebounceMsg)
+        --
         PopupFocusChanged hasFocus ->
             andThenUpdate <|
                 if hasFocus then
