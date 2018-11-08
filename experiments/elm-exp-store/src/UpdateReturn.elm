@@ -4,6 +4,7 @@ module UpdateReturn exposing
     , addCmd3
     , addEffect
     , addMsg
+    , addMsgEffect
     , addOutMsg3
     , addTaggedCmd
     , addTaggedMsg
@@ -74,6 +75,10 @@ afterTimeout milli msg =
 
 addEffect fn ( m, c ) =
     ( m, Cmd.batch [ c, fn m ] )
+
+
+addMsgEffect fn ( m, c ) =
+    ( m, Cmd.batch [ c, fn m |> msgToCmd ] )
 
 
 addTaggedMsg tagger =

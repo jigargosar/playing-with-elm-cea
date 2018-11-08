@@ -130,13 +130,8 @@ update config message =
             addCmd (Log.warn "Mode.elm" logLine)
 
         ActionClicked child ->
-            let
-                actionSelectedCmd : Model -> Cmd msg
-                actionSelectedCmd model =
-                    Task.perform identity (Task.succeed <| config.selected model.cid child)
-            in
             closeAndDestroyPopper
-                >> addEffect (\model -> config.selected model.cid child |> msgToCmd)
+                >> addMsgEffect (.cid >> (\cid -> config.selected cid child))
 
         ToggleOpenFor cid ->
             andMapIfElse (isOpenForContextId cid)
