@@ -201,11 +201,11 @@ type Msg
     | ContextStoreMsg ContextStore.Msg
     | ModeMsg Mode.Msg
     | StartEditingContext ContextId
-    | AddTodoOutMsg TodoContent
-    | AddContextOutMsg ContextName
-    | SetTodoContentOutMsg TodoId TodoContent
+    | AddTodo TodoContent
+    | AddContext ContextName
+    | SetTodoContent TodoId TodoContent
     | SetTodoContextOutMsg TodoId ContextId
-    | ContextNameUpdatedOutMsg ContextId ContextName
+    | SetContextName ContextId ContextName
     | DeleteContextId ContextId
     | DeleteTodoId TodoId
     | ContextMoreClicked ContextId
@@ -262,11 +262,11 @@ update message model =
                 modeUpdateConfig : Mode.UpdateConfig Msg
                 modeUpdateConfig =
                     { toMsg = ModeMsg
-                    , addTodo = AddTodoOutMsg
+                    , addTodo = AddTodo
                     , setTodoContext = SetTodoContextOutMsg
-                    , setTodoContent = SetTodoContentOutMsg
-                    , addContext = AddContextOutMsg
-                    , setContextName = ContextNameUpdatedOutMsg
+                    , setTodoContent = SetTodoContent
+                    , addContext = AddContext
+                    , setContextName = SetContextName
                     }
             in
             updateSub (Mode.update modeUpdateConfig)
@@ -282,19 +282,19 @@ update message model =
                         |> unwrapMaybe identity (andThenUpdate << ModeMsg << Mode.startEditingContext)
                    )
 
-        AddTodoOutMsg content ->
+        AddTodo content ->
             update (TodoStoreMsg <| TodoStore.addNew content) model
 
-        AddContextOutMsg name ->
+        AddContext name ->
             update (ContextStoreMsg <| ContextStore.addNew name) model
 
-        SetTodoContentOutMsg id content ->
+        SetTodoContent id content ->
             update (TodoStoreMsg <| TodoStore.setContent id content) model
 
         SetTodoContextOutMsg todoId contextId ->
             update (TodoStoreMsg <| TodoStore.setContextId todoId contextId) model
 
-        ContextNameUpdatedOutMsg id name ->
+        SetContextName id name ->
             update (ContextStoreMsg <| ContextStore.setName id name) model
 
         DeleteContextId cid ->
