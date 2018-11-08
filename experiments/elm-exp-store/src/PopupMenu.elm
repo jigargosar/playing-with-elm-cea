@@ -40,26 +40,6 @@ isOpen =
     .open
 
 
-setOpen bool model =
-    { model | open = bool }
-
-
-close =
-    setOpen False
-
-
-toggleOpen model =
-    setOpen (not model.open) model
-
-
-debounceCloseMsg =
-    UpdateDebouncer << Debouncer.bounce <| Just DebouncedCloseReceived
-
-
-cancelDebounceMsg =
-    UpdateDebouncer << Debouncer.bounce <| Nothing
-
-
 popOpen =
     PopOpen
 
@@ -107,6 +87,15 @@ update config message =
 
         bounce action =
             andThenUpdate (UpdateDebouncer <| Debouncer.bounce action)
+
+        debounceCloseMsg =
+            UpdateDebouncer << Debouncer.bounce <| Just DebouncedCloseReceived
+
+        cancelDebounceMsg =
+            UpdateDebouncer << Debouncer.bounce <| Nothing
+
+        setOpen bool model =
+            { model | open = bool }
     in
     (case message of
         NoOp ->
@@ -116,7 +105,7 @@ update config message =
             addCmd (Log.warn "Mode.elm" logLine)
 
         ChildSelected child ->
-            mapModel close
+            mapModel (setOpen False)
                 >> addMsg (config.selected child)
 
         PopOpen ->
@@ -125,7 +114,7 @@ update config message =
                 >> addEffect (\model -> Port.createPopper ( model.refDomId, model.popperDomId ))
 
         DebouncedCloseReceived ->
-            mapModel close
+            mapModel (setOpen False)
 
         UpdateDebouncer msg ->
             andThen
