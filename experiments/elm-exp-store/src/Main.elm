@@ -41,7 +41,7 @@ import UpdateReturn exposing (..)
 
 type Popup
     = NoPopup
-    | ContextIdPopup ContextId PopupMenu.State
+    | ContextIdPopup ContextPopup.Model
 
 
 type alias Model =
@@ -264,17 +264,16 @@ update message model =
             pure
                 { model
                     | popup =
-                        ContextIdPopup cid <|
-                            PopupMenu.init (contextMoreMenuRefDomId cid) (contextMoreMenuPopperDomId cid)
+                        ContextIdPopup (ContextPopup.init cid)
                 }
---                |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId cid ))
+                --                |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId cid ))
                 |> andThenUpdate (UpdateContextPopup PopupMenu.popOpen)
 
         UpdateContextPopup msg ->
             case model.popup of
-                ContextIdPopup cid state ->
+                ContextIdPopup cpModel ->
                     let
-                        selected action =
+                        selected cid action =
                             case action of
                                 ContextPopup.Rename ->
                                     StartEditingContext cid
@@ -287,8 +286,8 @@ update message model =
                             , selected = selected
                             }
                     in
-                    PopupMenu.update config msg state
-                        |> mapModel (\s -> { model | popup = ContextIdPopup cid s })
+                    ContextPopup.update config msg cpModel
+                        |> mapModel (\s -> { model | popup = ContextIdPopup cpModel })
 
                 _ ->
                     pure model
@@ -342,8 +341,8 @@ view model =
 
 viewPopup model =
     case model.popup of
-        ContextIdPopup cid state ->
-            ContextPopup.view { cid = cid, state = state, toMsg = UpdateContextPopup }
+        ContextIdPopup state ->
+            ContextPopup.view { toMsg = UpdateContextPopup, state = state }
 
         NoPopup ->
             noHtml

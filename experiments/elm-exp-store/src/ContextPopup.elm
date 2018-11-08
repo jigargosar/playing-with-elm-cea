@@ -1,4 +1,13 @@
-module ContextPopup exposing (Action(..), Msg, contextMoreMenuPopperDomId, contextMoreMenuRefDomId, view)
+module ContextPopup exposing
+    ( Action(..)
+    , Model
+    , Msg
+    , contextMoreMenuPopperDomId
+    , contextMoreMenuRefDomId
+    , init
+    , update
+    , view
+    )
 
 import BasicsX exposing (..)
 import ContextStore exposing (ContextId)
@@ -8,6 +17,23 @@ import Html.Styled exposing (Html, button, styled, text)
 import PopupMenu
 import Styles exposing (..)
 import UI exposing (..)
+
+
+type alias Model =
+    { popupState : PopupMenu.State
+    , cid : ContextId
+    }
+
+
+init : ContextId -> Model
+init cid =
+    { popupState = PopupMenu.init (contextMoreMenuRefDomId cid) (contextMoreMenuPopperDomId cid)
+    , cid = cid
+    }
+
+
+update { toMsg, selected } msg model =
+    PopupMenu.update { toMsg = toMsg, selected = selected model.cid } msg model.popupState
 
 
 type Action
@@ -51,14 +77,14 @@ childContent child =
 
 
 type alias ViewConfig msg =
-    { toMsg : Msg -> msg, cid : ContextId, state : PopupMenu.State }
+    { toMsg : Msg -> msg, state : Model }
 
 
 view : ViewConfig msg -> Html msg
-view { cid, toMsg, state } =
+view { toMsg, state } =
     PopupMenu.render
         { toMsg = toMsg
-        , state = state
+        , state = state.popupState
         , children = actions
         , containerStyles =
             [ pRm 0.5
