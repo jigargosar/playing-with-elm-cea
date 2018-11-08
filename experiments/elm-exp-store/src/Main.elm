@@ -485,7 +485,7 @@ viewSidebar model =
     sDiv []
         [ class "min-h-100 bg-black-05" ]
         [ node "div" [] <|
-            [ viewKeyedContextItem (Css.batch [])
+            [ viewKeyedContextItem noStyle
                 (createInboxContextItemViewModel model)
             ]
         , viewContextsItem

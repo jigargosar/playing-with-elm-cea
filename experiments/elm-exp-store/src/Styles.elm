@@ -1,4 +1,4 @@
-module Styles exposing (absFill, ambient, ambientColor, bc, bcBlackA, bg, blackA, boolCss, btnReset, centerCenter, dFlexCol, dFlexRow, elevation, fBody, fDir, fZero, fg, fwb, fz, fzPx, hs, lh, lhNum, mRm, p2Rm, pRm, penumbra, penumbraColor, plRm, prRm, rowBottomY, rowCXY, rowCY, spacing0, umbra, umbraColor, vs)
+module Styles exposing (absFill, ambient, ambientColor, bc, bcBlackA, bg, blackA, boolCss, btnReset, centerCenter, dFlexCol, dFlexRow, elevation, fBody, fDir, fZero, fg, fwb, fz, fzPx, hs, lh, lhNum, mRm, noStyle, p2Rm, pRm, penumbra, penumbraColor, plRm, prRm, rowBottomY, rowCXY, rowCY, spacing0, umbra, umbraColor, vs)
 
 import Array
 import BasicsX exposing (..)
@@ -142,7 +142,11 @@ boolCss bool t =
         batch t
 
     else
-        batch []
+        noStyle
+
+
+noStyle =
+    batch []
 
 
 fwb =
