@@ -96,12 +96,12 @@ update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message =
     let
         cancelBounceMsg =
-            bounceMaybeMsg Nothing
+            bounce Nothing
 
         bounceCloseMsg =
-            bounceMaybeMsg <| Just DebouncedClose
+            bounce <| Just DebouncedClose
 
-        bounceMaybeMsg maybeMsg =
+        bounce mag =
             andThen
                 (\model ->
                     let
@@ -109,7 +109,7 @@ update config message =
                             model.bounceCount + 1
                     in
                     ( { model | bounceCount = bounceCount }
-                    , afterTimeout 0 (EmitIfBounceCountEq bounceCount maybeMsg)
+                    , afterTimeout 0 (EmitIfBounceCountEq bounceCount mag)
                     )
                         |> mapCmd config.toMsg
                 )
@@ -132,7 +132,7 @@ update config message =
                     >> addCmd (Port.destroyPopper ())
                 )
 
-        incCount model =
+        incBounceCount model =
             { model | bounceCount = model.bounceCount + 1 }
     in
     (case message of
