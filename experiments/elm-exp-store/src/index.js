@@ -3,7 +3,7 @@ import './main.css'
 // noinspection ES6CheckImport
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { compose, curry, forEachObjIndexed, isNil, partial, pathOr, pick, tap } from 'ramda'
+import { compose, curry, forEachObjIndexed, isNil, map, partial, pathOr, pick, tap, toPairs } from 'ramda'
 
 import flyd from 'flyd'
 import Popper from 'popper.js'
@@ -168,7 +168,10 @@ subscribe(
           // placement: 'right-start',
           // positionFixed:true,
           onCreate(data) {
-            console.log(`onCreate data`, data)
+            let toStringPairs = compose(toPairs, map(val => `${val}`))
+            let attributes = toStringPairs(data.attributes)
+            console.log(`onCreate data`, data, attributes)
+            sendToApp("popperStylesChanged",{styles:toStringPairs(data.styles), attributes} )
           },
           onUpdate(data) {
             console.log(`onUpdate data`, data)

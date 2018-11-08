@@ -1,11 +1,13 @@
 port module Port exposing
-    ( activeElementsParentIdList
+    ( PopperStyles
+    , activeElementsParentIdList
     , cacheContextStore
     , cacheTodoStore
     , createPopper
     , destroyPopper
     , documentFocusChanged
     , focusSelector
+    , popperStylesChanged
     , warn
     , wheel
     )
@@ -34,6 +36,16 @@ port activeElementsParentIdList : (List String -> msg) -> Sub msg
 
 
 port documentFocusChanged : (Bool -> msg) -> Sub msg
+
+
+type alias PopperStyles =
+    { --      styles : { position : String, left : Int, top : Int, transform : String, willChange : String }
+      styles : List ( String, String )
+    , attributes : List ( String, String )
+    }
+
+
+port popperStylesChanged : (PopperStyles -> msg) -> Sub msg
 
 
 type alias RefDomId =

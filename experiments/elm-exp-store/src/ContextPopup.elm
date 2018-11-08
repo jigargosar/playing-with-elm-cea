@@ -22,7 +22,7 @@ import Html.Styled exposing (Html, button, div, styled, text)
 import Html.Styled.Attributes as HA exposing (autofocus, id)
 import Html.Styled.Events exposing (onClick)
 import Log
-import Port
+import Port exposing (PopperStyles)
 import Styles exposing (..)
 import Task
 import UI exposing (..)
@@ -65,11 +65,13 @@ type Msg
     | DocumentFocusChanged Bool
     | PopupFocusChanged Bool
     | DebouncedCloseReceived
+    | PopperStylesChanged PopperStyles
 
 
 subscriptions model =
     Sub.batch
         [ Port.documentFocusChanged DocumentFocusChanged
+        , Port.popperStylesChanged PopperStylesChanged
         ]
 
 
@@ -164,6 +166,13 @@ update config message =
 
                 else
                     debounceCloseMsg
+
+        PopperStylesChanged a ->
+            let
+                _ =
+                    Debug.log "PopperStylesChanged" a
+            in
+            identity
     )
         << pure
 
