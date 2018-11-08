@@ -24,7 +24,7 @@ type alias Msg =
 
 
 contextMoreMenuPopperDomId cid =
-    "context-more-menu-popper-"
+    "context-more-menu-popper-" ++ cid
 
 
 contextMoreMenuRefDomId cid =
