@@ -337,7 +337,7 @@ view model =
 viewPopup model =
     case model.popup of
         ContextIdPopup cid state ->
-            ContextPopup.view cid UpdateContextPopup state
+            ContextPopup.view { cid = cid, state = state, toMsg = UpdateContextPopup }
 
         NoPopup ->
             noHtml

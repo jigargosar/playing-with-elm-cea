@@ -4,7 +4,7 @@ import BasicsX exposing (..)
 import ContextStore exposing (ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
-import Html.Styled exposing (button, styled, text)
+import Html.Styled exposing (Html, button, styled, text)
 import PopupMenu
 import Styles exposing (..)
 import UI exposing (..)
@@ -50,7 +50,8 @@ contextMoreMenuRefDomId cid =
     "context-more-menu-reference-" ++ cid
 
 
-view cid toMsg state =
+view : { toMsg : PopupMenu.Msg Action -> msg, cid : ContextId, state : PopupMenu.State } -> Html msg
+view { cid, toMsg, state } =
     PopupMenu.render
         { toMsg = toMsg
         , state = state
