@@ -441,17 +441,6 @@ createInboxContextItemViewModel model =
 
 viewSidebar model =
     let
-        liTextButton =
-            styled button
-                [ btnReset
-                , hs
-                , fa
-                , fBody
-                ]
-
-        listItem =
-            styled div [ fa, rowCY, pRm 0.5 ]
-
         viewContextsItem =
             styled listItem
                 []
@@ -462,37 +451,6 @@ viewSidebar model =
 
         viewKeyedContextItem style vm =
             ( vm.key, viewContextItem style vm )
-
-        viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, cid } =
-            styled listItem
-                [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
-                [ id <| contextMoreMenuRefDomId cid
-                , class "hide-child"
-                ]
-                [ liTextButton
-                    [ css
-                        [ ttu
-                        , rowCY
-                        ]
-                    , onClick navigateToTodoList
-                    ]
-                    [ div [] [ text <| name ]
-                    , sDiv
-                        [ plRm 0.1
-                        , Css.fontSize (em 0.8)
-                        , Css.alignSelf Css.flexEnd
-                        , fwb
-                        , fgGray
-                        ]
-                        []
-                        [ text <| String.fromInt activeTodoCount ]
-                    ]
-                , Btn.sIcon [ fgGray, opacity zero ]
-                    [ class "child"
-                    , onClick moreClicked
-                    ]
-                    [ Icons.moreHDef ]
-                ]
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
@@ -503,6 +461,51 @@ viewSidebar model =
         , viewContextsItem
         , node "div" [] <|
             List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) (createUserDefinedContextItemViewModel model)
+        ]
+
+
+listItem =
+    styled div [ fa, rowCY, pRm 0.5 ]
+
+
+liTextButton =
+    styled button
+        [ btnReset
+        , hs
+        , fa
+        , fBody
+        ]
+
+
+viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, cid } =
+    styled listItem
+        [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
+        [ id <| contextMoreMenuRefDomId cid
+        , class "hide-child"
+        ]
+        [ liTextButton
+            [ css
+                [ ttu
+                , rowCY
+                ]
+            , onClick navigateToTodoList
+            ]
+            [ div [] [ text <| name ]
+            , sDiv
+                [ plRm 0.1
+                , Css.fontSize (em 0.8)
+                , Css.alignSelf Css.flexEnd
+                , fwb
+                , fgGray
+                ]
+                []
+                [ text <| String.fromInt activeTodoCount ]
+            ]
+        , Btn.sIcon [ fgGray, opacity zero ]
+            [ class "child"
+            , onClick moreClicked
+            ]
+            [ Icons.moreHDef ]
         ]
 
 
