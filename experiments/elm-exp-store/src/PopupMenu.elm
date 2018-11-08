@@ -1,4 +1,4 @@
-module PopupMenu exposing (Config, Msg, State, closed, opened, render, update)
+module PopupMenu exposing (Config, Msg, State, init, popOpen, render, update)
 
 import Css exposing (..)
 import DomEvents exposing (..)
@@ -13,20 +13,24 @@ import UpdateReturn exposing (..)
 
 type alias State =
     { open : Bool
+    , refDomId : DomId
+    , popperDomId : DomId
     }
 
 
-opened =
-    State True
+init : DomId -> DomId -> State
+init refDomId popperDomId =
+    { open = False, refDomId = refDomId, popperDomId = popperDomId }
 
 
-closed =
-    State True
+popOpen =
+    PopOpen
 
 
 type Msg child
     = NoOp
     | ChildSelected child
+    | PopOpen
 
 
 type alias Config msg child =
@@ -39,11 +43,14 @@ update : Config msg child -> Msg child -> State -> ( State, Cmd msg )
 update config message model =
     case message of
         NoOp ->
-            ( model, Cmd.none )
+            pure model
 
         ChildSelected child ->
             pure { model | open = False }
                 |> addMsg (config.selected child)
+
+        PopOpen ->
+            pure model
 
 
 type alias ViewConfig child msg =

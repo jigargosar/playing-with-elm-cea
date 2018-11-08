@@ -261,8 +261,14 @@ update message model =
                    )
 
         ContextMoreClicked cid ->
-            pure { model | popup = ContextIdPopup cid PopupMenu.opened }
+            pure
+                { model
+                    | popup =
+                        ContextIdPopup cid <|
+                            PopupMenu.init (contextMoreMenuRefDomId cid) (contextMoreMenuPopperDomId cid)
+                }
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId cid ))
+                |> andThenUpdate (UpdateContextPopup PopupMenu.popOpen)
 
         UpdateContextPopup msg ->
             case model.popup of
