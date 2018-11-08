@@ -201,11 +201,6 @@ type Msg
     | ContextStoreMsg ContextStore.Msg
     | ModeMsg Mode.Msg
     | StartEditingContext ContextId
-    | AddTodo TodoContent
-    | SetTodoContent TodoId TodoContent
-    | SetTodoContextOutMsg TodoId ContextId
-    | DeleteContextId ContextId
-    | DeleteTodoId TodoId
     | ContextMoreClicked ContextId
     | UpdateContextPopup ContextPopup.Msg
 
@@ -260,9 +255,9 @@ update message model =
                 modeUpdateConfig : Mode.UpdateConfig Msg
                 modeUpdateConfig =
                     { toMsg = ModeMsg
-                    , addTodo = AddTodo
-                    , setTodoContext = SetTodoContextOutMsg
-                    , setTodoContent = SetTodoContent
+                    , addTodo = \content -> TodoStoreMsg <| TodoStore.addNew content
+                    , setTodoContext = \todoId contextId -> TodoStoreMsg <| TodoStore.setContextId todoId contextId
+                    , setTodoContent = \id content -> TodoStoreMsg <| TodoStore.setContent id content
                     , addContext = ContextStoreMsg << ContextStore.addNew
                     , setContextName = \id name -> ContextStoreMsg <| ContextStore.setName id name
                     }
@@ -280,21 +275,6 @@ update message model =
                         |> unwrapMaybe identity (andThenUpdate << ModeMsg << Mode.startEditingContext)
                    )
 
-        AddTodo content ->
-            update (TodoStoreMsg <| TodoStore.addNew content) model
-
-        SetTodoContent id content ->
-            update (TodoStoreMsg <| TodoStore.setContent id content) model
-
-        SetTodoContextOutMsg todoId contextId ->
-            update (TodoStoreMsg <| TodoStore.setContextId todoId contextId) model
-
-        DeleteContextId cid ->
-            update (ContextStoreMsg <| ContextStore.delete cid) model
-
-        DeleteTodoId todoId ->
-            update (TodoStoreMsg <| TodoStore.delete todoId) model
-
         ContextMoreClicked cid ->
             pure { model | popup = ContextIdPopup cid PopupMenu.opened }
                 |> addCmd (Port.createPopper ( contextMoreMenuRefDomId cid, contextMoreMenuPopperDomId cid ))
@@ -309,7 +289,7 @@ update message model =
                                     StartEditingContext cid
 
                                 ContextPopup.Delete ->
-                                    DeleteContextId cid
+                                    ContextStoreMsg <| ContextStore.delete cid
 
                         config =
                             { toMsg = UpdateContextPopup
