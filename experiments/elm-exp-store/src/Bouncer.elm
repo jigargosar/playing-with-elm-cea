@@ -13,7 +13,7 @@ bounce config msg =
     bounceMaybeMsg config (Just msg)
 
 
-bounceMaybeMsg { toMsg, emitIfCountMsg } maybeMsg =
+bounceMaybeMsg { tagger, emitIfCountMsg } maybeMsg =
     andThen
         (\model ->
             let
@@ -23,12 +23,12 @@ bounceMaybeMsg { toMsg, emitIfCountMsg } maybeMsg =
             ( { model | bounceCount = bounceCount }
             , afterTimeout 0 (emitIfCountMsg bounceCount maybeMsg)
             )
-                |> mapCmd toMsg
+                |> mapCmd tagger
         )
 
 
-emitIfBounceCount { toMsg } count maybeMsg =
+emitIfBounceCount { tagger } count maybeMsg =
     andMapWhen (.bounceCount >> eqs count)
-        (maybeAddTaggedMsg toMsg maybeMsg
+        (maybeAddTaggedMsg tagger maybeMsg
             >> mapModel (\model -> { model | bounceCount = 0 })
         )

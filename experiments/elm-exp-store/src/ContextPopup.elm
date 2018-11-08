@@ -96,7 +96,7 @@ update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message =
     let
         bouncerConfig =
-            { toMsg = config.toMsg, emitIfCountMsg = EmitIfBounceCount }
+            { tagger = config.toMsg, emitIfCountMsg = EmitIfBounceCount }
 
         cancelBounceMsg =
             Bouncer.cancel bouncerConfig
