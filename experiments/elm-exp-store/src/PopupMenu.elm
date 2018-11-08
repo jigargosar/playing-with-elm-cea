@@ -149,23 +149,10 @@ render { toMsg, children, containerStyles, childContent, state } =
             [ bg "white"
             , elevation 4
             , borderRadius (rem 0.5)
-
-            --            , position absolute
             , boolCss (not state.open) [ display none ]
             ]
                 ++ containerStyles
     in
     sDiv rootStyles
         (wrapAttrs [ id state.popperDomId, onFocusOut FocusOut ])
-        (children |> List.map viewChild)
-
-
-
---    if state.open then
---        sDiv rootStyles
---            [ id state.popperDomId ]
---            (children |> List.map viewChild)
---
---    else
---        noHtml
---
+        (List.map viewChild children)
