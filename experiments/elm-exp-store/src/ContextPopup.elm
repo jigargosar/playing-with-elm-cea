@@ -13,6 +13,7 @@ module ContextPopup exposing
     )
 
 import BasicsX exposing (..)
+import Bouncer
 import ContextStore exposing (ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
@@ -95,23 +96,10 @@ update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message =
     let
         cancelBounceMsg =
-            bounce EmitIfBounceCount Nothing
+            Bouncer.bounce config.toMsg EmitIfBounceCount Nothing
 
         bounceCloseMsg =
-            bounce EmitIfBounceCount <| Just DebouncedClose
-
-        bounce emitIfCountMsg maybeBounceMsg =
-            andThen
-                (\model ->
-                    let
-                        bounceCount =
-                            model.bounceCount + 1
-                    in
-                    ( { model | bounceCount = bounceCount }
-                    , afterTimeout 0 (emitIfCountMsg bounceCount maybeBounceMsg)
-                    )
-                        |> mapCmd config.toMsg
-                )
+            Bouncer.bounce config.toMsg EmitIfBounceCount <| Just DebouncedClose
 
         andThenUpdate msg =
             andThen (update config msg)
