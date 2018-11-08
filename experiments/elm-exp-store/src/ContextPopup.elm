@@ -24,6 +24,7 @@ import Html.Styled.Events exposing (onClick)
 import Log
 import Port
 import Styles exposing (..)
+import Task
 import UI exposing (..)
 import UpdateReturn exposing (..)
 
@@ -31,20 +32,14 @@ import UpdateReturn exposing (..)
 type alias Model =
     { open : Bool
     , debouncer : Debouncer
-    , focusOnOpenDomId : Maybe DomId
     , cid : ContextId
     }
 
 
 init : ContextId -> Model
 init cid =
-    let
-        popperDomId =
-            popperId cid
-    in
     { open = False
     , debouncer = Debouncer.init
-    , focusOnOpenDomId = actions |> List.head |> Maybe.map (getChildDomId popperDomId)
     , cid = cid
     }
 
@@ -78,6 +73,21 @@ subscriptions model =
         ]
 
 
+type alias Config msg =
+    { toMsg : Msg -> msg
+    , selected : ContextId -> Action -> msg
+    }
+
+
+getPopperDomId =
+    .cid >> popperId
+
+
+getAutoFocusDomId model =
+    actions |> List.head |> Maybe.map (getChildDomId (getPopperDomId model))
+
+
+update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message =
     let
         andThenUpdate msg =
@@ -112,14 +122,19 @@ update config message =
             addCmd (Log.warn "Mode.elm" logLine)
 
         ActionClicked child ->
+            let
+                actionSelectedCmd : Model -> Cmd msg
+                actionSelectedCmd model =
+                    Task.perform identity (Task.succeed <| config.selected model.cid child)
+            in
             mapModel setClose
-                >> addMsg (config.selected "" child)
+                >> addEffect actionSelectedCmd
 
         ToggleOpenFor cid ->
             andMapIfElse (isOpenForContextId cid)
                 (mapModel setClose)
                 (mapModel (setOpenFor cid)
-                    >> addEffect (.focusOnOpenDomId >> unwrapMaybe Cmd.none focusDomId)
+                    >> addEffect (getAutoFocusDomId >> unwrapMaybe Cmd.none focusDomId)
                     >> addEffect createPopperCmd
                 )
 
