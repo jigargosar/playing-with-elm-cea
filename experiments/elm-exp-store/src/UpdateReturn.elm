@@ -6,6 +6,7 @@ module UpdateReturn exposing
     , addMapCmd
     , addMsg
     , addOutMsg3
+    , addTaggedMsg
     , afterTimeout
     , andMapIfElse
     , andMapWhen
@@ -17,6 +18,7 @@ module UpdateReturn exposing
     , generate3
     , mapCmd
     , mapModel
+    , maybeAddTaggedMsg
     , nextTick
     , perform
     , perform3
@@ -71,6 +73,14 @@ afterTimeout milli msg =
 
 addEffect fn ( m, c ) =
     ( m, Cmd.batch [ c, fn m ] )
+
+
+addTaggedMsg tagger =
+    Task.succeed >> Task.perform tagger >> addCmd
+
+
+maybeAddTaggedMsg tagger =
+    unwrapMaybe identity (addTaggedMsg tagger)
 
 
 updateSub :

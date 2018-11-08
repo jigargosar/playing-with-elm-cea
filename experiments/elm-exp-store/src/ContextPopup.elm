@@ -95,11 +95,14 @@ getAutoFocusDomId model =
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message =
     let
+        bouncerConfig =
+            { toMsg = config.toMsg, emitIfCountMsg = EmitIfBounceCount }
+
         cancelBounceMsg =
-            Bouncer.bounce config.toMsg EmitIfBounceCount Nothing
+            Bouncer.cancel bouncerConfig
 
         bounceCloseMsg =
-            Bouncer.bounce config.toMsg EmitIfBounceCount <| Just DebouncedClose
+            Bouncer.bounce bouncerConfig DebouncedClose
 
         andThenUpdate msg =
             andThen (update config msg)
@@ -144,10 +147,7 @@ update config message =
                 )
 
         EmitIfBounceCount count maybeMsg ->
-            andMapWhen (.bounceCount >> eqs count)
-                (unwrapMaybe identity andThenUpdate maybeMsg
-                    >> mapModel (\model -> { model | bounceCount = 0 })
-                )
+            Bouncer.emitIfBounceCount bouncerConfig count maybeMsg
 
         DebouncedClose ->
             closeAndDestroyPopper
