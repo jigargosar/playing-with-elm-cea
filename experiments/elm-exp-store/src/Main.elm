@@ -278,22 +278,22 @@ update message model =
                 |> andThenUpdate (UpdateContextPopup PopupMenu.popOpen)
 
         UpdateContextPopup msg ->
-            case model.popup of
-                ContextPopup cpModel ->
-                    let
-                        config =
-                            { toMsg = UpdateContextPopup
-                            , selected =
-                                \cid action ->
-                                    case action of
-                                        ContextPopup.Rename ->
-                                            StartEditingContext cid
+            let
+                config =
+                    { toMsg = UpdateContextPopup
+                    , selected =
+                        \cid action ->
+                            case action of
+                                ContextPopup.Rename ->
+                                    StartEditingContext cid
 
-                                        ContextPopup.Delete ->
-                                            ContextStoreMsg <| ContextStore.delete cid
-                            }
-                    in
-                    ContextPopup.update config msg cpModel
+                                ContextPopup.Delete ->
+                                    ContextStoreMsg <| ContextStore.delete cid
+                    }
+            in
+            case model.popup of
+                ContextPopup state ->
+                    ContextPopup.update config msg state
                         |> mapModel (\s -> { model | popup = ContextPopup s })
 
                 _ ->
