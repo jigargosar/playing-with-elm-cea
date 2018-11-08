@@ -8,6 +8,7 @@ port module Port exposing
     , documentFocusChanged
     , focusSelector
     , popperStylesChanged
+    , popperStylesSet
     , warn
     , wheel
     )
@@ -45,6 +46,9 @@ type alias PopperStyles =
     }
 
 
+port popperStylesSet : (PopperStyles -> msg) -> Sub msg
+
+
 port popperStylesChanged : (PopperStyles -> msg) -> Sub msg
 
 
@@ -59,4 +63,4 @@ type alias PopperDomId =
 port createPopper : ( RefDomId, PopperDomId ) -> Cmd msg
 
 
-port destroyPopper : () -> Cmd msg
+port destroyPopper : ( RefDomId, PopperDomId ) -> Cmd msg

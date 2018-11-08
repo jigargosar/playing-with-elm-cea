@@ -68,11 +68,13 @@ type Msg
     | DebouncedClose
     | EmitIfBounceCount Int (Maybe Msg)
     | PopperStylesChanged PopperStyles
+    | PopperStylesSet PopperStyles
 
 
 subscriptions model =
     Sub.batch
         [ Port.documentFocusChanged DocumentFocusChanged
+        , Port.popperStylesSet PopperStylesSet
         , Port.popperStylesChanged PopperStylesChanged
         ]
 
@@ -109,8 +111,11 @@ update config message =
         closeAndDestroyPopper =
             andMapWhen .open
                 (mapModel (\model -> { model | open = False })
-                    >> addCmd (Port.destroyPopper ())
+                    >> addEffect (\{ cid } -> Port.destroyPopper ( refId cid, popperId cid ))
                 )
+
+        autoFocus =
+            addTaggedEffect tagger (getAutoFocusDomId >> attemptFocusMaybeDomId NoOp Warn)
     in
     (case message of
         NoOp ->
@@ -127,7 +132,6 @@ update config message =
             andMapIfElse (isOpenForContextId cid)
                 closeAndDestroyPopper
                 (mapModel (setOpenFor cid)
-                    >> addTaggedEffect tagger (getAutoFocusDomId >> attemptFocusMaybeDomId NoOp Warn)
                     >> addEffect attachPopperCmd
                 )
 
@@ -146,6 +150,14 @@ update config message =
 
             else
                 Bouncer.bounce bouncerConfig DebouncedClose
+
+        PopperStylesSet popperStyles ->
+            let
+                _ =
+                    Debug.log "PopperStylesSet" popperStyles
+            in
+            mapModel (\model -> { model | popperStyles = popperStyles })
+                >> autoFocus
 
         PopperStylesChanged popperStyles ->
             mapModel (\model -> { model | popperStyles = popperStyles })
