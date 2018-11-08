@@ -63,7 +63,6 @@ type Msg
     | Warn Log.Line
     | ActionClicked Action
     | ToggleOpenFor ContextId
-      --    | UpdateDebouncer (Debouncer.Msg BounceMsg)
     | DocumentFocusChanged Bool
     | PopupFocusChanged Bool
     | DebouncedClose
