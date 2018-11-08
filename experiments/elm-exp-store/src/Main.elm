@@ -287,8 +287,8 @@ update message model =
                                 ContextPopup.Rename ->
                                     StartEditingContext cid
 
-                                ContextPopup.Delete ->
-                                    ContextStoreMsg <| ContextStore.delete cid
+                                ContextPopup.Archive ->
+                                    ContextStoreMsg <| ContextStore.archive cid
                     }
             in
             case model.popup of

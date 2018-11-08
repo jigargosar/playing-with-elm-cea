@@ -5,9 +5,9 @@ module ContextStore exposing
     , ContextStore
     , Msg
     , addNew
+    , archive
     , defaultId
     , defaultName
-    , delete
     , get
     , getNameOrDefaultById
     , list
@@ -49,7 +49,7 @@ type alias Context =
     { id : ContextId
     , createdAt : Millis
     , modifiedAt : Millis
-    , deleted : Bool
+    , archived : Bool
     , name : ContextName
     }
 
@@ -60,7 +60,7 @@ contextCodec =
         |> JC.first "id" JC.string .id
         |> JC.next "createdAt" JC.int .createdAt
         |> JC.next "modifiedAt" JC.int .modifiedAt
-        |> JC.next "deleted" JC.bool .deleted
+        |> JC.next "archived" JC.bool .archived
         |> JC.next "name" JC.string .name
         |> JC.end
 
@@ -98,7 +98,7 @@ type Msg
 
 type ContextMsg
     = SetName ContextName
-    | Delete
+    | Archive
 
 
 addNew =
@@ -109,8 +109,8 @@ setName id name =
     UpdateContext id (SetName name)
 
 
-delete id =
-    UpdateContext id Delete
+archive id =
+    UpdateContext id Archive
 
 
 update : Msg -> ContextStore -> ( ContextStore, Cmd Msg )
@@ -132,7 +132,7 @@ update message model =
                     { id = id
                     , createdAt = now
                     , modifiedAt = now
-                    , deleted = False
+                    , archived = False
                     , name = name
                     }
             in
@@ -165,8 +165,8 @@ maybeUpdateContext now msg context =
                 SetName name ->
                     { context | name = name }
 
-                Delete ->
-                    { context | deleted = True }
+                Archive ->
+                    { context | archived = True }
     in
     maybeBool (updatedContext /= context) { updatedContext | modifiedAt = now }
 

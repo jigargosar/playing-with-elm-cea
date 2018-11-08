@@ -60,11 +60,11 @@ update { toMsg, selected } msg model =
 
 type Action
     = Rename
-    | Delete
+    | Archive
 
 
 actions =
-    [ Rename, Delete ]
+    [ Rename, Archive ]
 
 
 type alias Msg =
@@ -84,8 +84,8 @@ getChildText child =
         Rename ->
             "Rename"
 
-        Delete ->
-            "Delete"
+        Archive ->
+            "Archive"
 
 
 getChildDomId popperDomId child =
