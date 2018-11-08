@@ -3,7 +3,7 @@ import './main.css'
 // noinspection ES6CheckImport
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { compose, curry, forEachObjIndexed, identity, isNil, partial, pathOr, pick, tap } from 'ramda'
+import { compose, curry, forEachObjIndexed, isNil, partial, pathOr, pick, tap } from 'ramda'
 
 import flyd from 'flyd'
 import Popper from 'popper.js'
@@ -106,7 +106,7 @@ const documentHasFocus$ = flyd.map(
 
 flyd.on(
   compose(
-    identity /*sendToApp('documentFocusChanged') */ /*, tapLog('documentFocusChanged')*/,
+    sendToApp('documentFocusChanged') /*, tapLog('documentFocusChanged')*/,
   ),
   documentHasFocus$,
 )
