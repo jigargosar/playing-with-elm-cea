@@ -131,13 +131,15 @@ subscribe(
       storageSet('contexts', contexts)
     },
     // focusSelector,
-    destroyPopper:()=>{
+    destroyPopper: () => {
+      console.log('destroyPopper')
       if (popper) {
         popper.destroy()
         popper = null
       }
     },
     createPopper: ([refDomId, popperDomId]) => {
+      console.log('createPopper')
       if (popper) {
         popper.destroy()
         popper = null
@@ -170,14 +172,14 @@ subscribe(
           // positionFixed:true,
           onCreate(data) {
 
-            let portData = {styles:toStringPairs(data.styles), attributes: toStringPairs(data.attributes)}
-            console.log(`onCreate data`, data, portData)
-            sendToApp("popperStylesChanged",portData )
+            let portData = { styles: toStringPairs(data.styles), attributes: toStringPairs(data.attributes) }
+            // console.log(`onCreate data`, data, portData)
+            sendToApp('popperStylesChanged', portData)
           },
           onUpdate(data) {
-            let portData = {styles:toStringPairs(data.styles), attributes: toStringPairs(data.attributes)}
-            console.log(`onUpdate data`, data, portData)
-            sendToApp("popperStylesChanged",portData )
+            let portData = { styles: toStringPairs(data.styles), attributes: toStringPairs(data.attributes) }
+            // console.log(`onUpdate data`, data, portData)
+            sendToApp('popperStylesChanged', portData)
           },
         })
       }

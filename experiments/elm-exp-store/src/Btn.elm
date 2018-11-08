@@ -17,11 +17,23 @@ hoverTransition =
         ]
 
 
+outlineTransition =
+    Css.batch
+        [ transition
+            [ CT.outlineOffset3 150 0 CT.easeIn
+            , CT.outlineWidth3 150 0 CT.easeIn
+
+            --            , CT.outline3 150 0 CT.easeIn
+            ]
+        ]
+
+
 icon =
     styled button
         [ btnReset
         , fZero
         , hoverTransition
+        , outlineTransition
         ]
 
 
@@ -36,6 +48,8 @@ flat =
         , fgGray
         , rowCY
         , hoverTransition
+        , outlineTransition
+        , Css.focus [ outlineTransition ]
         ]
 
 
