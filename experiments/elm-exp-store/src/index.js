@@ -159,7 +159,7 @@ subscribe(
               // enabled: false,
               // behavior: ['right']
               // },
-              placement: 'bottom',
+              placement: 'right-start',
               // positionFixed:true,
               onCreate(data) {
                 console.log(`onCreate data`, data)
