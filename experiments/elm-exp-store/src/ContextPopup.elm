@@ -131,7 +131,8 @@ update config message =
         ToggleOpenFor cid ->
             andMapIfElse (isOpenForContextId cid)
                 closeAndDestroyPopper
-                (mapModel (setOpenFor cid)
+                (closeAndDestroyPopper
+                    >> mapModel (setOpenFor cid)
                     >> addEffect attachPopperCmd
                 )
 
@@ -142,14 +143,14 @@ update config message =
             closeAndDestroyPopper
 
         DocumentFocusChanged hasFocus ->
-            Bouncer.cancel bouncerConfig
+            andThen (Bouncer.cancel bouncerConfig)
 
         PopupFocusChanged hasFocus ->
             if hasFocus then
-                Bouncer.cancel bouncerConfig
+                andThen (Bouncer.cancel bouncerConfig)
 
             else
-                Bouncer.bounce bouncerConfig DebouncedClose
+                andThen (Bouncer.bounce bouncerConfig DebouncedClose)
 
         PopperStylesSet popperStyles ->
             let

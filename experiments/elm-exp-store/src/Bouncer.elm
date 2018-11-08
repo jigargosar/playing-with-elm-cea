@@ -14,17 +14,15 @@ bounce config msg =
 
 
 bounceMaybeMsg { tagger, emitIfCountMsg } maybeMsg =
-    andThen
-        (\model ->
-            let
-                bounceCount =
-                    model.bounceCount + 1
-            in
-            ( { model | bounceCount = bounceCount }
-            , afterTimeout 0 (emitIfCountMsg bounceCount maybeMsg)
-            )
-                |> mapCmd tagger
+    \model ->
+        let
+            bounceCount =
+                model.bounceCount + 1
+        in
+        ( { model | bounceCount = bounceCount }
+        , afterTimeout 0 (emitIfCountMsg bounceCount maybeMsg)
         )
+            |> mapCmd tagger
 
 
 emitIfBounceCount { tagger } count maybeMsg =
