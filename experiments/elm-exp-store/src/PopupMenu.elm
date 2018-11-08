@@ -78,7 +78,6 @@ update config message =
 
         ChildSelected child ->
             mapModel (\model -> { model | open = False })
-                --                |> Port.destroyPopper
                 >> addMsg (config.selected child)
 
         PopOpen ->
