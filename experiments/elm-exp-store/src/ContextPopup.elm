@@ -51,7 +51,7 @@ childContent child =
 
 
 type alias ViewConfig msg =
-    { toMsg : PopupMenu.Msg Action -> msg, cid : ContextId, state : PopupMenu.State }
+    { toMsg : Msg -> msg, cid : ContextId, state : PopupMenu.State }
 
 
 view : ViewConfig msg -> Html msg
