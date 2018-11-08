@@ -131,9 +131,6 @@ update config message =
                 (mapModel (\model -> { model | open = False })
                     >> addCmd (Port.destroyPopper ())
                 )
-
-        incBounceCount model =
-            { model | bounceCount = model.bounceCount + 1 }
     in
     (case message of
         NoOp ->
