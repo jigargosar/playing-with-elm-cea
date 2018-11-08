@@ -187,8 +187,13 @@ render { toMsg, children, containerStyles, childContent, state } =
             [ bg "white"
             , elevation 4
             , borderRadius (rem 0.5)
-            , boolCss (not state.open) [ display none ]
+            , if state.open then
+                Css.batch [ display block, opacity (int 1) ]
+
+              else
+                Css.batch [ display none, opacity (int 0) ]
             , position absolute
+            , transitionFadeIn
             ]
                 ++ containerStyles
     in

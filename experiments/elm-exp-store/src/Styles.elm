@@ -1,8 +1,9 @@
-module Styles exposing (absFill, ambient, ambientColor, bc, bcBlackA, bg, blackA, boolCss, btnReset, centerCenter, dFlexCol, dFlexRow, elevation, fBody, fDir, fZero, fg, fwb, fz, fzPx, hs, lh, lhNum, mRm, noStyle, p2Rm, pRm, penumbra, penumbraColor, plRm, prRm, rowBottomY, rowCXY, rowCY, spacing0, umbra, umbraColor, vs)
+module Styles exposing (absFill, ambient, ambientColor, bc, bcBlackA, bg, blackA, boolCss, btnReset, centerCenter, dFlexCol, dFlexRow, elevation, fBody, fDir, fZero, fg, fwb, fz, fzPx, hs, lh, lhNum, mRm, noStyle, p2Rm, pRm, penumbra, penumbraColor, plRm, prRm, rowBottomY, rowCXY, rowCY, spacing0, transitionFadeIn, umbra, umbraColor, vs)
 
 import Array
 import BasicsX exposing (..)
 import Css exposing (..)
+import Css.Transitions as CT exposing (transition)
 import CssAtoms exposing (..)
 import Html.Styled exposing (div, styled, text)
 
@@ -268,3 +269,11 @@ elevation z =
          ]
             |> String.join " "
         )
+
+
+transitionFadeIn =
+    transition
+        [ CT.opacity3 1000 1 CT.easeIn
+
+        --    ,CT.opacity3 1000 1 CT.easeIn
+        ]
