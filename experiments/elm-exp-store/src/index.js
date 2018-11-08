@@ -135,44 +135,39 @@ subscribe(
       if (popper) {
         popper.destroy()
       }
-      setTimeout(
-        () =>
-          requestAnimationFrame(() => {
-            const refEl = document.getElementById(refDomId)
-            const popEl = document.getElementById(popperDomId)
-            if (!refEl || !popEl) {
-              debugger
-              return
-            }
-            popper = new Popper(refEl, popEl, {
+      requestAnimationFrame(() => {
+        const refEl = document.getElementById(refDomId)
+        const popEl = document.getElementById(popperDomId)
+        if (!refEl || !popEl) {
+          debugger
+          return
+        }
+        popper = new Popper(refEl, popEl, {
 
-              modifiers: {
-                applyStyle: {
-                  // enabled: false,
-                },
-                preventOverflow: {
-                  // boundariesElement: document.getElementById('popper-container'),
-                  boundariesElement: "viewport",
-                },
-              },
-
-              // flip: {
+          modifiers: {
+            applyStyle: {
               // enabled: false,
-              // behavior: ['right']
-              // },
-              // placement: 'right-start',
-              // positionFixed:true,
-              onCreate(data) {
-                console.log(`onCreate data`, data)
-              },
-              onUpdate(data) {
-                console.log(`onUpdate data`, data)
-              },
-            })
-          }),
-        0,
-      )
-    },
+            },
+            preventOverflow: {
+              // boundariesElement: document.getElementById('popper-container'),
+              boundariesElement: "viewport",
+            },
+          },
+
+          // flip: {
+          // enabled: false,
+          // behavior: ['right']
+          // },
+          // placement: 'right-start',
+          // positionFixed:true,
+          onCreate(data) {
+            console.log(`onCreate data`, data)
+          },
+          onUpdate(data) {
+            console.log(`onUpdate data`, data)
+          },
+        })
+      })    },
   },
   app,
 )
