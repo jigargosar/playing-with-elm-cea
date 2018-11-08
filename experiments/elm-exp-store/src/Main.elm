@@ -270,12 +270,20 @@ update message model =
                    )
 
         ContextMoreClicked cid ->
-            pure
-                { model
-                    | popup =
-                        ContextPopup (ContextPopup.init cid)
-                }
-                |> andThenUpdate (UpdateContextPopup PopupMenu.popOpen)
+            case model.popup of
+                ContextPopup state ->
+                    if ContextPopup.isOpenForContextId cid state then
+                        pure { model | popup = NoPopup }
+
+                    else
+                        pure
+                            { model
+                                | popup = ContextPopup (ContextPopup.init cid)
+                            }
+                            |> andThenUpdate (UpdateContextPopup PopupMenu.popOpen)
+
+                _ ->
+                    pure model
 
         UpdateContextPopup msg ->
             let
