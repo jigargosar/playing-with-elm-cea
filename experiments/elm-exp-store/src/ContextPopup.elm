@@ -92,11 +92,11 @@ getMaybeAutoFocusDomId model =
 
 
 setClosed =
-    \model -> { model | open = False }
+    \model -> { model | open = False, refEle = Nothing }
 
 
 setOpenAndContextId cid model =
-    { model | open = True, cid = cid }
+    { model | open = True, cid = cid, refEle = Nothing }
 
 
 type alias ElementResult =
@@ -216,6 +216,7 @@ viewPopup element model =
             , minWidth (rem 10)
             , position absolute
             , left (px <| element.element.x + element.element.width)
+            , top (px <| element.element.y)
             ]
 
         rootAttributes =
@@ -230,4 +231,8 @@ viewPopup element model =
         backdropAttrs =
             [ id <| getBackdropDomId model, onClickTargetId BackdropClicked ]
     in
-    UI.backdrop backdropAttrs [ viewModalContent ]
+    viewModalContent
+
+
+
+--    UI.backdrop backdropAttrs [ viewModalContent ]
