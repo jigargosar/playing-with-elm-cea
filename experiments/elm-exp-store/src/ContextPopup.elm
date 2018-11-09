@@ -22,6 +22,7 @@ import Focus exposing (FocusResult)
 import Html.Styled exposing (Html, button, div, styled, text)
 import Html.Styled.Attributes as HA exposing (attribute, autofocus, id, style)
 import Html.Styled.Events exposing (onClick)
+import HtmlX
 import Log
 import Styles exposing (..)
 import Task
@@ -182,12 +183,7 @@ childContent popperDomId child =
 
 view : (Msg -> msg) -> Model -> Html msg
 view toMsg =
-    htmlWhen .open (viewPopup toMsg)
-
-
-htmlWhen : (a -> Bool) -> (a -> Html msg) -> a -> Html msg
-htmlWhen pred objToHtml =
-    ifElse pred objToHtml (always noHtml)
+    HtmlX.when .open (viewPopup toMsg)
 
 
 viewPopup : (Msg -> msg) -> Model -> Html msg
