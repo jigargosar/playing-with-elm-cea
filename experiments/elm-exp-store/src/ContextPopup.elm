@@ -65,7 +65,7 @@ type Msg
     | ToggleOpenFor ContextId
     | DocumentFocusChanged Bool
     | PopupFocusChanged Bool
-    | DebouncedClose
+    | DebouncedClose ContextId
     | EmitIfBounceCount Int (Maybe Msg)
     | PopperStylesChanged PopperStyles
     | PopperStylesSet PopperStyles
@@ -131,16 +131,15 @@ update config message =
         ToggleOpenFor cid ->
             andMapIfElse (isOpenForContextId cid)
                 closeAndDestroyPopper
-                (closeAndDestroyPopper
-                    >> mapModel (setOpenFor cid)
+                (mapModel (setOpenFor cid)
                     >> addEffect attachPopperCmd
                 )
 
         EmitIfBounceCount count maybeMsg ->
             Bouncer.emitIfBounceCount bouncerConfig count maybeMsg
 
-        DebouncedClose ->
-            closeAndDestroyPopper
+        DebouncedClose cid ->
+            andMapWhen (.cid >> eqs cid) closeAndDestroyPopper
 
         DocumentFocusChanged hasFocus ->
             andThen (Bouncer.cancel bouncerConfig)
@@ -150,7 +149,7 @@ update config message =
                 andThen (Bouncer.cancel bouncerConfig)
 
             else
-                andThen (Bouncer.bounce bouncerConfig DebouncedClose)
+                andThen (\model -> Bouncer.bounce bouncerConfig (DebouncedClose model.cid) model)
 
         PopperStylesSet popperStyles ->
             let
