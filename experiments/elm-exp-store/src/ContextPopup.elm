@@ -199,7 +199,7 @@ view model =
 
 
 viewPopup : Element -> Model -> Html Msg
-viewPopup element model =
+viewPopup ref model =
     let
         popperDomId =
             getPopperDomId model
@@ -216,8 +216,8 @@ viewPopup element model =
             , pRm 0.5
             , minWidth (rem 10)
             , position absolute
-            , left (px <| element.element.x + element.element.width)
-            , top (px <| min element.element.y (element.viewport.height - 100))
+            , left (px <| ref.element.x + ref.element.width)
+            , top (px <| min ref.element.y (ref.viewport.height - 100))
             ]
 
         rootAttributes =
