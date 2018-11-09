@@ -136,7 +136,7 @@ update config message =
             --                )
             andMapIfElse (isOpenForContextId cid)
                 closeAndDestroyPopper
-                (mapModel (setOpenFor cid))
+                (mapModel (setOpenFor cid) >> autoFocus)
 
         EmitIfBounceCount count maybeMsg ->
             Bouncer.emitIfBounceCount bouncerConfig count maybeMsg
