@@ -13,7 +13,7 @@ port module Port exposing
     , wheel
     )
 
-import DomEvents exposing (DomId)
+import DomX exposing (DomId)
 import Json.Decode as D
 import Json.Encode as E
 

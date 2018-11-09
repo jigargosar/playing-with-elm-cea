@@ -18,7 +18,8 @@ import Browser.Dom
 import ContextStore exposing (ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
-import DomEvents exposing (DomId, FocusResult, onFocusIn, onFocusOut)
+import DomX exposing (DomId, onFocusIn, onFocusOut)
+import Focus exposing (FocusResult)
 import Html.Styled exposing (Html, button, div, styled, text)
 import Html.Styled.Attributes as HA exposing (attribute, autofocus, id, style)
 import Html.Styled.Events exposing (onClick)
@@ -105,7 +106,7 @@ update config message =
 
         autoFocusOnOpenCmd model =
             Cmd.map tagger <|
-                DomEvents.attemptFocusMaybe FocusResult (getMaybeAutoFocusDomId model)
+                Focus.attemptMaybe FocusResult (getMaybeAutoFocusDomId model)
     in
     (case message of
         NoOp ->
