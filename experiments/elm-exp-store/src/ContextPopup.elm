@@ -58,8 +58,7 @@ toggleOpenFor =
 
 
 type Msg
-    = NoOp
-    | ActionClicked Action
+    = ActionClicked Action
     | ToggleOpenFor ContextId
     | PopupFocusChanged Bool
     | DebouncedClose ContextId
@@ -108,9 +107,6 @@ update config message =
                 Focus.attemptMaybe FocusResult (getMaybeAutoFocusDomId model)
     in
     (case message of
-        NoOp ->
-            identity
-
         FocusResult r ->
             addCmd (Log.focusResult "Mode.elm" r)
 
