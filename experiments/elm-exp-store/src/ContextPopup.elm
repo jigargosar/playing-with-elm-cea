@@ -94,6 +94,10 @@ setOpenAndContextId cid model =
     { model | open = True, cid = cid }
 
 
+unwrapMaybeCmd fn =
+    unwrapMaybe Cmd.none fn
+
+
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message =
     let
@@ -104,7 +108,8 @@ update config message =
             { tagger = tagger, emitIfCountMsg = EmitIfBounceCount }
 
         maybeFocusCmd =
-            getMaybeAutoFocusDomId >> Maybe.map (DomEvents.attemptFocus FocusResult >> Cmd.map tagger)
+            getMaybeAutoFocusDomId
+                >> unwrapMaybeCmd (DomEvents.attemptFocus FocusResult >> Cmd.map tagger)
     in
     (case message of
         NoOp ->
@@ -131,7 +136,7 @@ update config message =
 
                     else
                         ( setOpenAndContextId cid model
-                        , maybeFocusCmd model |> Maybe.withDefault Cmd.none
+                        , maybeFocusCmd model
                         )
                 )
 
