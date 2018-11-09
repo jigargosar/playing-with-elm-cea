@@ -1,8 +1,10 @@
-module DomEvents exposing (DomId, domIdDecoder, onClickTargetId, onFocusIn, onFocusOut)
+module DomEvents exposing (DomId, attemptFocus, domIdDecoder, focusTask, onClickTargetId, onFocusIn, onFocusOut)
 
+import Browser.Dom
 import Html.Styled exposing (Attribute)
 import Html.Styled.Events as SE
 import Json.Decode as D exposing (Decoder)
+import Task
 
 
 type alias DomId =
@@ -30,3 +32,12 @@ onClickTargetId toMsg =
 domIdDecoder : Decoder DomId
 domIdDecoder =
     D.at [ "id" ] D.string
+
+
+focusTask domId =
+    Browser.Dom.focus domId
+        |> Task.mapError (\_ -> [ "Focus Error: #", domId, " NotFound" ])
+
+
+attemptFocus resultToMsg domId =
+    Task.attempt resultToMsg <| focusTask domId

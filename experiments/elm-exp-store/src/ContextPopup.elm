@@ -14,6 +14,7 @@ module ContextPopup exposing
 
 import BasicsX exposing (..)
 import Bouncer
+import Browser.Dom
 import ContextStore exposing (ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
@@ -80,7 +81,7 @@ getPopperDomId =
     .cid >> popperId
 
 
-getAutoFocusDomId model =
+getMaybeAutoFocusDomId model =
     actions |> List.head |> Maybe.map (getChildDomId (getPopperDomId model))
 
 
@@ -101,8 +102,13 @@ update config message =
         bouncerConfig =
             { tagger = tagger, emitIfCountMsg = EmitIfBounceCount }
 
-        autoFocus =
-            addTaggedEffect tagger (getAutoFocusDomId >> attemptFocusMaybeDomId NoOp Warn)
+        focus__ : DomId -> Cmd Msg
+        focus__ domId =
+            DomEvents.attemptFocus (unpackResult Warn (\_ -> NoOp)) domId
+
+        tryFocus =
+            getMaybeAutoFocusDomId
+                >> unwrapMaybe Cmd.none focus__
     in
     (case message of
         NoOp ->
@@ -116,9 +122,17 @@ update config message =
                 >> addMsgEffect (.cid >> (\cid -> config.selected cid child))
 
         ToggleOpenFor cid ->
-            andMapIfElse (isOpenForContextId cid)
-                (mapModel setClosed)
-                (mapModel (setOpenAndContextId cid) >> autoFocus)
+            andThen
+                (\model ->
+                    if isOpenForContextId cid model then
+                        pure (setClosed model)
+
+                    else
+                        ( setOpenAndContextId cid model
+                        , tryFocus model
+                            |> Cmd.map tagger
+                        )
+                )
 
         EmitIfBounceCount count maybeMsg ->
             Bouncer.emitIfBounceCount bouncerConfig count maybeMsg
