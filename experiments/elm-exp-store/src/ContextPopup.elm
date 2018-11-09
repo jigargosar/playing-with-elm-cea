@@ -120,10 +120,6 @@ update onAction message =
                 >> withNoOutMsg
 
         ElementResult (Ok element) ->
-            let
-                _ =
-                    Debug.log "element" element
-            in
             mapModel (\model -> { model | refEle = Just element })
                 >> addEffect (getMaybeAutoFocusDomId >> Focus.attemptMaybe FocusResult)
                 >> withNoOutMsg
