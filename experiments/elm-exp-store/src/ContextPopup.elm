@@ -181,7 +181,17 @@ childContent popperDomId child =
 
 
 view : (Msg -> msg) -> Model -> Html msg
-view toMsg model =
+view toMsg =
+    htmlWhen .open (viewPopup toMsg)
+
+
+htmlWhen : (a -> Bool) -> (a -> Html msg) -> a -> Html msg
+htmlWhen pred objToHtml =
+    ifElse pred objToHtml (always noHtml)
+
+
+viewPopup : (Msg -> msg) -> Model -> Html msg
+viewPopup toMsg model =
     let
         popperDomId =
             popperId model.cid
@@ -203,11 +213,6 @@ view toMsg model =
             , borderRadius (rem 0.5)
             , pRm 0.5
             , minWidth (rem 10)
-            , if model.open then
-                Css.batch []
-
-              else
-                Css.batch [ display none ]
             , position absolute
             , bottom (px 0)
             ]
