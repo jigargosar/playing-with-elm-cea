@@ -123,6 +123,45 @@ update config message =
         << pure
 
 
+withNoOutMsg ( m, c ) =
+    ( m, c, Nothing )
+
+
+withOutMsgEffect fn ( m, c ) =
+    ( m, c, Just <| fn m )
+
+
+update3 : (Action -> ContextId -> msg) -> Msg -> Model -> ( Model, Cmd Msg, Maybe msg )
+update3 onAction message =
+    let
+        autoFocusOnOpenEffect model =
+            Focus.attemptMaybe FocusResult (getMaybeAutoFocusDomId model)
+    in
+    (case message of
+        FocusResult r ->
+            addCmd (Log.focusResult "ContextPopup.elm" r)
+                >> withNoOutMsg
+
+        BackdropClicked targetId ->
+            mapWhen (getBackdropDomId >> eqs targetId)
+                (mapModel setClosed)
+                >> withNoOutMsg
+
+        ActionClicked child ->
+            mapModel setClosed
+                >> withOutMsgEffect (.cid >> onAction child)
+
+        ToggleOpenFor cid ->
+            mapIfElse (isOpenForContextId cid)
+                (mapModel setClosed)
+                (mapModel (setOpenAndContextId cid)
+                    >> addEffect autoFocusOnOpenEffect
+                )
+                >> withNoOutMsg
+    )
+        << pure
+
+
 type Action
     = Rename
     | Archive
