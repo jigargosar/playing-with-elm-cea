@@ -103,12 +103,8 @@ update config message =
         bouncerConfig =
             { tagger = tagger, emitIfCountMsg = EmitIfBounceCount }
 
-        focus__ : DomId -> Cmd Msg
-        focus__ domId =
-            DomEvents.attemptFocus FocusResult domId
-
         maybeFocusCmd =
-            getMaybeAutoFocusDomId >> Maybe.map (focus__ >> Cmd.map tagger)
+            getMaybeAutoFocusDomId >> Maybe.map (DomEvents.attemptFocus FocusResult >> Cmd.map tagger)
     in
     (case message of
         NoOp ->
