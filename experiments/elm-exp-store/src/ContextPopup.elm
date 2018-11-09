@@ -217,7 +217,7 @@ viewPopup element model =
             , minWidth (rem 10)
             , position absolute
             , left (px <| element.element.x + element.element.width)
-            , top (px <| element.element.y)
+            , top (px <| min element.element.y (element.viewport.height - 100))
             ]
 
         rootAttributes =
