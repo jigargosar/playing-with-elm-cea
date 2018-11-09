@@ -18,7 +18,7 @@ import Browser.Dom
 import ContextStore exposing (ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
-import DomEvents exposing (DomId, onFocusIn, onFocusOut)
+import DomEvents exposing (DomId, FocusResult, onFocusIn, onFocusOut)
 import Html.Styled exposing (Html, button, div, styled, text)
 import Html.Styled.Attributes as HA exposing (attribute, autofocus, id, style)
 import Html.Styled.Events exposing (onClick)
@@ -64,7 +64,7 @@ type Msg
     | PopupFocusChanged Bool
     | DebouncedClose ContextId
     | EmitIfBounceCount Int (Maybe Msg)
-    | FocusResult (Result DomId DomId)
+    | FocusResult FocusResult
 
 
 subscriptions model =
