@@ -1,4 +1,4 @@
-module DomEvents exposing (DomId, attemptFocus, domIdDecoder, focusTask, onClickTargetId, onFocusIn, onFocusOut)
+module DomEvents exposing (DomId, attemptFocus, domIdDecoder, focus, onClickTargetId, onFocusIn, onFocusOut)
 
 import Browser.Dom
 import Html.Styled exposing (Attribute)
@@ -34,11 +34,11 @@ domIdDecoder =
     D.at [ "id" ] D.string
 
 
-focusTask domId =
+focus domId =
     Browser.Dom.focus domId
         |> Task.mapError (always domId)
         |> Task.map (always domId)
 
 
 attemptFocus resultToMsg domId =
-    Task.attempt resultToMsg <| focusTask domId
+    Task.attempt resultToMsg <| focus domId

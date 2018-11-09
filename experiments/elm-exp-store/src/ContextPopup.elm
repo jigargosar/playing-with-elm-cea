@@ -107,9 +107,13 @@ update config message =
         bouncerConfig =
             { tagger = tagger, emitIfCountMsg = EmitIfBounceCount }
 
-        maybeFocusCmd =
-            getMaybeAutoFocusDomId
-                >> unwrapMaybeCmd (DomEvents.attemptFocus FocusResult >> Cmd.map tagger)
+        autoFocusOnOpenCmd model =
+            case getMaybeAutoFocusDomId model of
+                Nothing ->
+                    Cmd.none
+
+                Just domId ->
+                    DomEvents.focus domId |> Task.attempt FocusResult |> Cmd.map tagger
     in
     (case message of
         NoOp ->
@@ -132,12 +136,18 @@ update config message =
             andThen
                 (\model ->
                     if isOpenForContextId cid model then
-                        pure (setClosed model)
+                        let
+                            newModel =
+                                setClosed model
+                        in
+                        ( newModel, Cmd.none )
 
                     else
-                        ( setOpenAndContextId cid model
-                        , maybeFocusCmd model
-                        )
+                        let
+                            newModel =
+                                setOpenAndContextId cid model
+                        in
+                        ( newModel, autoFocusOnOpenCmd newModel )
                 )
 
         EmitIfBounceCount count maybeMsg ->
