@@ -393,6 +393,8 @@ createSideBarConfig model =
 
         inbox =
             createContextConfig ContextStore.defaultId ContextStore.defaultName
+
+        --                |> \config -> {config| }
     in
     { inbox = inbox
     , contexts = contexts
