@@ -113,7 +113,7 @@ update config message =
                     Cmd.none
 
                 Just domId ->
-                    DomEvents.focus domId |> Task.attempt FocusResult |> Cmd.map tagger
+                    DomEvents.attemptFocus FocusResult domId |> Cmd.map tagger
     in
     (case message of
         NoOp ->
