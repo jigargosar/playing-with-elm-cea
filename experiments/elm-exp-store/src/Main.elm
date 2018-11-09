@@ -355,19 +355,6 @@ viewPage model =
         ]
 
 
-type alias ContextItemViewModel msg =
-    { key : String
-    , id : ContextId
-    , cid : ContextId
-    , name : ContextName
-    , navigateToTodoList : msg
-    , activeTodoCount : Int
-    , isSelected : Bool
-    , moreClicked : msg
-    , moreOpen : Bool
-    }
-
-
 createUserDefinedContextItemViewModel : Model -> List (Sidebar.ContextConfig Msg)
 createUserDefinedContextItemViewModel model =
     getUserDefinedContextList model
@@ -417,8 +404,29 @@ createInboxContextItemViewModel model =
 
 createSideBarConfig : Model -> Sidebar.Config Msg
 createSideBarConfig model =
-    { inbox = createInboxContextItemViewModel model
-    , contexts = createUserDefinedContextItemViewModel model
+    let
+        createContextConfig : ContextId -> ContextName -> Sidebar.ContextConfig Msg
+        createContextConfig id name =
+            { key = id
+            , id = id
+            , cid = id
+            , name = name
+            , navigateToTodoList = SwitchToContextTodoListWithContextId id
+            , activeTodoCount = getActiveTodoListCountForContextId id model
+            , isSelected = isCurrentPageContextTodoListWithContextId id model
+            , moreClicked = contextMoreClicked id
+            , moreOpen = isContextPopupOpenFor id model
+            }
+
+        contexts =
+            getUserDefinedContextList model
+                |> List.map (\c -> createContextConfig c.id c.name)
+
+        inbox =
+            createContextConfig ContextStore.defaultId ContextStore.defaultName
+    in
+    { inbox = inbox
+    , contexts = contexts
     , addContextClicked = startAddingContextMsg
     }
 
