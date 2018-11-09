@@ -455,7 +455,8 @@ liTextButton =
 viewContextItem model moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
     styled listItem
         [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
-        [ class "hide-child"
+        [ id <| ContextPopup.refIdFromCid cid
+        , class "hide-child"
         ]
         [ liTextButton
             [ css [ ttu, rowCY ]
