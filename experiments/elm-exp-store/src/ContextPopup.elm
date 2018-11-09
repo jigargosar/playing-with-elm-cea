@@ -94,10 +94,6 @@ setOpenAndContextId cid model =
     { model | open = True, cid = cid }
 
 
-unwrapMaybeCmd fn =
-    unwrapMaybe Cmd.none fn
-
-
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message =
     let
