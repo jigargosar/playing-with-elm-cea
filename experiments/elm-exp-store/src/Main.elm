@@ -347,7 +347,7 @@ viewPage model =
     in
     div [ class " flex-auto flex flex-row" ]
         [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns " ]
-            [ viewSidebar model
+            [ Sidebar.view <| createSideBarConfig model
             ]
         , div [ id "popper-container", class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
             [ viewPageContent
@@ -417,82 +417,10 @@ createInboxContextItemViewModel model =
 
 createSideBarConfig : Model -> Sidebar.Config Msg
 createSideBarConfig model =
-    { inbox = createInboxContextItemViewModel model, contexts = createUserDefinedContextItemViewModel model }
-
-
-viewSidebar model =
-    let
-        viewContextsItem =
-            styled listItem
-                []
-                []
-                [ sDiv [ fa, fwb ] [] [ text "Contexts" ]
-                , Btn.icon [ onClick startAddingContextMsg ] [ Icons.plus |> Icons.default ]
-                ]
-
-        viewKeyedContextItem style vm =
-            ( vm.key, viewContextItem style vm )
-    in
-    sDiv []
-        [ class "min-h-100 bg-black-05" ]
-        [ node "div" [] <|
-            [ viewKeyedContextItem noStyle
-                (createInboxContextItemViewModel model)
-            ]
-        , viewContextsItem
-        , node "div" [] <|
-            List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) (createUserDefinedContextItemViewModel model)
-        ]
-
-
-listItem =
-    styled div [ fa, rowCY, pRm 0.5 ]
-
-
-liTextButton =
-    styled button
-        [ btnReset
-        , hs
-        , fa
-        , fBody
-        ]
-
-
-viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
-    styled listItem
-        [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
-        [ id <| ContextPopup.refIdFromCid cid
-        , class "hide-child"
-        ]
-        [ liTextButton
-            [ css [ ttu, rowCY ]
-            , onClick navigateToTodoList
-            ]
-            [ div [] [ text <| name ]
-            , sDiv
-                [ plRm 0.1
-                , Css.fontSize (em 0.8)
-                , Css.alignSelf Css.flexEnd
-                , fwb
-                , fgGray
-                ]
-                []
-                [ text <| String.fromInt activeTodoCount ]
-            ]
-        , Btn.sIcon
-            [ fgGray
-            , focus [ opacity (int 1) ]
-            ]
-            [ class "child"
-            , if moreOpen then
-                style "opacity" "1"
-
-              else
-                style "" ""
-            , onClick moreClicked
-            ]
-            [ Icons.moreHDef ]
-        ]
+    { inbox = createInboxContextItemViewModel model
+    , contexts = createUserDefinedContextItemViewModel model
+    , addContextClicked = startAddingContextMsg
+    }
 
 
 
