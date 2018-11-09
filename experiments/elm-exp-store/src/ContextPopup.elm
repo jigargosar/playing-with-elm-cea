@@ -111,7 +111,7 @@ update config message =
         closeAndDestroyPopper =
             andMapWhen .open
                 (mapModel (\model -> { model | open = False })
-                    >> addEffect (\{ cid } -> Port.destroyPopper ( refId cid, popperId cid ))
+                 --                    >> addEffect (\{ cid } -> Port.destroyPopper ( refId cid, popperId cid ))
                 )
 
         autoFocus =
@@ -129,11 +129,14 @@ update config message =
                 >> addMsgEffect (.cid >> (\cid -> config.selected cid child))
 
         ToggleOpenFor cid ->
+            --            andMapIfElse (isOpenForContextId cid)
+            --                closeAndDestroyPopper
+            --                (mapModel (setOpenFor cid)
+            --                    >> addEffect attachPopperCmd
+            --                )
             andMapIfElse (isOpenForContextId cid)
                 closeAndDestroyPopper
-                (mapModel (setOpenFor cid)
-                    >> addEffect attachPopperCmd
-                )
+                (mapModel (setOpenFor cid))
 
         EmitIfBounceCount count maybeMsg ->
             Bouncer.emitIfBounceCount bouncerConfig count maybeMsg
@@ -142,7 +145,8 @@ update config message =
             andMapWhen (.cid >> eqs cid) closeAndDestroyPopper
 
         DocumentFocusChanged hasFocus ->
-            andThen (Bouncer.cancel bouncerConfig)
+            --            andThen (Bouncer.cancel bouncerConfig)
+            identity
 
         PopupFocusChanged hasFocus ->
             if hasFocus then
@@ -152,15 +156,17 @@ update config message =
                 andThen (\model -> Bouncer.bounce bouncerConfig (DebouncedClose model.cid) model)
 
         PopperStylesSet popperStyles ->
-            let
-                _ =
-                    Debug.log "PopperStylesSet" popperStyles
-            in
-            mapModel (\model -> { model | popperStyles = popperStyles })
-                >> autoFocus
+            --            let
+            --                _ =
+            --                    Debug.log "PopperStylesSet" popperStyles
+            --            in
+            --            mapModel (\model -> { model | popperStyles = popperStyles })
+            --                >> autoFocus
+            identity
 
         PopperStylesChanged popperStyles ->
-            mapModel (\model -> { model | popperStyles = popperStyles })
+            --            mapModel (\model -> { model | popperStyles = popperStyles })
+            identity
     )
         << pure
 
@@ -232,15 +238,12 @@ view toMsg model =
             , pRm 0.5
             , minWidth (rem 10)
             , if model.open then
-                Css.batch [ opacity (int 1), transitionFadeIn ]
+                Css.batch [ display block ]
 
               else
-                Css.batch
-                    [ opacity (int 0)
-                    , transitionFadeIn
-                    , left (rem -100)
-                    ]
-            , position absolute
+                Css.batch [ display none ]
+
+            --            , position absolute
             ]
 
         rootAttributes =
@@ -248,13 +251,6 @@ view toMsg model =
             , onFocusOut <| PopupFocusChanged False
             , onFocusIn <| PopupFocusChanged True
             ]
-                ++ (if model.open then
-                        List.map (\( n, v ) -> attribute n v) model.popperStyles.attributes
-                            ++ List.map (\( n, v ) -> style n v) model.popperStyles.styles
-
-                    else
-                        []
-                   )
     in
     sDiv rootStyles
         (wrapAttrs rootAttributes)
