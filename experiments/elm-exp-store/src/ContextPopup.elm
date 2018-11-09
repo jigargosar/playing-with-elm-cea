@@ -31,7 +31,6 @@ import UpdateReturn exposing (..)
 
 type alias Model =
     { open : Bool
-    , bounceCount : Int
     , cid : ContextId
     }
 
@@ -39,7 +38,6 @@ type alias Model =
 init : ContextId -> Model
 init cid =
     { open = False
-    , bounceCount = 0
     , cid = cid
     }
 
@@ -59,9 +57,6 @@ toggleOpenFor =
 type Msg
     = ActionClicked Action
     | ToggleOpenFor ContextId
-    | PopupFocusChanged Bool
-    | DebouncedClose ContextId
-    | EmitIfBounceCount Int (Maybe Msg)
     | FocusResult FocusResult
 
 
@@ -98,9 +93,6 @@ update config message =
         tagger =
             config.toMsg
 
-        bouncerConfig =
-            { tagger = tagger, emitIfCountMsg = EmitIfBounceCount }
-
         autoFocusOnOpenCmd model =
             Cmd.map tagger <|
                 Focus.attemptMaybe FocusResult (getMaybeAutoFocusDomId model)
@@ -130,23 +122,6 @@ update config message =
                         in
                         ( newModel, autoFocusOnOpenCmd newModel )
                 )
-
-        EmitIfBounceCount count maybeMsg ->
-            andMapWhen (.bounceCount >> eqs count)
-                (maybeAddTaggedMsg tagger maybeMsg
-                    >> mapModel (\model -> { model | bounceCount = 0 })
-                )
-
-        DebouncedClose cid ->
-            andMapWhen (.cid >> eqs cid) (mapModel setClosed)
-
-        PopupFocusChanged hasFocus ->
-            andThen <|
-                if hasFocus then
-                    bounceMaybeMsg bouncerConfig Nothing
-
-                else
-                    \model -> bounceMaybeMsg bouncerConfig (Just <| DebouncedClose model.cid) model
     )
         << pure
 
@@ -239,8 +214,6 @@ view toMsg model =
 
         rootAttributes =
             [ id popperDomId
-            , onFocusOut <| PopupFocusChanged False
-            , onFocusIn <| PopupFocusChanged True
             ]
     in
     sDiv rootStyles
