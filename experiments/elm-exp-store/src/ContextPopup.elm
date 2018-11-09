@@ -190,26 +190,20 @@ childContent popperDomId child =
     ]
 
 
-view : (Msg -> msg) -> Model -> Html msg
-view toMsg =
-    HtmlX.when .open (viewPopup toMsg)
+view : Model -> Html Msg
+view =
+    HtmlX.when .open viewPopup
 
 
-viewPopup : (Msg -> msg) -> Model -> Html msg
-viewPopup toMsg model =
+viewPopup : Model -> Html Msg
+viewPopup model =
     let
         popperDomId =
             getPopperDomId model
 
-        attrToMsg =
-            HA.map toMsg
-
-        wrapAttrs =
-            List.map attrToMsg
-
         viewChild child =
             div
-                (wrapAttrs [ onClick <| ActionClicked child ])
+                [ onClick <| ActionClicked child ]
                 (childContent popperDomId child)
 
         rootStyles =
@@ -226,10 +220,10 @@ viewPopup toMsg model =
 
         viewModalContent =
             sDiv rootStyles
-                (wrapAttrs rootAttributes)
+                rootAttributes
                 (List.map viewChild actions)
 
         backdropAttrs =
             [ id <| getBackdropDomId model, onClickTargetId BackdropClicked ]
     in
-    UI.backdrop (wrapAttrs backdropAttrs) [ viewModalContent ]
+    UI.backdrop backdropAttrs [ viewModalContent ]
