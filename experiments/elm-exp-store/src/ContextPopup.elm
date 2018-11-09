@@ -97,7 +97,7 @@ update config message =
         tagger =
             config.toMsg
 
-        autoFocusOnOpenCmd model =
+        autoFocusOnOpenEffect model =
             Cmd.map tagger <|
                 Focus.attemptMaybe FocusResult (getMaybeAutoFocusDomId model)
     in
@@ -114,21 +114,10 @@ update config message =
                 >> addMsgEffect (.cid >> (\cid -> config.selected cid child))
 
         ToggleOpenFor cid ->
-            andThen
-                (\model ->
-                    if isOpenForContextId cid model then
-                        let
-                            newModel =
-                                setClosed model
-                        in
-                        ( newModel, Cmd.none )
-
-                    else
-                        let
-                            newModel =
-                                setOpenAndContextId cid model
-                        in
-                        ( newModel, autoFocusOnOpenCmd newModel )
+            andMapIfElse (isOpenForContextId cid)
+                (mapModel setClosed)
+                (mapModel (setOpenAndContextId cid)
+                    >> addEffect autoFocusOnOpenEffect
                 )
     )
         << pure
