@@ -33,7 +33,7 @@ module UpdateReturn exposing
 
     , updateSub
     , withNoOutMsg
-    , withOutMsgEffect
+    , withOutMsg
     )
 
 import BasicsX exposing (unwrapMaybe)
@@ -141,7 +141,7 @@ withNoOutMsg ( m, c ) =
     ( m, c, Nothing )
 
 
-withOutMsgEffect fn ( m, c ) =
+withOutMsg fn ( m, c ) =
     ( m, c, Just <| fn m )
 
 

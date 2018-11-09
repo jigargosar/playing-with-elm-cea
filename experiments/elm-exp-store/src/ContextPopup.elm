@@ -105,7 +105,7 @@ update onAction message =
 
         ActionClicked child ->
             mapModel setClosed
-                >> withOutMsgEffect (.cid >> onAction child)
+                >> withOutMsg (.cid >> onAction child)
 
         ToggleOpenFor cid ->
             mapIfElse (isOpenForContextId cid)
