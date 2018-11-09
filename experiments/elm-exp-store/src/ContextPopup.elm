@@ -12,7 +12,7 @@ module ContextPopup exposing
     )
 
 import BasicsX exposing (..)
-import Browser.Dom
+import Browser.Dom exposing (Element)
 import ContextStore exposing (ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
@@ -32,6 +32,7 @@ import UpdateReturn exposing (..)
 type alias Model =
     { open : Bool
     , cid : ContextId
+    , refEle : Maybe Element
     }
 
 
@@ -39,6 +40,7 @@ init : ContextId -> Model
 init cid =
     { open = False
     , cid = cid
+    , refEle = Nothing
     }
 
 
@@ -58,6 +60,7 @@ type Msg
     = ActionClicked Action
     | ToggleOpenFor ContextId
     | FocusResult FocusResult
+    | ElementResult ElementResult
     | BackdropClicked DomId
 
 
@@ -96,12 +99,33 @@ setOpenAndContextId cid model =
     { model | open = True, cid = cid }
 
 
+type alias ElementResult =
+    Result Browser.Dom.Error Element
+
+
+attemptGetElement : (ElementResult -> msg) -> DomId -> Cmd msg
+attemptGetElement resultToMsg domId =
+    Browser.Dom.getElement domId
+        |> Task.attempt resultToMsg
+
+
 update : (Action -> ContextId -> msg) -> Msg -> Model -> ( Model, Cmd Msg, Maybe msg )
 update onAction message =
     (case message of
         FocusResult r ->
             addCmd (Log.focusResult "ContextPopup.elm" r)
                 >> withNoOutMsg
+
+        ElementResult (Err _) ->
+            addCmd (Log.warn "ContextPopup.elm" [ "Element Not Found" ])
+                >> withNoOutMsg
+
+        ElementResult (Ok element) ->
+            let
+                _ =
+                    Debug.log "element" element
+            in
+            mapModel (\model -> { model | refEle = Just element }) >> withNoOutMsg
 
         BackdropClicked targetId ->
             mapWhen (getBackdropDomId >> eqs targetId)
@@ -117,6 +141,7 @@ update onAction message =
                 (mapModel setClosed)
                 (mapModel (setOpenAndContextId cid)
                     >> addEffect (getMaybeAutoFocusDomId >> Focus.attemptMaybe FocusResult)
+                    >> addCmd (attemptGetElement ElementResult (refIdFromCid cid))
                 )
                 >> withNoOutMsg
     )
@@ -159,12 +184,21 @@ childContent popperDomId child =
 
 
 view : Model -> Html Msg
-view =
-    HtmlX.when .open viewPopup
+view model =
+    case ( model.open, model.refEle ) of
+        ( True, Just element ) ->
+            viewPopup element model
+
+        _ ->
+            noHtml
 
 
-viewPopup : Model -> Html Msg
-viewPopup model =
+
+--    HtmlX.when .open viewPopup
+
+
+viewPopup : Element -> Model -> Html Msg
+viewPopup element model =
     let
         popperDomId =
             getPopperDomId model
