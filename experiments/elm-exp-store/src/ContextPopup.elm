@@ -91,14 +91,6 @@ getMaybeAutoFocusDomId model =
     actions |> List.head |> Maybe.map (getChildDomId (getPopperDomId model))
 
 
-setClosed =
-    \model -> { model | open = False, refEle = Nothing }
-
-
-setOpenAndContextId cid model =
-    { model | open = True, cid = cid, refEle = Nothing }
-
-
 type alias ElementResult =
     Result Browser.Dom.Error Element
 
@@ -111,6 +103,13 @@ attemptGetElement resultToMsg domId =
 
 update : (Action -> ContextId -> msg) -> Msg -> Model -> ( Model, Cmd Msg, Maybe msg )
 update onAction message =
+    let
+        setClosed =
+            \model -> { model | open = False, refEle = Nothing }
+
+        setOpenAndContextId cid model =
+            { model | open = True, cid = cid, refEle = Nothing }
+    in
     (case message of
         FocusResult r ->
             addCmd (Log.focusResult "ContextPopup.elm" r)
