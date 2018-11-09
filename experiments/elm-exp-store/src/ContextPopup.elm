@@ -4,8 +4,6 @@ module ContextPopup exposing
     , Msg
     , init
     , isOpenForContextId
-    , popperId
-    , refId
     , subscriptions
     , toggleOpenFor
     , update
@@ -147,10 +145,6 @@ actions =
 
 popperId cid =
     "context-more-menu-popper-" ++ cid
-
-
-refId cid =
-    "context-more-menu-reference-" ++ cid
 
 
 getChildText child =
