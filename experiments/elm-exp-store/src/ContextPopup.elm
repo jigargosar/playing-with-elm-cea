@@ -129,8 +129,7 @@ update config message =
 
                     else
                         ( setOpenAndContextId cid model
-                        , tryFocus model
-                            |> Cmd.map tagger
+                        , tryFocus model |> Cmd.map tagger
                         )
                 )
 
