@@ -407,12 +407,17 @@ createInboxContextItemViewModel model =
     , id = id
     , cid = id
     , name = name
-    , navigateToTodoList = navigateToInbox
+    , navigateToTodoList = SwitchToContextTodoListWithContextId id
     , activeTodoCount = getActiveTodoListCountForContextId id model
     , isSelected = isCurrentPageContextTodoListWithContextId id model
     , moreClicked = contextMoreClicked id
     , moreOpen = isContextPopupOpenFor id model
     }
+
+
+createSideBarConfig : Model -> Sidebar.Config Msg
+createSideBarConfig model =
+    { inbox = createInboxContextItemViewModel model, contexts = createUserDefinedContextItemViewModel model }
 
 
 viewSidebar model =
