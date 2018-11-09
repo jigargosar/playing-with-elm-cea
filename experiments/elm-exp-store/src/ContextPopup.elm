@@ -136,17 +136,6 @@ update config message =
         << pure
 
 
-bounceMaybeMsg { tagger, emitIfCountMsg } maybeMsg model =
-    let
-        bounceCount =
-            model.bounceCount + 1
-    in
-    ( { model | bounceCount = bounceCount }
-    , afterTimeout 0 (emitIfCountMsg bounceCount maybeMsg)
-    )
-        |> mapCmd tagger
-
-
 type Action
     = Rename
     | Archive
