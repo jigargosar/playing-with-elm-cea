@@ -44,6 +44,7 @@ type Layer
     | AddContextForm ContextName
     | EditTodoForm TodoId TodoContent
     | EditContextForm ContextId ContextName
+    | ContextPopup ContextId ContextPopup.Model
 
 
 type alias Model =
@@ -323,9 +324,24 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ viewAppBar
         , viewPage model
-        , ContextPopup.view model.contextPopup |> Html.map UpdateContextPopup
+        , viewLayers model
+
+        --        , ContextPopup.view model.contextPopup |> Html.map UpdateContextPopup
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         ]
+
+
+viewLayers model =
+    List.head model.layers |> maybeHtml (viewLayer model)
+
+
+viewLayer model layer =
+    case layer of
+        ContextPopup cid contextPopup ->
+            ContextPopup.view model.contextPopup |> Html.map UpdateContextPopup
+
+        _ ->
+            noHtml
 
 
 viewAppBar =
