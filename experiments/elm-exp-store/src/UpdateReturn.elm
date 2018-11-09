@@ -10,8 +10,6 @@ module UpdateReturn exposing
     , addTaggedEffect
     , addTaggedMsg
     , afterTimeout
-    , andMapIfElse
-    , andMapWhen
     , andThen
     , andThen3
     , andThenWhen
@@ -19,7 +17,9 @@ module UpdateReturn exposing
     , foldlOutMsgList
     , generate3
     , mapCmd
+    , mapIfElse
     , mapModel
+    , mapWhen
     , maybeAddTaggedMsg
     , msgToCmd
     , nextTick
@@ -54,7 +54,7 @@ andThenWhen modelPred fn ( m, c ) =
         ( m, c )
 
 
-andMapWhen modelPred fn ( m, c ) =
+mapWhen modelPred fn ( m, c ) =
     if modelPred m then
         fn ( m, c )
 
@@ -62,7 +62,7 @@ andMapWhen modelPred fn ( m, c ) =
         ( m, c )
 
 
-andMapIfElse modelPred tFn fFn ( m, c ) =
+mapIfElse modelPred tFn fFn ( m, c ) =
     if modelPred m then
         tFn ( m, c )
 

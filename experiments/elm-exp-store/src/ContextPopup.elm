@@ -106,7 +106,7 @@ update config message =
             addCmd (Log.focusResult "ContextPopup.elm" r)
 
         BackdropClicked targetId ->
-            andMapWhen (getBackdropDomId >> eqs targetId)
+            mapWhen (getBackdropDomId >> eqs targetId)
                 (mapModel setClosed)
 
         ActionClicked child ->
@@ -114,7 +114,7 @@ update config message =
                 >> addMsgEffect (.cid >> (\cid -> config.selected cid child))
 
         ToggleOpenFor cid ->
-            andMapIfElse (isOpenForContextId cid)
+            mapIfElse (isOpenForContextId cid)
                 (mapModel setClosed)
                 (mapModel (setOpenAndContextId cid)
                     >> addEffect autoFocusOnOpenEffect
