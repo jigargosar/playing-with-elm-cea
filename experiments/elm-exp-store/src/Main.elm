@@ -23,6 +23,7 @@ import Mode exposing (Mode)
 import Port
 import Random
 import Set exposing (Set)
+import Sidebar
 import Styles exposing (..)
 import Svg.Attributes
 import Svg.Styled exposing (svg)
@@ -367,7 +368,7 @@ type alias ContextItemViewModel msg =
     }
 
 
-createUserDefinedContextItemViewModel : Model -> List (ContextItemViewModel Msg)
+createUserDefinedContextItemViewModel : Model -> List (Sidebar.ContextConfig Msg)
 createUserDefinedContextItemViewModel model =
     getUserDefinedContextList model
         |> List.map
@@ -393,7 +394,7 @@ createUserDefinedContextItemViewModel model =
             )
 
 
-createInboxContextItemViewModel : Model -> ContextItemViewModel Msg
+createInboxContextItemViewModel : Model -> Sidebar.ContextConfig Msg
 createInboxContextItemViewModel model =
     let
         id =
