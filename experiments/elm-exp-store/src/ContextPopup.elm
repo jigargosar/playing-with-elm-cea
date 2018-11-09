@@ -17,7 +17,7 @@ import Browser.Dom
 import ContextStore exposing (ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
-import DomX exposing (DomId, onFocusIn, onFocusOut)
+import DomX exposing (DomId, onClickTargetId, onFocusIn, onFocusOut)
 import Focus exposing (FocusResult)
 import Html.Styled exposing (Html, button, div, styled, text)
 import Html.Styled.Attributes as HA exposing (attribute, autofocus, id, style)
@@ -59,6 +59,7 @@ type Msg
     = ActionClicked Action
     | ToggleOpenFor ContextId
     | FocusResult FocusResult
+    | BackdropClicked DomId
 
 
 subscriptions model =
@@ -74,6 +75,10 @@ type alias Config msg =
 
 getPopperDomId =
     .cid >> popperId
+
+
+getBackdropDomId =
+    getPopperDomId >> (++) "-backdrop"
 
 
 getMaybeAutoFocusDomId model =
@@ -101,6 +106,10 @@ update config message =
     (case message of
         FocusResult r ->
             addCmd (Log.focusResult "ContextPopup.elm" r)
+
+        BackdropClicked targetId ->
+            andMapWhen (getBackdropDomId >> eqs targetId)
+                (mapModel setClosed)
 
         ActionClicked child ->
             mapModel setClosed
@@ -190,7 +199,7 @@ viewPopup : (Msg -> msg) -> Model -> Html msg
 viewPopup toMsg model =
     let
         popperDomId =
-            popperId model.cid
+            getPopperDomId model
 
         attrToMsg =
             HA.map toMsg
@@ -209,14 +218,21 @@ viewPopup toMsg model =
             , borderRadius (rem 0.5)
             , pRm 0.5
             , minWidth (rem 10)
-            , position absolute
-            , bottom (px 0)
+
+            --            , position absolute
+            --            , bottom (px 0)
             ]
 
         rootAttributes =
             [ id popperDomId
             ]
+
+        viewModalContent =
+            sDiv rootStyles
+                (wrapAttrs rootAttributes)
+                (List.map viewChild actions)
+
+        backdropAttrs =
+            [ id <| getBackdropDomId model, onClickTargetId BackdropClicked ]
     in
-    sDiv rootStyles
-        (wrapAttrs rootAttributes)
-        (List.map viewChild actions)
+    UI.backdrop (wrapAttrs backdropAttrs) [ viewModalContent ]
