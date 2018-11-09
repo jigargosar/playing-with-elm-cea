@@ -1,4 +1,4 @@
-module Bouncer exposing (bounce, cancel, emitIfBounceCount)
+module Bouncer exposing (bounce, bounceMaybeMsg, cancel)
 
 import BasicsX exposing (eqs, unwrapMaybe)
 import Task
@@ -23,10 +23,3 @@ bounceMaybeMsg { tagger, emitIfCountMsg } maybeMsg =
         , afterTimeout 0 (emitIfCountMsg bounceCount maybeMsg)
         )
             |> mapCmd tagger
-
-
-emitIfBounceCount { tagger } count maybeMsg =
-    andMapWhen (.bounceCount >> eqs count)
-        (maybeAddTaggedMsg tagger maybeMsg
-            >> mapModel (\model -> { model | bounceCount = 0 })
-        )

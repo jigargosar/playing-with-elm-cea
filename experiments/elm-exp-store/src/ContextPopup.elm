@@ -133,7 +133,10 @@ update config message =
                 )
 
         EmitIfBounceCount count maybeMsg ->
-            Bouncer.emitIfBounceCount bouncerConfig count maybeMsg
+            andMapWhen (.bounceCount >> eqs count)
+                (maybeAddTaggedMsg tagger maybeMsg
+                    >> mapModel (\model -> { model | bounceCount = 0 })
+                )
 
         DebouncedClose cid ->
             andMapWhen (.cid >> eqs cid) (mapModel setClosed)
@@ -141,10 +144,10 @@ update config message =
         PopupFocusChanged hasFocus ->
             andThen <|
                 if hasFocus then
-                    Bouncer.cancel bouncerConfig
+                    Bouncer.bounceMaybeMsg bouncerConfig Nothing
 
                 else
-                    \model -> Bouncer.bounce bouncerConfig (DebouncedClose model.cid) model
+                    \model -> Bouncer.bounceMaybeMsg bouncerConfig (Just <| DebouncedClose model.cid) model
     )
         << pure
 
