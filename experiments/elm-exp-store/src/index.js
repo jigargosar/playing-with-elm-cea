@@ -3,10 +3,9 @@ import './main.css'
 // noinspection ES6CheckImport
 import { Elm } from './Main.elm'
 import registerServiceWorker from './registerServiceWorker'
-import { compose, curry, forEachObjIndexed, isNil, map, partial, pathOr, pick, tap, toPairs } from 'ramda'
+import { compose, curry, forEachObjIndexed, identity, isNil, partial, pathOr, pick, tap } from 'ramda'
 
 import flyd from 'flyd'
-import Popper from 'popper.js'
 
 // console.log = (partial(console.log, ['[LogWrapper]']))
 
@@ -106,7 +105,7 @@ const documentHasFocus$ = flyd.map(
 
 flyd.on(
   compose(
-    sendToApp('documentFocusChanged') /*, tapLog('documentFocusChanged')*/,
+    identity // sendToApp('documentFocusChanged') /*, tapLog('documentFocusChanged')*/,
   ),
   documentHasFocus$,
 )
@@ -131,61 +130,61 @@ subscribe(
       storageSet('contexts', contexts)
     },
     // focusSelector,
-    destroyPopper: ([refDomId, popperDomId]) => {
-      console.log('destroyPopper', [refDomId, popperDomId])
-      if (popper && (popper.reference.id === refDomId && popper.popper.id === popperDomId)) {
-        popper.destroy()
-        popper = null
-      }
-    },
-    createPopper: ([refDomId, popperDomId]) => {
-      console.log('createPopper', [refDomId, popperDomId])
-      if (popper) {
-        popper.destroy()
-        popper = null
-      }
-      let showPopper = () => {
-        const refEl = document.getElementById(refDomId)
-        const popEl = document.getElementById(popperDomId)
-        if (!refEl || !popEl) {
-          debugger
-          return
-        }
-        let toStringPairs = compose(toPairs, map(val => `${val}`))
-        popper = new Popper(refEl, popEl, {
-
-          modifiers: {
-            applyStyle: {
-              enabled: false,
-            },
-            preventOverflow: {
-              // boundariesElement: document.getElementById('popper-container'),
-              boundariesElement: 'viewport',
-            },
-          },
-
-          // flip: {
-          // enabled: false,
-          // behavior: ['right']
-          // },
-          // placement: 'right-start',
-          // positionFixed:true,
-          onCreate(data) {
-
-            let portData = { styles: toStringPairs(data.styles), attributes: toStringPairs(data.attributes) }
-            console.log(`onCreate data`, data, portData)
-            sendToApp('popperStylesSet', portData)
-          },
-          onUpdate(data) {
-            let portData = { styles: toStringPairs(data.styles), attributes: toStringPairs(data.attributes) }
-            // console.log(`onUpdate data`, data, portData)
-            sendToApp('popperStylesChanged', portData)
-          },
-        })
-      }
-      requestAnimationFrame(showPopper)
-      // showPopper()
-    },
+    // destroyPopper: ([refDomId, popperDomId]) => {
+    //   console.log('destroyPopper', [refDomId, popperDomId])
+    //   if (popper && (popper.reference.id === refDomId && popper.popper.id === popperDomId)) {
+    //     popper.destroy()
+    //     popper = null
+    //   }
+    // },
+    // createPopper: ([refDomId, popperDomId]) => {
+    //   console.log('createPopper', [refDomId, popperDomId])
+    //   if (popper) {
+    //     popper.destroy()
+    //     popper = null
+    //   }
+    //   let showPopper = () => {
+    //     const refEl = document.getElementById(refDomId)
+    //     const popEl = document.getElementById(popperDomId)
+    //     if (!refEl || !popEl) {
+    //       debugger
+    //       return
+    //     }
+    //     let toStringPairs = compose(toPairs, map(val => `${val}`))
+    //     popper = new Popper(refEl, popEl, {
+    //
+    //       modifiers: {
+    //         applyStyle: {
+    //           enabled: false,
+    //         },
+    //         preventOverflow: {
+    //           // boundariesElement: document.getElementById('popper-container'),
+    //           boundariesElement: 'viewport',
+    //         },
+    //       },
+    //
+    //       // flip: {
+    //       // enabled: false,
+    //       // behavior: ['right']
+    //       // },
+    //       // placement: 'right-start',
+    //       // positionFixed:true,
+    //       onCreate(data) {
+    //
+    //         let portData = { styles: toStringPairs(data.styles), attributes: toStringPairs(data.attributes) }
+    //         console.log(`onCreate data`, data, portData)
+    //         sendToApp('popperStylesSet', portData)
+    //       },
+    //       onUpdate(data) {
+    //         let portData = { styles: toStringPairs(data.styles), attributes: toStringPairs(data.attributes) }
+    //         // console.log(`onUpdate data`, data, portData)
+    //         sendToApp('popperStylesChanged', portData)
+    //       },
+    //     })
+    //   }
+    //   requestAnimationFrame(showPopper)
+    //   // showPopper()
+    // },
   },
   app,
 )
