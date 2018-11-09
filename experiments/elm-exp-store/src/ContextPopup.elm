@@ -7,7 +7,6 @@ module ContextPopup exposing
     , subscriptions
     , toggleOpenFor
     , update
-    , update3
     , view
     )
 
@@ -92,38 +91,6 @@ setOpenAndContextId cid model =
     { model | open = True, cid = cid }
 
 
-update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
-update config message =
-    let
-        tagger =
-            config.toMsg
-
-        autoFocusOnOpenEffect model =
-            Cmd.map tagger <|
-                Focus.attemptMaybe FocusResult (getMaybeAutoFocusDomId model)
-    in
-    (case message of
-        FocusResult r ->
-            addCmd (Log.focusResult "ContextPopup.elm" r)
-
-        BackdropClicked targetId ->
-            mapWhen (getBackdropDomId >> eqs targetId)
-                (mapModel setClosed)
-
-        ActionClicked child ->
-            mapModel setClosed
-                >> addMsgEffect (.cid >> config.selected child)
-
-        ToggleOpenFor cid ->
-            mapIfElse (isOpenForContextId cid)
-                (mapModel setClosed)
-                (mapModel (setOpenAndContextId cid)
-                    >> addEffect autoFocusOnOpenEffect
-                )
-    )
-        << pure
-
-
 withNoOutMsg ( m, c ) =
     ( m, c, Nothing )
 
@@ -132,8 +99,8 @@ withOutMsgEffect fn ( m, c ) =
     ( m, c, Just <| fn m )
 
 
-update3 : (Action -> ContextId -> msg) -> Msg -> Model -> ( Model, Cmd Msg, Maybe msg )
-update3 onAction message =
+update : (Action -> ContextId -> msg) -> Msg -> Model -> ( Model, Cmd Msg, Maybe msg )
+update onAction message =
     let
         autoFocusOnOpenEffect model =
             Focus.attemptMaybe FocusResult (getMaybeAutoFocusDomId model)

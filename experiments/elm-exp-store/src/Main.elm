@@ -264,38 +264,19 @@ update message model =
         UpdateContextPopup msg ->
             let
                 onAction : ContextPopup.Action -> ContextId -> Msg
-                onAction =
-                    \action cid ->
-                        case action of
-                            ContextPopup.Rename ->
-                                StartEditingContext cid
+                onAction action cid =
+                    case action of
+                        ContextPopup.Rename ->
+                            StartEditingContext cid
 
-                            ContextPopup.Archive ->
-                                ContextStoreMsg <| ContextStore.archive cid
-
-                config =
-                    { toMsg = UpdateContextPopup
-                    , selected = onAction
-                    }
+                        ContextPopup.Archive ->
+                            ContextStoreMsg <| ContextStore.archive cid
 
                 ( contextPopup, cmd, maybeOnAction ) =
-                    ContextPopup.update3 onAction msg model.contextPopup
-
-                ret =
-                    ( { model | contextPopup = contextPopup }, Cmd.map UpdateContextPopup cmd )
-                        |> unwrapMaybe identity addMsg maybeOnAction
+                    ContextPopup.update onAction msg model.contextPopup
             in
-            ret
-
-
-
---            updateSub
---                (ContextPopup.update config)
---                .contextPopup
---                (\s b -> { b | contextPopup = s })
---                msg
---                model
----- Subscriptions
+            ( { model | contextPopup = contextPopup }, Cmd.map UpdateContextPopup cmd )
+                |> unwrapMaybe identity addMsg maybeOnAction
 
 
 subscriptions : Model -> Sub Msg
