@@ -153,9 +153,9 @@ childContent popperDomId child =
     ]
 
 
-view : Model -> Html Msg
-view =
-    HtmlX.when .open viewPopup
+view : ContextId -> Model -> Html Msg
+view cid =
+    HtmlX.when (isOpenForContextId cid) viewPopup
 
 
 viewPopup : Model -> Html Msg
