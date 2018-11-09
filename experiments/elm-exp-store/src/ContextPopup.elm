@@ -13,7 +13,6 @@ module ContextPopup exposing
     )
 
 import BasicsX exposing (..)
-import Bouncer
 import Browser.Dom
 import ContextStore exposing (ContextId)
 import Css exposing (..)
@@ -144,12 +143,23 @@ update config message =
         PopupFocusChanged hasFocus ->
             andThen <|
                 if hasFocus then
-                    Bouncer.bounceMaybeMsg bouncerConfig Nothing
+                    bounceMaybeMsg bouncerConfig Nothing
 
                 else
-                    \model -> Bouncer.bounceMaybeMsg bouncerConfig (Just <| DebouncedClose model.cid) model
+                    \model -> bounceMaybeMsg bouncerConfig (Just <| DebouncedClose model.cid) model
     )
         << pure
+
+
+bounceMaybeMsg { tagger, emitIfCountMsg } maybeMsg model =
+    let
+        bounceCount =
+            model.bounceCount + 1
+    in
+    ( { model | bounceCount = bounceCount }
+    , afterTimeout 0 (emitIfCountMsg bounceCount maybeMsg)
+    )
+        |> mapCmd tagger
 
 
 type Action
