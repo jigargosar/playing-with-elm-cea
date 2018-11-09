@@ -4,6 +4,7 @@ module ContextPopup exposing
     , Msg
     , init
     , isOpenForContextId
+    , refDomId
     , subscriptions
     , toggleOpenFor
     , update
@@ -77,6 +78,10 @@ getPopperDomId =
 
 getBackdropDomId =
     getPopperDomId >> (++) "-backdrop"
+
+
+refDomId =
+    "context-popup-ref"
 
 
 getMaybeAutoFocusDomId model =
@@ -153,9 +158,9 @@ childContent popperDomId child =
     ]
 
 
-view : ContextId -> Model -> Html Msg
-view cid =
-    HtmlX.when (isOpenForContextId cid) viewPopup
+view : Model -> Html Msg
+view =
+    HtmlX.when .open viewPopup
 
 
 viewPopup : Model -> Html Msg

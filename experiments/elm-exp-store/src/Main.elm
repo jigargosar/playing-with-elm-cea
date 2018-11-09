@@ -322,8 +322,7 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ viewAppBar
         , viewPage model
-
-        --        , ContextPopup.view model.contextPopup |> Html.map UpdateContextPopup
+        , ContextPopup.view model.contextPopup |> Html.map UpdateContextPopup
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         ]
 
@@ -454,41 +453,38 @@ liTextButton =
 
 
 viewContextItem model moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
-    div []
-        [ styled listItem
-            [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
-            [ class "hide-child"
+    styled listItem
+        [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
+        [ class "hide-child"
+        ]
+        [ liTextButton
+            [ css [ ttu, rowCY ]
+            , onClick navigateToTodoList
             ]
-            [ liTextButton
-                [ css [ ttu, rowCY ]
-                , onClick navigateToTodoList
+            [ div [] [ text <| name ]
+            , sDiv
+                [ plRm 0.1
+                , Css.fontSize (em 0.8)
+                , Css.alignSelf Css.flexEnd
+                , fwb
+                , fgGray
                 ]
-                [ div [] [ text <| name ]
-                , sDiv
-                    [ plRm 0.1
-                    , Css.fontSize (em 0.8)
-                    , Css.alignSelf Css.flexEnd
-                    , fwb
-                    , fgGray
-                    ]
-                    []
-                    [ text <| String.fromInt activeTodoCount ]
-                ]
-            , Btn.sIcon
-                [ fgGray
-                , focus [ opacity (int 1) ]
-                ]
-                [ class "child"
-                , if moreOpen then
-                    style "opacity" "1"
+                []
+                [ text <| String.fromInt activeTodoCount ]
+            ]
+        , Btn.sIcon
+            [ fgGray
+            , focus [ opacity (int 1) ]
+            ]
+            [ class "child"
+            , if moreOpen then
+                style "opacity" "1"
 
-                  else
-                    style "" ""
-                , onClick moreClicked
-                ]
-                [ Icons.moreHDef ]
+              else
+                style "" ""
+            , onClick moreClicked
             ]
-        , ContextPopup.view cid model.contextPopup |> Html.map UpdateContextPopup
+            [ Icons.moreHDef ]
         ]
 
 
