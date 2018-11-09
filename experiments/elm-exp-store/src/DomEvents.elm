@@ -36,7 +36,8 @@ domIdDecoder =
 
 focusTask domId =
     Browser.Dom.focus domId
-        |> Task.mapError (\_ -> [ "Focus Error: #", domId, " NotFound" ])
+        |> Task.mapError (always domId)
+        |> Task.map (always domId)
 
 
 attemptFocus resultToMsg domId =

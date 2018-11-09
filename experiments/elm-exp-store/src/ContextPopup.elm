@@ -64,6 +64,7 @@ type Msg
     | PopupFocusChanged Bool
     | DebouncedClose ContextId
     | EmitIfBounceCount Int (Maybe Msg)
+    | FocusResult (Result DomId DomId)
 
 
 subscriptions model =
@@ -104,14 +105,19 @@ update config message =
 
         focus__ : DomId -> Cmd Msg
         focus__ domId =
-            DomEvents.attemptFocus (unpackResult Warn (\_ -> NoOp)) domId
+            DomEvents.attemptFocus FocusResult domId
 
-        tryFocus =
-            getMaybeAutoFocusDomId
-                >> unwrapMaybe Cmd.none focus__
+        maybeFocusCmd =
+            getMaybeAutoFocusDomId >> Maybe.map (focus__ >> Cmd.map tagger)
     in
     (case message of
         NoOp ->
+            identity
+
+        FocusResult (Ok domId) ->
+            identity
+
+        FocusResult (Err domId) ->
             identity
 
         Warn logLine ->
@@ -129,7 +135,7 @@ update config message =
 
                     else
                         ( setOpenAndContextId cid model
-                        , tryFocus model |> Cmd.map tagger
+                        , maybeFocusCmd model |> Maybe.withDefault Cmd.none
                         )
                 )
 
