@@ -1,5 +1,6 @@
-module Log exposing (Line, Result, resultWithDefault, warn)
+module Log exposing (Line, Result, focusResult, resultWithDefault, warn)
 
+import Focus exposing (FocusResult)
 import Port
 
 
@@ -16,6 +17,16 @@ warn moduleName line =
     ([ moduleName, ": " ] ++ line |> String.join "")
         |> List.singleton
         |> Port.warn
+
+
+focusResult : String -> FocusResult -> Cmd msg
+focusResult moduleName r =
+    case r of
+        Ok domId ->
+            Cmd.none
+
+        Err domId ->
+            warn moduleName [ "Focus Failed For: ", domId ]
 
 
 resultWithDefault : a -> Result a -> ( a, Cmd msg )

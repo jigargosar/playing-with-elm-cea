@@ -112,11 +112,8 @@ update config message =
         NoOp ->
             identity
 
-        FocusResult (Ok domId) ->
-            identity
-
-        FocusResult (Err domId) ->
-            identity
+        FocusResult r ->
+            addCmd (Log.focusResult "Mode.elm" r)
 
         Warn logLine ->
             addCmd (Log.warn "Mode.elm" logLine)
