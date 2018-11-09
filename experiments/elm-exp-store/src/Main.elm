@@ -330,13 +330,9 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ viewAppBar
         , viewPage model
-        , viewPopup model
+        , ContextPopup.view UpdateContextPopup model.contextPopup
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         ]
-
-
-viewPopup model =
-    ContextPopup.view UpdateContextPopup model.contextPopup
 
 
 viewAppBar =

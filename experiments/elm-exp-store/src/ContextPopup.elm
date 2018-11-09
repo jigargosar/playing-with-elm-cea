@@ -238,12 +238,12 @@ view toMsg model =
             , pRm 0.5
             , minWidth (rem 10)
             , if model.open then
-                Css.batch [ display block ]
+                Css.batch []
 
               else
                 Css.batch [ display none ]
-
-            --            , position absolute
+            , position absolute
+            , bottom (px 0)
             ]
 
         rootAttributes =
