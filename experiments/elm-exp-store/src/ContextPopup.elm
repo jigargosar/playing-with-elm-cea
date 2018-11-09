@@ -22,7 +22,6 @@ import Html.Styled exposing (Html, button, div, styled, text)
 import Html.Styled.Attributes as HA exposing (attribute, autofocus, id, style)
 import Html.Styled.Events exposing (onClick)
 import Log
-import Port exposing (PopperStyles)
 import Styles exposing (..)
 import Task
 import UI exposing (..)
@@ -33,7 +32,6 @@ type alias Model =
     { open : Bool
     , bounceCount : Int
     , cid : ContextId
-    , popperStyles : PopperStyles
     }
 
 
@@ -42,7 +40,6 @@ init cid =
     { open = False
     , bounceCount = 0
     , cid = cid
-    , popperStyles = { styles = [], attributes = [] }
     }
 
 
@@ -63,20 +60,14 @@ type Msg
     | Warn Log.Line
     | ActionClicked Action
     | ToggleOpenFor ContextId
-    | DocumentFocusChanged Bool
     | PopupFocusChanged Bool
     | DebouncedClose ContextId
     | EmitIfBounceCount Int (Maybe Msg)
-    | PopperStylesChanged PopperStyles
-    | PopperStylesSet PopperStyles
 
 
 subscriptions model =
     Sub.batch
-        [ Port.documentFocusChanged DocumentFocusChanged
-        , Port.popperStylesSet PopperStylesSet
-        , Port.popperStylesChanged PopperStylesChanged
-        ]
+        []
 
 
 type alias Config msg =
@@ -93,6 +84,14 @@ getAutoFocusDomId model =
     actions |> List.head |> Maybe.map (getChildDomId (getPopperDomId model))
 
 
+setClosed =
+    \model -> { model | open = False }
+
+
+setOpenAndContextId cid model =
+    { model | open = True, cid = cid }
+
+
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update config message =
     let
@@ -101,18 +100,6 @@ update config message =
 
         bouncerConfig =
             { tagger = tagger, emitIfCountMsg = EmitIfBounceCount }
-
-        setOpenFor cid model =
-            { model | open = True, cid = cid }
-
-        attachPopperCmd { cid } =
-            Port.createPopper ( refId cid, popperId cid )
-
-        closeAndDestroyPopper =
-            andMapWhen .open
-                (mapModel (\model -> { model | open = False })
-                 --                    >> addEffect (\{ cid } -> Port.destroyPopper ( refId cid, popperId cid ))
-                )
 
         autoFocus =
             addTaggedEffect tagger (getAutoFocusDomId >> attemptFocusMaybeDomId NoOp Warn)
@@ -125,48 +112,27 @@ update config message =
             addCmd (Log.warn "Mode.elm" logLine)
 
         ActionClicked child ->
-            closeAndDestroyPopper
+            mapModel setClosed
                 >> addMsgEffect (.cid >> (\cid -> config.selected cid child))
 
         ToggleOpenFor cid ->
-            --            andMapIfElse (isOpenForContextId cid)
-            --                closeAndDestroyPopper
-            --                (mapModel (setOpenFor cid)
-            --                    >> addEffect attachPopperCmd
-            --                )
             andMapIfElse (isOpenForContextId cid)
-                closeAndDestroyPopper
-                (mapModel (setOpenFor cid) >> autoFocus)
+                (mapModel setClosed)
+                (mapModel (setOpenAndContextId cid) >> autoFocus)
 
         EmitIfBounceCount count maybeMsg ->
             Bouncer.emitIfBounceCount bouncerConfig count maybeMsg
 
         DebouncedClose cid ->
-            andMapWhen (.cid >> eqs cid) closeAndDestroyPopper
-
-        DocumentFocusChanged hasFocus ->
-            --            andThen (Bouncer.cancel bouncerConfig)
-            identity
+            andMapWhen (.cid >> eqs cid) (mapModel setClosed)
 
         PopupFocusChanged hasFocus ->
-            if hasFocus then
-                andThen (Bouncer.cancel bouncerConfig)
+            andThen <|
+                if hasFocus then
+                    Bouncer.cancel bouncerConfig
 
-            else
-                andThen (\model -> Bouncer.bounce bouncerConfig (DebouncedClose model.cid) model)
-
-        PopperStylesSet popperStyles ->
-            --            let
-            --                _ =
-            --                    Debug.log "PopperStylesSet" popperStyles
-            --            in
-            --            mapModel (\model -> { model | popperStyles = popperStyles })
-            --                >> autoFocus
-            identity
-
-        PopperStylesChanged popperStyles ->
-            --            mapModel (\model -> { model | popperStyles = popperStyles })
-            identity
+                else
+                    \model -> Bouncer.bounce bouncerConfig (DebouncedClose model.cid) model
     )
         << pure
 
