@@ -7,6 +7,7 @@ module ContextPopup exposing
     , subscriptions
     , toggleOpenFor
     , update
+    , update3
     , view
     )
 
