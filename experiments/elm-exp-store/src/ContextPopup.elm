@@ -218,9 +218,6 @@ viewPopup toMsg model =
             , borderRadius (rem 0.5)
             , pRm 0.5
             , minWidth (rem 10)
-
-            --            , position absolute
-            --            , bottom (px 0)
             ]
 
         rootAttributes =
