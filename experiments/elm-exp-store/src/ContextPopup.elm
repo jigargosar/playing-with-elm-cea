@@ -125,7 +125,9 @@ update onAction message =
                 _ =
                     Debug.log "element" element
             in
-            mapModel (\model -> { model | refEle = Just element }) >> withNoOutMsg
+            mapModel (\model -> { model | refEle = Just element })
+                >> addEffect (getMaybeAutoFocusDomId >> Focus.attemptMaybe FocusResult)
+                >> withNoOutMsg
 
         BackdropClicked targetId ->
             mapWhen (getBackdropDomId >> eqs targetId)
@@ -140,7 +142,6 @@ update onAction message =
             mapIfElse (isOpenForContextId cid)
                 (mapModel setClosed)
                 (mapModel (setOpenAndContextId cid)
-                    >> addEffect (getMaybeAutoFocusDomId >> Focus.attemptMaybe FocusResult)
                     >> addCmd (attemptGetElement ElementResult (refIdFromCid cid))
                 )
                 >> withNoOutMsg
