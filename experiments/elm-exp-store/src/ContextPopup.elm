@@ -108,7 +108,7 @@ update config message =
     in
     (case message of
         FocusResult r ->
-            addCmd (Log.focusResult "Mode.elm" r)
+            addCmd (Log.focusResult "ContextPopup.elm" r)
 
         ActionClicked child ->
             mapModel setClosed
