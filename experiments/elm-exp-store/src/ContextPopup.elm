@@ -108,12 +108,8 @@ update config message =
             { tagger = tagger, emitIfCountMsg = EmitIfBounceCount }
 
         autoFocusOnOpenCmd model =
-            case getMaybeAutoFocusDomId model of
-                Nothing ->
-                    Cmd.none
-
-                Just domId ->
-                    DomEvents.attemptFocus FocusResult domId |> Cmd.map tagger
+            Cmd.map tagger <|
+                DomEvents.attemptFocusWithMaybeDomId FocusResult (getMaybeAutoFocusDomId model)
     in
     (case message of
         NoOp ->
