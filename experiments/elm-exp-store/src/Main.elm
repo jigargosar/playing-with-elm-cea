@@ -186,8 +186,7 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Line
-    | SetContextId ContextId
-    | SwitchToContextTodoListWithContextId ContextId
+    | SetTodoListContextId ContextId
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
     | ModeMsg Mode.Msg
@@ -209,12 +208,8 @@ update message model =
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
 
-        SetContextId contextId ->
+        SetTodoListContextId contextId ->
             pure { model | contextId = contextId }
-
-        SwitchToContextTodoListWithContextId contextId ->
-            pure model
-                |> andThenUpdate (SetContextId contextId)
 
         TodoStoreMsg msg ->
             Update2.lift
@@ -303,10 +298,6 @@ startEditingTodoContext =
     ModeMsg << Mode.startEditingTodoContext
 
 
-navigateToInbox =
-    SwitchToContextTodoListWithContextId ContextStore.defaultId
-
-
 contextMoreClicked =
     UpdateContextPopup << ContextPopup.toggleOpenFor
 
@@ -364,7 +355,7 @@ createSideBarConfig model =
             , id = id
             , cid = id
             , name = name
-            , navigateToTodoList = SwitchToContextTodoListWithContextId id
+            , navigateToTodoList = SetTodoListContextId id
             , activeTodoCount = getActiveTodoListCountForContextId id model
             , isSelected = isCurrentPageContextTodoListWithContextId id model
             , moreClicked = contextMoreClicked id
