@@ -97,9 +97,9 @@ winFocusBlur$(document.hasFocus())
 
 window.addEventListener('focus', winFocusBlur$)
 window.addEventListener('blur', winFocusBlur$)
-window.addEventListener('focusout', winFocusBlur$)
+// window.addEventListener('focusout', winFocusBlur$)
 
-flyd.on(tapLog("window event"), winFocusBlur$)
+// flyd.on(tapLog("window event"), winFocusBlur$)
 
 const documentHasFocus$ = flyd.map(
   compose(() => document.hasFocus()),
