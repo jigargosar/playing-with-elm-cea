@@ -32,6 +32,8 @@ module UpdateReturn exposing
        --    , updateMaybeSub
 
     , updateSub
+    , withNoOutMsg
+    , withOutMsgEffect
     )
 
 import BasicsX exposing (unwrapMaybe)
