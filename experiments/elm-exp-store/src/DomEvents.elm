@@ -1,4 +1,4 @@
-module DomEvents exposing (DomId, attemptFocus, attemptFocusWithMaybeDomId, domIdDecoder, focus, onClickTargetId, onFocusIn, onFocusOut)
+module DomEvents exposing (DomId, attemptFocus, attemptFocusMaybe, domIdDecoder, focus, onClickTargetId, onFocusIn, onFocusOut)
 
 import Browser.Dom
 import Html.Styled exposing (Attribute)
@@ -44,7 +44,7 @@ attemptFocus resultToMsg domId =
     Task.attempt resultToMsg <| focus domId
 
 
-attemptFocusWithMaybeDomId resultToMsg maybeDomId =
+attemptFocusMaybe resultToMsg maybeDomId =
     case maybeDomId of
         Nothing ->
             Cmd.none

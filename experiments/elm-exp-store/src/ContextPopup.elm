@@ -64,7 +64,7 @@ type Msg
     | PopupFocusChanged Bool
     | DebouncedClose ContextId
     | EmitIfBounceCount Int (Maybe Msg)
-    | FocusResult (Result DomId DomId)
+    | FocusResultReceived (Result DomId DomId)
 
 
 subscriptions model =
@@ -105,16 +105,16 @@ update config message =
 
         autoFocusOnOpenCmd model =
             Cmd.map tagger <|
-                DomEvents.attemptFocusWithMaybeDomId FocusResult (getMaybeAutoFocusDomId model)
+                DomEvents.attemptFocusMaybe FocusResultReceived (getMaybeAutoFocusDomId model)
     in
     (case message of
         NoOp ->
             identity
 
-        FocusResult (Ok domId) ->
+        FocusResultReceived (Ok domId) ->
             identity
 
-        FocusResult (Err domId) ->
+        FocusResultReceived (Err domId) ->
             identity
 
         Warn logLine ->
