@@ -91,20 +91,8 @@ setOpenAndContextId cid model =
     { model | open = True, cid = cid }
 
 
-withNoOutMsg ( m, c ) =
-    ( m, c, Nothing )
-
-
-withOutMsgEffect fn ( m, c ) =
-    ( m, c, Just <| fn m )
-
-
 update : (Action -> ContextId -> msg) -> Msg -> Model -> ( Model, Cmd Msg, Maybe msg )
 update onAction message =
-    let
-        autoFocusOnOpenEffect model =
-            Focus.attemptMaybe FocusResult (getMaybeAutoFocusDomId model)
-    in
     (case message of
         FocusResult r ->
             addCmd (Log.focusResult "ContextPopup.elm" r)
@@ -123,7 +111,7 @@ update onAction message =
             mapIfElse (isOpenForContextId cid)
                 (mapModel setClosed)
                 (mapModel (setOpenAndContextId cid)
-                    >> addEffect autoFocusOnOpenEffect
+                    >> addEffect (getMaybeAutoFocusDomId >> Focus.attemptMaybe FocusResult)
                 )
                 >> withNoOutMsg
     )

@@ -135,6 +135,14 @@ pure model =
     ( model, Cmd.none )
 
 
+withNoOutMsg ( m, c ) =
+    ( m, c, Nothing )
+
+
+withOutMsgEffect fn ( m, c ) =
+    ( m, c, Just <| fn m )
+
+
 addCmd c2 ( m, c1 ) =
     ( m, Cmd.batch [ c1, c2 ] )
 
