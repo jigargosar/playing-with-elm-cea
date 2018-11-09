@@ -72,7 +72,7 @@ type alias Config msg =
 
 
 getPopperDomId =
-    .cid >> popperId
+    .cid >> (++) "context-popup-"
 
 
 getBackdropDomId =
@@ -141,10 +141,6 @@ type Action
 
 actions =
     [ Rename, Archive ]
-
-
-popperId cid =
-    "context-more-menu-popper-" ++ cid
 
 
 getChildText child =
