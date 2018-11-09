@@ -266,7 +266,7 @@ update message model =
                 config =
                     { toMsg = UpdateContextPopup
                     , selected =
-                        \cid action ->
+                        \action cid ->
                             case action of
                                 ContextPopup.Rename ->
                                     StartEditingContext cid

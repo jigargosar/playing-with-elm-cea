@@ -67,7 +67,7 @@ subscriptions model =
 
 type alias Config msg =
     { toMsg : Msg -> msg
-    , selected : ContextId -> Action -> msg
+    , selected : Action -> ContextId -> msg
     }
 
 
@@ -111,7 +111,7 @@ update config message =
 
         ActionClicked child ->
             mapModel setClosed
-                >> addMsgEffect (.cid >> (\cid -> config.selected cid child))
+                >> addMsgEffect (.cid >> config.selected child)
 
         ToggleOpenFor cid ->
             mapIfElse (isOpenForContextId cid)
