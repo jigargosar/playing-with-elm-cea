@@ -59,7 +59,6 @@ toggleOpenFor =
 
 type Msg
     = NoOp
-    | Warn Log.Line
     | ActionClicked Action
     | ToggleOpenFor ContextId
     | PopupFocusChanged Bool
@@ -114,9 +113,6 @@ update config message =
 
         FocusResult r ->
             addCmd (Log.focusResult "Mode.elm" r)
-
-        Warn logLine ->
-            addCmd (Log.warn "Mode.elm" logLine)
 
         ActionClicked child ->
             mapModel setClosed
