@@ -425,7 +425,7 @@ viewSidebar model =
                 ]
 
         viewKeyedContextItem style vm =
-            ( vm.key, viewContextItem model style vm )
+            ( vm.key, viewContextItem style vm )
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
@@ -452,7 +452,7 @@ liTextButton =
         ]
 
 
-viewContextItem model moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
+viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
     styled listItem
         [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
         [ id <| ContextPopup.refIdFromCid cid
