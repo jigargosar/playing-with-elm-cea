@@ -39,12 +39,20 @@ import UpdateReturn exposing (..)
 ---- MODEL ----
 
 
+type Layer
+    = AddTodoForm TodoContent
+    | AddContextForm ContextName
+    | EditTodoForm TodoId TodoContent
+    | EditContextForm ContextId ContextName
+
+
 type alias Model =
     { todoStore : TodoStore
     , contextStore : ContextStore
     , contextId : ContextId
     , contextPopup : ContextPopup.Model
     , mode : Mode
+    , layers : List Layer
     }
 
 
@@ -68,6 +76,7 @@ init flags =
             , contextId = ContextStore.defaultId
             , contextPopup = ContextPopup.init ""
             , mode = Mode.init
+            , layers = []
             }
     in
     pure model
