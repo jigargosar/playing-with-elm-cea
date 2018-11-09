@@ -214,6 +214,8 @@ viewPopup element model =
             , borderRadius (rem 0.5)
             , pRm 0.5
             , minWidth (rem 10)
+            , position absolute
+            , left (px <| element.element.x + element.element.width)
             ]
 
         rootAttributes =
