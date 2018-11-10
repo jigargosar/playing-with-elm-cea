@@ -342,8 +342,21 @@ update message model =
                         ( addTodoDialogModel, cmd, maybeOutMsg ) =
                             AddTodoDialog.update msg layerModel
                     in
-                    pure
-                        { model | layer = AddTodoDialog addTodoDialogModel }
+                    maybeOutMsg
+                        |> unwrapMaybe
+                            (pure
+                                { model | layer = AddTodoDialog addTodoDialogModel }
+                            )
+                            (\out ->
+                                ( { model | layer = NoLayer }
+                                , case out of
+                                    AddTodoDialog.Submit content contextId ->
+                                        msgToCmd (ContextStore <| ContextStore.addNew content)
+
+                                    AddTodoDialog.Cancel ->
+                                        Cmd.none
+                                )
+                            )
                         |> addTaggedCmd MsgAddTodoDialog cmd
 
                 _ ->

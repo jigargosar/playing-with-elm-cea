@@ -81,7 +81,8 @@ update message =
                 withNoOutMsg
 
         ContentChanged content ->
-            withNoOutMsg
+            mapModel (\model -> { model | content = content })
+                >> withNoOutMsg
 
         ContextIdChanged contextId ->
             withNoOutMsg
