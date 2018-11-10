@@ -23,6 +23,10 @@ init contextId =
     { content = "", contextId = contextId }
 
 
+autoFocus =
+    AutoFocus
+
+
 type OutMsg
     = Submit TodoContent ContextId
     | Cancel
@@ -34,6 +38,7 @@ type Msg
     | ContentChanged TodoContent
     | ContextIdChanged ContextId
     | ContentInputKeyDown HotKey.Event
+    | AutoFocus
 
 
 rootDomId uid =
@@ -60,6 +65,10 @@ withCancelOutMsg =
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
 update message =
     (case message of
+        AutoFocus ->
+            addCmd (Focus.attempt FocusResult inputId)
+                >> withNoOutMsg
+
         FocusResult r ->
             addCmd (Log.focusResult "ContextPopup.elm" r)
                 >> withNoOutMsg
