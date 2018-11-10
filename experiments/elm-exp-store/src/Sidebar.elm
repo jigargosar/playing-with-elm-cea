@@ -38,7 +38,7 @@ type alias Config msg =
 
 
 view : Config msg -> Html msg
-view { inbox, contexts, addContextClicked } =
+view { inbox, contexts, addContextClicked, showArchived } =
     let
         ( archived, active ) =
             List.partition .isArchived contexts
@@ -50,8 +50,20 @@ view { inbox, contexts, addContextClicked } =
         , viewContextsHeader addContextClicked
         , HtmlX.keyedDiv [] <|
             List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) active
-        , Btn.flat [ css [ rowCXY, w100, fontSize (rem 0.8) ] ] [ text "toggle archived" ]
+        , viewArchiveBtn showArchived
         ]
+
+
+viewArchiveBtn showArchived =
+    let
+        textPrefix =
+            if showArchived then
+                "hide"
+
+            else
+                "show"
+    in
+    Btn.flat [ css [ rowCXY, w100, fontSize (rem 0.8) ] ] [ text <| textPrefix ++ " archived" ]
 
 
 viewContextsHeader addContextClicked =
