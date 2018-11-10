@@ -34,7 +34,7 @@ getBackdropDomId =
     rootDomId ++ "-backdrop"
 
 
-update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
+update : String -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
 update uniqueId message =
     (case message of
         FocusResult r ->
