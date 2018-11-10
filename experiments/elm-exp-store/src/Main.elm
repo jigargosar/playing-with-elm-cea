@@ -368,14 +368,14 @@ updateLayer message model_ =
 
         ( AddTodoDialogMsg msg, Just (AddTodoDialogLayer dialogModel_) ) ->
             let
-                ( addTodoModel, cmd, maybeOutMsg ) =
-                    AddTodoDialog.update msg AddTodoDialog dialogModel_
+                ( dialogModel, cmd, maybeOutMsg ) =
+                    AddTodoDialog.update msg dialogModel_
             in
             pure
                 { model_
-                    | layers = replaceHead (AddTodoDialog dialogModel) model_.layers
+                    | layers = replaceHead (AddTodoDialogLayer dialogModel) model_.layers
                 }
-                |> addTaggedCmd (UpdateLayer << ContextPopupMsg) cmd
+                |> addTaggedCmd (UpdateLayer << AddTodoDialogMsg) cmd
 
         _ ->
             pure model_
