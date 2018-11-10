@@ -42,11 +42,9 @@ import UpdateReturn exposing (..)
 
 
 type Layer
-    = AddTodoDialogLayer AddTodoDialog.Model
-    | AddContextForm ContextName
-    | EditTodoForm TodoId TodoContent
-    | EditContextForm ContextId ContextName
+    = AddTodoDialog AddTodoDialog.Model
     | ContextPopup ContextId ContextPopup.Model
+    | NoLayer
 
 
 type alias Model =
@@ -54,7 +52,7 @@ type alias Model =
     , contextStore : ContextStore
     , contextId : ContextId
     , mode : Mode
-    , layers : List Layer
+    , layer : Layer
     , showArchivedContexts : Bool
     , showCompletedTodos : Bool
     }
@@ -79,7 +77,7 @@ init flags =
             , contextStore = contextStore
             , contextId = ContextStore.defaultId
             , mode = Mode.init
-            , layers = []
+            , layer = NoLayer
             , showArchivedContexts = False
             , showCompletedTodos = False
             }
@@ -195,9 +193,9 @@ getMaybeSelectedContext model =
     model.contextStore |> ContextStore.get (getSelectedContextId model)
 
 
-isContextPopupOpenFor cid model =
-    case model.layers |> List.head of
-        Just (ContextPopup cid_ contextPopup) ->
+isContextPopupOpenFor cid_ model =
+    case model.layer of
+        ContextPopup cid contextPopup ->
             cid_ == cid
 
         _ ->
@@ -299,14 +297,14 @@ update message model =
         ContextMoreClicked cid ->
             pure
                 { model
-                    | layers = ContextPopup cid ContextPopup.init :: model.layers
+                    | layer = ContextPopup cid ContextPopup.init
                 }
                 |> andThen (updateLayer <| ContextPopupMsg ContextPopup.open)
 
         StartAddingTodo ->
             pure
                 { model
-                    | layers = AddTodoDialogLayer (AddTodoDialog.init ContextStore.defaultId) :: model.layers
+                    | layer = AddTodoDialog AddTodoDialog.init
                 }
                 |> andThen (updateLayer <| AddTodoDialogMsg <| AddTodoDialog.autoFocus)
 
@@ -320,30 +318,25 @@ update message model =
             pure { model | showCompletedTodos = not model.showCompletedTodos }
 
 
-updateLayer message model_ =
-    let
-        topLayer =
-            List.head model_.layers
-    in
-    case ( message, topLayer ) of
-        ( ContextPopupMsg msg, Just (ContextPopup cid contextPopup_) ) ->
+updateLayer : LayerMsg -> Model -> ( Model, Cmd Msg )
+updateLayer message model =
+    case ( message, model.layer ) of
+        ( ContextPopupMsg msg, ContextPopup cid layerModel ) ->
             let
                 ( contextPopup, cmd, maybeOut ) =
-                    ContextPopup.update cid msg contextPopup_
+                    ContextPopup.update cid msg layerModel
             in
             maybeOut
                 |> Maybe.map
                     (\outMsg ->
                         let
-                            model =
-                                { model_
-                                    | layers = List.drop 1 model_.layers
-                                }
+                            newModel =
+                                { model | layer = NoLayer }
                         in
                         case outMsg of
                             ContextPopup.ActionOut action ->
                                 let
-                                    msg_ =
+                                    newMsg =
                                         case action of
                                             ContextPopup.Rename ->
                                                 StartEditingContext cid
@@ -351,34 +344,30 @@ updateLayer message model_ =
                                             ContextPopup.ToggleArchive ->
                                                 ContextStoreMsg <| ContextStore.toggleArchived cid
                                 in
-                                ( model
-                                , msgToCmd msg_
-                                )
+                                ( newModel, msgToCmd newMsg )
 
                             ContextPopup.ClosedOut ->
-                                pure model
+                                pure newModel
                     )
                 |> Maybe.withDefault
                     (pure
-                        { model_
-                            | layers = replaceHead (ContextPopup cid contextPopup) model_.layers
+                        { model
+                            | layer = ContextPopup cid contextPopup
                         }
                     )
                 |> addTaggedCmd (UpdateLayer << ContextPopupMsg) cmd
 
-        ( AddTodoDialogMsg msg, Just (AddTodoDialogLayer dialogModel_) ) ->
+        ( AddTodoDialogMsg msg, AddTodoDialog layerModel ) ->
             let
-                ( dialogModel, cmd, maybeOutMsg ) =
-                    AddTodoDialog.update msg dialogModel_
+                ( addTodoDialogModel, cmd, maybeOutMsg ) =
+                    AddTodoDialog.update msg layerModel
             in
             pure
-                { model_
-                    | layers = replaceHead (AddTodoDialogLayer dialogModel) model_.layers
-                }
+                { model | layer = AddTodoDialog addTodoDialogModel }
                 |> addTaggedCmd (UpdateLayer << AddTodoDialogMsg) cmd
 
         _ ->
-            pure model_
+            pure model
 
 
 subscriptions : Model -> Sub Msg
@@ -419,30 +408,25 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ viewAppBar
         , viewPage model
-        , viewLayers model
+        , viewLayer model
 
         --        , ContextPopup.view model.contextPopup |> Html.map UpdateContextPopup
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         ]
 
 
-viewLayers model =
-    List.head model.layers |> maybeHtml (viewLayer model)
-
-
-viewLayer model layer =
-    case layer of
+viewLayer model =
+    case model.layer of
         ContextPopup cid contextPopup ->
             getMaybeContext cid model
                 |> unwrapMaybe noHtml
                     (\c -> ContextPopup.view c contextPopup |> Html.map (UpdateLayer << ContextPopupMsg))
 
-        AddTodoDialogLayer dialogModel ->
+        AddTodoDialog dialogModel ->
             AddTodoDialog.view dialogModel |> Html.map (UpdateLayer << AddTodoDialogMsg)
 
-        _ ->
-            --            noHtml
-            Debug.todo "implement view layer case"
+        NoLayer ->
+            noHtml
 
 
 getMaybeContextPopup model =
