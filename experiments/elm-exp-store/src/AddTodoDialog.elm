@@ -1,10 +1,15 @@
 module AddTodoDialog exposing (Model, Msg(..), OutMsg(..), getBackdropDomId, rootDomId, update)
 
 import ContextStore exposing (ContextId)
-import DomX exposing (DomId)
+import DomX exposing (DomId, onClickTargetId)
 import Focus exposing (FocusResult)
+import HotKey
+import Html.Styled exposing (Html, div, input)
+import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (onInput)
 import Log
 import TodoStore exposing (TodoContent)
+import UI
 import UpdateReturn exposing (..)
 
 
@@ -24,6 +29,7 @@ type Msg
     | BackdropClicked DomId
     | ContentChanged TodoContent
     | ContextIdChanged ContextId
+    | ContentInputKeyDown HotKey.Event
 
 
 rootDomId uid =
@@ -55,3 +61,26 @@ update uniqueId message =
             withNoOutMsg
     )
         << pure
+
+
+viewEditContentModal : DomId -> String -> Html Msg
+viewEditContentModal inputId content =
+    UI.backdrop
+        [ id "edit-content-modal-backdrop"
+        , onClickTargetId BackdropClicked
+        ]
+        [ div
+            [ class "bg-white br4 shadow-1 pa3 measure w-100"
+            ]
+            [ div [ class "w-100 flex" ]
+                [ input
+                    [ id inputId
+                    , class "flex-auto pa3"
+                    , value content
+                    , onInput ContentChanged
+                    , HotKey.onKeyDown ContentInputKeyDown
+                    ]
+                    []
+                ]
+            ]
+        ]
