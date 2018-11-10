@@ -142,7 +142,7 @@ getChildText context child =
 
         ToggleArchive ->
             if context.archived then
-                "Un Archive"
+                "Unarchive"
 
             else
                 "Archive"
