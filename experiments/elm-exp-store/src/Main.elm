@@ -206,7 +206,6 @@ type Msg
     | ModeMsg Mode.Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
-    | UpdateContextPopup ContextPopup.Msg
     | UpdateLayer LayerMsg
 
 
@@ -276,55 +275,9 @@ update message model =
         ContextMoreClicked cid ->
             pure
                 { model
-                    | layers =
-                        ContextPopup cid ContextPopup.init
-                            :: model.layers
+                    | layers = ContextPopup cid ContextPopup.init :: model.layers
                 }
-                |> addMsg (UpdateContextPopup ContextPopup.open)
-
-        UpdateContextPopup msg ->
-            getMaybeContextPopup model
-                |> unwrapMaybe (pure model)
-                    (\( cid, contextPopup_ ) ->
-                        let
-                            ( contextPopup, cmd, maybeOut ) =
-                                ContextPopup.update cid msg contextPopup_
-                        in
-                        maybeOut
-                            |> Maybe.map
-                                (\outMsg ->
-                                    let
-                                        newModel =
-                                            { model
-                                                | layers = List.drop 1 model.layers
-                                            }
-                                    in
-                                    case outMsg of
-                                        ContextPopup.ActionOut action ->
-                                            let
-                                                msg_ =
-                                                    case action of
-                                                        ContextPopup.Rename ->
-                                                            StartEditingContext cid
-
-                                                        ContextPopup.Archive ->
-                                                            ContextStoreMsg <| ContextStore.archive cid
-                                            in
-                                            ( newModel
-                                            , msgToCmd msg_
-                                            )
-
-                                        ContextPopup.CloseOut ->
-                                            pure newModel
-                                )
-                            |> Maybe.withDefault
-                                (pure
-                                    { model
-                                        | layers = replaceHead (ContextPopup cid contextPopup) model.layers
-                                    }
-                                )
-                            |> addTaggedCmd UpdateContextPopup cmd
-                    )
+                |> andThen (updateLayer <| ContextPopupMsg ContextPopup.open)
 
         UpdateLayer msg ->
             updateLayer msg model
@@ -441,7 +394,7 @@ viewLayers model =
 viewLayer model layer =
     case layer of
         ContextPopup cid contextPopup ->
-            ContextPopup.view cid contextPopup |> Html.map UpdateContextPopup
+            ContextPopup.view cid contextPopup |> Html.map (UpdateLayer << ContextPopupMsg)
 
         _ ->
             noHtml
