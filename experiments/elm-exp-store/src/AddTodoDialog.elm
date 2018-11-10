@@ -47,5 +47,11 @@ update uniqueId message =
 
             else
                 withNoOutMsg
+
+        ContentChanged content ->
+            identity
+
+        ContextIdChanged contextId ->
+            identity
     )
         << pure
