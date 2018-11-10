@@ -14,6 +14,7 @@ module ContextStore exposing
     , load
     , nameDict
     , setName
+    , toggleArchived
     , update
     )
 
@@ -114,6 +115,7 @@ type Msg
 type ContextMsg
     = SetName ContextName
     | Archive
+    | ToggleArchived
 
 
 addNew =
@@ -126,6 +128,10 @@ setName id name =
 
 archive id =
     UpdateContext id Archive
+
+
+toggleArchived id =
+    UpdateContext id ToggleArchived
 
 
 update : Msg -> ContextStore -> ( ContextStore, Cmd Msg )
@@ -182,6 +188,9 @@ maybeUpdateContext now msg context =
 
                 Archive ->
                     { context | archived = True }
+
+                ToggleArchived ->
+                    { context | archived = not context.archived }
     in
     maybeBool (updatedContext /= context) { updatedContext | modifiedAt = now }
 

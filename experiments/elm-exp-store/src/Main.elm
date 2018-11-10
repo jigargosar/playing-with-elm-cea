@@ -316,7 +316,7 @@ updateLayer message model_ =
                                                 StartEditingContext cid
 
                                             ContextPopup.ToggleArchive ->
-                                                ContextStoreMsg <| ContextStore.archive cid
+                                                ContextStoreMsg <| ContextStore.toggleArchived cid
                                 in
                                 ( model
                                 , msgToCmd msg_
