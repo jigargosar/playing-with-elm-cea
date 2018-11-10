@@ -19,6 +19,7 @@ type alias ContextConfig msg =
     , id : ContextId
     , cid : ContextId
     , name : ContextName
+    , isArchived : Bool
     , navigateToTodoList : msg
     , activeTodoCount : Int
     , isSelected : Bool
@@ -31,6 +32,7 @@ type alias Config msg =
     { inbox : ContextConfig msg
     , contexts : List (ContextConfig msg)
     , addContextClicked : msg
+    , showArchived : Bool
     }
 
 

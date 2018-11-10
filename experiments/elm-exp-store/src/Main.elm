@@ -434,12 +434,13 @@ viewPage model =
 createSideBarConfig : Model -> Sidebar.Config Msg
 createSideBarConfig model =
     let
-        createContextConfig : ContextId -> ContextName -> Sidebar.ContextConfig Msg
-        createContextConfig id name =
+        createContextConfig : ContextId -> ContextName -> Bool -> Sidebar.ContextConfig Msg
+        createContextConfig id name isArchived =
             { key = id
             , id = id
             , cid = id
             , name = name
+            , isArchived = isArchived
             , navigateToTodoList = SetTodoListContextId id
             , activeTodoCount = getActiveTodoListCountForContextId id model
             , isSelected = isCurrentPageContextTodoListWithContextId id model
@@ -449,14 +450,15 @@ createSideBarConfig model =
 
         contexts =
             getUserDefinedContextList model
-                |> List.map (\c -> createContextConfig c.id c.name)
+                |> List.map (\c -> createContextConfig c.id c.name c.archived)
 
         inbox =
-            createContextConfig ContextStore.defaultId ContextStore.defaultName
+            createContextConfig ContextStore.defaultId ContextStore.defaultName False
     in
     { inbox = inbox
     , contexts = contexts
     , addContextClicked = startAddingContextMsg
+    , showArchived = True
     }
 
 
