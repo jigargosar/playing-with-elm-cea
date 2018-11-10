@@ -513,11 +513,11 @@ viewTodoList model =
                 ]
             , styled Btn.flatPr0
                 [ fzPx 14 ]
-                [ onClick NoOp ]
+                [ onClick ToggleCompletedTodos ]
                 [ sDiv [ rowCXY, hs ] [] [ text "Completed" ]
                 , sDiv [ rowCXY, hs ]
                     []
-                    [ if False then
+                    [ if model.showCompletedTodos then
                         Icons.toggleRightDef
 
                       else
