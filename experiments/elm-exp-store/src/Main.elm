@@ -16,6 +16,7 @@ import Html.Styled as Html exposing (Attribute, Html, button, div, fromUnstyled,
 import Html.Styled.Attributes exposing (class, classList, css, id, style)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as HKeyed exposing (node)
+import HtmlX
 import Icons
 import JsonCodecX exposing (Value)
 import Log
@@ -519,7 +520,7 @@ viewTodoList model =
         [ active
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
             |> HKeyed.node "div" [ css [ vs ] ]
-        , div [ css [ rowCY, hs ], class "ph3" ]
+        , div [ css [ rowCY ], class "ph3" ]
             [ styled Btn.flatPl0
                 [ fontSize (rem 0.8), fa ]
                 [ onClick startAddingTodoMsg ]
@@ -528,7 +529,22 @@ viewTodoList model =
                 ]
             , viewCompletedBtn model.showCompletedTodos
             ]
+        , if model.showCompletedTodos then
+            viewCompletedSection model.contextStore completed
+
+          else
+            noHtml
         ]
+
+
+viewCompletedSection contextStore completed =
+    if List.isEmpty completed then
+        sDiv [ fgGray ] [ class "pa3" ] [ text "No Completed Tasks" ]
+
+    else
+        completed
+            |> List.map (viewKeyedTodo << createTodoViewModel contextStore)
+            |> HKeyed.node "div" [ css [ vs ] ]
 
 
 viewCompletedBtn showCompletedTodos =
