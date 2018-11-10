@@ -42,7 +42,7 @@ import UpdateReturn exposing (..)
 
 
 type Layer
-    = AddTodoDialog AddTodoDialog.Model
+    = AddTodoDialogLayer AddTodoDialog.Model
     | AddContextForm ContextName
     | EditTodoForm TodoId TodoContent
     | EditContextForm ContextId ContextName
@@ -306,7 +306,7 @@ update message model =
         StartAddingTodo ->
             pure
                 { model
-                    | layers = AddTodoDialog (AddTodoDialog.init ContextStore.defaultId) :: model.layers
+                    | layers = AddTodoDialogLayer (AddTodoDialog.init ContextStore.defaultId) :: model.layers
                 }
                 |> andThen (updateLayer <| AddTodoDialogMsg <| AddTodoDialog.autoFocus)
 
@@ -364,6 +364,17 @@ updateLayer message model_ =
                             | layers = replaceHead (ContextPopup cid contextPopup) model_.layers
                         }
                     )
+                |> addTaggedCmd (UpdateLayer << ContextPopupMsg) cmd
+
+        ( AddTodoDialogMsg msg, Just (AddTodoDialogLayer dialogModel_) ) ->
+            let
+                ( addTodoModel, cmd, maybeOutMsg ) =
+                    AddTodoDialog.update msg AddTodoDialog dialogModel_
+            in
+            pure
+                { model_
+                    | layers = replaceHead (AddTodoDialog dialogModel) model_.layers
+                }
                 |> addTaggedCmd (UpdateLayer << ContextPopupMsg) cmd
 
         _ ->
@@ -426,7 +437,7 @@ viewLayer model layer =
                 |> unwrapMaybe noHtml
                     (\c -> ContextPopup.view c contextPopup |> Html.map (UpdateLayer << ContextPopupMsg))
 
-        AddTodoDialog dialogModel ->
+        AddTodoDialogLayer dialogModel ->
             AddTodoDialog.view dialogModel |> Html.map (UpdateLayer << AddTodoDialogMsg)
 
         _ ->
