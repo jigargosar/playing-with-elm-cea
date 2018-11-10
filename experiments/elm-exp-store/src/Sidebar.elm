@@ -50,6 +50,7 @@ view { inbox, contexts, addContextClicked } =
         , viewContextsHeader addContextClicked
         , HtmlX.keyedDiv [] <|
             List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) active
+        , Btn.flat [ css [ rowCXY, w100, fontSize (rem 0.8) ] ] [ text "toggle archived" ]
         ]
 
 
