@@ -73,8 +73,8 @@ getRefId uid =
     "context-popup-ref" ++ uid
 
 
-getMaybeAutoFocusDomId uid =
-    actions |> List.head |> Maybe.map (getChildDomId (getPopperDomId uid))
+getAutoFocusDomId uid =
+    getChildDomId (getPopperDomId uid) 0
 
 
 type alias ElementResult =
@@ -105,7 +105,7 @@ update uniqueId message =
 
         ElementResult (Ok element) ->
             mapModel (\model -> { model | refEle = Just element })
-                >> addCmd (getMaybeAutoFocusDomId uniqueId |> Focus.attemptMaybe FocusResult)
+                >> addCmd (getAutoFocusDomId uniqueId |> Focus.attempt FocusResult)
                 >> withNoOutMsg
 
         BackdropClicked targetId ->
@@ -135,27 +135,31 @@ actions =
     [ Rename, ToggleArchive ]
 
 
-getChildText child =
+getChildText context child =
     case child of
         Rename ->
             "Rename"
 
         ToggleArchive ->
-            "Archive"
+            if context.archived then
+                "Un Archive"
+
+            else
+                "Archive"
 
 
-getChildDomId popperDomId child =
-    popperDomId ++ "-" ++ getChildText child
+getChildDomId popperDomId idx =
+    popperDomId ++ "-" ++ String.fromInt idx
 
 
-childContent popperDomId child =
+childContent idx context popperDomId child =
     [ sDiv [ p2Rm 0 0 ]
         []
         [ styled button
             [ btnReset, p2Rm 0.5 1, w100 ]
-            [ id <| getChildDomId popperDomId child
+            [ id <| getChildDomId popperDomId idx
             ]
-            [ text <| getChildText child
+            [ text <| getChildText context child
             ]
         ]
     ]
@@ -180,10 +184,10 @@ viewPopup context ref model =
         popperDomId =
             getPopperDomId uniqueId
 
-        viewChild child =
+        viewChild idx child =
             div
                 [ onClick <| ActionClicked child ]
-                (childContent popperDomId child)
+                (childContent idx context popperDomId child)
 
         rootStyles =
             [ bg "white"
@@ -203,7 +207,7 @@ viewPopup context ref model =
         viewModalContent =
             sDiv rootStyles
                 rootAttributes
-                (List.map viewChild actions)
+                (List.indexedMap viewChild actions)
 
         backdropAttrs =
             [ id <| getBackdropDomId uniqueId, onClickTargetId BackdropClicked ]
