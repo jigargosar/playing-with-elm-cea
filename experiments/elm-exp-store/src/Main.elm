@@ -308,6 +308,7 @@ update message model =
                 { model
                     | layers = AddTodoDialog (AddTodoDialog.init ContextStore.defaultId) :: model.layers
                 }
+                |> andThen (updateLayer <| AddTodoDialogMsg <| AddTodoDialog.autoFocus)
 
         UpdateLayer msg ->
             updateLayer msg model
