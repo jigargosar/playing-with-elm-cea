@@ -17,6 +17,7 @@ module BasicsX exposing
     , ifElse
     , isWhitespaceOrEmptyString
     , maybeBool
+    , maybeWhen
     , nowMilli
     , optionalOr
     , swap
@@ -133,6 +134,10 @@ maybeBool bool value =
 
     else
         Nothing
+
+
+maybeWhen pred answerFn =
+    ifElse pred (answerFn >> Just) (always Nothing)
 
 
 unwrapMaybe : b -> (a -> b) -> Maybe a -> b

@@ -126,7 +126,7 @@ update message =
 
         BackdropClicked targetId ->
             withMaybeOutMsg
-                (\model -> maybeBool (getBackdropDomId model == targetId) (model.cid |> OutMsg CloseOut))
+                (maybeWhen (eqs targetId << getBackdropDomId) (OutMsg CloseOut << .cid))
 
         ActionClicked action ->
             withOutMsg (.cid >> OutMsg (ActionOut action))
