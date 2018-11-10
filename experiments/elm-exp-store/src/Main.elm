@@ -508,8 +508,15 @@ viewTodoList model =
             , styled Btn.flatPr0
                 [ fzPx 14 ]
                 [ onClick NoOp ]
-                [ text "Show Completed"
-                , Icons.chevronLeftDefault
+                [ sDiv [ rowCXY, hs ] [] [ text "Completed" ]
+                , sDiv [ rowCXY, hs ]
+                    []
+                    [ if False then
+                        Icons.toggleRightDef
+
+                      else
+                        Icons.toggleLeftDef
+                    ]
                 ]
             ]
         ]
