@@ -520,7 +520,7 @@ viewTodoList model =
         [ active
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
             |> HKeyed.node "div" [ css [ vs ] ]
-        , div [ css [ rowCY ], class "ph3" ]
+        , div [ css [ rowCY ], class "pa3" ]
             [ styled Btn.flatPl0
                 [ fontSize (rem 0.8), fa ]
                 [ onClick startAddingTodoMsg ]
