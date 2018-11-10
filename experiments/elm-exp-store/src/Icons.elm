@@ -122,20 +122,6 @@ withStyleAndAttr styles_ attrs icon =
         (List.map (Svg.map never) icon.src)
 
 
-
---        (List.map (Svg.map never) icon.src)
---        [ class <| "feather-icon feather-icon-" ++ iconName
---        , fill "none"
---        , height "24"
---        , stroke "currentColor"
---        , strokeLinecap "round"
---        , strokeLinejoin "round"
---        , strokeWidth "1"
---        , viewBox "0 0 24 24"
---        , width "24"
---        ]
-
-
 archive : Icon
 archive =
     create "archive"
