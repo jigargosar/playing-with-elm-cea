@@ -282,24 +282,46 @@ update message model =
                 |> unwrapMaybe (pure model)
                     (\( cid_, contextPopup_ ) ->
                         let
-                            onAction : ContextPopup.Action -> ContextId -> Msg
-                            onAction action cid =
-                                case action of
-                                    ContextPopup.Rename ->
-                                        StartEditingContext cid
+                            ( contextPopup, cmd, maybeOut ) =
+                                ContextPopup.update msg contextPopup_
 
-                                    ContextPopup.Archive ->
-                                        ContextStoreMsg <| ContextStore.archive cid
+                            res =
+                                maybeOut
+                                    |> Maybe.map
+                                        (\{ type_, cid } ->
+                                            let
+                                                newModel =
+                                                    { model
+                                                        | layers = List.drop 1 model.layers
+                                                    }
+                                            in
+                                            case type_ of
+                                                ContextPopup.ActionOut action ->
+                                                    let
+                                                        msg_ =
+                                                            case action of
+                                                                ContextPopup.Rename ->
+                                                                    StartEditingContext cid
 
-                            ( contextPopup, cmd, maybeOnAction ) =
-                                ContextPopup.update onAction msg contextPopup_
+                                                                ContextPopup.Archive ->
+                                                                    ContextStoreMsg <| ContextStore.archive cid
+                                                    in
+                                                    ( newModel
+                                                    , msgToCmd msg_
+                                                    )
+
+                                                ContextPopup.CloseOut ->
+                                                    pure newModel
+                                        )
+                                    |> Maybe.withDefault
+                                        (pure
+                                            { model
+                                                | layers = replaceHead (ContextPopup cid_ contextPopup) model.layers
+                                            }
+                                        )
                         in
-                        ( { model
-                            | layers = replaceHead (ContextPopup cid_ contextPopup) model.layers
-                          }
-                        , Cmd.map UpdateContextPopup cmd
-                        )
-                            |> unwrapMaybe identity addMsg maybeOnAction
+                        res
+                            |> addTaggedCmd UpdateContextPopup cmd
                     )
 
 

@@ -2,6 +2,8 @@ module ContextPopup exposing
     ( Action(..)
     , Model
     , Msg
+    , OutMsg
+    , OutType(..)
     , init
     , isOpenForContextId
     , refIdFromCid
@@ -95,8 +97,17 @@ attemptGetElement resultToMsg domId =
         |> Task.attempt resultToMsg
 
 
-update : (Action -> ContextId -> msg) -> Msg -> Model -> ( Model, Cmd Msg, Maybe msg )
-update onAction message =
+type OutType
+    = ActionOut Action
+    | CloseOut
+
+
+type alias OutMsg =
+    { type_ : OutType, cid : ContextId }
+
+
+update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
+update message =
     let
         setClosed =
             \model -> { model | open = False, refEle = Nothing }
@@ -121,19 +132,19 @@ update onAction message =
         BackdropClicked targetId ->
             mapWhen (getBackdropDomId >> eqs targetId)
                 (mapModel setClosed)
-                >> withNoOutMsg
+                >> withOutMsg (.cid >> OutMsg CloseOut)
 
-        ActionClicked child ->
+        ActionClicked action ->
             mapModel setClosed
-                >> withOutMsg (.cid >> onAction child)
+                >> withOutMsg (.cid >> OutMsg (ActionOut action))
 
         ToggleOpenFor cid ->
             mapIfElse (isOpenForContextId cid)
-                (mapModel setClosed)
+                (mapModel setClosed >> withOutMsg (.cid >> OutMsg CloseOut))
                 (mapModel (setOpenAndContextId cid)
                     >> addCmd (attemptGetElement ElementResult (refIdFromCid cid))
+                    >> withNoOutMsg
                 )
-                >> withNoOutMsg
     )
         << pure
 
