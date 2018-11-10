@@ -125,7 +125,7 @@ viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelect
             [ css [ ttu, rowCY ]
             , onClick navigateToTodoList
             ]
-            [ div [] [ text <| name ]
+            [ div [] [ text <| defaultEmptyStringTo "<empty>" name ]
             , sDiv
                 [ plRm 0.1
                 , Css.fontSize (em 0.8)

@@ -531,7 +531,7 @@ createTodoViewModel : ContextStore -> Todo -> TodoViewModel Msg
 createTodoViewModel contextStore todo =
     TodoViewModel
         todo.id
-        (defaultEmptyStringTo "<empty task>" todo.content)
+        (defaultEmptyStringTo "<empty>" todo.content)
         todo.done
         (ContextStore.getNameOrDefaultById todo.contextId contextStore)
         (ModeMsg <| Mode.startEditingTodo todo)
