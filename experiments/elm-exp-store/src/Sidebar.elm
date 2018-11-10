@@ -39,25 +39,29 @@ type alias Config msg =
 view : Config msg -> Html msg
 view { inbox, contexts, addContextClicked } =
     let
-        viewContextsItem =
-            styled listItem
-                []
-                []
-                [ sDiv [ fa, fwb ] [] [ text "Contexts" ]
-                , Btn.icon [ onClick addContextClicked ] [ Icons.plus |> Icons.default ]
-                ]
-
         viewKeyedContextItem style vm =
             ( vm.key, viewContextItem style vm )
+
+        ( archived, active ) =
+            List.partition .isArchived contexts
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
         [ node "div" [] <|
             [ viewKeyedContextItem noStyle inbox
             ]
-        , viewContextsItem
+        , viewContextsHeader addContextClicked
         , node "div" [] <|
-            List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) contexts
+            List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) active
+        ]
+
+
+viewContextsHeader addContextClicked =
+    styled listItem
+        []
+        []
+        [ sDiv [ fa, fwb ] [] [ text "Contexts" ]
+        , Btn.icon [ onClick addContextClicked ] [ Icons.plus |> Icons.default ]
         ]
 
 
