@@ -36,19 +36,15 @@ rootDomId uid =
     "add-todo-dialog" ++ uid
 
 
-getBackdropDomId uid =
-    rootDomId uid ++ "-backdrop"
-
-
-update : String -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
-update uniqueId message =
+update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
+update message =
     (case message of
         FocusResult r ->
             addCmd (Log.focusResult "ContextPopup.elm" r)
                 >> withNoOutMsg
 
         BackdropClicked targetId ->
-            if targetId == getBackdropDomId uniqueId then
+            if targetId == backdropId then
                 withOutMsg (\_ -> ClosedOut)
 
             else
@@ -66,10 +62,14 @@ update uniqueId message =
         << pure
 
 
-viewEditContentModal : DomId -> String -> Html Msg
-viewEditContentModal inputId content =
+backdropId =
+    "add-todo-modal-backdrop"
+
+
+view : DomId -> String -> Html Msg
+view inputId content =
     UI.backdrop
-        [ id "edit-content-modal-backdrop"
+        [ id backdropId
         , onClickTargetId BackdropClicked
         ]
         [ div
