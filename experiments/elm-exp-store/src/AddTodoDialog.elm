@@ -1,4 +1,4 @@
-module AddTodoDialog exposing (Model, Msg, OutMsg(..), update)
+module AddTodoDialog exposing (Model, Msg, OutMsg(..), init, update)
 
 import ContextStore exposing (ContextId)
 import DomX exposing (DomId, onClickTargetId)
@@ -19,6 +19,10 @@ type alias Model =
     }
 
 
+init contextId =
+    { content = "", contextId = contextId }
+
+
 type OutMsg
     = Submit TodoContent ContextId
     | Cancel
@@ -36,10 +40,19 @@ rootDomId uid =
     "add-todo-dialog" ++ uid
 
 
+withSubmitOutMsg : ( Model, Cmd Msg ) -> ( Model, Cmd Msg, Maybe OutMsg )
 withSubmitOutMsg =
-    withOutMsg (always Cancel)
+    withOutMsg
+        (\{ content, contextId } ->
+            if String.isEmpty content then
+                Cancel
+
+            else
+                Submit content contextId
+        )
 
 
+withCancelOutMsg : ( Model, Cmd Msg ) -> ( Model, Cmd Msg, Maybe OutMsg )
 withCancelOutMsg =
     withOutMsg (always Cancel)
 
