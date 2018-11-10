@@ -36,7 +36,7 @@ backdrop =
 
 
 appBar =
-    sDiv [ rowCXY, w100, bg "black", fg "white", elevation 3 ]
+    sDiv [ flexShrink (int 0), rowCXY, w100, bg "black", fg "white", elevation 3 ]
 
 
 section1 =
