@@ -1,4 +1,4 @@
-module Styles exposing (absFill, ambient, ambientColor, bc, bcBlackA, bg, blackA, boolCss, btnReset, centerCenter, dFlexCol, dFlexRow, elevation, fBody, fDir, fZero, fg, fwb, fz, fzPx, hs, lh, lhNum, mRm, noStyle, p2Rm, pRm, penumbra, penumbraColor, plRm, prRm, rowBottomY, rowCXY, rowCY, spacing0, transitionFadeIn, umbra, umbraColor, vs)
+module Styles exposing (absFill, ambient, ambientColor, bc, bcBlackA, bg, blackA, boolCss, btnReset, centerCenter, dFlexCol, dFlexRow, elevation, fBody, fDir, fZero, fg, fwb, fz, fzPx, hs, lh, lhNum, mRm, mbRm, noStyle, p2Rm, pRm, penumbra, penumbraColor, plRm, prRm, rowBottomY, rowCXY, rowCY, spacing0, transitionFadeIn, umbra, umbraColor, vs)
 
 import Array
 import BasicsX exposing (..)
@@ -26,6 +26,10 @@ prRm =
 
 mRm =
     margin << rem
+
+
+mbRm =
+    marginBottom << rem
 
 
 spacing0 =

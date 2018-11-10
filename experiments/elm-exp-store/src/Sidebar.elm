@@ -1,5 +1,6 @@
 module Sidebar exposing (Config, ContextConfig, view)
 
+import BasicsX exposing (..)
 import Btn
 import ContextPopup
 import ContextStore exposing (ContextId, ContextName)
@@ -39,8 +40,11 @@ type alias Config msg =
 
 
 view : Config msg -> Html msg
-view { inbox, contexts, addContextClicked, showArchived, toggleShowArchived } =
+view config =
     let
+        { inbox, contexts, addContextClicked, showArchived, toggleShowArchived } =
+            config
+
         ( archived, active ) =
             List.partition .isArchived contexts
     in
@@ -52,20 +56,19 @@ view { inbox, contexts, addContextClicked, showArchived, toggleShowArchived } =
          , HtmlX.keyedDiv [] <|
             List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) active
          ]
-            ++ (if List.length archived > 0 then
-                    [ viewArchiveBtn showArchived toggleShowArchived
-                    , if showArchived then
-                        HtmlX.keyedDiv [] <|
-                            List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) archived
-
-                      else
-                        noHtml
-                    ]
-
-                else
-                    []
-               )
+            ++ HtmlX.emptyWhen (not << List.isEmpty) (viewArchivedWithHeader config) archived
         )
+
+
+viewArchivedWithHeader { showArchived, toggleShowArchived } archived =
+    [ viewArchiveBtn showArchived toggleShowArchived
+    , HtmlX.when (always showArchived) viewArchivedContexts archived
+    ]
+
+
+viewArchivedContexts archived =
+    HtmlX.keyedDiv [] <|
+        List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) archived
 
 
 viewArchiveBtn showArchived toggleShowArchived =
@@ -75,10 +78,10 @@ viewArchiveBtn showArchived toggleShowArchived =
                 "Hide Archived"
 
             else
-                "Archived Contexts"
+                "Show Archived"
     in
     Btn.flat
-        [ css [ rowCXY, w100, fontSize (rem 0.8) ]
+        [ css [ mRm 1, mbRm 0.5, rowCY, fontSize (rem 0.8) ]
         , onClick toggleShowArchived
         ]
         [ text caption ]
