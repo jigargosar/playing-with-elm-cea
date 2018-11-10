@@ -1,4 +1,4 @@
-module AddTodoDialog exposing (Model, Msg(..), OutMsg(..), getBackdropDomId, rootDomId, update)
+module AddTodoDialog exposing (Model, Msg, OutMsg(..), update)
 
 import ContextStore exposing (ContextId)
 import DomX exposing (DomId, onClickTargetId)
