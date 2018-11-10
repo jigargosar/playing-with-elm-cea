@@ -333,15 +333,6 @@ updateLayer message model_ =
             pure model_
 
 
-replaceHead o list =
-    case list of
-        head :: tail ->
-            o :: tail
-
-        [] ->
-            []
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch

@@ -20,6 +20,7 @@ module BasicsX exposing
     , maybeWhen
     , nowMilli
     , optionalOr
+    , replaceHead
     , swap
     , ter
     , tsDecoder
@@ -38,6 +39,15 @@ import Json.Encode as E exposing (Value)
 import Log
 import Task exposing (Task)
 import Time
+
+
+replaceHead newHead list =
+    case list of
+        head :: tail ->
+            newHead :: tail
+
+        [] ->
+            []
 
 
 type alias Millis =
