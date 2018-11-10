@@ -272,30 +272,30 @@ update message model =
             pure
                 { model
                     | layers =
-                        ContextPopup cid (ContextPopup.init cid)
+                        ContextPopup cid ContextPopup.init
                             :: model.layers
                 }
-                |> addMsg (UpdateContextPopup <| ContextPopup.open cid)
+                |> addMsg (UpdateContextPopup ContextPopup.open)
 
         UpdateContextPopup msg ->
             getMaybeContextPopup model
                 |> unwrapMaybe (pure model)
-                    (\( cid_, contextPopup_ ) ->
+                    (\( cid, contextPopup_ ) ->
                         let
                             ( contextPopup, cmd, maybeOut ) =
-                                ContextPopup.update msg contextPopup_
+                                ContextPopup.update cid msg contextPopup_
 
                             res =
                                 maybeOut
                                     |> Maybe.map
-                                        (\{ type_, cid } ->
+                                        (\outMsg ->
                                             let
                                                 newModel =
                                                     { model
                                                         | layers = List.drop 1 model.layers
                                                     }
                                             in
-                                            case type_ of
+                                            case outMsg of
                                                 ContextPopup.ActionOut action ->
                                                     let
                                                         msg_ =
@@ -316,7 +316,7 @@ update message model =
                                     |> Maybe.withDefault
                                         (pure
                                             { model
-                                                | layers = replaceHead (ContextPopup cid_ contextPopup) model.layers
+                                                | layers = replaceHead (ContextPopup cid contextPopup) model.layers
                                             }
                                         )
                         in
@@ -386,7 +386,7 @@ viewLayers model =
 viewLayer model layer =
     case layer of
         ContextPopup cid contextPopup ->
-            ContextPopup.view contextPopup |> Html.map UpdateContextPopup
+            ContextPopup.view cid contextPopup |> Html.map UpdateContextPopup
 
         _ ->
             noHtml

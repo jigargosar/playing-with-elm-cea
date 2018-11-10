@@ -2,11 +2,10 @@ module ContextPopup exposing
     ( Action(..)
     , Model
     , Msg
-    , OutMsg
-    , OutType(..)
+    , OutMsg(..)
+    , getRefId
     , init
     , open
-    , refIdFromCid
     , update
     , view
     )
@@ -30,15 +29,13 @@ import UpdateReturn exposing (..)
 
 
 type alias Model =
-    { cid : ContextId
-    , refEle : Maybe Element
+    { refEle : Maybe Element
     }
 
 
-init : ContextId -> Model
-init cid =
-    { cid = cid
-    , refEle = Nothing
+init : Model
+init =
+    { refEle = Nothing
     }
 
 
@@ -52,7 +49,7 @@ open =
 
 type Msg
     = ActionClicked Action
-    | Open ContextId
+    | Open
     | FocusResult FocusResult
     | ElementResult ElementResult
     | BackdropClicked DomId
@@ -64,20 +61,20 @@ type alias Config msg =
     }
 
 
-getPopperDomId =
-    .cid >> (++) "context-popup-"
+getPopperDomId uid =
+    "context-popup-" ++ uid
 
 
 getBackdropDomId =
     getPopperDomId >> (++) "-backdrop"
 
 
-refIdFromCid cid =
-    "context-popup-ref" ++ cid
+getRefId uid =
+    "context-popup-ref" ++ uid
 
 
-getMaybeAutoFocusDomId model =
-    actions |> List.head |> Maybe.map (getChildDomId (getPopperDomId model))
+getMaybeAutoFocusDomId uid =
+    actions |> List.head |> Maybe.map (getChildDomId (getPopperDomId uid))
 
 
 type alias ElementResult =
@@ -90,21 +87,13 @@ attemptGetElement resultToMsg domId =
         |> Task.attempt resultToMsg
 
 
-type OutType
+type OutMsg
     = ActionOut Action
     | CloseOut
 
 
-type alias OutMsg =
-    { type_ : OutType, cid : ContextId }
-
-
-update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
-update message =
-    let
-        setOpenAndContextId cid model =
-            { model | cid = cid, refEle = Nothing }
-    in
+update : String -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
+update uniqueId message =
     (case message of
         FocusResult r ->
             addCmd (Log.focusResult "ContextPopup.elm" r)
@@ -116,19 +105,22 @@ update message =
 
         ElementResult (Ok element) ->
             mapModel (\model -> { model | refEle = Just element })
-                >> addEffect (getMaybeAutoFocusDomId >> Focus.attemptMaybe FocusResult)
+                >> addCmd (getMaybeAutoFocusDomId uniqueId |> Focus.attemptMaybe FocusResult)
                 >> withNoOutMsg
 
         BackdropClicked targetId ->
-            withMaybeOutMsg
-                (maybeWhen (eqs targetId << getBackdropDomId) (OutMsg CloseOut << .cid))
+            if targetId == getBackdropDomId uniqueId then
+                withOutMsg (\_ -> CloseOut)
+
+            else
+                withNoOutMsg
 
         ActionClicked action ->
-            withOutMsg (.cid >> OutMsg (ActionOut action))
+            withOutMsg (\_ -> ActionOut action)
 
-        Open cid ->
-            mapModel (setOpenAndContextId cid)
-                >> addCmd (attemptGetElement ElementResult (refIdFromCid cid))
+        Open ->
+            mapModel (\model -> { model | refEle = Nothing })
+                >> addCmd (attemptGetElement ElementResult (getRefId uniqueId))
                 >> withNoOutMsg
     )
         << pure
@@ -169,25 +161,21 @@ childContent popperDomId child =
     ]
 
 
-view : Model -> Html Msg
-view model =
+view : String -> Model -> Html Msg
+view uniqueId model =
     case model.refEle of
         Just element ->
-            viewPopup element model
+            viewPopup uniqueId element model
 
         _ ->
             noHtml
 
 
-
---    HtmlX.when .open viewPopup
-
-
-viewPopup : Element -> Model -> Html Msg
-viewPopup ref model =
+viewPopup : String -> Element -> Model -> Html Msg
+viewPopup uniqueId ref model =
     let
         popperDomId =
-            getPopperDomId model
+            getPopperDomId uniqueId
 
         viewChild child =
             div
@@ -215,7 +203,7 @@ viewPopup ref model =
                 (List.map viewChild actions)
 
         backdropAttrs =
-            [ id <| getBackdropDomId model, onClickTargetId BackdropClicked ]
+            [ id <| getBackdropDomId uniqueId, onClickTargetId BackdropClicked ]
     in
     --    viewModalContent
     UI.backdrop backdropAttrs [ viewModalContent ]
