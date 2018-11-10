@@ -107,10 +107,6 @@ type alias OutMsg =
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
 update message =
     let
-        setClosed =
-            identity
-
-        --            \model -> { model | refEle = Nothing }
         setOpenAndContextId cid model =
             { model | cid = cid, refEle = Nothing }
     in
@@ -129,13 +125,11 @@ update message =
                 >> withNoOutMsg
 
         BackdropClicked targetId ->
-            mapWhen (getBackdropDomId >> eqs targetId)
-                (mapModel setClosed)
-                >> withOutMsg (.cid >> OutMsg CloseOut)
+            withMaybeOutMsg
+                (\model -> maybeBool (getBackdropDomId model == targetId) (model.cid |> OutMsg CloseOut))
 
         ActionClicked action ->
-            mapModel setClosed
-                >> withOutMsg (.cid >> OutMsg (ActionOut action))
+            withOutMsg (.cid >> OutMsg (ActionOut action))
 
         Open cid ->
             mapModel (setOpenAndContextId cid)

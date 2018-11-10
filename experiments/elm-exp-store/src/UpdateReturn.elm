@@ -32,6 +32,7 @@ module UpdateReturn exposing
        --    , updateMaybeSub
 
     , updateSub
+    , withMaybeOutMsg
     , withNoOutMsg
     , withOutMsg
     )
@@ -143,6 +144,10 @@ withNoOutMsg ( m, c ) =
 
 withOutMsg fn ( m, c ) =
     ( m, c, Just <| fn m )
+
+
+withMaybeOutMsg fn ( m, c ) =
+    ( m, c, fn m )
 
 
 addCmd c2 ( m, c1 ) =
