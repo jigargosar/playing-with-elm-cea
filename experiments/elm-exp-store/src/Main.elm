@@ -284,43 +284,40 @@ update message model =
                         let
                             ( contextPopup, cmd, maybeOut ) =
                                 ContextPopup.update cid msg contextPopup_
-
-                            res =
-                                maybeOut
-                                    |> Maybe.map
-                                        (\outMsg ->
-                                            let
-                                                newModel =
-                                                    { model
-                                                        | layers = List.drop 1 model.layers
-                                                    }
-                                            in
-                                            case outMsg of
-                                                ContextPopup.ActionOut action ->
-                                                    let
-                                                        msg_ =
-                                                            case action of
-                                                                ContextPopup.Rename ->
-                                                                    StartEditingContext cid
-
-                                                                ContextPopup.Archive ->
-                                                                    ContextStoreMsg <| ContextStore.archive cid
-                                                    in
-                                                    ( newModel
-                                                    , msgToCmd msg_
-                                                    )
-
-                                                ContextPopup.CloseOut ->
-                                                    pure newModel
-                                        )
-                                    |> Maybe.withDefault
-                                        (pure
-                                            { model
-                                                | layers = replaceHead (ContextPopup cid contextPopup) model.layers
-                                            }
-                                        )
                         in
-                        res
+                        maybeOut
+                            |> Maybe.map
+                                (\outMsg ->
+                                    let
+                                        newModel =
+                                            { model
+                                                | layers = List.drop 1 model.layers
+                                            }
+                                    in
+                                    case outMsg of
+                                        ContextPopup.ActionOut action ->
+                                            let
+                                                msg_ =
+                                                    case action of
+                                                        ContextPopup.Rename ->
+                                                            StartEditingContext cid
+
+                                                        ContextPopup.Archive ->
+                                                            ContextStoreMsg <| ContextStore.archive cid
+                                            in
+                                            ( newModel
+                                            , msgToCmd msg_
+                                            )
+
+                                        ContextPopup.CloseOut ->
+                                            pure newModel
+                                )
+                            |> Maybe.withDefault
+                                (pure
+                                    { model
+                                        | layers = replaceHead (ContextPopup cid contextPopup) model.layers
+                                    }
+                                )
                             |> addTaggedCmd UpdateContextPopup cmd
                     )
 
