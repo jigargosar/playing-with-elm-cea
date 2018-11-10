@@ -1,5 +1,6 @@
 module Main exposing (main)
 
+import AddTodoDialog
 import BasicsX exposing (..)
 import Browser
 import Browser.Dom
@@ -41,7 +42,7 @@ import UpdateReturn exposing (..)
 
 
 type Layer
-    = AddTodoForm TodoContent
+    = AddTodoDialog AddTodoDialog.Model
     | AddContextForm ContextName
     | EditTodoForm TodoId TodoContent
     | EditContextForm ContextId ContextName
@@ -228,10 +229,12 @@ type Msg
     | UpdateLayer LayerMsg
     | ToggleShowArchivedContexts
     | ToggleCompletedTodos
+    | StartAddingTodo
 
 
 type LayerMsg
     = ContextPopupMsg ContextPopup.Msg
+    | AddTodoMsg AddTodoDialog.Msg
 
 
 type alias ContextItem =
@@ -299,6 +302,12 @@ update message model =
                     | layers = ContextPopup cid ContextPopup.init :: model.layers
                 }
                 |> andThen (updateLayer <| ContextPopupMsg ContextPopup.open)
+
+        StartAddingTodo ->
+            pure
+                { model
+                    | layers = AddTodoDialog (AddTodoDialog.init ContextStore.defaultId) :: model.layers
+                }
 
         UpdateLayer msg ->
             updateLayer msg model
@@ -371,7 +380,7 @@ subscriptions model =
 
 
 startAddingTodoMsg =
-    ModeMsg Mode.startAddingTodo
+    StartAddingTodo
 
 
 startAddingContextMsg =
@@ -413,7 +422,8 @@ viewLayer model layer =
     case layer of
         ContextPopup cid contextPopup ->
             getMaybeContext cid model
-                |> unwrapMaybe noHtml (\c -> ContextPopup.view c contextPopup |> Html.map (UpdateLayer << ContextPopupMsg))
+                |> unwrapMaybe noHtml
+                    (\c -> ContextPopup.view c contextPopup |> Html.map (UpdateLayer << ContextPopupMsg))
 
         _ ->
             noHtml
