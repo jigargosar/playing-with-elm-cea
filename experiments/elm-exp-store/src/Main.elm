@@ -207,6 +207,11 @@ type Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
     | UpdateContextPopup ContextPopup.Msg
+    | UpdateLayer LayerMsg
+
+
+type LayerMsg
+    = ContextPopupMsg ContextPopup.Msg
 
 
 type alias ContextItem =
@@ -320,6 +325,59 @@ update message model =
                                 )
                             |> addTaggedCmd UpdateContextPopup cmd
                     )
+
+        UpdateLayer msg ->
+            updateLayer msg model
+
+
+updateLayer message model_ =
+    let
+        topLayer =
+            List.head model_.layers
+    in
+    case ( message, topLayer ) of
+        ( ContextPopupMsg msg, Just (ContextPopup cid contextPopup_) ) ->
+            let
+                ( contextPopup, cmd, maybeOut ) =
+                    ContextPopup.update cid msg contextPopup_
+            in
+            maybeOut
+                |> Maybe.map
+                    (\outMsg ->
+                        let
+                            model =
+                                { model_
+                                    | layers = List.drop 1 model_.layers
+                                }
+                        in
+                        case outMsg of
+                            ContextPopup.ActionOut action ->
+                                let
+                                    msg_ =
+                                        case action of
+                                            ContextPopup.Rename ->
+                                                StartEditingContext cid
+
+                                            ContextPopup.Archive ->
+                                                ContextStoreMsg <| ContextStore.archive cid
+                                in
+                                ( model
+                                , msgToCmd msg_
+                                )
+
+                            ContextPopup.CloseOut ->
+                                pure model
+                    )
+                |> Maybe.withDefault
+                    (pure
+                        { model_
+                            | layers = replaceHead (ContextPopup cid contextPopup) model_.layers
+                        }
+                    )
+                |> addTaggedCmd (UpdateLayer << ContextPopupMsg) cmd
+
+        _ ->
+            pure model_
 
 
 replaceHead o list =
