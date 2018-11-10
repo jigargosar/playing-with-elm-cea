@@ -45,15 +45,22 @@ view { inbox, contexts, addContextClicked, showArchived } =
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
-        [ HtmlX.keyedDiv [] <|
+        ([ HtmlX.keyedDiv [] <|
             [ viewKeyedContextItem noStyle inbox ]
-        , viewContextsHeader addContextClicked
-        , HtmlX.keyedDiv [] <|
+         , viewContextsHeader addContextClicked
+         , HtmlX.keyedDiv [] <|
             List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) active
-        , viewArchiveBtn showArchived
-        , HtmlX.keyedDiv [] <|
-            List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) archived
-        ]
+         ]
+            ++ (if List.length archived > 0 then
+                    [ viewArchiveBtn showArchived
+                    , HtmlX.keyedDiv [] <|
+                        List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) archived
+                    ]
+
+                else
+                    []
+               )
+        )
 
 
 viewArchiveBtn showArchived =
