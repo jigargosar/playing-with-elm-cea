@@ -5,7 +5,6 @@ module ContextPopup exposing
     , init
     , isOpenForContextId
     , refIdFromCid
-    , subscriptions
     , toggleOpenFor
     , update
     , view
@@ -62,11 +61,6 @@ type Msg
     | FocusResult FocusResult
     | ElementResult ElementResult
     | BackdropClicked DomId
-
-
-subscriptions model =
-    Sub.batch
-        []
 
 
 type alias Config msg =

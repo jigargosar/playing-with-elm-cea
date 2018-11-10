@@ -51,7 +51,6 @@ type alias Model =
     { todoStore : TodoStore
     , contextStore : ContextStore
     , contextId : ContextId
-    , contextPopup : ContextPopup.Model
     , mode : Mode
     , layers : List Layer
     }
@@ -75,7 +74,6 @@ init flags =
             { todoStore = todoStore
             , contextStore = contextStore
             , contextId = ContextStore.defaultId
-            , contextPopup = ContextPopup.init ""
             , mode = Mode.init
             , layers = []
             }
@@ -181,11 +179,17 @@ getMaybeSelectedContext model =
     model.contextStore |> ContextStore.get (getSelectedContextId model)
 
 
-isContextPopupOpenFor cid =
-    .contextPopup >> ContextPopup.isOpenForContextId cid
+isContextPopupOpenFor cid model =
+    case model.layers |> List.head of
+        Just (ContextPopup cid_ contextPopup) ->
+            cid_ == cid && ContextPopup.isOpenForContextId cid contextPopup
+
+        _ ->
+            False
 
 
 
+--maybeContextPopup
 ---- UPDATE ----
 
 
@@ -265,31 +269,53 @@ update message model =
                    )
 
         ContextMoreClicked cid ->
-            pure model
+            pure
+                { model
+                    | layers =
+                        ContextPopup cid (ContextPopup.init cid)
+                            :: model.layers
+                }
+                |> addMsg (UpdateContextPopup <| ContextPopup.toggleOpenFor cid)
 
         UpdateContextPopup msg ->
-            let
-                onAction : ContextPopup.Action -> ContextId -> Msg
-                onAction action cid =
-                    case action of
-                        ContextPopup.Rename ->
-                            StartEditingContext cid
+            getMaybeContextPopup model
+                |> unwrapMaybe (pure model)
+                    (\( cid_, contextPopup_ ) ->
+                        let
+                            onAction : ContextPopup.Action -> ContextId -> Msg
+                            onAction action cid =
+                                case action of
+                                    ContextPopup.Rename ->
+                                        StartEditingContext cid
 
-                        ContextPopup.Archive ->
-                            ContextStoreMsg <| ContextStore.archive cid
+                                    ContextPopup.Archive ->
+                                        ContextStoreMsg <| ContextStore.archive cid
 
-                ( contextPopup, cmd, maybeOnAction ) =
-                    ContextPopup.update onAction msg model.contextPopup
-            in
-            ( { model | contextPopup = contextPopup }, Cmd.map UpdateContextPopup cmd )
-                |> unwrapMaybe identity addMsg maybeOnAction
+                            ( contextPopup, cmd, maybeOnAction ) =
+                                ContextPopup.update onAction msg contextPopup_
+                        in
+                        ( { model
+                            | layers = replaceHead (ContextPopup cid_ contextPopup) model.layers
+                          }
+                        , Cmd.map UpdateContextPopup cmd
+                        )
+                            |> unwrapMaybe identity addMsg maybeOnAction
+                    )
+
+
+replaceHead o list =
+    case list of
+        head :: tail ->
+            o :: tail
+
+        [] ->
+            []
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ ContextPopup.subscriptions model.contextPopup |> Sub.map UpdateContextPopup
-        ]
+        []
 
 
 
@@ -309,7 +335,7 @@ startEditingTodoContext =
 
 
 contextMoreClicked =
-    UpdateContextPopup << ContextPopup.toggleOpenFor
+    ContextMoreClicked
 
 
 getAllContextsNameIdPairs =
@@ -338,10 +364,23 @@ viewLayers model =
 viewLayer model layer =
     case layer of
         ContextPopup cid contextPopup ->
-            ContextPopup.view model.contextPopup |> Html.map UpdateContextPopup
+            ContextPopup.view contextPopup |> Html.map UpdateContextPopup
 
         _ ->
             noHtml
+
+
+getMaybeContextPopup model =
+    List.head model.layers
+        |> Maybe.andThen
+            (\layer ->
+                case layer of
+                    ContextPopup cid contextPopup ->
+                        Just ( cid, contextPopup )
+
+                    _ ->
+                        Nothing
+            )
 
 
 viewAppBar =
@@ -393,8 +432,6 @@ createSideBarConfig model =
 
         inbox =
             createContextConfig ContextStore.defaultId ContextStore.defaultName
-
-        --                |> \config -> {config| }
     in
     { inbox = inbox
     , contexts = contexts
