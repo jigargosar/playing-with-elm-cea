@@ -9,6 +9,7 @@ import Html.Styled as Html exposing (Html, button, div, styled, text)
 import Html.Styled.Attributes exposing (class, css, id, style)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed exposing (node)
+import HtmlX
 import Icons
 import Styles exposing (..)
 import UI exposing (..)
@@ -39,19 +40,15 @@ type alias Config msg =
 view : Config msg -> Html msg
 view { inbox, contexts, addContextClicked } =
     let
-        viewKeyedContextItem style vm =
-            ( vm.key, viewContextItem style vm )
-
         ( archived, active ) =
             List.partition .isArchived contexts
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
-        [ node "div" [] <|
-            [ viewKeyedContextItem noStyle inbox
-            ]
+        [ HtmlX.keyedDiv [] <|
+            [ viewKeyedContextItem noStyle inbox ]
         , viewContextsHeader addContextClicked
-        , node "div" [] <|
+        , HtmlX.keyedDiv [] <|
             List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) active
         ]
 
@@ -76,6 +73,10 @@ liTextButton =
         , fa
         , fBody
         ]
+
+
+viewKeyedContextItem style vm =
+    ( vm.key, viewContextItem style vm )
 
 
 viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
