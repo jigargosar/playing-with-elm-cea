@@ -182,7 +182,7 @@ getMaybeSelectedContext model =
 isContextPopupOpenFor cid model =
     case model.layers |> List.head of
         Just (ContextPopup cid_ contextPopup) ->
-            cid_ == cid && ContextPopup.isOpenForContextId cid contextPopup
+            cid_ == cid
 
         _ ->
             False
