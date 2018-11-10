@@ -53,6 +53,7 @@ type alias Model =
     , contextId : ContextId
     , mode : Mode
     , layers : List Layer
+    , showArchivedContexts : Bool
     }
 
 
@@ -76,6 +77,7 @@ init flags =
             , contextId = ContextStore.defaultId
             , mode = Mode.init
             , layers = []
+            , showArchivedContexts = False
             }
     in
     pure model
@@ -211,6 +213,7 @@ type Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
     | UpdateLayer LayerMsg
+    | ToggleShowArchivedContexts
 
 
 type LayerMsg
@@ -285,6 +288,9 @@ update message model =
 
         UpdateLayer msg ->
             updateLayer msg model
+
+        ToggleShowArchivedContexts ->
+            pure { model | showArchivedContexts = not model.showArchivedContexts }
 
 
 updateLayer message model_ =
@@ -463,7 +469,8 @@ createSideBarConfig model =
     { inbox = inbox
     , contexts = contexts
     , addContextClicked = startAddingContextMsg
-    , showArchived = True
+    , showArchived = model.showArchivedContexts
+    , toggleShowArchived = ToggleShowArchivedContexts
     }
 
 

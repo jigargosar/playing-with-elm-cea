@@ -34,11 +34,12 @@ type alias Config msg =
     , contexts : List (ContextConfig msg)
     , addContextClicked : msg
     , showArchived : Bool
+    , toggleShowArchived : msg
     }
 
 
 view : Config msg -> Html msg
-view { inbox, contexts, addContextClicked, showArchived } =
+view { inbox, contexts, addContextClicked, showArchived, toggleShowArchived } =
     let
         ( archived, active ) =
             List.partition .isArchived contexts
@@ -51,8 +52,8 @@ view { inbox, contexts, addContextClicked, showArchived } =
          , HtmlX.keyedDiv [] <|
             List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) active
          ]
-            ++ (if List.length archived > 0 then
-                    [ viewArchiveBtn showArchived
+            ++ (if showArchived && List.length archived > 0 then
+                    [ viewArchiveBtn showArchived toggleShowArchived
                     , HtmlX.keyedDiv [] <|
                         List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) archived
                     ]
@@ -63,7 +64,7 @@ view { inbox, contexts, addContextClicked, showArchived } =
         )
 
 
-viewArchiveBtn showArchived =
+viewArchiveBtn showArchived toggleShowArchived =
     let
         textPrefix =
             if showArchived then
@@ -72,7 +73,11 @@ viewArchiveBtn showArchived =
             else
                 "show"
     in
-    Btn.flat [ css [ rowCXY, w100, fontSize (rem 0.8) ] ] [ text <| textPrefix ++ " archived" ]
+    Btn.flat
+        [ css [ rowCXY, w100, fontSize (rem 0.8) ]
+        , onClick toggleShowArchived
+        ]
+        [ text <| textPrefix ++ " archived" ]
 
 
 viewContextsHeader addContextClicked =
