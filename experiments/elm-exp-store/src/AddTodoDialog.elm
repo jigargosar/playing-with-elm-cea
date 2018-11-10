@@ -20,8 +20,8 @@ type alias Model =
 
 
 type OutMsg
-    = ActionOut TodoContent ContextId
-    | ClosedOut
+    = Submit TodoContent ContextId
+    | Cancel
 
 
 type Msg
@@ -36,6 +36,14 @@ rootDomId uid =
     "add-todo-dialog" ++ uid
 
 
+withSubmitOutMsg =
+    withOutMsg (always Cancel)
+
+
+withCancelOutMsg =
+    withOutMsg (always Cancel)
+
+
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
 update message =
     (case message of
@@ -45,7 +53,7 @@ update message =
 
         BackdropClicked targetId ->
             if targetId == backdropId then
-                withOutMsg (\_ -> ClosedOut)
+                withSubmitOutMsg
 
             else
                 withNoOutMsg
@@ -57,7 +65,15 @@ update message =
             withNoOutMsg
 
         ContentInputKeyDown ke ->
-            withNoOutMsg
+            case ke of
+                ( [], "Enter" ) ->
+                    withSubmitOutMsg
+
+                ( [], "Escape" ) ->
+                    withCancelOutMsg
+
+                _ ->
+                    withNoOutMsg
     )
         << pure
 
