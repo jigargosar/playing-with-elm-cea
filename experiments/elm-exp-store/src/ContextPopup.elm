@@ -12,7 +12,7 @@ module ContextPopup exposing
 
 import BasicsX exposing (..)
 import Browser.Dom exposing (Element)
-import ContextStore exposing (ContextId)
+import ContextStore exposing (Context, ContextId)
 import Css exposing (..)
 import CssAtoms exposing (..)
 import DomX exposing (DomId, onClickTargetId, onFocusIn, onFocusOut)
@@ -128,11 +128,11 @@ update uniqueId message =
 
 type Action
     = Rename
-    | Archive
+    | ToggleArchive
 
 
 actions =
-    [ Rename, Archive ]
+    [ Rename, ToggleArchive ]
 
 
 getChildText child =
@@ -140,7 +140,7 @@ getChildText child =
         Rename ->
             "Rename"
 
-        Archive ->
+        ToggleArchive ->
             "Archive"
 
 
@@ -161,19 +161,22 @@ childContent popperDomId child =
     ]
 
 
-view : String -> Model -> Html Msg
-view uniqueId model =
+view : Context -> Model -> Html Msg
+view context model =
     case model.refEle of
         Just element ->
-            viewPopup uniqueId element model
+            viewPopup context element model
 
         _ ->
             noHtml
 
 
-viewPopup : String -> Element -> Model -> Html Msg
-viewPopup uniqueId ref model =
+viewPopup : Context -> Element -> Model -> Html Msg
+viewPopup context ref model =
     let
+        uniqueId =
+            context.id
+
         popperDomId =
             getPopperDomId uniqueId
 

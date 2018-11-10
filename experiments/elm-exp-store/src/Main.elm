@@ -188,6 +188,10 @@ isContextPopupOpenFor cid model =
             False
 
 
+getMaybeContext cid =
+    .contextStore >> ContextStore.get cid
+
+
 
 --maybeContextPopup
 ---- UPDATE ----
@@ -311,7 +315,7 @@ updateLayer message model_ =
                                             ContextPopup.Rename ->
                                                 StartEditingContext cid
 
-                                            ContextPopup.Archive ->
+                                            ContextPopup.ToggleArchive ->
                                                 ContextStoreMsg <| ContextStore.archive cid
                                 in
                                 ( model
@@ -385,7 +389,8 @@ viewLayers model =
 viewLayer model layer =
     case layer of
         ContextPopup cid contextPopup ->
-            ContextPopup.view cid contextPopup |> Html.map (UpdateLayer << ContextPopupMsg)
+            getMaybeContext cid model
+                |> unwrapMaybe noHtml (\c -> ContextPopup.view c contextPopup |> Html.map (UpdateLayer << ContextPopupMsg))
 
         _ ->
             noHtml
