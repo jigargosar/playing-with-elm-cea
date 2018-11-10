@@ -5,7 +5,6 @@ module ContextPopup exposing
     , OutMsg
     , OutType(..)
     , init
-    , isOpenForContextId
     , open
     , refIdFromCid
     , update
@@ -41,10 +40,6 @@ init cid =
     { cid = cid
     , refEle = Nothing
     }
-
-
-isOpenForContextId cid model =
-    model.cid == cid
 
 
 type alias BounceMsg =
