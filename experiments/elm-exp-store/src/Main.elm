@@ -351,7 +351,7 @@ update message model =
                                 ( { model | layer = NoLayer }
                                 , case out of
                                     AddTodoDialog.Submit content contextId ->
-                                        msgToCmd (ContextStore <| ContextStore.addNew content)
+                                        Cmd.none
 
                                     AddTodoDialog.Cancel ->
                                         Cmd.none
