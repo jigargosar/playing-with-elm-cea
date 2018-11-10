@@ -97,7 +97,7 @@ defaultAttrs =
     , stroke "currentColor"
     , strokeLinecap "round"
     , strokeLinejoin "round"
-    , strokeWidth "1.5"
+    , strokeWidth "1.3"
     , viewBox "0 0 24 24"
     , width "24"
     ]
