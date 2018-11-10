@@ -73,18 +73,20 @@ viewArchivedContexts archived =
 
 viewArchiveBtn showArchived toggleShowArchived =
     let
-        caption =
+        toggleIcon =
             if showArchived then
-                "Hide Archived"
+                Icons.toggleRightDef
 
             else
-                "Show Archived"
+                Icons.toggleLeftDef
     in
-    Btn.flat
+    Btn.flatPr0
         [ css [ mRm 1, mbRm 0.5, rowCY, fontSize (rem 0.8) ]
         , onClick toggleShowArchived
         ]
-        [ text caption ]
+        [ text "Archived"
+        , toggleIcon
+        ]
 
 
 viewContextsHeader addContextClicked =

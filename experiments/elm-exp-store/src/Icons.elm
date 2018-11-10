@@ -19,6 +19,8 @@ module Icons exposing
     , plusDefault
     , plusSmall
     , rotateCcwDefault
+    , toggleLeftDef
+    , toggleRightDef
     )
 
 import Css
@@ -203,6 +205,28 @@ moreHorizontal =
         , Svg.circle [ cx "19", cy "12", r "1" ] []
         , Svg.circle [ cx "5", cy "12", r "1" ] []
         ]
+
+
+toggleLeft =
+    svgFeatherIcon "toggle-left"
+        [ Svg.rect [ x "1", y "5", width "22", height "14", rx "7", ry "7" ] []
+        , Svg.circle [ cx "8", cy "12", r "3" ] []
+        ]
+
+
+toggleRight =
+    svgFeatherIcon "toggle-right"
+        [ Svg.rect [ x "1", y "5", width "22", height "14", rx "7", ry "7" ] []
+        , Svg.circle [ cx "16", cy "12", r "3" ] []
+        ]
+
+
+toggleLeftDef =
+    default toggleLeft
+
+
+toggleRightDef =
+    default toggleRight
 
 
 moreHDef =
