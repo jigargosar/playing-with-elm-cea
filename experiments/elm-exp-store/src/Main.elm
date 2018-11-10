@@ -506,13 +506,13 @@ viewTodoList model =
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY, hs ], class "ph3" ]
             [ styled Btn.flatPl0
-                [ fzPx 14, fa ]
+                [ fontSize (rem 0.8), fa ]
                 [ onClick startAddingTodoMsg ]
                 [ Icons.plusSmall
                 , text "Add Task"
                 ]
             , styled Btn.flatPr0
-                [ fzPx 14 ]
+                [ fontSize (rem 0.8) ]
                 [ onClick ToggleCompletedTodos ]
                 [ sDiv [ rowCXY, hs ] [] [ text "Completed" ]
                 , sDiv [ rowCXY, hs ]
