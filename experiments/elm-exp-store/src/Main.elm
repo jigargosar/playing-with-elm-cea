@@ -409,8 +409,6 @@ view model =
         [ viewAppBar
         , viewPage model
         , viewLayer model
-
-        --        , ContextPopup.view model.contextPopup |> Html.map UpdateContextPopup
         , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
         ]
 
