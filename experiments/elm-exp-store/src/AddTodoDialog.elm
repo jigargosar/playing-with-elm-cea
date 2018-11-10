@@ -31,7 +31,7 @@ rootDomId =
 
 
 getBackdropDomId =
-    rootDomId (++) "-backdrop"
+    rootDomId ++ "-backdrop"
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
