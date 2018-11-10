@@ -59,6 +59,9 @@ update uniqueId message =
 
         ContextIdChanged contextId ->
             withNoOutMsg
+
+        ContentInputKeyDown ke ->
+            withNoOutMsg
     )
         << pure
 
