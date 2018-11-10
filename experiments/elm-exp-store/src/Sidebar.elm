@@ -51,6 +51,8 @@ view { inbox, contexts, addContextClicked, showArchived } =
         , HtmlX.keyedDiv [] <|
             List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) active
         , viewArchiveBtn showArchived
+        , HtmlX.keyedDiv [] <|
+            List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) archived
         ]
 
 
