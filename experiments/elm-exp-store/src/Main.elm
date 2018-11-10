@@ -426,7 +426,8 @@ viewLayer model layer =
                     (\c -> ContextPopup.view c contextPopup |> Html.map (UpdateLayer << ContextPopupMsg))
 
         _ ->
-            noHtml
+            --            noHtml
+            Debug.todo "implement view layer case"
 
 
 getMaybeContextPopup model =
