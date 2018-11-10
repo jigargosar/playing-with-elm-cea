@@ -52,10 +52,14 @@ view { inbox, contexts, addContextClicked, showArchived, toggleShowArchived } =
          , HtmlX.keyedDiv [] <|
             List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) active
          ]
-            ++ (if showArchived && List.length archived > 0 then
+            ++ (if List.length archived > 0 then
                     [ viewArchiveBtn showArchived toggleShowArchived
-                    , HtmlX.keyedDiv [] <|
-                        List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) archived
+                    , if showArchived then
+                        HtmlX.keyedDiv [] <|
+                            List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) archived
+
+                      else
+                        noHtml
                     ]
 
                 else
@@ -66,18 +70,18 @@ view { inbox, contexts, addContextClicked, showArchived, toggleShowArchived } =
 
 viewArchiveBtn showArchived toggleShowArchived =
     let
-        textPrefix =
+        caption =
             if showArchived then
-                "hide"
+                "Hide Archived"
 
             else
-                "show"
+                "Archived Contexts"
     in
     Btn.flat
         [ css [ rowCXY, w100, fontSize (rem 0.8) ]
         , onClick toggleShowArchived
         ]
-        [ text <| textPrefix ++ " archived" ]
+        [ text caption ]
 
 
 viewContextsHeader addContextClicked =
