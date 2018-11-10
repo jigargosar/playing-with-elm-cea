@@ -89,7 +89,7 @@ attemptGetElement resultToMsg domId =
 
 type OutMsg
     = ActionOut Action
-    | CloseOut
+    | ClosedOut
 
 
 update : String -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
@@ -110,7 +110,7 @@ update uniqueId message =
 
         BackdropClicked targetId ->
             if targetId == getBackdropDomId uniqueId then
-                withOutMsg (\_ -> CloseOut)
+                withOutMsg (\_ -> ClosedOut)
 
             else
                 withNoOutMsg

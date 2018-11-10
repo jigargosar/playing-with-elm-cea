@@ -318,7 +318,7 @@ updateLayer message model_ =
                                 , msgToCmd msg_
                                 )
 
-                            ContextPopup.CloseOut ->
+                            ContextPopup.ClosedOut ->
                                 pure model
                     )
                 |> Maybe.withDefault
