@@ -54,6 +54,7 @@ type alias Model =
     , mode : Mode
     , layers : List Layer
     , showArchivedContexts : Bool
+    , showCompletedTodos : Bool
     }
 
 
@@ -78,6 +79,7 @@ init flags =
             , mode = Mode.init
             , layers = []
             , showArchivedContexts = False
+            , showCompletedTodos = False
             }
     in
     pure model
@@ -214,6 +216,7 @@ type Msg
     | ContextMoreClicked ContextId
     | UpdateLayer LayerMsg
     | ToggleShowArchivedContexts
+    | ToggleCompletedTodos
 
 
 type LayerMsg
@@ -291,6 +294,9 @@ update message model =
 
         ToggleShowArchivedContexts ->
             pure { model | showArchivedContexts = not model.showArchivedContexts }
+
+        ToggleCompletedTodos ->
+            pure { model | showCompletedTodos = not model.showCompletedTodos }
 
 
 updateLayer message model_ =
