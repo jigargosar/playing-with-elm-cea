@@ -49,9 +49,9 @@ update uniqueId message =
                 withNoOutMsg
 
         ContentChanged content ->
-            identity
+            withNoOutMsg
 
         ContextIdChanged contextId ->
-            identity
+            withNoOutMsg
     )
         << pure
