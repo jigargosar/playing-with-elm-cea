@@ -275,7 +275,7 @@ update message model =
                         ContextPopup cid (ContextPopup.init cid)
                             :: model.layers
                 }
-                |> addMsg (UpdateContextPopup <| ContextPopup.toggleOpenFor cid)
+                |> addMsg (UpdateContextPopup <| ContextPopup.open cid)
 
         UpdateContextPopup msg ->
             getMaybeContextPopup model

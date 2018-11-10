@@ -6,8 +6,8 @@ module ContextPopup exposing
     , OutType(..)
     , init
     , isOpenForContextId
+    , open
     , refIdFromCid
-    , toggleOpenFor
     , update
     , view
     )
@@ -31,35 +31,33 @@ import UpdateReturn exposing (..)
 
 
 type alias Model =
-    { open : Bool
-    , cid : ContextId
+    { cid : ContextId
     , refEle : Maybe Element
     }
 
 
 init : ContextId -> Model
 init cid =
-    { open = False
-    , cid = cid
+    { cid = cid
     , refEle = Nothing
     }
 
 
 isOpenForContextId cid model =
-    model.cid == cid && model.open
+    model.cid == cid
 
 
 type alias BounceMsg =
     Maybe Msg
 
 
-toggleOpenFor =
-    ToggleOpenFor
+open =
+    Open
 
 
 type Msg
     = ActionClicked Action
-    | ToggleOpenFor ContextId
+    | Open ContextId
     | FocusResult FocusResult
     | ElementResult ElementResult
     | BackdropClicked DomId
@@ -110,10 +108,11 @@ update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
 update message =
     let
         setClosed =
-            \model -> { model | open = False, refEle = Nothing }
+            identity
 
+        --            \model -> { model | refEle = Nothing }
         setOpenAndContextId cid model =
-            { model | open = True, cid = cid, refEle = Nothing }
+            { model | cid = cid, refEle = Nothing }
     in
     (case message of
         FocusResult r ->
@@ -138,13 +137,10 @@ update message =
             mapModel setClosed
                 >> withOutMsg (.cid >> OutMsg (ActionOut action))
 
-        ToggleOpenFor cid ->
-            mapIfElse (isOpenForContextId cid)
-                (mapModel setClosed >> withOutMsg (.cid >> OutMsg CloseOut))
-                (mapModel (setOpenAndContextId cid)
-                    >> addCmd (attemptGetElement ElementResult (refIdFromCid cid))
-                    >> withNoOutMsg
-                )
+        Open cid ->
+            mapModel (setOpenAndContextId cid)
+                >> addCmd (attemptGetElement ElementResult (refIdFromCid cid))
+                >> withNoOutMsg
     )
         << pure
 
@@ -186,8 +182,8 @@ childContent popperDomId child =
 
 view : Model -> Html Msg
 view model =
-    case ( model.open, model.refEle ) of
-        ( True, Just element ) ->
+    case model.refEle of
+        Just element ->
             viewPopup element model
 
         _ ->
