@@ -122,7 +122,14 @@ viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelect
         , class "hide-child"
         ]
         [ liTextButton
-            [ css [ ttu, rowCY ]
+            [ css
+                [ if String.isEmpty name then
+                    Css.batch [ ttl, fgGray ]
+
+                  else
+                    Css.batch [ ttu ]
+                , rowCY
+                ]
             , onClick navigateToTodoList
             ]
             [ div [] [ text <| defaultEmptyStringTo "<empty>" name ]

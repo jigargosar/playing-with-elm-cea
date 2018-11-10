@@ -17,6 +17,7 @@ module CssAtoms exposing
     , ptr
     , tc
     , tl
+    , ttl
     , ttu
     , w100
     )
@@ -42,6 +43,10 @@ b0 =
 
 ttu =
     textTransform uppercase
+
+
+ttl =
+    textTransform lowercase
 
 
 tl =
