@@ -26,12 +26,12 @@ type Msg
     | ContextIdChanged ContextId
 
 
-rootDomId =
-    "add-todo-dialog"
+rootDomId uid =
+    "add-todo-dialog" ++ uid
 
 
-getBackdropDomId =
-    rootDomId ++ "-backdrop"
+getBackdropDomId uid =
+    rootDomId uid ++ "-backdrop"
 
 
 update : String -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
