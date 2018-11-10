@@ -137,6 +137,11 @@ getSelectedContextActiveTodoList model =
     getActiveTodoListForContextId model.contextId model
 
 
+getSelectedContextTodoList : Model -> List Todo
+getSelectedContextTodoList model =
+    getTodoListForContextId model.contextId model
+
+
 getActiveTodoListCountForContextId : ContextId -> Model -> Int
 getActiveTodoListCountForContextId cid =
     getActiveTodoListForContextId cid >> List.length
@@ -145,6 +150,11 @@ getActiveTodoListCountForContextId cid =
 getActiveTodoListForContextId : ContextId -> Model -> List Todo
 getActiveTodoListForContextId cid =
     .todoStore >> TodoStore.list >> List.filter (allPass [ contextIdEq cid, isNotDone ])
+
+
+getTodoListForContextId : ContextId -> Model -> List Todo
+getTodoListForContextId cid =
+    .todoStore >> TodoStore.list >> List.filter (allPass [ contextIdEq cid ])
 
 
 getUserDefinedContextList : Model -> List Context
@@ -500,8 +510,13 @@ viewTodoListHeader model =
 
 viewTodoList : Model -> Html Msg
 viewTodoList model =
+    let
+        ( active, completed ) =
+            getSelectedContextTodoList model
+                |> List.partition isNotDone
+    in
     div [ css [] ]
-        [ getSelectedContextActiveTodoList model
+        [ active
             |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY, hs ], class "ph3" ]
@@ -511,19 +526,23 @@ viewTodoList model =
                 [ Icons.plusSmall
                 , text "Add Task"
                 ]
-            , styled Btn.flatPr0
-                [ fontSize (rem 0.8) ]
-                [ onClick ToggleCompletedTodos ]
-                [ sDiv [ rowCXY, hs ] [] [ text "Completed" ]
-                , sDiv [ rowCXY, hs ]
-                    []
-                    [ if model.showCompletedTodos then
-                        Icons.toggleRightDef
+            , viewCompletedBtn model.showCompletedTodos
+            ]
+        ]
 
-                      else
-                        Icons.toggleLeftDef
-                    ]
-                ]
+
+viewCompletedBtn showCompletedTodos =
+    styled Btn.flatPr0
+        [ fontSize (rem 0.8) ]
+        [ onClick ToggleCompletedTodos ]
+        [ sDiv [ rowCXY, hs ] [] [ text "Completed" ]
+        , sDiv [ rowCXY, hs ]
+            []
+            [ if showCompletedTodos then
+                Icons.toggleRightDef
+
+              else
+                Icons.toggleLeftDef
             ]
         ]
 
