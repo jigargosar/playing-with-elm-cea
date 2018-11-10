@@ -1,4 +1,4 @@
-module AddTodoDialog exposing (Model, Msg, OutMsg(..), init, update)
+module AddTodoDialog exposing (Model, Msg, OutMsg(..), init, update, view)
 
 import ContextStore exposing (ContextId)
 import DomX exposing (DomId, onClickTargetId)
@@ -95,8 +95,12 @@ backdropId =
     "add-todo-modal-backdrop"
 
 
-view : DomId -> String -> Html Msg
-view inputId content =
+inputId =
+    "add-todo-modal-content-input"
+
+
+view : Model -> Html Msg
+view model =
     UI.backdrop
         [ id backdropId
         , onClickTargetId BackdropClicked
@@ -108,7 +112,7 @@ view inputId content =
                 [ input
                     [ id inputId
                     , class "flex-auto pa3"
-                    , value content
+                    , value model.content
                     , onInput ContentChanged
                     , HotKey.onKeyDown ContentInputKeyDown
                     ]

@@ -234,7 +234,7 @@ type Msg
 
 type LayerMsg
     = ContextPopupMsg ContextPopup.Msg
-    | AddTodoMsg AddTodoDialog.Msg
+    | AddTodoDialogMsg AddTodoDialog.Msg
 
 
 type alias ContextItem =
@@ -424,6 +424,9 @@ viewLayer model layer =
             getMaybeContext cid model
                 |> unwrapMaybe noHtml
                     (\c -> ContextPopup.view c contextPopup |> Html.map (UpdateLayer << ContextPopupMsg))
+
+        AddTodoDialog dialogModel ->
+            AddTodoDialog.view dialogModel |> Html.map (UpdateLayer << AddTodoDialogMsg)
 
         _ ->
             --            noHtml
