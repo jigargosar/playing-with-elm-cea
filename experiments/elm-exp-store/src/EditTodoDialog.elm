@@ -1,4 +1,4 @@
-module EditTodoDialog exposing (DialogMode(..), Model, Msg, OutMsg(..), autoFocus, initEdit, update, view)
+module EditTodoDialog exposing (DialogMode(..), Model, Msg, OutMsg(..), autoFocus, initCreate, initEdit, update, view)
 
 import BasicsX exposing (defaultEmptyStringTo)
 import ContextStore exposing (Context, ContextId, ContextStore)
@@ -29,8 +29,14 @@ type alias Model =
     }
 
 
+initEdit : Todo -> Model
 initEdit todo =
     { content = todo.content, contextId = todo.contextId, dialogMode = Edit todo }
+
+
+initCreate : ContextId -> Model
+initCreate contextId =
+    { content = "", contextId = contextId, dialogMode = Create }
 
 
 autoFocus =

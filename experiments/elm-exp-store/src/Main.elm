@@ -305,9 +305,9 @@ update message model =
                 NoLayer ->
                     pure
                         { model
-                            | layer = CreateTodoDialog (CreateTodoDialog.init <| getSelectedContextId model)
+                            | layer = EditTodoDialog (EditTodoDialog.initCreate <| getSelectedContextId model)
                         }
-                        |> andThenUpdate (MsgCreateTodoDialog CreateTodoDialog.autoFocus)
+                        |> andThenUpdate (MsgEditTodoDialog EditTodoDialog.autoFocus)
 
                 _ ->
                     Debug.todo "handle: replacing layer without closing it."
