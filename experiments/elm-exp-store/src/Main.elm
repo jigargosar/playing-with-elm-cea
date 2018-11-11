@@ -517,7 +517,7 @@ viewTempSidebar model =
                  ,
               -}
               bg "white"
-            , maxWidth (pct 80)
+            , Css.width (pct 80)
             ]
             []
             [ Sidebar.view <| createSideBarConfig model ]
