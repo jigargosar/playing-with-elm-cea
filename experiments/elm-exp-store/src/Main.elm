@@ -640,10 +640,10 @@ createTodoViewModel contextStore todo =
         (defaultEmptyStringTo "<empty>" todo.content)
         todo.done
         (ContextStore.getNameOrDefaultById todo.contextId contextStore)
-        (MsgMode <| Mode.startEditingTodo todo)
+        (SwitchLayerToEditTodoDialog todo)
         (MsgTodoStore <| TodoStore.markDone todo.id)
         (MsgTodoStore <| TodoStore.unmarkDone todo.id)
-        (startEditingTodoContext todo)
+        (SwitchLayerToEditTodoDialog todo)
 
 
 viewKeyedTodo : TodoViewModel msg -> ( String, Html msg )
