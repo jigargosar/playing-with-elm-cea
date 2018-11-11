@@ -16,7 +16,7 @@ module Icons exposing
     , moreHDef
     , moreHorizontal
     , plus
-    , plusDefault
+    , plusDef
     , plusSmall
     , rotateCcwDefault
     , toggleLeftDef
@@ -235,7 +235,7 @@ circleDefault =
     default circle
 
 
-plusDefault =
+plusDef =
     default plus
 
 

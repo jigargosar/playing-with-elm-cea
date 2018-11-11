@@ -477,7 +477,7 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ viewAppBar
         , viewPage model
-        , QuickAction.view
+--        , QuickAction.view
         , viewLayer model
         ]
 
