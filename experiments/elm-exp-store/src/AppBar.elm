@@ -22,10 +22,13 @@ view config =
     in
     UI.appBar []
         [ styled UI.section1
-            [ fzPx 24 ]
-            [ class "pa3" ]
+            [ pRm 1 ]
+            []
             [ Btn.sIcon [ hs ] [] [ Icons.menuDef ]
-            , sDiv [ fwb ] [] [ text "ELM" ]
-            , sDiv [ fontWeight lighter ] [] [ text "DONE" ]
+            , sDiv [ fzPx 24, rowCY ]
+                []
+                [ sDiv [ fwb ] [] [ text "ELM" ]
+                , sDiv [ fontWeight lighter ] [] [ text "DONE" ]
+                ]
             ]
         ]
