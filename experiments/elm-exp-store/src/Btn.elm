@@ -1,6 +1,6 @@
 module Btn exposing (flat, flatPl0, flatPr0, icon, sIcon)
 
-import Css exposing (hover)
+import Css exposing (hover, px, zero)
 import Css.Transitions as CT exposing (transition)
 import FeatherIcons
 import Html.Styled exposing (button, fromUnstyled, styled)
@@ -28,23 +28,36 @@ outlineTransition =
 
 
 icon =
+    sIcon []
+
+
+sIcon styles =
     styled button
-        [ btnReset
-        , fZero
-        , hover [ fg "red" ]
-        , transition
+        ([ m0
+         , p0
+         , tl
+         , Css.property "-webkit-appearance" "none"
+         , Css.backgroundColor Css.transparent
+         , b0
+         , ptr
+         , Css.fontSize (px 0)
+         , Css.lineHeight (px 0)
+         , Css.focus
+            [ Css.outlineWidth (px 2)
+            , Css.outlineOffset (px 0)
+            ]
+         , hover [ Css.property "color" "red" ]
+         , transition
             [ CT.color3 150 0 CT.easeIn
 
             --            , CT.outlineOffset3 150 0 CT.easeIn
             --            , CT.outlineWidth3 150 0 CT.easeIn
             , CT.outline3 150 0 CT.easeIn
             ]
-        , Css.property "color" "inherit"
-        ]
-
-
-sIcon =
-    styled icon
+         , Css.property "color" "inherit"
+         ]
+            ++ styles
+        )
 
 
 flat =

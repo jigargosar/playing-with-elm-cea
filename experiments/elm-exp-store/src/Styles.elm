@@ -1,4 +1,4 @@
-module Styles exposing (absFill, aic, aife, ambient, ambientColor, b0, bc, bcBlackA, bg, blackA, boolCss, btnReset, centerCenter, dFlex, dFlexCol, dFlexRow, elevation, fBody, fDCol, fDRow, fDir, fZero, fa, fg, fgGray, fwb, fz, fz0, fzPx, hs, jcc, lh, lh0, lhNum, m0, mRm, mbRm, noStyle, p0, p2Rm, pColor, pRm, penumbra, penumbraColor, pl0, plRm, prRm, ptr, rowBottomY, rowCXY, rowCY, spacing0, tc, tl, transitionFadeIn, ttl, ttu, umbra, umbraColor, vs, w100)
+module Styles exposing (absFill, aic, aife, ambient, ambientColor, b0, bc, bcBlackA, bg, blackA, boolCss, btnReset, btnResetStyles, centerCenter, dFlex, dFlexCol, dFlexRow, elevation, fBody, fDCol, fDRow, fDir, fZero, fa, fg, fgGray, fwb, fz, fz0, fzPx, hs, jcc, lh, lh0, lhNum, m0, mRm, mbRm, noStyle, p0, p2Rm, pColor, pRm, penumbra, penumbraColor, pl0, plRm, prRm, ptr, rowBottomY, rowCXY, rowCY, spacing0, tc, tl, transitionFadeIn, ttl, ttu, umbra, umbraColor, vs, w100)
 
 import Array
 import BasicsX exposing (..)
@@ -8,7 +8,7 @@ import Html.Styled exposing (div, styled, text)
 
 
 p0 =
-    padding zero
+    padding4 zero zero zero zero
 
 
 pl0 =
@@ -16,7 +16,7 @@ pl0 =
 
 
 m0 =
-    margin zero
+    margin4 zero zero zero zero
 
 
 b0 =
@@ -176,6 +176,22 @@ btnReset =
             , outlineOffset (px 0)
             ]
         ]
+
+
+btnResetStyles =
+    [ m0
+    , p0
+    , tl
+    , property "-webkit-appearance" "none"
+    , backgroundColor transparent
+    , b0
+    , ptr
+    , fBody
+    , focus
+        [ outlineWidth (px 2)
+        , outlineOffset (px 0)
+        ]
+    ]
 
 
 fzPx =
