@@ -202,6 +202,12 @@ viewPopup context ref model =
                 [ onClick <| ActionClicked child ]
                 (childContent idx context popperDomId child)
 
+        rootLeft =
+            ref.element.x + ref.element.width
+
+        rootTop =
+            min ref.element.y ref.viewport.height
+
         rootStyles =
             [ bg "white"
             , elevation 4
@@ -209,8 +215,8 @@ viewPopup context ref model =
             , pRm 0.5
             , minWidth (rem 10)
             , position absolute
-            , left (px <| ref.element.x + ref.element.width)
-            , top (px <| min ref.element.y ref.viewport.height)
+            , left (px <| rootLeft)
+            , top (px <| rootTop)
             ]
 
         rootAttributes =
