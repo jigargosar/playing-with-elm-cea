@@ -12,6 +12,7 @@
     "tachyons": "^4.11.1"
   },
   "now": {
+    "version": "1",
     "alias": [
       "elm-done",
       "https://elm-done.functional-programmer.com"
