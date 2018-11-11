@@ -291,7 +291,7 @@ update message model =
                         |> andThenUpdate (MsgTodoDialog TodoDialog.autoFocus)
 
                 _ ->
-                    Debug.todo "handle: replacing layer without closing it."
+                    pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
 
         SwitchLayerToEditTodoDialog todo ->
             case model.layer of
@@ -303,7 +303,7 @@ update message model =
                         |> andThenUpdate (MsgTodoDialog TodoDialog.autoFocus)
 
                 _ ->
-                    Debug.todo "handle: replacing layer without closing it."
+                    pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
 
         SwitchLayerToCreateContextDialog ->
             case model.layer of
@@ -315,7 +315,7 @@ update message model =
                         |> andThenUpdate (MsgContextDialog ContextDialog.autoFocus)
 
                 _ ->
-                    Debug.todo "handle: replacing layer without closing it."
+                    pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
 
         SwitchLayerToEditContextDialog context ->
             case model.layer of
@@ -327,7 +327,7 @@ update message model =
                         |> andThenUpdate (MsgContextDialog ContextDialog.autoFocus)
 
                 _ ->
-                    Debug.todo "handle: replacing layer without closing it."
+                    pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
 
         MsgContextPopup msg ->
             case model.layer of
