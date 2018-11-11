@@ -7,7 +7,6 @@ import Browser.Events
 import Btn
 import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
-import CreateTodoDialog
 import Css exposing (..)
 import CssAtoms exposing (fa, fgGray, p0, pl0, ptr, ttu, w100)
 import Dict exposing (Dict)
@@ -43,8 +42,7 @@ import UpdateReturn exposing (..)
 
 
 type Layer
-    = CreateTodoDialog CreateTodoDialog.Model
-    | EditTodoDialog EditTodoDialog.Model
+    = EditTodoDialog EditTodoDialog.Model
     | ContextPopup ContextId ContextPopup.Model
     | NoLayer
 
@@ -224,7 +222,6 @@ type Msg
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
     | MsgContextPopup ContextPopup.Msg
-    | MsgCreateTodoDialog CreateTodoDialog.Msg
     | MsgEditTodoDialog EditTodoDialog.Msg
     | MsgMode Mode.Msg
     | StartEditingContext ContextId
@@ -355,33 +352,6 @@ update message model =
                 _ ->
                     pure model
 
-        MsgCreateTodoDialog msg ->
-            case model.layer of
-                CreateTodoDialog layerModel ->
-                    let
-                        ( addTodoDialogModel, cmd, maybeOutMsg ) =
-                            CreateTodoDialog.update msg layerModel
-                    in
-                    maybeOutMsg
-                        |> unwrapMaybe
-                            (pure
-                                { model | layer = CreateTodoDialog addTodoDialogModel }
-                            )
-                            (\out ->
-                                ( { model | layer = NoLayer }
-                                , case out of
-                                    CreateTodoDialog.Submit content contextId ->
-                                        msgToCmd <| MsgTodoStore (TodoStore.addNew content contextId)
-
-                                    CreateTodoDialog.Cancel ->
-                                        Cmd.none
-                                )
-                            )
-                        |> addTaggedCmd MsgCreateTodoDialog cmd
-
-                _ ->
-                    pure model
-
         MsgEditTodoDialog msg ->
             case model.layer of
                 EditTodoDialog layerModel ->
@@ -472,9 +442,6 @@ viewLayer model =
             getMaybeContext cid model
                 |> unwrapMaybe noHtml
                     (\c -> ContextPopup.view c contextPopup |> Html.map MsgContextPopup)
-
-        CreateTodoDialog dialogModel ->
-            CreateTodoDialog.view model.contextStore dialogModel |> Html.map MsgCreateTodoDialog
 
         EditTodoDialog dialogModel ->
             EditTodoDialog.view model.contextStore dialogModel |> Html.map MsgEditTodoDialog
