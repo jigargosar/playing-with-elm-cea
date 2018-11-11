@@ -134,7 +134,7 @@ viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelect
                 ]
             , onClick navigateToTodoList
             ]
-            [ div [] [ text <| defaultEmptyStringTo "<empty>" name ]
+            [ sDiv [ Css.property "word-break" "break-word" ] [] [ text <| defaultEmptyStringTo "<empty>" name ]
             , sDiv
                 [ plRm 0.1
                 , Css.fontSize (em 0.8)
