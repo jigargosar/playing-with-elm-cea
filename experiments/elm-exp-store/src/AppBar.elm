@@ -14,7 +14,12 @@ type alias Config msg =
     }
 
 
-view =
+view : Config msg -> Html msg
+view config =
+    let
+        { menuClicked } =
+            config
+    in
     UI.appBar []
         [ styled UI.section1
             [ fzPx 24 ]

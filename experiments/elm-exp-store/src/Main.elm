@@ -476,7 +476,7 @@ getAllContextsNameIdPairs =
 view : Model -> Html Msg
 view model =
     div [ class "flex flex-column min-h-100 w-100" ]
-        [ AppBar.view
+        [ AppBar.view { menuClicked = NoOp }
         , viewPage model
 
         --        , QuickAction.view
