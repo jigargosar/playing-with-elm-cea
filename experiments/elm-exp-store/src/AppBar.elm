@@ -1,7 +1,7 @@
 module AppBar exposing (Config, view)
 
 import Btn
-import Css exposing (fontWeight, lighter)
+import Css exposing (fontSize, fontWeight, lighter, rem)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Icons
@@ -16,8 +16,10 @@ type alias Config msg =
 
 view =
     UI.appBar []
-        [ UI.section1 [ class "pa3" ]
-            [ Btn.icon [] [ Icons.plusDef ]
+        [ styled UI.section1
+            [ fzPx 24 ]
+            [ class "pa3" ]
+            [ Btn.sIcon [ hs ] [] [ Icons.plusDef ]
             , sDiv [ fwb ] [] [ text "ELM" ]
             , sDiv [ fontWeight lighter ] [] [ text "DONE" ]
             ]
