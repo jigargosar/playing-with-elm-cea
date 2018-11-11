@@ -8,7 +8,7 @@ import Html.Styled exposing (div, styled, text)
 
 
 p0 =
-    padding4 zero zero zero zero
+    padding zero
 
 
 pl0 =
@@ -16,7 +16,7 @@ pl0 =
 
 
 m0 =
-    margin4 zero zero zero zero
+    margin zero
 
 
 b0 =
