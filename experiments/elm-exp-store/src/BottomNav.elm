@@ -8,7 +8,8 @@ import UI exposing (..)
 
 
 view =
-    sDiv [ flexShrink zero, rowCY, pRm 1, elevation 4 ]
+    sDiv [ flexShrink zero, rowCY, pRm 1, elevation 4, fDir rowReverse ]
         []
-        [ Btn.flat [] [ text "Hello" ]
+        [ Btn.flat [] [ text "Add" ]
+        , Btn.flat [] [ text "Contexts" ]
         ]
