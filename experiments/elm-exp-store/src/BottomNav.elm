@@ -1,8 +1,14 @@
 module BottomNav exposing (view)
 
-import CssAtoms exposing (w100)
+import Btn
+import Css exposing (..)
+import Html.Styled exposing (text)
+import Styles exposing (..)
 import UI exposing (..)
 
 
 view =
-    sDiv [ w100 ] []
+    sDiv [ flexShrink zero, rowCY, pRm 1, elevation 4 ]
+        []
+        [ Btn.flat [] [ text "Hello" ]
+        ]

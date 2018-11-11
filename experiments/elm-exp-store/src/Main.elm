@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import BasicsX exposing (..)
+import BottomNav
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -476,6 +477,7 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ viewAppBar
         , viewPage model
+        , BottomNav.view
         , viewLayer model
         ]
 
