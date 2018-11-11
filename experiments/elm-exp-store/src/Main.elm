@@ -298,11 +298,16 @@ update message model =
                 |> andThenUpdate (MsgContextPopup ContextPopup.open)
 
         StartAddingTodo ->
-            pure
-                { model
-                    | layer = AddTodoDialog AddTodoDialog.init
-                }
-                |> andThenUpdate (MsgAddTodoDialog AddTodoDialog.autoFocus)
+            case model.layer of
+                NoLayer ->
+                    pure
+                        { model
+                            | layer = AddTodoDialog AddTodoDialog.init
+                        }
+                        |> andThenUpdate (MsgAddTodoDialog AddTodoDialog.autoFocus)
+
+                _ ->
+                    Debug.todo "handle: replacing layer without closing it."
 
         MsgContextPopup msg ->
             case model.layer of
