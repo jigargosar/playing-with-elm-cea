@@ -34,8 +34,10 @@ icon =
         , hover [ fg "red" ]
         , transition
             [ CT.color3 150 0 CT.easeIn
-            , CT.outlineOffset3 150 0 CT.easeIn
-            , CT.outlineWidth3 150 0 CT.easeIn
+
+            --            , CT.outlineOffset3 150 0 CT.easeIn
+            --            , CT.outlineWidth3 150 0 CT.easeIn
+            , CT.outline3 150 0 CT.easeIn
             ]
         , Css.property "color" "inherit"
         ]

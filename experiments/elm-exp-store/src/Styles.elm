@@ -163,7 +163,8 @@ hs =
 
 btnReset =
     batch
-        [ spacing0
+        [ m0
+        , p0
         , tl
         , property "-webkit-appearance" "none"
         , backgroundColor transparent
