@@ -210,7 +210,7 @@ viewPopup context ref model =
             , minWidth (rem 10)
             , position absolute
             , left (px <| ref.element.x + ref.element.width)
-            , top (px <| min ref.element.y (ref.viewport.height - 100))
+            , top (px <| min ref.element.y ref.viewport.height)
             ]
 
         rootAttributes =
