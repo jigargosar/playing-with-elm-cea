@@ -44,7 +44,7 @@ import UpdateReturn exposing (..)
 type Layer
     = TodoDialog TodoDialog.Model
     | ContextDialog ContextDialog.Model
-    | ContextPopup ContextId ContextPopup.Model
+    | ContextPopup Context ContextPopup.Model
     | NoLayer
 
 
@@ -192,10 +192,10 @@ getMaybeSelectedContext model =
     model.contextStore |> ContextStore.get (getSelectedContextId model)
 
 
-isContextPopupOpenFor cid_ model =
+isContextPopupOpenFor cid model =
     case model.layer of
-        ContextPopup cid contextPopup ->
-            cid_ == cid
+        ContextPopup context contextPopup ->
+            cid == context.id
 
         _ ->
             False
@@ -275,11 +275,15 @@ update message model =
                    )
 
         ContextMoreClicked cid ->
-            pure
-                { model
-                    | layer = ContextPopup cid ContextPopup.init
-                }
-                |> andThenUpdate (MsgContextPopup ContextPopup.open)
+            getMaybeContext cid model
+                |> unwrapMaybe (pure model)
+                    (\context ->
+                        pure
+                            { model
+                                | layer = ContextPopup context ContextPopup.init
+                            }
+                            |> andThenUpdate (MsgContextPopup ContextPopup.open)
+                    )
 
         SwitchLayerToCreateTodoDialog ->
             case model.layer of
@@ -331,14 +335,14 @@ update message model =
 
         MsgContextPopup msg ->
             case model.layer of
-                ContextPopup cid layerModel ->
+                ContextPopup context layerModel ->
                     let
                         ( contextPopup, cmd, maybeOut ) =
-                            ContextPopup.update cid msg layerModel
+                            ContextPopup.update context.id msg layerModel
                     in
                     maybeOut
                         |> unwrapMaybe
-                            (pure { model | layer = ContextPopup cid contextPopup })
+                            (pure { model | layer = ContextPopup context contextPopup })
                             (\out ->
                                 ( { model | layer = NoLayer }
                                 , case out of
@@ -346,10 +350,10 @@ update message model =
                                         msgToCmd <|
                                             case action of
                                                 ContextPopup.Rename ->
-                                                    StartEditingContext cid
+                                                    StartEditingContext context.id
 
                                                 ContextPopup.ToggleArchive ->
-                                                    MsgContextStore <| ContextStore.toggleArchived cid
+                                                    MsgContextStore <| ContextStore.toggleArchived context.id
 
                                     ContextPopup.ClosedOut ->
                                         Cmd.none
@@ -479,10 +483,8 @@ view model =
 
 viewLayer model =
     case model.layer of
-        ContextPopup cid contextPopup ->
-            getMaybeContext cid model
-                |> unwrapMaybe noHtml
-                    (\c -> ContextPopup.view c contextPopup |> Html.map MsgContextPopup)
+        ContextPopup context contextPopup ->
+            ContextPopup.view context contextPopup |> Html.map MsgContextPopup
 
         TodoDialog dialogModel ->
             TodoDialog.view model.contextStore dialogModel |> Html.map MsgTodoDialog
