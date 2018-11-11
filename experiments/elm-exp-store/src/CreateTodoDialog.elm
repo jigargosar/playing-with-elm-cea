@@ -1,4 +1,4 @@
-module AddTodoDialog exposing (Model, Msg, OutMsg(..), autoFocus, init, update, view)
+module CreateTodoDialog exposing (Model, Msg, OutMsg(..), autoFocus, init, update, view)
 
 import ContextStore exposing (ContextId)
 import DomX exposing (DomId, onClickTargetId)

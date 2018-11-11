@@ -1,6 +1,5 @@
 module Main exposing (main)
 
-import AddTodoDialog
 import BasicsX exposing (..)
 import Browser
 import Browser.Dom
@@ -8,6 +7,7 @@ import Browser.Events
 import Btn
 import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
+import CreateTodoDialog
 import Css exposing (..)
 import CssAtoms exposing (fa, fgGray, p0, pl0, ptr, ttu, w100)
 import Dict exposing (Dict)
@@ -42,7 +42,7 @@ import UpdateReturn exposing (..)
 
 
 type Layer
-    = AddTodoDialog AddTodoDialog.Model
+    = CreateTodoDialog CreateTodoDialog.Model
     | ContextPopup ContextId ContextPopup.Model
     | NoLayer
 
@@ -222,13 +222,13 @@ type Msg
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
     | MsgContextPopup ContextPopup.Msg
-    | MsgAddTodoDialog AddTodoDialog.Msg
+    | MsgCreateTodoDialog CreateTodoDialog.Msg
     | MsgMode Mode.Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
     | ToggleShowArchivedContexts
     | ToggleCompletedTodos
-    | StartAddingTodo
+    | ShowCreateTodoDialog
 
 
 type alias ContextItem =
@@ -297,14 +297,14 @@ update message model =
                 }
                 |> andThenUpdate (MsgContextPopup ContextPopup.open)
 
-        StartAddingTodo ->
+        ShowCreateTodoDialog ->
             case model.layer of
                 NoLayer ->
                     pure
                         { model
-                            | layer = AddTodoDialog AddTodoDialog.init
+                            | layer = CreateTodoDialog CreateTodoDialog.init
                         }
-                        |> andThenUpdate (MsgAddTodoDialog AddTodoDialog.autoFocus)
+                        |> andThenUpdate (MsgCreateTodoDialog CreateTodoDialog.autoFocus)
 
                 _ ->
                     Debug.todo "handle: replacing layer without closing it."
@@ -340,29 +340,29 @@ update message model =
                 _ ->
                     pure model
 
-        MsgAddTodoDialog msg ->
+        MsgCreateTodoDialog msg ->
             case model.layer of
-                AddTodoDialog layerModel ->
+                CreateTodoDialog layerModel ->
                     let
                         ( addTodoDialogModel, cmd, maybeOutMsg ) =
-                            AddTodoDialog.update msg layerModel
+                            CreateTodoDialog.update msg layerModel
                     in
                     maybeOutMsg
                         |> unwrapMaybe
                             (pure
-                                { model | layer = AddTodoDialog addTodoDialogModel }
+                                { model | layer = CreateTodoDialog addTodoDialogModel }
                             )
                             (\out ->
                                 ( { model | layer = NoLayer }
                                 , case out of
-                                    AddTodoDialog.Submit content contextId ->
+                                    CreateTodoDialog.Submit content contextId ->
                                         msgToCmd <| MsgTodoStore (TodoStore.addNew content)
 
-                                    AddTodoDialog.Cancel ->
+                                    CreateTodoDialog.Cancel ->
                                         Cmd.none
                                 )
                             )
-                        |> addTaggedCmd MsgAddTodoDialog cmd
+                        |> addTaggedCmd MsgCreateTodoDialog cmd
 
                 _ ->
                     pure model
@@ -385,7 +385,7 @@ subscriptions model =
 
 
 startAddingTodoMsg =
-    StartAddingTodo
+    ShowCreateTodoDialog
 
 
 startAddingContextMsg =
@@ -424,8 +424,8 @@ viewLayer model =
                 |> unwrapMaybe noHtml
                     (\c -> ContextPopup.view c contextPopup |> Html.map MsgContextPopup)
 
-        AddTodoDialog dialogModel ->
-            AddTodoDialog.view dialogModel |> Html.map MsgAddTodoDialog
+        CreateTodoDialog dialogModel ->
+            CreateTodoDialog.view dialogModel |> Html.map MsgCreateTodoDialog
 
         NoLayer ->
             noHtml
