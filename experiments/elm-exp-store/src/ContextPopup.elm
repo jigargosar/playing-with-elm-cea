@@ -29,12 +29,14 @@ import UpdateReturn exposing (..)
 
 type alias Model =
     { refEle : Maybe Element
+    , popperEle : Maybe Element
     }
 
 
 init : Model
 init =
     { refEle = Nothing
+    , popperEle = Nothing
     }
 
 
@@ -50,7 +52,8 @@ type Msg
     = ActionClicked Action
     | Open
     | FocusResult FocusResult
-    | ElementResult ElementResult
+    | RefElementResult ElementResult
+    | PopperElementResult ElementResult
     | BackdropClicked DomId
 
 
@@ -98,13 +101,24 @@ update uniqueId message =
             addCmd (Log.focusResult "ContextPopup.elm" r)
                 >> withNoOutMsg
 
-        ElementResult (Err _) ->
-            addCmd (Log.warn "ContextPopup.elm" [ "Element Not Found" ])
+        RefElementResult (Err _) ->
+            addCmd (Log.warn "ContextPopup.elm" [ "Ref Element Not Found" ])
                 >> withNoOutMsg
 
-        ElementResult (Ok element) ->
+        RefElementResult (Ok element) ->
             mapModel (\model -> { model | refEle = Just element })
                 >> addCmd (getAutoFocusDomId uniqueId |> Focus.attempt FocusResult)
+                >> addCmd (attemptGetElement PopperElementResult (getPopperDomId uniqueId))
+                >> withNoOutMsg
+
+        PopperElementResult (Err _) ->
+            addCmd (Log.warn "ContextPopup.elm" [ "Popper Element Not Found" ])
+                >> withNoOutMsg
+
+        PopperElementResult (Ok element) ->
+            mapModel (\model -> { model | popperEle = Just element })
+                >> addCmd (getAutoFocusDomId uniqueId |> Focus.attempt FocusResult)
+                >> addCmd (attemptGetElement PopperElementResult (getPopperDomId uniqueId))
                 >> withNoOutMsg
 
         BackdropClicked targetId ->
@@ -118,8 +132,8 @@ update uniqueId message =
             withOutMsg (\_ -> ActionOut action)
 
         Open ->
-            mapModel (\model -> { model | refEle = Nothing })
-                >> addCmd (attemptGetElement ElementResult (getRefId uniqueId))
+            mapModel (\model -> { model | refEle = Nothing, popperEle = Nothing })
+                >> addCmd (attemptGetElement RefElementResult (getRefId uniqueId))
                 >> withNoOutMsg
     )
         << pure
