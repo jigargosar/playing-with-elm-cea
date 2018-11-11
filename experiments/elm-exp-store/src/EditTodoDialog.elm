@@ -1,4 +1,4 @@
-module CreateTodoDialog exposing (Model, Msg, OutMsg(..), autoFocus, init, update, view)
+module EditTodoDialog exposing (Model, Msg, OutMsg(..), autoFocus, init, update, view)
 
 import BasicsX exposing (defaultEmptyStringTo)
 import ContextStore exposing (Context, ContextId, ContextStore)
@@ -12,7 +12,7 @@ import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onInput)
 import Log
 import Styles exposing (..)
-import TodoStore exposing (TodoContent)
+import TodoStore exposing (Todo, TodoContent)
 import UI exposing (sDiv)
 import UpdateReturn exposing (..)
 
@@ -20,11 +20,12 @@ import UpdateReturn exposing (..)
 type alias Model =
     { content : TodoContent
     , contextId : ContextId
+    , todo : Todo
     }
 
 
-init contextId =
-    { content = "", contextId = contextId }
+init todo =
+    { content = todo.content, contextId = todo.contextId, todo = todo }
 
 
 autoFocus =
@@ -71,7 +72,7 @@ update message =
                 >> withNoOutMsg
 
         FocusResult r ->
-            addCmd (Log.focusResult "CreateTodoDialog.elm" r)
+            addCmd (Log.focusResult "EditTodoDialog.elm" r)
                 >> withNoOutMsg
 
         BackdropClicked targetId ->
@@ -114,11 +115,11 @@ update message =
 
 
 backdropId =
-    "add-todo-modal-backdrop"
+    "edit-todo-modal-backdrop"
 
 
 inputId =
-    "add-todo-modal-content-input"
+    "edit-todo-modal-content-input"
 
 
 view : ContextStore -> Model -> Html Msg
