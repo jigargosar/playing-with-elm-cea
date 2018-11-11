@@ -487,10 +487,14 @@ view : Model -> Html Msg
 view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ AppBar.view { menuClicked = MenuClicked }
-        , div [ class " flex-auto flex flex-row" ]
-            [ HtmlX.when (not << .showTempSidebar) ps model
-            , div [ id "popper-container", class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
-                [ viewPageContent model
+        , div [ class " flex-auto flex flex-row justify-center" ]
+            [ sDiv [ maxWidth (px 940) ]
+                [ class "flex-auto flex flex-row" ]
+                [ HtmlX.when (not << .showTempSidebar) permanentSidebar model
+                , div [ class "bl br b--black-05 flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
+                    [ viewTodoListHeader model
+                    , viewTodoList model
+                    ]
                 ]
             ]
 
@@ -500,7 +504,7 @@ view model =
         ]
 
 
-ps model =
+permanentSidebar model =
     div [ class "flex-shrink-0  overflow-y-scroll w-30-ns dn db-ns " ]
         [ Sidebar.view <| createSideBarConfig model
         ]
@@ -538,34 +542,6 @@ viewLayer model =
 
         NoLayer ->
             noHtml
-
-
-
---viewAppBar =
---    appBar []
---        [ section1 [ class "pa3" ]
---            [ sDiv [ fwb ] [] [ text "ELM" ], sDiv [ fontWeight lighter ] [] [ text "DONE" ] ]
---        ]
-
-
-viewPageContent model =
-    div [ class "flex row justify-center" ]
-        [ div [ class "measure w-100" ]
-            [ viewTodoListHeader model
-            , viewTodoList model
-            ]
-        ]
-
-
-viewPageWithSidebar model =
-    div [ class " flex-auto flex flex-row" ]
-        [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns " ]
-            [ Sidebar.view <| createSideBarConfig model
-            ]
-        , div [ id "popper-container", class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
-            [ viewPageContent model
-            ]
-        ]
 
 
 createSideBarConfig : Model -> Sidebar.Config Msg

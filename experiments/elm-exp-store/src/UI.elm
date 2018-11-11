@@ -39,4 +39,4 @@ appBar =
 
 
 section1 =
-    sDiv [ rowCY, w100, maxWidth (px 1024) ]
+    sDiv [ rowCY, w100, maxWidth (px 940) ]
