@@ -205,10 +205,6 @@ viewPopup context ref model =
             model.popperEle
                 |> unwrapMaybe (ref.element.x + ref.element.width)
                     (\pe ->
-                        let
-                            _ =
-                                Debug.log "pe" pe
-                        in
                         min (ref.element.x + ref.element.width) (ref.viewport.width - pe.element.width)
                     )
 
@@ -216,10 +212,6 @@ viewPopup context ref model =
             model.popperEle
                 |> unwrapMaybe (ref.element.y + ref.element.height)
                     (\pe ->
-                        let
-                            _ =
-                                Debug.log "pe" pe
-                        in
                         min (ref.element.y + ref.element.height) (ref.viewport.height - pe.element.height)
                     )
 
