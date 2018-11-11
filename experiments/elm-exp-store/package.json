@@ -1,5 +1,5 @@
 {
-  "name": "elm-exp-store",
+  "name": "elm-done",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -13,8 +13,8 @@
   },
   "now": {
     "alias": [
-      "elm-exp-store",
-      "https://elm-exp-store.functional-programmer.com"
+      "elm-done",
+      "https://elm-done.functional-programmer.com"
     ],
     "type": "static",
     "static": {
