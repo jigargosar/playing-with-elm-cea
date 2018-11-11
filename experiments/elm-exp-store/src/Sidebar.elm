@@ -129,7 +129,7 @@ viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelect
                     Css.batch [ ttl, fgGray ]
 
                   else
-                    Css.batch [ ttu ]
+                    Css.batch [  ]
                 , rowCY
                 ]
             , onClick navigateToTodoList
