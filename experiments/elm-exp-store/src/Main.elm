@@ -496,19 +496,6 @@ viewLayer model =
             noHtml
 
 
-getMaybeContextPopup model =
-    List.head model.layers
-        |> Maybe.andThen
-            (\layer ->
-                case layer of
-                    ContextPopup cid contextPopup ->
-                        Just ( cid, contextPopup )
-
-                    _ ->
-                        Nothing
-            )
-
-
 viewAppBar =
     appBar []
         [ section1 [ class "pa3" ]
