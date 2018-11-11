@@ -29,6 +29,7 @@
   "scripts": {
     "start": "nodemon -w yarn.lock -w elm.json -x env ELM_DEBUGGER=true elm-app start",
     "build": "elm-app build",
+    "bs": "npm run build && npm run serve",
     "deploy": "now && now alias"
   },
   "devDependencies": {
