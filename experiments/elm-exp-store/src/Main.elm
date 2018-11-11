@@ -10,7 +10,6 @@ import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
 import CssAtoms exposing (fa, fgGray, p0, pl0, ptr, ttu, w100)
 import Dict exposing (Dict)
-import EditTodoDialog
 import FeatherIcons as Icon
 import HotKey
 import Html.Styled as Html exposing (Attribute, Html, button, div, fromUnstyled, span, styled, text)
@@ -31,6 +30,7 @@ import Svg.Attributes
 import Svg.Styled exposing (svg)
 import Task
 import Time
+import TodoDialog
 import TodoStore exposing (Todo, TodoContent, TodoId, TodoStore)
 import UI exposing (..)
 import Update2
@@ -42,7 +42,7 @@ import UpdateReturn exposing (..)
 
 
 type Layer
-    = EditTodoDialog EditTodoDialog.Model
+    = TodoDialog TodoDialog.Model
     | ContextPopup ContextId ContextPopup.Model
     | NoLayer
 
@@ -222,7 +222,7 @@ type Msg
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
     | MsgContextPopup ContextPopup.Msg
-    | MsgEditTodoDialog EditTodoDialog.Msg
+    | MsgEditTodoDialog TodoDialog.Msg
     | MsgMode Mode.Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
@@ -302,9 +302,9 @@ update message model =
                 NoLayer ->
                     pure
                         { model
-                            | layer = EditTodoDialog (EditTodoDialog.initCreate <| getSelectedContextId model)
+                            | layer = TodoDialog (TodoDialog.initCreate <| getSelectedContextId model)
                         }
-                        |> andThenUpdate (MsgEditTodoDialog EditTodoDialog.autoFocus)
+                        |> andThenUpdate (MsgEditTodoDialog TodoDialog.autoFocus)
 
                 _ ->
                     Debug.todo "handle: replacing layer without closing it."
@@ -314,9 +314,9 @@ update message model =
                 NoLayer ->
                     pure
                         { model
-                            | layer = EditTodoDialog (EditTodoDialog.initEdit todo)
+                            | layer = TodoDialog (TodoDialog.initEdit todo)
                         }
-                        |> andThenUpdate (MsgEditTodoDialog EditTodoDialog.autoFocus)
+                        |> andThenUpdate (MsgEditTodoDialog TodoDialog.autoFocus)
 
                 _ ->
                     Debug.todo "handle: replacing layer without closing it."
@@ -354,30 +354,30 @@ update message model =
 
         MsgEditTodoDialog msg ->
             case model.layer of
-                EditTodoDialog layerModel ->
+                TodoDialog layerModel ->
                     let
                         ( editTodoDialogModel, cmd, maybeOutMsg ) =
-                            EditTodoDialog.update msg layerModel
+                            TodoDialog.update msg layerModel
                     in
                     maybeOutMsg
                         |> unwrapMaybe
                             (pure
-                                { model | layer = EditTodoDialog editTodoDialogModel }
+                                { model | layer = TodoDialog editTodoDialogModel }
                             )
                             (\out ->
                                 ( { model | layer = NoLayer }
                                 , case out of
-                                    EditTodoDialog.Submit dialogMode content contextId ->
+                                    TodoDialog.Submit dialogMode content contextId ->
                                         msgToCmd <|
                                             MsgTodoStore <|
                                                 case dialogMode of
-                                                    EditTodoDialog.Create ->
+                                                    TodoDialog.Create ->
                                                         TodoStore.addNew content contextId
 
-                                                    EditTodoDialog.Edit todo ->
+                                                    TodoDialog.Edit todo ->
                                                         TodoStore.setContentAndContextId todo.id content contextId
 
-                                    EditTodoDialog.Cancel ->
+                                    TodoDialog.Cancel ->
                                         Cmd.none
                                 )
                             )
@@ -443,8 +443,8 @@ viewLayer model =
                 |> unwrapMaybe noHtml
                     (\c -> ContextPopup.view c contextPopup |> Html.map MsgContextPopup)
 
-        EditTodoDialog dialogModel ->
-            EditTodoDialog.view model.contextStore dialogModel |> Html.map MsgEditTodoDialog
+        TodoDialog dialogModel ->
+            TodoDialog.view model.contextStore dialogModel |> Html.map MsgEditTodoDialog
 
         NoLayer ->
             noHtml

@@ -1,4 +1,4 @@
-module EditTodoDialog exposing (DialogMode(..), Model, Msg, OutMsg(..), autoFocus, initCreate, initEdit, update, view)
+module TodoDialog exposing (DialogMode(..), Model, Msg, OutMsg(..), autoFocus, initCreate, initEdit, update, view)
 
 import BasicsX exposing (defaultEmptyStringTo)
 import ContextStore exposing (Context, ContextId, ContextStore)
@@ -83,7 +83,7 @@ update message =
                 >> withNoOutMsg
 
         FocusResult r ->
-            addCmd (Log.focusResult "EditTodoDialog.elm" r)
+            addCmd (Log.focusResult "TodoDialog.elm" r)
                 >> withNoOutMsg
 
         BackdropClicked targetId ->
