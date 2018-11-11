@@ -724,7 +724,7 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
                 , classList [ ( "strike gray ", done ) ]
                 , onClick contentClicked
                 ]
-                [ div [] [ text content ] ]
+                [ sDiv [ Css.property "word-break" "break-word" ] [] [ text content ] ]
             , div
                 [ class "ttu f7 gray pointer dn"
                 , onClick contextClicked
