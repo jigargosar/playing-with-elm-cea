@@ -127,11 +127,11 @@ update message =
 
 
 backdropId =
-    "edit-todo-modal-backdrop"
+    "todo-dialog-backdrop"
 
 
 inputId =
-    "edit-todo-modal-content-input"
+    "todo-dialog-content-input"
 
 
 view : ContextStore -> Model -> Html Msg
