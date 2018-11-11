@@ -1,15 +1,18 @@
 module CreateTodoDialog exposing (Model, Msg, OutMsg(..), autoFocus, init, update, view)
 
 import ContextStore exposing (ContextId)
+import Css
+import CssAtoms exposing (..)
 import DomX exposing (DomId, onClickTargetId)
 import Focus exposing (FocusResult)
 import HotKey
-import Html.Styled exposing (Html, div, input)
+import Html.Styled exposing (Html, div, input, option, select, styled, text)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onInput)
 import Log
+import Styles exposing (..)
 import TodoStore exposing (TodoContent)
-import UI
+import UI exposing (sDiv)
 import UpdateReturn exposing (..)
 
 
@@ -118,15 +121,26 @@ view model =
         [ div
             [ class "bg-white br4 shadow-1 pa3 measure w-100"
             ]
-            [ div [ class "w-100 flex" ]
+            [ sDiv [ vs, w100, rowCY ]
+                []
                 [ input
                     [ id inputId
+                    , placeholder "Task Content"
                     , class "flex-auto pa3"
                     , value model.content
                     , onInput ContentChanged
                     , HotKey.onKeyDown ContentInputKeyDown
                     ]
                     []
+                ]
+            , sDiv [ w100, rowCY, vs ]
+                []
+                [ styled select
+                    [ fa
+                    , Css.property "-webkit-appearance" "none"
+                    ]
+                    [ class "pa3" ]
+                    [ styled option [] [] [ text "Inbox" ] ]
                 ]
             ]
         ]
