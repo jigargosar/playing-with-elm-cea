@@ -1,4 +1,4 @@
-module Styles exposing (absFill, aic, aife, ambient, ambientColor, b0, bc, bcBlackA, bg, blackA, boolCss, btnReset, btnResetStyles, centerCenter, dFlex, dFlexCol, dFlexRow, elevation, fBody, fDCol, fDRow, fDir, fZero, fa, fg, fgGray, fwb, fz, fz0, fzPx, hs, jcc, lh, lh0, lhNum, m0, mRm, mbRm, noStyle, p0, p2Rm, pColor, pRm, penumbra, penumbraColor, pl0, plRm, prRm, ptr, rowBottomY, rowCXY, rowCY, spacing0, tc, tl, transitionFadeIn, ttl, ttu, umbra, umbraColor, vs, w100)
+module Styles exposing (absFill, aic, aife, ambient, ambientColor, b0, bc, bcBlackA, bg, blackA, boolCss, btnReset, btnResetStyles, centerCenter, dFlex, dFlexCol, dFlexRow, elevation, fBody, fDCol, fDRow, fDir, fZero, fa, fg, fgGray, fwb, fwl, fz, fz0, fzPx, hs, jcc, lh, lh0, lhNum, m0, mRm, mbRm, noStyle, p0, p2Rm, pColor, pRm, penumbra, penumbraColor, pl0, plRm, prRm, ptr, rowBottomY, rowCXY, rowCY, spacing0, tc, tl, transitionFadeIn, ttl, ttu, umbra, umbraColor, vs, w100)
 
 import Array
 import BasicsX exposing (..)
@@ -256,6 +256,10 @@ noStyle =
 
 fwb =
     fontWeight bold
+
+
+fwl =
+    fontWeight lighter
 
 
 umbraColor =
