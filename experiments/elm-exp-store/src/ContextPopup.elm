@@ -118,7 +118,6 @@ update uniqueId message =
         PopperElementResult (Ok element) ->
             mapModel (\model -> { model | popperEle = Just element })
                 >> addCmd (getAutoFocusDomId uniqueId |> Focus.attempt FocusResult)
-                >> addCmd (attemptGetElement PopperElementResult (getPopperDomId uniqueId))
                 >> withNoOutMsg
 
         BackdropClicked targetId ->
@@ -203,10 +202,26 @@ viewPopup context ref model =
                 (childContent idx context popperDomId child)
 
         rootLeft =
-            ref.element.x + ref.element.width
+            model.popperEle
+                |> unwrapMaybe (ref.element.x + ref.element.width)
+                    (\pe ->
+                        let
+                            _ =
+                                Debug.log "pe" pe
+                        in
+                        min (ref.element.x + ref.element.width) (ref.viewport.width - pe.element.width)
+                    )
 
         rootTop =
-            min ref.element.y ref.viewport.height
+            model.popperEle
+                |> unwrapMaybe (ref.element.y + ref.element.height)
+                    (\pe ->
+                        let
+                            _ =
+                                Debug.log "pe" pe
+                        in
+                        min (ref.element.y + ref.element.height) (ref.viewport.height - pe.element.height)
+                    )
 
         rootStyles =
             [ bg "white"
