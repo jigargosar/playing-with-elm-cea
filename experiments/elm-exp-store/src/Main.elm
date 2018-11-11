@@ -483,7 +483,14 @@ view : Model -> Html Msg
 view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ AppBar.view { menuClicked = MenuClicked }
-        , viewPage model
+        , div [ class " flex-auto flex flex-row" ]
+            [ div [ class "flex-shrink-0  overflow-y-scroll w-30-ns dn db-ns " ]
+                [ Sidebar.view <| createSideBarConfig model
+                ]
+            , div [ id "popper-container", class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
+                [ viewPageContent model
+                ]
+            ]
 
         --        , QuickAction.view
         , viewLayer model
@@ -513,22 +520,22 @@ viewLayer model =
 --        ]
 
 
-viewPage model =
-    let
-        viewPageContent =
-            div [ class "flex row justify-center" ]
-                [ div [ class "measure w-100" ]
-                    [ viewTodoListHeader model
-                    , viewTodoList model
-                    ]
-                ]
-    in
+viewPageContent model =
+    div [ class "flex row justify-center" ]
+        [ div [ class "measure w-100" ]
+            [ viewTodoListHeader model
+            , viewTodoList model
+            ]
+        ]
+
+
+viewPageWithSidebar model =
     div [ class " flex-auto flex flex-row" ]
         [ div [ class "flex-shrink-0 overflow-y-scroll w-30-ns dn db-ns " ]
             [ Sidebar.view <| createSideBarConfig model
             ]
         , div [ id "popper-container", class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
-            [ viewPageContent
+            [ viewPageContent model
             ]
         ]
 
