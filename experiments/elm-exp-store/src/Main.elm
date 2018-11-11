@@ -1,5 +1,6 @@
 module Main exposing (main)
 
+import AppBar
 import BasicsX exposing (..)
 import Browser
 import Browser.Dom
@@ -475,9 +476,10 @@ getAllContextsNameIdPairs =
 view : Model -> Html Msg
 view model =
     div [ class "flex flex-column min-h-100 w-100" ]
-        [ viewAppBar
+        [ AppBar.view
         , viewPage model
---        , QuickAction.view
+
+        --        , QuickAction.view
         , viewLayer model
         ]
 
@@ -497,11 +499,12 @@ viewLayer model =
             noHtml
 
 
-viewAppBar =
-    appBar []
-        [ section1 [ class "pa3" ]
-            [ sDiv [ fwb ] [] [ text "ELM" ], sDiv [ fontWeight lighter ] [] [ text "DONE" ] ]
-        ]
+
+--viewAppBar =
+--    appBar []
+--        [ section1 [ class "pa3" ]
+--            [ sDiv [ fwb ] [] [ text "ELM" ], sDiv [ fontWeight lighter ] [] [ text "DONE" ] ]
+--        ]
 
 
 viewPage model =

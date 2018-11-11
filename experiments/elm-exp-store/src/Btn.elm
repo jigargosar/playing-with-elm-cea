@@ -33,6 +33,7 @@ icon =
         , fZero
         , hoverTransition
         , outlineTransition
+        , Css.property "color" "inherit"
         ]
 
 
