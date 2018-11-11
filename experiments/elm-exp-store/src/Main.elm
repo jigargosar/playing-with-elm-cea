@@ -301,7 +301,7 @@ update message model =
                 NoLayer ->
                     pure
                         { model
-                            | layer = CreateTodoDialog CreateTodoDialog.init
+                            | layer = CreateTodoDialog (CreateTodoDialog.init <| getSelectedContextId model)
                         }
                         |> andThenUpdate (MsgCreateTodoDialog CreateTodoDialog.autoFocus)
 

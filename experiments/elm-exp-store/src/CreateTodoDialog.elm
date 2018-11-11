@@ -19,8 +19,8 @@ type alias Model =
     }
 
 
-init =
-    { content = "", contextId = ContextStore.defaultId }
+init contextId =
+    { content = "", contextId = contextId }
 
 
 autoFocus =
