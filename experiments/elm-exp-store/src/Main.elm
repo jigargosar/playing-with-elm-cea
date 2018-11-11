@@ -572,10 +572,14 @@ createSideBarConfig model =
 
 viewTodoListHeader : Model -> Html Msg
 viewTodoListHeader model =
+    let
+        ( name, contextId ) =
+            getCurrentContextItem model
+    in
     div
         [ class "ph3 flex flex-row" ]
         [ div [ class "flex-auto" ]
-            [ text "Context Name"
+            [ text name
 
             {- SelectUI.view selectContextUIConfig
                (Just <| getCurrentContextItem model)
