@@ -21,7 +21,6 @@ import HtmlX
 import Icons
 import JsonCodecX exposing (Value)
 import Log
-import Mode exposing (Mode)
 import Port
 import Random
 import Set exposing (Set)
@@ -53,7 +52,6 @@ type alias Model =
     { todoStore : TodoStore
     , contextStore : ContextStore
     , contextId : ContextId
-    , mode : Mode
     , layer : Layer
     , showArchivedContexts : Bool
     , showCompletedTodos : Bool
@@ -78,7 +76,6 @@ init flags =
             { todoStore = todoStore
             , contextStore = contextStore
             , contextId = ContextStore.defaultId
-            , mode = Mode.init
             , layer = NoLayer
             , showArchivedContexts = False
             , showCompletedTodos = False
@@ -226,7 +223,6 @@ type Msg
     | MsgContextPopup ContextPopup.Msg
     | MsgTodoDialog TodoDialog.Msg
     | MsgContextDialog ContextDialog.Msg
-    | MsgMode Mode.Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
     | ToggleShowArchivedContexts
@@ -268,23 +264,6 @@ update message model =
                 (\s b -> { b | contextStore = s })
                 MsgContextStore
                 ContextStore.update
-                msg
-                model
-
-        MsgMode msg ->
-            let
-                modeUpdateConfig : Mode.UpdateConfig Msg
-                modeUpdateConfig =
-                    { toMsg = MsgMode
-                    , setTodoContext = \todoId contextId -> MsgTodoStore <| TodoStore.setContextId todoId contextId
-                    , setTodoContent = \id content -> MsgTodoStore <| TodoStore.setContent id content
-                    , addContext = MsgContextStore << ContextStore.addNew
-                    , setContextName = \id name -> MsgContextStore <| ContextStore.setName id name
-                    }
-            in
-            updateSub (Mode.update modeUpdateConfig)
-                .mode
-                (\s b -> { b | mode = s })
                 msg
                 model
 
@@ -495,7 +474,6 @@ view model =
         [ viewAppBar
         , viewPage model
         , viewLayer model
-        , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map MsgMode
         ]
 
 
