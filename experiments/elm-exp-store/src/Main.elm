@@ -505,7 +505,8 @@ view model =
 
 
 permanentSidebar model =
-    div [ class "flex-shrink-0  overflow-y-scroll w-30-ns dn db-ns " ]
+    sDiv [ minWidth (px 180) ]
+        [ class "flex-shrink-0  overflow-y-scroll w-30-ns dn db-ns " ]
         [ Sidebar.view <| createSideBarConfig model
         ]
 
