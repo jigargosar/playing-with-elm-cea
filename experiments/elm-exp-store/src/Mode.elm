@@ -5,7 +5,6 @@ module Mode exposing
     , UpdateConfig
     , init
     , startAddingContext
-    , startAddingTodo
     , startEditingContext
     , startEditingTodo
     , startEditingTodoContext
@@ -51,7 +50,6 @@ type Msg
     | Warn Log.Line
     | FocusDomId DomId
     | BackdropClicked
-    | StartAddingTodo
     | StartAddingContext
     | StartEditingTodo Todo
     | StartEditingTodoContext Todo
@@ -60,10 +58,6 @@ type Msg
     | ContextIdChanged ContextId
     | EndEditMode
     | AutoFocus
-
-
-startAddingTodo =
-    StartAddingTodo
 
 
 startAddingContext =
@@ -177,16 +171,6 @@ update config message model =
             case model of
                 Default ->
                     EditContextMode context.id context.name
-                        |> pure
-                        |> andThenUpdate AutoFocus
-
-                _ ->
-                    pure model
-
-        StartAddingTodo ->
-            case model of
-                Default ->
-                    AddTodoMode ""
                         |> pure
                         |> andThenUpdate AutoFocus
 
