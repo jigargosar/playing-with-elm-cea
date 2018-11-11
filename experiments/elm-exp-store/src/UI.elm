@@ -2,7 +2,6 @@ module UI exposing (appBar, backdrop, boolHtml, maybeHtml, noHtml, sDiv, section
 
 import BasicsX exposing (..)
 import Css exposing (..)
-import CssAtoms exposing (..)
 import FeatherIcons
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)

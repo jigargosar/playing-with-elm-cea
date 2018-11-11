@@ -3,7 +3,6 @@ module TodoDialog exposing (DialogMode(..), Model, Msg, OutMsg(..), autoFocus, i
 import BasicsX exposing (defaultEmptyStringTo)
 import ContextStore exposing (Context, ContextId, ContextStore)
 import Css
-import CssAtoms exposing (..)
 import DomX exposing (DomId, onClickTargetId)
 import Focus exposing (FocusResult)
 import HotKey

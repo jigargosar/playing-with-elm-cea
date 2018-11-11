@@ -3,7 +3,6 @@ module ContextDialog exposing (DialogMode(..), Model, Msg, OutMsg(..), autoFocus
 import BasicsX exposing (defaultEmptyStringTo)
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css
-import CssAtoms exposing (..)
 import DomX exposing (DomId, onClickTargetId)
 import Focus exposing (FocusResult)
 import HotKey

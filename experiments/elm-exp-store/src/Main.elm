@@ -9,7 +9,6 @@ import ContextDialog
 import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
-import CssAtoms exposing (fa, fgGray, p0, pl0, ptr, ttu, w100)
 import Dict exposing (Dict)
 import FeatherIcons as Icon
 import HotKey

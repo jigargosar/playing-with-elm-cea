@@ -2,7 +2,6 @@ module Btn exposing (flat, flatPl0, flatPr0, icon, sIcon)
 
 import Css exposing (hover)
 import Css.Transitions as CT exposing (transition)
-import CssAtoms exposing (fgGray)
 import FeatherIcons
 import Html.Styled exposing (button, fromUnstyled, styled)
 import Html.Styled.Events exposing (onClick)

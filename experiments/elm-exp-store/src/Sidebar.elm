@@ -5,7 +5,6 @@ import Btn
 import ContextPopup
 import ContextStore exposing (ContextId, ContextName)
 import Css exposing (..)
-import CssAtoms exposing (..)
 import Html.Styled as Html exposing (Html, button, div, styled, text)
 import Html.Styled.Attributes exposing (class, css, id, style)
 import Html.Styled.Events exposing (onClick)

@@ -1,11 +1,94 @@
-module Styles exposing (absFill, ambient, ambientColor, bc, bcBlackA, bg, blackA, boolCss, btnReset, centerCenter, dFlexCol, dFlexRow, elevation, fBody, fDir, fZero, fg, fwb, fz, fzPx, hs, lh, lhNum, mRm, mbRm, noStyle, p2Rm, pRm, penumbra, penumbraColor, plRm, prRm, rowBottomY, rowCXY, rowCY, spacing0, transitionFadeIn, umbra, umbraColor, vs)
+module Styles exposing (absFill, aic, aife, ambient, ambientColor, b0, bc, bcBlackA, bg, blackA, boolCss, btnReset, centerCenter, dFlex, dFlexCol, dFlexRow, elevation, fBody, fDCol, fDRow, fDir, fZero, fa, fg, fgGray, fwb, fz, fz0, fzPx, hs, jcc, lh, lh0, lhNum, m0, mRm, mbRm, noStyle, p0, p2Rm, pColor, pRm, penumbra, penumbraColor, pl0, plRm, prRm, ptr, rowBottomY, rowCXY, rowCY, spacing0, tc, tl, transitionFadeIn, ttl, ttu, umbra, umbraColor, vs, w100)
 
 import Array
 import BasicsX exposing (..)
 import Css exposing (..)
 import Css.Transitions as CT exposing (transition)
-import CssAtoms exposing (..)
 import Html.Styled exposing (div, styled, text)
+
+
+p0 =
+    padding zero
+
+
+pl0 =
+    paddingLeft zero
+
+
+m0 =
+    margin zero
+
+
+b0 =
+    border zero
+
+
+ttu =
+    textTransform uppercase
+
+
+ttl =
+    textTransform lowercase
+
+
+tl =
+    textAlign left
+
+
+tc =
+    textAlign center
+
+
+w100 =
+    width (pct 100)
+
+
+dFlex =
+    displayFlex
+
+
+fDCol =
+    flexDirection column
+
+
+fDRow =
+    flexDirection row
+
+
+aic =
+    alignItems center
+
+
+jcc =
+    justifyContent center
+
+
+aife =
+    alignItems flexEnd
+
+
+fa =
+    flex auto
+
+
+ptr =
+    cursor pointer
+
+
+lh0 =
+    lineHeight zero
+
+
+fz0 =
+    fontSize (px 0)
+
+
+pColor =
+    property "color"
+
+
+fgGray =
+    pColor "gray"
 
 
 pRm value =
