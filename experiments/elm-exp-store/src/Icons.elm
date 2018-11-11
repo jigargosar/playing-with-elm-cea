@@ -13,6 +13,8 @@ module Icons exposing
     , create
     , default
     , defaultAttrs
+    , menu
+    , menuDef
     , moreHDef
     , moreHorizontal
     , plus
@@ -205,6 +207,18 @@ toggleRight =
         [ Svg.rect [ x "1", y "5", width "22", height "14", rx "7", ry "7" ] []
         , Svg.circle [ cx "16", cy "12", r "3" ] []
         ]
+
+
+menu =
+    svgFeatherIcon "menu"
+        [ Svg.line [ x1 "3", y1 "12", x2 "21", y2 "12" ] []
+        , Svg.line [ x1 "3", y1 "6", x2 "21", y2 "6" ] []
+        , Svg.line [ x1 "3", y1 "18", x2 "21", y2 "18" ] []
+        ]
+
+
+menuDef =
+    default menu
 
 
 toggleLeftDef =

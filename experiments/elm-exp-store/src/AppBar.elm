@@ -19,7 +19,7 @@ view =
         [ styled UI.section1
             [ fzPx 24 ]
             [ class "pa3" ]
-            [ Btn.sIcon [ hs ] [] [ Icons.plusDef ]
+            [ Btn.sIcon [ hs ] [] [ Icons.menuDef ]
             , sDiv [ fwb ] [] [ text "ELM" ]
             , sDiv [ fontWeight lighter ] [] [ text "DONE" ]
             ]
