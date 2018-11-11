@@ -1,6 +1,7 @@
 module CreateTodoDialog exposing (Model, Msg, OutMsg(..), autoFocus, init, update, view)
 
-import ContextStore exposing (ContextId)
+import BasicsX exposing (defaultEmptyStringTo)
+import ContextStore exposing (Context, ContextId, ContextStore)
 import Css
 import CssAtoms exposing (..)
 import DomX exposing (DomId, onClickTargetId)
@@ -112,8 +113,18 @@ inputId =
     "add-todo-modal-content-input"
 
 
-view : Model -> Html Msg
-view model =
+view : ContextStore -> Model -> Html Msg
+view contextStore model =
+    let
+        contexts =
+            ContextStore.list contextStore
+
+        viewInboxOption =
+            styled option [] [ value ContextStore.defaultId ] [ text <| ContextStore.defaultName ]
+
+        viewContextOption context =
+            styled option [] [ value context.id ] [ text <| context.name ]
+    in
     UI.backdrop
         [ id backdropId
         , onClickTargetId BackdropClicked
@@ -139,8 +150,8 @@ view model =
                     [ fa
                     , Css.property "-webkit-appearance" "none"
                     ]
-                    [ class "pa3" ]
-                    [ styled option [] [] [ text "Inbox" ] ]
+                    [ class "pa3", value model.contextId ]
+                    (viewInboxOption :: List.map viewContextOption contexts)
                 ]
             ]
         ]

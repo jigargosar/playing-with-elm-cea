@@ -424,7 +424,7 @@ viewLayer model =
                     (\c -> ContextPopup.view c contextPopup |> Html.map MsgContextPopup)
 
         CreateTodoDialog dialogModel ->
-            CreateTodoDialog.view dialogModel |> Html.map MsgCreateTodoDialog
+            CreateTodoDialog.view model.contextStore dialogModel |> Html.map MsgCreateTodoDialog
 
         NoLayer ->
             noHtml
