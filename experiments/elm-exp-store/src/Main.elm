@@ -270,7 +270,6 @@ update message model =
                 modeUpdateConfig : Mode.UpdateConfig Msg
                 modeUpdateConfig =
                     { toMsg = MsgMode
-                    , addTodo = \content -> MsgTodoStore <| TodoStore.addNew content
                     , setTodoContext = \todoId contextId -> MsgTodoStore <| TodoStore.setContextId todoId contextId
                     , setTodoContent = \id content -> MsgTodoStore <| TodoStore.setContent id content
                     , addContext = MsgContextStore << ContextStore.addNew
@@ -356,7 +355,7 @@ update message model =
                                 ( { model | layer = NoLayer }
                                 , case out of
                                     CreateTodoDialog.Submit content contextId ->
-                                        msgToCmd <| MsgTodoStore (TodoStore.addNew content)
+                                        msgToCmd <| MsgTodoStore (TodoStore.addNew content contextId)
 
                                     CreateTodoDialog.Cancel ->
                                         Cmd.none

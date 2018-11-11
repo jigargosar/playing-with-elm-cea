@@ -32,7 +32,6 @@ type Mode
     | EditTodoMode TodoId TodoContent
     | EditTodoContextMode TodoId ContextId
     | EditContextMode ContextId ContextName
-    | AddTodoMode TodoContent
     | AddContextMode ContextName
 
 
@@ -78,7 +77,6 @@ startEditingContext =
 
 type alias UpdateConfig msg =
     { toMsg : Msg -> msg
-    , addTodo : TodoContent -> msg
     , setTodoContext : TodoId -> ContextId -> msg
     , setTodoContent : TodoId -> TodoContent -> msg
     , addContext : ContextName -> msg
@@ -87,8 +85,7 @@ type alias UpdateConfig msg =
 
 
 type OutMsg
-    = AddTodoOutMsg TodoContent
-    | AddContextOutMsg ContextName
+    = AddContextOutMsg ContextName
     | TodoContentUpdatedOutMsg TodoId TodoContent
     | SetTodoContextOutMsg TodoId ContextId
     | ContextNameUpdatedOutMsg ContextId ContextName
@@ -121,10 +118,6 @@ update config message model =
 
         AutoFocus ->
             case model of
-                AddTodoMode content ->
-                    pure model
-                        |> andThenUpdate (FocusDomId modalTodoInputDomId)
-
                 AddContextMode name ->
                     pure model
                         |> andThenUpdate (FocusDomId modalContextInputDomId)
@@ -189,9 +182,6 @@ update config message model =
 
         TextInputChanged newValue ->
             case model of
-                AddTodoMode _ ->
-                    pure <| AddTodoMode newValue
-
                 AddContextMode _ ->
                     pure <| AddContextMode newValue
 
@@ -223,10 +213,6 @@ update config message model =
 
         EndEditMode ->
             case model of
-                AddTodoMode content ->
-                    pure Default
-                        |> addMsg (config.addTodo content)
-
                 AddContextMode name ->
                     pure Default
                         |> addMsg (config.addContext name)
@@ -357,9 +343,6 @@ viewEditTodoContextModal { selectedContextId, contexts } =
 
 viewModal contexts mode =
     case mode of
-        AddTodoMode content ->
-            viewEditContentModal modalTodoInputDomId content
-
         AddContextMode name ->
             viewEditContentModal modalContextInputDomId name
 

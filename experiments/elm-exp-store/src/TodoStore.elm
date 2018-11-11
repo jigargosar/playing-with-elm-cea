@@ -82,9 +82,9 @@ load =
 
 type Msg
     = NoOp
-    | AddNew TodoContent
-    | AddNewWithNow TodoContent Millis
-    | AddNewWithNowAndId TodoContent Millis TodoId
+    | AddNew TodoContent ContextId
+    | AddNewWithNow TodoContent ContextId Millis
+    | AddNewWithNowAndId TodoContent ContextId Millis TodoId
     | UpsertTodoAndCache Todo
     | Cache
     | UpdateTodo TodoId TodoMsg
@@ -129,13 +129,13 @@ update message model =
         NoOp ->
             pure model
 
-        AddNew content ->
-            ( model, withNowMilli <| AddNewWithNow content )
+        AddNew content contextId ->
+            ( model, withNowMilli <| AddNewWithNow content contextId )
 
-        AddNewWithNow content now ->
-            ( model, withNewId <| AddNewWithNowAndId content now )
+        AddNewWithNow content contextId now ->
+            ( model, withNewId <| AddNewWithNowAndId content contextId now )
 
-        AddNewWithNowAndId content now id ->
+        AddNewWithNowAndId content contextId now id ->
             let
                 newTodo : Todo
                 newTodo =
@@ -145,7 +145,7 @@ update message model =
                     , deleted = False
                     , content = content
                     , done = False
-                    , contextId = ContextStore.defaultId
+                    , contextId = contextId
                     }
             in
             update (UpsertTodoAndCache newTodo) model
