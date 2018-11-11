@@ -24,7 +24,7 @@ view config =
         [ styled UI.section1
             [ pRm 1, rowCY ]
             []
-            [ Btn.sIcon [ hs ] [] [ Icons.menuDef ]
+            [ Btn.sIcon [ hs ] [ class "dn-ns" ] [ Icons.menuDef ]
             , sDiv [ fzPx 24, rowCY, hs ]
                 []
                 [ sDiv [ fwb ] [] [ text "ELM" ]
