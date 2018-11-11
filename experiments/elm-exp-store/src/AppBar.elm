@@ -4,6 +4,7 @@ import Btn
 import Css exposing (fontSize, fontWeight, lighter, rem)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (onClick)
 import Icons
 import Styles exposing (..)
 import UI exposing (..)
@@ -24,7 +25,7 @@ view config =
         [ styled UI.section1
             [ pRm 1, rowCY ]
             []
-            [ Btn.sIcon [ hs ] [ class "dn-ns" ] [ Icons.menuDef ]
+            [ Btn.sIcon [ hs ] [ class "dn-ns", onClick menuClicked ] [ Icons.menuDef ]
             , sDiv [ fzPx 24, rowCY, hs ]
                 []
                 [ sDiv [ fwb ] [] [ text "ELM" ]

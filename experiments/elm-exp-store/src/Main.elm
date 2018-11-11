@@ -484,16 +484,33 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ AppBar.view { menuClicked = MenuClicked }
         , div [ class " flex-auto flex flex-row" ]
-            [ div [ class "flex-shrink-0  overflow-y-scroll w-30-ns dn db-ns " ]
-                [ Sidebar.view <| createSideBarConfig model
-                ]
-            , div [ id "popper-container", class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
-                [ viewPageContent model
-                ]
-            ]
+            [ viewPermanentSidebar model
 
-        --        , QuickAction.view
-        , viewLayer model
+            --        , QuickAction.view
+            , HtmlX.when .showTempSidebar viewTempSidebar model
+            , viewLayer model
+            ]
+        ]
+
+
+viewPermanentSidebar model =
+    div [ id "popper-container", class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
+        [ viewPageContent model
+        ]
+
+
+viewTempSidebar model =
+    UI.backdrop []
+        [ sDiv
+            [ position absolute
+            , left zero
+            , top zero
+            , height (vh 100)
+            , bg "white"
+            , maxWidth (pct 80)
+            ]
+            []
+            [ Sidebar.view <| createSideBarConfig model ]
         ]
 
 
