@@ -33,7 +33,7 @@ autoFocus =
 
 
 type OutMsg
-    = Submit TodoContent ContextId
+    = Submit Todo TodoContent ContextId
     | Cancel
 
 
@@ -50,12 +50,12 @@ type Msg
 withSubmitOutMsg : ( Model, Cmd Msg ) -> ( Model, Cmd Msg, Maybe OutMsg )
 withSubmitOutMsg =
     withOutMsg
-        (\{ content, contextId } ->
+        (\{ todo, content, contextId } ->
             if String.isEmpty content then
                 Cancel
 
             else
-                Submit content contextId
+                Submit todo content contextId
         )
 
 
