@@ -575,11 +575,13 @@ viewTodoListHeader model =
     div
         [ class "ph3 flex flex-row" ]
         [ div [ class "flex-auto" ]
-            [{- SelectUI.view selectContextUIConfig
-                (Just <| getCurrentContextItem model)
-                (allContextItems model)
-                model.selectContextUI
-             -}
+            [ text "Context Name"
+
+            {- SelectUI.view selectContextUIConfig
+               (Just <| getCurrentContextItem model)
+               (allContextItems model)
+               model.selectContextUI
+            -}
             ]
         ]
 
@@ -676,7 +678,7 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
     ( key
     , sDiv [ rowCY ]
         [ class "pa3 bb b--light-gray" ]
-        [ sDiv [ hs ] [] [ doneIconBtn ]
+        [ sDiv [ hs, rowCY ] [] [ doneIconBtn ]
         , sDiv [ hs ]
             [ class "flex-auto flex flex-column " ]
             [ div
@@ -686,7 +688,7 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
                 ]
                 [ div [] [ text content ] ]
             , div
-                [ class "ttu f7 gray pointer"
+                [ class "ttu f7 gray pointer dn"
                 , onClick contextClicked
                 ]
                 [ text <| "@" ++ contextName ]
