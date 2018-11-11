@@ -5,6 +5,7 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import Btn
+import ContextDialog
 import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
@@ -43,6 +44,7 @@ import UpdateReturn exposing (..)
 
 type Layer
     = TodoDialog TodoDialog.Model
+    | ContextDialog ContextDialog.Model
     | ContextPopup ContextId ContextPopup.Model
     | NoLayer
 
@@ -222,7 +224,8 @@ type Msg
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
     | MsgContextPopup ContextPopup.Msg
-    | MsgEditTodoDialog TodoDialog.Msg
+    | MsgTodoDialog TodoDialog.Msg
+    | MsgContextDialog ContextDialog.Msg
     | MsgMode Mode.Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
@@ -230,6 +233,8 @@ type Msg
     | ToggleCompletedTodos
     | SwitchLayerToCreateTodoDialog
     | SwitchLayerToEditTodoDialog Todo
+    | SwitchLayerToCreateContextDialog
+    | SwitchLayerToEditContextDialog Context
 
 
 type alias ContextItem =
@@ -287,7 +292,7 @@ update message model =
             pure model
                 |> (model.contextStore
                         |> ContextStore.get cid
-                        |> unwrapMaybe identity (andThenUpdate << MsgMode << Mode.startEditingContext)
+                        |> unwrapMaybe identity (andThenUpdate << SwitchLayerToEditContextDialog)
                    )
 
         ContextMoreClicked cid ->
@@ -304,7 +309,7 @@ update message model =
                         { model
                             | layer = TodoDialog (TodoDialog.initCreate <| getSelectedContextId model)
                         }
-                        |> andThenUpdate (MsgEditTodoDialog TodoDialog.autoFocus)
+                        |> andThenUpdate (MsgTodoDialog TodoDialog.autoFocus)
 
                 _ ->
                     Debug.todo "handle: replacing layer without closing it."
@@ -316,7 +321,31 @@ update message model =
                         { model
                             | layer = TodoDialog (TodoDialog.initEdit todo)
                         }
-                        |> andThenUpdate (MsgEditTodoDialog TodoDialog.autoFocus)
+                        |> andThenUpdate (MsgTodoDialog TodoDialog.autoFocus)
+
+                _ ->
+                    Debug.todo "handle: replacing layer without closing it."
+
+        SwitchLayerToCreateContextDialog ->
+            case model.layer of
+                NoLayer ->
+                    pure
+                        { model
+                            | layer = ContextDialog ContextDialog.initCreate
+                        }
+                        |> andThenUpdate (MsgContextDialog ContextDialog.autoFocus)
+
+                _ ->
+                    Debug.todo "handle: replacing layer without closing it."
+
+        SwitchLayerToEditContextDialog context ->
+            case model.layer of
+                NoLayer ->
+                    pure
+                        { model
+                            | layer = ContextDialog (ContextDialog.initEdit context)
+                        }
+                        |> andThenUpdate (MsgContextDialog ContextDialog.autoFocus)
 
                 _ ->
                     Debug.todo "handle: replacing layer without closing it."
@@ -352,7 +381,7 @@ update message model =
                 _ ->
                     pure model
 
-        MsgEditTodoDialog msg ->
+        MsgTodoDialog msg ->
             case model.layer of
                 TodoDialog layerModel ->
                     let
@@ -381,7 +410,41 @@ update message model =
                                         Cmd.none
                                 )
                             )
-                        |> addTaggedCmd MsgEditTodoDialog cmd
+                        |> addTaggedCmd MsgTodoDialog cmd
+
+                _ ->
+                    pure model
+
+        MsgContextDialog msg ->
+            case model.layer of
+                ContextDialog layerModel ->
+                    let
+                        ( editContextDialogModel, cmd, maybeOutMsg ) =
+                            ContextDialog.update msg layerModel
+                    in
+                    maybeOutMsg
+                        |> unwrapMaybe
+                            (pure
+                                { model | layer = ContextDialog editContextDialogModel }
+                            )
+                            (\out ->
+                                ( { model | layer = NoLayer }
+                                , case out of
+                                    ContextDialog.Submit dialogMode name ->
+                                        msgToCmd <|
+                                            MsgContextStore <|
+                                                case dialogMode of
+                                                    ContextDialog.Create ->
+                                                        ContextStore.addNew name
+
+                                                    ContextDialog.Edit context ->
+                                                        ContextStore.setName context.id name
+
+                                    ContextDialog.Cancel ->
+                                        Cmd.none
+                                )
+                            )
+                        |> addTaggedCmd MsgContextDialog cmd
 
                 _ ->
                     pure model
@@ -408,11 +471,11 @@ startAddingTodoMsg =
 
 
 startAddingContextMsg =
-    MsgMode Mode.startAddingContext
+    SwitchLayerToCreateContextDialog
 
 
 startEditingTodoContext =
-    MsgMode << Mode.startEditingTodoContext
+    SwitchLayerToEditContextDialog
 
 
 contextMoreClicked =
@@ -444,7 +507,10 @@ viewLayer model =
                     (\c -> ContextPopup.view c contextPopup |> Html.map MsgContextPopup)
 
         TodoDialog dialogModel ->
-            TodoDialog.view model.contextStore dialogModel |> Html.map MsgEditTodoDialog
+            TodoDialog.view model.contextStore dialogModel |> Html.map MsgTodoDialog
+
+        ContextDialog dialogModel ->
+            ContextDialog.view dialogModel |> Html.map MsgContextDialog
 
         NoLayer ->
             noHtml
