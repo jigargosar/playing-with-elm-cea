@@ -220,7 +220,7 @@ andThenUpdate msg =
 type Msg
     = NoOp
     | Warn Log.Line
-    | SetTodoListContextId ContextId
+    | NavigateToTodoListWithContextId ContextId
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
     | MsgContextPopup ContextPopup.Msg
@@ -229,6 +229,7 @@ type Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
     | MenuClicked
+    | TempSidebarBackdropClicked
     | ToggleShowArchivedContexts
     | ToggleCompletedTodos
     | SwitchLayerToCreateTodoDialog
@@ -250,8 +251,8 @@ update message model =
         Warn logMessages ->
             ( model, Log.warn "Main" logMessages )
 
-        SetTodoListContextId contextId ->
-            pure { model | contextId = contextId }
+        NavigateToTodoListWithContextId contextId ->
+            pure { model | contextId = contextId, showTempSidebar = False }
 
         MsgTodoStore msg ->
             Update2.lift
@@ -291,6 +292,9 @@ update message model =
 
         MenuClicked ->
             pure { model | showTempSidebar = not model.showTempSidebar }
+
+        TempSidebarBackdropClicked ->
+            pure { model | showTempSidebar = False }
 
         SwitchLayerToCreateTodoDialog ->
             case model.layer of
@@ -484,33 +488,40 @@ view model =
     div [ class "flex flex-column min-h-100 w-100" ]
         [ AppBar.view { menuClicked = MenuClicked }
         , div [ class " flex-auto flex flex-row" ]
-            [ viewPermanentSidebar model
-
-            --        , QuickAction.view
-            , HtmlX.when .showTempSidebar viewTempSidebar model
-            , viewLayer model
+            [ HtmlX.when (not << .showTempSidebar) ps model
+            , div [ id "popper-container", class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
+                [ viewPageContent model
+                ]
             ]
+
+        --        , QuickAction.view
+        , HtmlX.when .showTempSidebar viewTempSidebar model
+        , viewLayer model
         ]
 
 
-viewPermanentSidebar model =
-    div [ id "popper-container", class "flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
-        [ viewPageContent model
+ps model =
+    div [ class "flex-shrink-0  overflow-y-scroll w-30-ns dn db-ns " ]
+        [ Sidebar.view <| createSideBarConfig model
         ]
 
 
 viewTempSidebar model =
-    UI.backdrop []
+    sDiv [ position absolute, absFill, dFlexRow, bcBlackA 0.4 ]
+        []
         [ sDiv
-            [ position absolute
-            , left zero
-            , top zero
-            , height (vh 100)
-            , bg "white"
+            [ {- position absolute
+                 , left zero
+                 , top zero
+                 , height (vh 100)
+                 ,
+              -}
+              bg "white"
             , maxWidth (pct 80)
             ]
             []
             [ Sidebar.view <| createSideBarConfig model ]
+        , sDiv [ fa ] [ onClick TempSidebarBackdropClicked ] []
         ]
 
 
@@ -567,7 +578,7 @@ createSideBarConfig model =
             , cid = id
             , name = name
             , isArchived = isArchived
-            , navigateToTodoList = SetTodoListContextId id
+            , navigateToTodoList = NavigateToTodoListWithContextId id
             , activeTodoCount = getActiveTodoListCountForContextId id model
             , isSelected = isCurrentPageContextTodoListWithContextId id model
             , moreClicked = contextMoreClicked id
