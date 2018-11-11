@@ -1,4 +1,4 @@
-module EditTodoDialog exposing (Model, Msg, OutMsg(..), autoFocus, init, update, view)
+module EditTodoDialog exposing (DialogMode(..), Model, Msg, OutMsg(..), autoFocus, initEdit, update, view)
 
 import BasicsX exposing (defaultEmptyStringTo)
 import ContextStore exposing (Context, ContextId, ContextStore)
@@ -17,15 +17,20 @@ import UI exposing (sDiv)
 import UpdateReturn exposing (..)
 
 
+type DialogMode
+    = Create
+    | Edit Todo
+
+
 type alias Model =
     { content : TodoContent
     , contextId : ContextId
-    , todo : Todo
+    , dialogMode : DialogMode
     }
 
 
-init todo =
-    { content = todo.content, contextId = todo.contextId, todo = todo }
+initEdit todo =
+    { content = todo.content, contextId = todo.contextId, dialogMode = Edit todo }
 
 
 autoFocus =
@@ -33,7 +38,7 @@ autoFocus =
 
 
 type OutMsg
-    = Submit Todo TodoContent ContextId
+    = Submit DialogMode TodoContent ContextId
     | Cancel
 
 
@@ -50,12 +55,12 @@ type Msg
 withSubmitOutMsg : ( Model, Cmd Msg ) -> ( Model, Cmd Msg, Maybe OutMsg )
 withSubmitOutMsg =
     withOutMsg
-        (\{ todo, content, contextId } ->
+        (\{ dialogMode, content, contextId } ->
             if String.isEmpty content then
                 Cancel
 
             else
-                Submit todo content contextId
+                Submit dialogMode content contextId
         )
 
 

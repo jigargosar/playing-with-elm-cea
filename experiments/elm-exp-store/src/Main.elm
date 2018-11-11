@@ -317,7 +317,7 @@ update message model =
                 NoLayer ->
                     pure
                         { model
-                            | layer = EditTodoDialog (EditTodoDialog.init todo)
+                            | layer = EditTodoDialog (EditTodoDialog.initEdit todo)
                         }
                         |> andThenUpdate (MsgEditTodoDialog EditTodoDialog.autoFocus)
 
@@ -397,9 +397,15 @@ update message model =
                             (\out ->
                                 ( { model | layer = NoLayer }
                                 , case out of
-                                    EditTodoDialog.Submit todo content contextId ->
+                                    EditTodoDialog.Submit dialogMode content contextId ->
                                         msgToCmd <|
-                                            MsgTodoStore (TodoStore.setContentAndContextId todo.id content contextId)
+                                            MsgTodoStore <|
+                                                case dialogMode of
+                                                    EditTodoDialog.Create ->
+                                                        TodoStore.addNew content contextId
+
+                                                    EditTodoDialog.Edit todo ->
+                                                        TodoStore.setContentAndContextId todo.id content contextId
 
                                     EditTodoDialog.Cancel ->
                                         Cmd.none
