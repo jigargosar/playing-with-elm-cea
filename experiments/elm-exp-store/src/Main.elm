@@ -56,6 +56,7 @@ type alias Model =
     , layer : Layer
     , showArchivedContexts : Bool
     , showCompletedTodos : Bool
+    , showTempSidebar : Bool
     }
 
 
@@ -80,6 +81,7 @@ init flags =
             , layer = NoLayer
             , showArchivedContexts = False
             , showCompletedTodos = False
+            , showTempSidebar = False
             }
     in
     pure model
@@ -226,6 +228,7 @@ type Msg
     | MsgContextDialog ContextDialog.Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
+    | MenuClicked
     | ToggleShowArchivedContexts
     | ToggleCompletedTodos
     | SwitchLayerToCreateTodoDialog
@@ -285,6 +288,9 @@ update message model =
                             }
                             |> andThenUpdate (MsgContextPopup ContextPopup.open)
                     )
+
+        MenuClicked ->
+            pure { model | showTempSidebar = not model.showTempSidebar }
 
         SwitchLayerToCreateTodoDialog ->
             case model.layer of
@@ -476,7 +482,7 @@ getAllContextsNameIdPairs =
 view : Model -> Html Msg
 view model =
     div [ class "flex flex-column min-h-100 w-100" ]
-        [ AppBar.view { menuClicked = NoOp }
+        [ AppBar.view { menuClicked = MenuClicked }
         , viewPage model
 
         --        , QuickAction.view
