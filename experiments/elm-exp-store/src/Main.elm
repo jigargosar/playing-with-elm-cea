@@ -228,7 +228,7 @@ type Msg
     | ContextMoreClicked ContextId
     | ToggleShowArchivedContexts
     | ToggleCompletedTodos
-    | ShowCreateTodoDialog
+    | ChangeLayerToCreateTodoDialog
 
 
 type alias ContextItem =
@@ -297,7 +297,7 @@ update message model =
                 }
                 |> andThenUpdate (MsgContextPopup ContextPopup.open)
 
-        ShowCreateTodoDialog ->
+        ChangeLayerToCreateTodoDialog ->
             case model.layer of
                 NoLayer ->
                     pure
@@ -385,7 +385,7 @@ subscriptions model =
 
 
 startAddingTodoMsg =
-    ShowCreateTodoDialog
+    ChangeLayerToCreateTodoDialog
 
 
 startAddingContextMsg =
