@@ -86,7 +86,8 @@ update message =
                 >> withNoOutMsg
 
         ContextIdChanged contextId ->
-            withNoOutMsg
+            mapModel (\model -> { model | contextId = contextId })
+                >> withNoOutMsg
 
         ContentInputKeyDown ke ->
             case ke of
