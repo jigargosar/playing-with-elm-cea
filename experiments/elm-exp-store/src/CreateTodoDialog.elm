@@ -42,6 +42,7 @@ type Msg
     | ContentChanged TodoContent
     | ContextIdChanged ContextId
     | ContentInputKeyDown HotKey.Event
+    | ContextIdSelectKeyDown HotKey.Event
     | AutoFocus
 
 
@@ -101,6 +102,17 @@ update message =
 
                 _ ->
                     withNoOutMsg
+
+        ContextIdSelectKeyDown ke ->
+            case ke of
+                ( [], "Enter" ) ->
+                    withSubmitOutMsg
+
+                ( [], "Escape" ) ->
+                    withCancelOutMsg
+
+                _ ->
+                    withNoOutMsg
     )
         << pure
 
@@ -150,7 +162,11 @@ view contextStore model =
                     [ fa
                     , Css.property "-webkit-appearance" "none"
                     ]
-                    [ class "pa3", value model.contextId ]
+                    [ class "pa3"
+                    , value model.contextId
+                    , onInput ContextIdChanged
+                    , HotKey.onKeyDown ContextIdSelectKeyDown
+                    ]
                     (viewInboxOption :: List.map viewContextOption contexts)
                 ]
             ]
