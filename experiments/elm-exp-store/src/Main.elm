@@ -219,11 +219,11 @@ type Msg
     = NoOp
     | Warn Log.Line
     | SetTodoListContextId ContextId
-    | TodoStoreMsg TodoStore.Msg
-    | ContextStoreMsg ContextStore.Msg
+    | MsgTodoStore TodoStore.Msg
+    | MsgContextStore ContextStore.Msg
     | MsgContextPopup ContextPopup.Msg
     | MsgAddTodoDialog AddTodoDialog.Msg
-    | ModeMsg Mode.Msg
+    | MsgMode Mode.Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
     | ToggleShowArchivedContexts
@@ -247,34 +247,34 @@ update message model =
         SetTodoListContextId contextId ->
             pure { model | contextId = contextId }
 
-        TodoStoreMsg msg ->
+        MsgTodoStore msg ->
             Update2.lift
                 .todoStore
                 (\s b -> { b | todoStore = s })
-                TodoStoreMsg
+                MsgTodoStore
                 TodoStore.update
                 msg
                 model
 
-        ContextStoreMsg msg ->
+        MsgContextStore msg ->
             Update2.lift
                 .contextStore
                 (\s b -> { b | contextStore = s })
-                ContextStoreMsg
+                MsgContextStore
                 ContextStore.update
                 msg
                 model
 
-        ModeMsg msg ->
+        MsgMode msg ->
             let
                 modeUpdateConfig : Mode.UpdateConfig Msg
                 modeUpdateConfig =
-                    { toMsg = ModeMsg
-                    , addTodo = \content -> TodoStoreMsg <| TodoStore.addNew content
-                    , setTodoContext = \todoId contextId -> TodoStoreMsg <| TodoStore.setContextId todoId contextId
-                    , setTodoContent = \id content -> TodoStoreMsg <| TodoStore.setContent id content
-                    , addContext = ContextStoreMsg << ContextStore.addNew
-                    , setContextName = \id name -> ContextStoreMsg <| ContextStore.setName id name
+                    { toMsg = MsgMode
+                    , addTodo = \content -> MsgTodoStore <| TodoStore.addNew content
+                    , setTodoContext = \todoId contextId -> MsgTodoStore <| TodoStore.setContextId todoId contextId
+                    , setTodoContent = \id content -> MsgTodoStore <| TodoStore.setContent id content
+                    , addContext = MsgContextStore << ContextStore.addNew
+                    , setContextName = \id name -> MsgContextStore <| ContextStore.setName id name
                     }
             in
             updateSub (Mode.update modeUpdateConfig)
@@ -287,7 +287,7 @@ update message model =
             pure model
                 |> (model.contextStore
                         |> ContextStore.get cid
-                        |> unwrapMaybe identity (andThenUpdate << ModeMsg << Mode.startEditingContext)
+                        |> unwrapMaybe identity (andThenUpdate << MsgMode << Mode.startEditingContext)
                    )
 
         ContextMoreClicked cid ->
@@ -324,7 +324,7 @@ update message model =
                                                     StartEditingContext cid
 
                                                 ContextPopup.ToggleArchive ->
-                                                    ContextStoreMsg <| ContextStore.toggleArchived cid
+                                                    MsgContextStore <| ContextStore.toggleArchived cid
 
                                     ContextPopup.ClosedOut ->
                                         Cmd.none
@@ -384,11 +384,11 @@ startAddingTodoMsg =
 
 
 startAddingContextMsg =
-    ModeMsg Mode.startAddingContext
+    MsgMode Mode.startAddingContext
 
 
 startEditingTodoContext =
-    ModeMsg << Mode.startEditingTodoContext
+    MsgMode << Mode.startEditingTodoContext
 
 
 contextMoreClicked =
@@ -408,7 +408,7 @@ view model =
         [ viewAppBar
         , viewPage model
         , viewLayer model
-        , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map ModeMsg
+        , Mode.viewModal (getAllContextsNameIdPairs model) model.mode |> Html.map MsgMode
         ]
 
 
@@ -589,9 +589,9 @@ createTodoViewModel contextStore todo =
         (defaultEmptyStringTo "<empty>" todo.content)
         todo.done
         (ContextStore.getNameOrDefaultById todo.contextId contextStore)
-        (ModeMsg <| Mode.startEditingTodo todo)
-        (TodoStoreMsg <| TodoStore.markDone todo.id)
-        (TodoStoreMsg <| TodoStore.unmarkDone todo.id)
+        (MsgMode <| Mode.startEditingTodo todo)
+        (MsgTodoStore <| TodoStore.markDone todo.id)
+        (MsgTodoStore <| TodoStore.unmarkDone todo.id)
         (startEditingTodoContext todo)
 
 
