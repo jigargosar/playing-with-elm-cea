@@ -210,7 +210,7 @@ type Msg
     | MsgContextStore ContextStore.Msg
     | MsgContextPopup ContextPopup.Msg
     | MsgTodoDialog TodoDialog.Msg
-    | MsgContextDialog ContextDialog.Msg
+    | OnContextDialogMsg ContextDialog.Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
     | MenuClicked
@@ -324,7 +324,7 @@ update message model =
                         { model
                             | layer = Layer.ContextDialog (ContextDialog.initEdit context)
                         }
-                        |> andThenUpdate (MsgContextDialog ContextDialog.autoFocus)
+                        |> andThenUpdate (OnContextDialogMsg ContextDialog.autoFocus)
 
                 _ ->
                     pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
@@ -394,7 +394,7 @@ update message model =
                 _ ->
                     pure model
 
-        MsgContextDialog msg ->
+        OnContextDialogMsg msg ->
             case model.layer of
                 Layer.ContextDialog contextDialog ->
                     updateContextDialog msg contextDialog model
@@ -437,7 +437,7 @@ updateContextDialog msg contextDialog_ =
     pure
         >> mapModel (setLayer <| Layer.ContextDialog contextDialog)
         >> handleOut
-        >> addTaggedCmd MsgContextDialog cmd
+        >> addTaggedCmd OnContextDialogMsg cmd
 
 
 subscriptions : Model -> Sub Msg
@@ -529,7 +529,7 @@ viewLayer model =
             TodoDialog.view model.contextStore dialogModel |> Html.map MsgTodoDialog
 
         Layer.ContextDialog dialogModel ->
-            ContextDialog.view dialogModel |> Html.map MsgContextDialog
+            ContextDialog.view dialogModel |> Html.map OnContextDialogMsg
 
         Layer.NoLayer ->
             noHtml
