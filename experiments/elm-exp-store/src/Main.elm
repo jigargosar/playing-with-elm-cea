@@ -321,26 +321,20 @@ update message model =
                     ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
 
         OpenCreateContextDialog ->
-            case model.layer of
-                Layer.NoLayer ->
-                    updateContextDialog
-                        ContextDialog.autoFocus
-                        ContextDialog.initCreate
-                        model
-
-                _ ->
-                    ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
+            openNewLayer
+                (updateContextDialog
+                    ContextDialog.autoFocus
+                    ContextDialog.initCreate
+                )
+                model
 
         OpenEditContextDialog context ->
-            case model.layer of
-                Layer.NoLayer ->
-                    updateContextDialog
-                        ContextDialog.autoFocus
-                        (ContextDialog.initEdit context)
-                        model
-
-                _ ->
-                    ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
+            openNewLayer
+                (updateContextDialog
+                    ContextDialog.autoFocus
+                    (ContextDialog.initEdit context)
+                )
+                model
 
         MsgContextPopup msg ->
             case model.layer of
@@ -420,6 +414,15 @@ update message model =
 
         ToggleCompletedTodos ->
             pure { model | showCompletedTodos = not model.showCompletedTodos }
+
+
+openNewLayer fn model =
+    case model.layer of
+        Layer.NoLayer ->
+            fn model
+
+        _ ->
+            ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
 
 
 updateContextDialog msg contextDialog_ =
