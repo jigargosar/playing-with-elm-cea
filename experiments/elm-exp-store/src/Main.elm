@@ -227,6 +227,7 @@ type Msg
     | OpenEditTodoDialog Todo
     | OpenCreateContextDialog
     | OpenEditContextDialog Context
+    | LayerMsg Layer.Msg
 
 
 type alias ContextItem =
@@ -300,6 +301,21 @@ update message model =
 
         TempSidebarBackdropClicked ->
             pure { model | showTempSidebar = False }
+
+        LayerMsg msg ->
+            let
+                ( layer, cmd, outMsg ) =
+                    Layer.update msg model.layer
+
+                _ =
+                    case outMsg of
+                        Layer.TodoDialogOutMsg (TodoDialog.Submit TodoDialog.Create contents cid) ->
+                            pure model
+
+                        _ ->
+                            pure model
+            in
+            pure model
 
         OpenCreateTodoDialog ->
             attemptToOpenLayer

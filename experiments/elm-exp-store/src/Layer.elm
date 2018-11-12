@@ -1,4 +1,4 @@
-module Layer exposing (Layer(..), eqContextPopupFor)
+module Layer exposing (Layer(..), Msg(..), OutMsg(..), eqContextPopupFor, update)
 
 import BasicsX exposing (unwrapMaybe)
 import ContextDialog
