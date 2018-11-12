@@ -310,7 +310,11 @@ update message model =
                 _ =
                     case outMsg of
                         Layer.TodoDialogOutMsg (TodoDialog.Submit TodoDialog.Create contents cid) ->
-                            pure model
+                            mapModel (setLayer Layer.NoLayer)
+                                >> andThenUpdate
+                                    (MsgTodoStore <|
+                                        TodoStore.addNew content cid
+                                    )
 
                         _ ->
                             pure model
