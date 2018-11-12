@@ -309,7 +309,7 @@ update message model =
         SwitchLayerToCreateContextDialog ->
             case model.layer of
                 Layer.NoLayer ->
-                    updateMsgContextDialog
+                    updateContextDialog
                         ContextDialog.autoFocus
                         ContextDialog.initCreate
                         model
@@ -397,7 +397,7 @@ update message model =
         MsgContextDialog msg ->
             case model.layer of
                 Layer.ContextDialog contextDialog ->
-                    updateMsgContextDialog msg contextDialog model
+                    updateContextDialog msg contextDialog model
 
                 _ ->
                     pure model
@@ -409,7 +409,7 @@ update message model =
             pure { model | showCompletedTodos = not model.showCompletedTodos }
 
 
-updateMsgContextDialog msg contextDialog_ =
+updateContextDialog msg contextDialog_ =
     let
         ( contextDialog, cmd, maybeOutMsg ) =
             ContextDialog.update msg contextDialog_
