@@ -1,16 +1,17 @@
 {
-  "version": 1,
+  "version": 2,
   "alias": [
     "elm-done",
     "https://elm-done.functional-programmer.com"
   ],
-  "type": "static",
-  "static": {
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  }
+  "builds": [
+    {"src": "package.json", "use": "@now/static-build"}
+
+  ],
+  "routes": [
+    {
+      "src": "**",
+      "dest": "/index.html"
+    }
+  ]
 }
