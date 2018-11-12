@@ -320,11 +320,10 @@ update message model =
         SwitchLayerToEditContextDialog context ->
             case model.layer of
                 Layer.NoLayer ->
-                    pure
-                        { model
-                            | layer = Layer.ContextDialog (ContextDialog.initEdit context)
-                        }
-                        |> andThenUpdate (OnContextDialogMsg ContextDialog.autoFocus)
+                    updateContextDialog
+                        ContextDialog.autoFocus
+                        (ContextDialog.initEdit context)
+                        model
 
                 _ ->
                     pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
