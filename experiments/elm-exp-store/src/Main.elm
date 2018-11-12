@@ -415,7 +415,7 @@ updateMsgContextDialog msg contextDialog_ =
             ContextDialog.update msg contextDialog_
     in
     pure
-        >> mapModel (\model -> { model | layer = Layer.ContextDialog contextDialog })
+        >> mapModel (setLayer <| Layer.ContextDialog contextDialog)
         >> handleContextDialogOutMsg maybeOutMsg
         >> addTaggedCmd MsgContextDialog cmd
 
