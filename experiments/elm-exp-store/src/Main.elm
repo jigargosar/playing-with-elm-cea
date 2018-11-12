@@ -415,15 +415,15 @@ updateMsgContextDialog msg contextDialog_ model =
             ContextDialog.update msg contextDialog_
     in
     pure { model | layer = Layer.ContextDialog contextDialog }
-        |> handleOutMsg maybeOutMsg
+        |> handleContextDialogOutMsg maybeOutMsg
         |> addTaggedCmd MsgContextDialog cmd
 
 
-handleOutMsg maybeOut =
+handleContextDialogOutMsg maybeOut =
     case maybeOut of
         Just (ContextDialog.Submit dialogMode name) ->
             mapModel (\model -> { model | layer = Layer.NoLayer })
-                >> (addMsg <|
+                >> (andThenUpdate <|
                         MsgContextStore <|
                             case dialogMode of
                                 ContextDialog.Create ->
