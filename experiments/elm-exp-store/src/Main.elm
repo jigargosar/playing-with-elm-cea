@@ -414,12 +414,16 @@ updateMsgContextDialog msg contextDialog_ model =
         ( contextDialog, cmd, maybeOutMsg ) =
             ContextDialog.update msg contextDialog_
     in
-    (case maybeOutMsg of
-        Just out ->
-            case out of
-                ContextDialog.Submit dialogMode name ->
-                    ( { model | layer = Layer.NoLayer }
-                    , msgToCmd <|
+    pure { model | layer = Layer.ContextDialog contextDialog }
+        |> handleOutMsg maybeOutMsg
+        |> addTaggedCmd MsgContextDialog cmd
+
+
+handleOutMsg maybeOut =
+    case maybeOut of
+        Just (ContextDialog.Submit dialogMode name) ->
+            mapModel (\model -> { model | layer = Layer.NoLayer })
+                >> (addMsg <|
                         MsgContextStore <|
                             case dialogMode of
                                 ContextDialog.Create ->
@@ -427,17 +431,13 @@ updateMsgContextDialog msg contextDialog_ model =
 
                                 ContextDialog.Edit context ->
                                     ContextStore.setName context.id name
-                    )
+                   )
 
-                ContextDialog.Cancel ->
-                    pure
-                        { model | layer = Layer.ContextDialog contextDialog }
+        Just ContextDialog.Cancel ->
+            identity
 
         Nothing ->
-            pure
-                { model | layer = Layer.ContextDialog contextDialog }
-    )
-        |> addTaggedCmd MsgContextDialog cmd
+            identity
 
 
 
