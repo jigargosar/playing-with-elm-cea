@@ -4,6 +4,7 @@ import BasicsX exposing (unwrapMaybe)
 import ContextDialog
 import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextStore)
+import Log
 import TodoDialog
 import UpdateReturn exposing (..)
 
@@ -46,6 +47,10 @@ withOutMsg o ( m, c ) =
     ( m, c, o )
 
 
+logCmd =
+    Log.warn "Layer"
+
+
 update : Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
 update message layer_ =
     (case ( message, layer_ ) of
@@ -56,7 +61,8 @@ update message layer_ =
             updateTodoDialog msg model
 
         _ ->
-            withNoOutMsg
+            addCmd (logCmd [ "invalid msg,layer combination" ])
+                >> withNoOutMsg
     )
     <|
         pure layer_
