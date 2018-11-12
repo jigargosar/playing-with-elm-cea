@@ -321,7 +321,7 @@ update message model =
                     ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
 
         OpenCreateContextDialog ->
-            openNewLayer
+            attemptToOpenLayer
                 (updateContextDialog
                     ContextDialog.autoFocus
                     ContextDialog.initCreate
@@ -329,7 +329,7 @@ update message model =
                 model
 
         OpenEditContextDialog context ->
-            openNewLayer
+            attemptToOpenLayer
                 (updateContextDialog
                     ContextDialog.autoFocus
                     (ContextDialog.initEdit context)
@@ -416,7 +416,7 @@ update message model =
             pure { model | showCompletedTodos = not model.showCompletedTodos }
 
 
-openNewLayer fn model =
+attemptToOpenLayer fn model =
     case model.layer of
         Layer.NoLayer ->
             fn model
