@@ -1,5 +1,3 @@
-import './favicon.ico'
-import './logo.svg'
 import 'tachyons'
 import './main.css'
 // noinspection ES6CheckImport
