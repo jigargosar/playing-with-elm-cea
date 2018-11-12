@@ -119,7 +119,7 @@ window.addEventListener('wheel', function (e) {
   // console.log(e)
   const data = pick(['deltaX', 'deltaY'])(e)
   // sendTo(app, 'wheel', data)
-})
+},{passive:true})
 
 let popper = null
 
