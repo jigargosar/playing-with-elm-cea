@@ -335,37 +335,8 @@ update message model =
 
         OnContextPopupMsg msg ->
             case model.layer of
-                            Layer.ContextPopup context dialogModel ->
-                                updateTodoDialog msg context dialogModel model
-
-                            _ ->
-                                ( model, logInvalidLayerMsgCmd )
-            case model.layer of
-                Layer.ContextPopup context layerModel ->
-                    let
-                        ( contextPopup, cmd, maybeOut ) =
-                            ContextPopup.update context.id msg layerModel
-                    in
-                    maybeOut
-                        |> unwrapMaybe
-                            (pure { model | layer = Layer.ContextPopup context contextPopup })
-                            (\out ->
-                                ( { model | layer = Layer.NoLayer }
-                                , case out of
-                                    ContextPopup.ActionOut action ->
-                                        msgToCmd <|
-                                            case action of
-                                                ContextPopup.Rename ->
-                                                    StartEditingContext context.id
-
-                                                ContextPopup.ToggleArchive ->
-                                                    MsgContextStore <| ContextStore.toggleArchived context.id
-
-                                    ContextPopup.ClosedOut ->
-                                        Cmd.none
-                                )
-                            )
-                        |> addTaggedCmd OnContextPopupMsg cmd
+                Layer.ContextPopup context contextPopup ->
+                    updateContextPopup msg context contextPopup model
 
                 _ ->
                     ( model, logInvalidLayerMsgCmd )
