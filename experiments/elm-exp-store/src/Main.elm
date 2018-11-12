@@ -78,7 +78,11 @@ init flags =
             , showTempSidebar = False
             }
     in
-    ( model, [ maybeTodoStoreLogLine, maybeContextStoreLogLine ] |> List.filterMap (Maybe.map logCmd) |> Cmd.batch )
+    ( model
+    , [ maybeTodoStoreLogLine, maybeContextStoreLogLine ]
+        |> List.filterMap (Maybe.map logCmd)
+        |> Cmd.batch
+    )
 
 
 isCurrentPageContextTodoListWithContextId contextId model =
