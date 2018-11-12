@@ -214,7 +214,7 @@ type Msg
     | NavigateToTodoListWithContextId ContextId
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
-    | MsgContextPopup ContextPopup.Msg
+    | OnContextPopupMsg ContextPopup.Msg
     | OnTodoDialogMsg TodoDialog.Msg
     | OnContextDialogMsg ContextDialog.Msg
     | StartEditingContext ContextId
@@ -285,9 +285,13 @@ update message model =
         ContextMoreClicked cid ->
             Layer.initMaybeContextPopup cid model.contextStore
                 |> unwrapMaybe (pure model)
-                    (\layer ->
-                        pure { model | layer = layer }
-                            |> andThenUpdate (MsgContextPopup ContextPopup.open)
+                    (\contextPopup ->
+                        attemptToOpenLayer
+                            (updateContextPopup
+                                ContextPopup.open
+                                contextPopup
+                            )
+                            model
                     )
 
         MenuClicked ->
@@ -328,7 +332,7 @@ update message model =
                 )
                 model
 
-        MsgContextPopup msg ->
+        OnContextPopupMsg msg ->
             case model.layer of
                 Layer.ContextPopup context layerModel ->
                     let
@@ -354,7 +358,7 @@ update message model =
                                         Cmd.none
                                 )
                             )
-                        |> addTaggedCmd MsgContextPopup cmd
+                        |> addTaggedCmd OnContextPopupMsg cmd
 
                 _ ->
                     ( model, logInvalidLayerMsgCmd )
@@ -459,6 +463,42 @@ subscriptions model =
         []
 
 
+updateContextPopup msg context contextPopup_ =
+    let
+        ( contextPopup, cmd, maybeOutMsg ) =
+            ContextPopup.update msg contextPopup_
+
+        handleOut =
+            case maybeOutMsg of
+                Just (ContextPopup.ActionOut action) ->
+                    mapModel (\model -> { model | layer = Layer.NoLayer })
+                        >> andThenUpdate
+                            (case action of
+                                ContextPopup.Rename ->
+                                    StartEditingContext context.id
+
+                                ContextPopup.ToggleArchive ->
+                                    MsgContextStore <| ContextStore.toggleArchived context.id
+                            )
+
+                Just ContextPopup.ClosedOut ->
+                    mapModel (\model -> { model | layer = Layer.NoLayer })
+
+                Nothing ->
+                    identity
+    in
+    pure
+        >> mapModel (setLayer <| Layer.ContextPopup contextPopup)
+        >> handleOut
+        >> addTaggedCmd OnContextPopupMsg cmd
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.batch
+        []
+
+
 
 ---- VIEW ----
 
@@ -536,7 +576,7 @@ viewTempSidebar model =
 viewLayer model =
     case model.layer of
         Layer.ContextPopup context contextPopup ->
-            ContextPopup.view context contextPopup |> Html.map MsgContextPopup
+            ContextPopup.view context contextPopup |> Html.map OnContextPopupMsg
 
         Layer.TodoDialog dialogModel ->
             TodoDialog.view model.contextStore dialogModel |> Html.map OnTodoDialogMsg
