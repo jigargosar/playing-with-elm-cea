@@ -223,7 +223,7 @@ type Msg
     | TempSidebarBackdropClicked
     | ToggleShowArchivedContexts
     | ToggleCompletedTodos
-    | SwitchLayerToCreateTodoDialog
+    | OpenCreateTodoDialog
     | OpenEditTodoDialog Todo
     | OpenCreateContextDialog
     | OpenEditContextDialog Context
@@ -301,7 +301,7 @@ update message model =
         TempSidebarBackdropClicked ->
             pure { model | showTempSidebar = False }
 
-        SwitchLayerToCreateTodoDialog ->
+        OpenCreateTodoDialog ->
             attemptToOpenLayer
                 (updateTodoDialog
                     TodoDialog.autoFocus
@@ -476,7 +476,7 @@ subscriptions model =
 
 
 startAddingTodoMsg =
-    SwitchLayerToCreateTodoDialog
+    OpenCreateTodoDialog
 
 
 startAddingContextMsg =
