@@ -78,9 +78,7 @@ init flags =
             , showTempSidebar = False
             }
     in
-    pure model
-        |> andThenUpdate (unwrapMaybe NoOp Warn maybeTodoStoreLogLine)
-        |> andThenUpdate (unwrapMaybe NoOp Warn maybeContextStoreLogLine)
+    ( model, [ maybeTodoStoreLogLine, maybeContextStoreLogLine ] |> List.filterMap (Maybe.map logCmd) |> Cmd.batch )
 
 
 isCurrentPageContextTodoListWithContextId contextId model =
@@ -202,6 +200,10 @@ andThenUpdate msg =
     andThen (update msg)
 
 
+logCmd =
+    Log.warn "Main"
+
+
 type Msg
     = NoOp
     | Warn Log.Line
@@ -238,7 +240,7 @@ update message model =
             pure model
 
         Warn logMessages ->
-            ( model, Log.warn "Main" logMessages )
+            ( model, logCmd logMessages )
 
         NavigateToTodoListWithContextId contextId ->
             pure { model | contextId = contextId, showTempSidebar = False }
