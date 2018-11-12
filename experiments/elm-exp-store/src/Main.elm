@@ -409,38 +409,49 @@ update message model =
             pure { model | showCompletedTodos = not model.showCompletedTodos }
 
 
-contextDialogOutMsgToMaybeMsg out =
-    case out of
-        ContextDialog.Submit dialogMode name ->
-            Just <|
-                MsgContextStore <|
-                    case dialogMode of
-                        ContextDialog.Create ->
-                            ContextStore.addNew name
-
-                        ContextDialog.Edit context ->
-                            ContextStore.setName context.id name
-
-        ContextDialog.Cancel ->
-            Nothing
-
-
 updateMsgContextDialog msg contextDialog_ model =
     let
         ( contextDialog, cmd, maybeOutMsg ) =
             ContextDialog.update msg contextDialog_
     in
-    maybeOutMsg
-        |> unwrapMaybe
-            (pure
+    (case maybeOutMsg of
+        Just out ->
+            case out of
+                ContextDialog.Submit dialogMode name ->
+                    ( { model | layer = Layer.NoLayer }
+                    , msgToCmd <|
+                        MsgContextStore <|
+                            case dialogMode of
+                                ContextDialog.Create ->
+                                    ContextStore.addNew name
+
+                                ContextDialog.Edit context ->
+                                    ContextStore.setName context.id name
+                    )
+
+                ContextDialog.Cancel ->
+                    pure
+                        { model | layer = Layer.ContextDialog contextDialog }
+
+        Nothing ->
+            pure
                 { model | layer = Layer.ContextDialog contextDialog }
-            )
-            (\out ->
-                ( { model | layer = Layer.NoLayer }
-                , contextDialogOutMsgToMaybeMsg out |> unwrapMaybe Cmd.none msgToCmd
-                )
-            )
+    )
         |> addTaggedCmd MsgContextDialog cmd
+
+
+
+--    maybeOutMsg
+--        |> unwrapMaybe
+--            (pure
+--                { model | layer = Layer.ContextDialog contextDialog }
+--            )
+--            (\out ->
+--                ( { model | layer = Layer.NoLayer }
+--                , contextDialogOutMsgToMaybeMsg out |> unwrapMaybe Cmd.none msgToCmd
+--                )
+--            )
+--        |> addTaggedCmd MsgContextDialog cmd
 
 
 subscriptions : Model -> Sub Msg
