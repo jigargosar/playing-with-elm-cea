@@ -215,7 +215,7 @@ type Msg
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
     | MsgContextPopup ContextPopup.Msg
-    | MsgTodoDialog TodoDialog.Msg
+    | OnTodoDialogMsg TodoDialog.Msg
     | OnContextDialogMsg ContextDialog.Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
@@ -303,22 +303,18 @@ update message model =
                         { model
                             | layer = Layer.TodoDialog (TodoDialog.initCreate <| getSelectedContextId model)
                         }
-                        |> andThenUpdate (MsgTodoDialog TodoDialog.autoFocus)
+                        |> andThenUpdate (OnTodoDialogMsg TodoDialog.autoFocus)
 
                 _ ->
                     ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
 
         SwitchLayerToEditTodoDialog todo ->
-            case model.layer of
-                Layer.NoLayer ->
-                    pure
-                        { model
-                            | layer = Layer.TodoDialog (TodoDialog.initEdit todo)
-                        }
-                        |> andThenUpdate (MsgTodoDialog TodoDialog.autoFocus)
-
-                _ ->
-                    ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
+            attemptToOpenLayer
+                (updateTodoDialog
+                    TodoDialog.autoFocus
+                    (TodoDialog.initEdit todo)
+                )
+                model
 
         OpenCreateContextDialog ->
             attemptToOpenLayer
@@ -367,36 +363,10 @@ update message model =
                 _ ->
                     ( model, logInvalidLayerMsgCmd )
 
-        MsgTodoDialog msg ->
+        OnTodoDialogMsg msg ->
             case model.layer of
-                Layer.TodoDialog layerModel ->
-                    let
-                        ( editTodoDialogModel, cmd, maybeOutMsg ) =
-                            TodoDialog.update msg layerModel
-                    in
-                    maybeOutMsg
-                        |> unwrapMaybe
-                            (pure
-                                { model | layer = Layer.TodoDialog editTodoDialogModel }
-                            )
-                            (\out ->
-                                ( { model | layer = Layer.NoLayer }
-                                , case out of
-                                    TodoDialog.Submit dialogMode content contextId ->
-                                        msgToCmd <|
-                                            MsgTodoStore <|
-                                                case dialogMode of
-                                                    TodoDialog.Create ->
-                                                        TodoStore.addNew content contextId
-
-                                                    TodoDialog.Edit todo ->
-                                                        TodoStore.setContentAndContextId todo.id content contextId
-
-                                    TodoDialog.Cancel ->
-                                        Cmd.none
-                                )
-                            )
-                        |> addTaggedCmd MsgTodoDialog cmd
+                Layer.TodoDialog todoDialog ->
+                    updateTodoDialog msg todoDialog model
 
                 _ ->
                     ( model, logInvalidLayerMsgCmd )
@@ -445,7 +415,7 @@ updateContextDialog msg contextDialog_ =
                            )
 
                 Just ContextDialog.Cancel ->
-                    identity
+                    mapModel (\model -> { model | layer = Layer.NoLayer })
 
                 Nothing ->
                     identity
@@ -454,6 +424,37 @@ updateContextDialog msg contextDialog_ =
         >> mapModel (setLayer <| Layer.ContextDialog contextDialog)
         >> handleOut
         >> addTaggedCmd OnContextDialogMsg cmd
+
+
+updateTodoDialog msg todoDialog_ =
+    let
+        ( todoDialog, cmd, maybeOutMsg ) =
+            TodoDialog.update msg todoDialog_
+
+        handleOut =
+            case maybeOutMsg of
+                Just (TodoDialog.Submit dialogMode content contextId) ->
+                    mapModel (\model -> { model | layer = Layer.NoLayer })
+                        >> andThenUpdate
+                            (MsgTodoStore <|
+                                case dialogMode of
+                                    TodoDialog.Create ->
+                                        TodoStore.addNew content contextId
+
+                                    TodoDialog.Edit todo ->
+                                        TodoStore.setContentAndContextId todo.id content contextId
+                            )
+
+                Just TodoDialog.Cancel ->
+                    mapModel (\model -> { model | layer = Layer.NoLayer })
+
+                Nothing ->
+                    identity
+    in
+    pure
+        >> mapModel (setLayer <| Layer.TodoDialog todoDialog)
+        >> handleOut
+        >> addTaggedCmd OnTodoDialogMsg cmd
 
 
 subscriptions : Model -> Sub Msg
@@ -542,7 +543,7 @@ viewLayer model =
             ContextPopup.view context contextPopup |> Html.map MsgContextPopup
 
         Layer.TodoDialog dialogModel ->
-            TodoDialog.view model.contextStore dialogModel |> Html.map MsgTodoDialog
+            TodoDialog.view model.contextStore dialogModel |> Html.map OnTodoDialogMsg
 
         Layer.ContextDialog dialogModel ->
             ContextDialog.view dialogModel |> Html.map OnContextDialogMsg
