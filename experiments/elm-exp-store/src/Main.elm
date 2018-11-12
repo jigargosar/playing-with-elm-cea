@@ -457,12 +457,6 @@ updateTodoDialog msg todoDialog_ =
         >> addTaggedCmd OnTodoDialogMsg cmd
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.batch
-        []
-
-
 updateContextPopup msg context contextPopup_ =
     let
         ( contextPopup, cmd, maybeOutMsg ) =
