@@ -19,7 +19,12 @@
     },
     {
       "src": "/service-worker.js",
-      "dest": "$1",
+      "dest": "/service-worker.js",
+      "headers": {"cache-control": "s-maxage=1000"}
+    },
+    {
+      "src": "/manifest.json",
+      "dest": "/manifest.json",
       "headers": {"cache-control": "s-maxage=1000"}
     },
     {
