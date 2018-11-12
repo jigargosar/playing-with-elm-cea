@@ -20,6 +20,7 @@ import Html.Styled.Keyed as HKeyed exposing (node)
 import HtmlX
 import Icons
 import JsonCodecX exposing (Value)
+import Layer exposing (Layer)
 import Log
 import Port
 import QuickAction
@@ -40,13 +41,6 @@ import UpdateReturn exposing (..)
 
 
 ---- MODEL ----
-
-
-type Layer
-    = TodoDialog TodoDialog.Model
-    | ContextDialog ContextDialog.Model
-    | ContextPopup Context ContextPopup.Model
-    | NoLayer
 
 
 type alias Model =
@@ -78,7 +72,7 @@ init flags =
             { todoStore = todoStore
             , contextStore = contextStore
             , contextId = ContextStore.defaultId
-            , layer = NoLayer
+            , layer = Layer.NoLayer
             , showArchivedContexts = False
             , showCompletedTodos = False
             , showTempSidebar = False
@@ -195,15 +189,6 @@ getMaybeSelectedContext model =
     model.contextStore |> ContextStore.get (getSelectedContextId model)
 
 
-isContextPopupOpenFor cid model =
-    case model.layer of
-        ContextPopup context contextPopup ->
-            cid == context.id
-
-        _ ->
-            False
-
-
 getMaybeContext cid =
     .contextStore >> ContextStore.get cid
 
@@ -280,13 +265,10 @@ update message model =
                    )
 
         ContextMoreClicked cid ->
-            getMaybeContext cid model
+            Layer.initMaybeContextPopup cid model.contextStore
                 |> unwrapMaybe (pure model)
-                    (\context ->
-                        pure
-                            { model
-                                | layer = ContextPopup context ContextPopup.init
-                            }
+                    (\layer ->
+                        pure { model | layer = layer }
                             |> andThenUpdate (MsgContextPopup ContextPopup.open)
                     )
 
@@ -298,10 +280,10 @@ update message model =
 
         SwitchLayerToCreateTodoDialog ->
             case model.layer of
-                NoLayer ->
+                Layer.NoLayer ->
                     pure
                         { model
-                            | layer = TodoDialog (TodoDialog.initCreate <| getSelectedContextId model)
+                            | layer = Layer.TodoDialog (TodoDialog.initCreate <| getSelectedContextId model)
                         }
                         |> andThenUpdate (MsgTodoDialog TodoDialog.autoFocus)
 
@@ -310,10 +292,10 @@ update message model =
 
         SwitchLayerToEditTodoDialog todo ->
             case model.layer of
-                NoLayer ->
+                Layer.NoLayer ->
                     pure
                         { model
-                            | layer = TodoDialog (TodoDialog.initEdit todo)
+                            | layer = Layer.TodoDialog (TodoDialog.initEdit todo)
                         }
                         |> andThenUpdate (MsgTodoDialog TodoDialog.autoFocus)
 
@@ -322,10 +304,10 @@ update message model =
 
         SwitchLayerToCreateContextDialog ->
             case model.layer of
-                NoLayer ->
+                Layer.NoLayer ->
                     pure
                         { model
-                            | layer = ContextDialog ContextDialog.initCreate
+                            | layer = Layer.ContextDialog ContextDialog.initCreate
                         }
                         |> andThenUpdate (MsgContextDialog ContextDialog.autoFocus)
 
@@ -334,10 +316,10 @@ update message model =
 
         SwitchLayerToEditContextDialog context ->
             case model.layer of
-                NoLayer ->
+                Layer.NoLayer ->
                     pure
                         { model
-                            | layer = ContextDialog (ContextDialog.initEdit context)
+                            | layer = Layer.ContextDialog (ContextDialog.initEdit context)
                         }
                         |> andThenUpdate (MsgContextDialog ContextDialog.autoFocus)
 
@@ -346,16 +328,16 @@ update message model =
 
         MsgContextPopup msg ->
             case model.layer of
-                ContextPopup context layerModel ->
+                Layer.ContextPopup context layerModel ->
                     let
                         ( contextPopup, cmd, maybeOut ) =
                             ContextPopup.update context.id msg layerModel
                     in
                     maybeOut
                         |> unwrapMaybe
-                            (pure { model | layer = ContextPopup context contextPopup })
+                            (pure { model | layer = Layer.ContextPopup context contextPopup })
                             (\out ->
-                                ( { model | layer = NoLayer }
+                                ( { model | layer = Layer.NoLayer }
                                 , case out of
                                     ContextPopup.ActionOut action ->
                                         msgToCmd <|
@@ -377,7 +359,7 @@ update message model =
 
         MsgTodoDialog msg ->
             case model.layer of
-                TodoDialog layerModel ->
+                Layer.TodoDialog layerModel ->
                     let
                         ( editTodoDialogModel, cmd, maybeOutMsg ) =
                             TodoDialog.update msg layerModel
@@ -385,10 +367,10 @@ update message model =
                     maybeOutMsg
                         |> unwrapMaybe
                             (pure
-                                { model | layer = TodoDialog editTodoDialogModel }
+                                { model | layer = Layer.TodoDialog editTodoDialogModel }
                             )
                             (\out ->
-                                ( { model | layer = NoLayer }
+                                ( { model | layer = Layer.NoLayer }
                                 , case out of
                                     TodoDialog.Submit dialogMode content contextId ->
                                         msgToCmd <|
@@ -411,7 +393,7 @@ update message model =
 
         MsgContextDialog msg ->
             case model.layer of
-                ContextDialog layerModel ->
+                Layer.ContextDialog layerModel ->
                     let
                         ( editContextDialogModel, cmd, maybeOutMsg ) =
                             ContextDialog.update msg layerModel
@@ -419,10 +401,10 @@ update message model =
                     maybeOutMsg
                         |> unwrapMaybe
                             (pure
-                                { model | layer = ContextDialog editContextDialogModel }
+                                { model | layer = Layer.ContextDialog editContextDialogModel }
                             )
                             (\out ->
-                                ( { model | layer = NoLayer }
+                                ( { model | layer = Layer.NoLayer }
                                 , case out of
                                     ContextDialog.Submit dialogMode name ->
                                         msgToCmd <|
@@ -532,16 +514,16 @@ viewTempSidebar model =
 
 viewLayer model =
     case model.layer of
-        ContextPopup context contextPopup ->
+        Layer.ContextPopup context contextPopup ->
             ContextPopup.view context contextPopup |> Html.map MsgContextPopup
 
-        TodoDialog dialogModel ->
+        Layer.TodoDialog dialogModel ->
             TodoDialog.view model.contextStore dialogModel |> Html.map MsgTodoDialog
 
-        ContextDialog dialogModel ->
+        Layer.ContextDialog dialogModel ->
             ContextDialog.view dialogModel |> Html.map MsgContextDialog
 
-        NoLayer ->
+        Layer.NoLayer ->
             noHtml
 
 
@@ -559,7 +541,7 @@ createSideBarConfig model =
             , activeTodoCount = getActiveTodoListCountForContextId id model
             , isSelected = isCurrentPageContextTodoListWithContextId id model
             , moreClicked = contextMoreClicked id
-            , moreOpen = isContextPopupOpenFor id model
+            , moreOpen = Layer.eqContextPopupFor id model.layer
             }
 
         contexts =
