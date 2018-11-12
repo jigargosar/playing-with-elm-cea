@@ -219,8 +219,8 @@ type Msg
     | ToggleCompletedTodos
     | SwitchLayerToCreateTodoDialog
     | SwitchLayerToEditTodoDialog Todo
-    | SwitchLayerToCreateContextDialog
-    | SwitchLayerToEditContextDialog Context
+    | OpenCreateContextDialog
+    | OpenEditContextDialog Context
 
 
 type alias ContextItem =
@@ -265,7 +265,7 @@ update message model =
             pure model
                 |> (model.contextStore
                         |> ContextStore.get cid
-                        |> unwrapMaybe identity (andThenUpdate << SwitchLayerToEditContextDialog)
+                        |> unwrapMaybe identity (andThenUpdate << OpenEditContextDialog)
                    )
 
         ContextMoreClicked cid ->
@@ -306,7 +306,7 @@ update message model =
                 _ ->
                     pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
 
-        SwitchLayerToCreateContextDialog ->
+        OpenCreateContextDialog ->
             case model.layer of
                 Layer.NoLayer ->
                     updateContextDialog
@@ -317,7 +317,7 @@ update message model =
                 _ ->
                     pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
 
-        SwitchLayerToEditContextDialog context ->
+        OpenEditContextDialog context ->
             case model.layer of
                 Layer.NoLayer ->
                     updateContextDialog
@@ -454,11 +454,11 @@ startAddingTodoMsg =
 
 
 startAddingContextMsg =
-    SwitchLayerToCreateContextDialog
+    OpenCreateContextDialog
 
 
 startEditingTodoContext =
-    SwitchLayerToEditContextDialog
+    OpenEditContextDialog
 
 
 contextMoreClicked =
