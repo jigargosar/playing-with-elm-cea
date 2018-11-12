@@ -2,7 +2,7 @@
   "version": 2,
   "alias": [
     "elm-done",
-    "https://elm-done.functional-programmer.com"
+    "elm-done.functional-programmer.com"
   ],
   "builds": [
     {"src": "package.json", "use": "@now/static-build"}
