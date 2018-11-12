@@ -335,6 +335,12 @@ update message model =
 
         OnContextPopupMsg msg ->
             case model.layer of
+                            Layer.ContextPopup context dialogModel ->
+                                updateTodoDialog msg context dialogModel model
+
+                            _ ->
+                                ( model, logInvalidLayerMsgCmd )
+            case model.layer of
                 Layer.ContextPopup context layerModel ->
                     let
                         ( contextPopup, cmd, maybeOut ) =
