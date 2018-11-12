@@ -237,6 +237,14 @@ setLayer layer model =
     { model | layer = layer }
 
 
+logPreventedInvalidAttemptToReplaceAnotherLayerCmd =
+    logCmd [ "handle case of replacing layer without closing it." ]
+
+
+logInvalidLayerMsgCmd =
+    logCmd [ "Invalid msg received for current layer" ]
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -298,7 +306,7 @@ update message model =
                         |> andThenUpdate (MsgTodoDialog TodoDialog.autoFocus)
 
                 _ ->
-                    pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
+                    ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
 
         SwitchLayerToEditTodoDialog todo ->
             case model.layer of
@@ -310,7 +318,7 @@ update message model =
                         |> andThenUpdate (MsgTodoDialog TodoDialog.autoFocus)
 
                 _ ->
-                    pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
+                    ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
 
         OpenCreateContextDialog ->
             case model.layer of
@@ -321,7 +329,7 @@ update message model =
                         model
 
                 _ ->
-                    pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
+                    ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
 
         OpenEditContextDialog context ->
             case model.layer of
@@ -332,7 +340,7 @@ update message model =
                         model
 
                 _ ->
-                    pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
+                    ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
 
         MsgContextPopup msg ->
             case model.layer of
@@ -363,7 +371,7 @@ update message model =
                         |> addTaggedCmd MsgContextPopup cmd
 
                 _ ->
-                    pure model
+                    ( model, logInvalidLayerMsgCmd )
 
         MsgTodoDialog msg ->
             case model.layer of
@@ -397,7 +405,7 @@ update message model =
                         |> addTaggedCmd MsgTodoDialog cmd
 
                 _ ->
-                    pure model
+                    ( model, logInvalidLayerMsgCmd )
 
         OnContextDialogMsg msg ->
             case model.layer of
@@ -405,7 +413,7 @@ update message model =
                     updateContextDialog msg contextDialog model
 
                 _ ->
-                    pure model
+                    ( model, logInvalidLayerMsgCmd )
 
         ToggleShowArchivedContexts ->
             pure { model | showArchivedContexts = not model.showArchivedContexts }
