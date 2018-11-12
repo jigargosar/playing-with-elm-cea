@@ -297,16 +297,12 @@ update message model =
             pure { model | showTempSidebar = False }
 
         SwitchLayerToCreateTodoDialog ->
-            case model.layer of
-                Layer.NoLayer ->
-                    pure
-                        { model
-                            | layer = Layer.TodoDialog (TodoDialog.initCreate <| getSelectedContextId model)
-                        }
-                        |> andThenUpdate (OnTodoDialogMsg TodoDialog.autoFocus)
-
-                _ ->
-                    ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
+            attemptToOpenLayer
+                (updateTodoDialog
+                    TodoDialog.autoFocus
+                    (TodoDialog.initCreate (getSelectedContextId model))
+                )
+                model
 
         SwitchLayerToEditTodoDialog todo ->
             attemptToOpenLayer
