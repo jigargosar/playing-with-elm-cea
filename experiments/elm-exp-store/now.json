@@ -14,6 +14,10 @@
       "dest": "/static/$1"
     },
     {
+      "src": "(.*\\.(ico|json|js))",
+      "dest": "$1"
+    },
+    {
       "src": "/.*",
       "dest": "/index.html"
     }
