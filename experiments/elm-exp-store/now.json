@@ -18,6 +18,11 @@
       "dest": "$1"
     },
     {
+      "src": "/service-worker.js",
+      "dest": "$1",
+      "headers": {"cache-control": "s-maxage=1000"}
+    },
+    {
       "src": "/.*",
       "dest": "/index.html"
     }
