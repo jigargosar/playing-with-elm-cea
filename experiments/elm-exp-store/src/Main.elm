@@ -224,7 +224,7 @@ type Msg
     | ToggleShowArchivedContexts
     | ToggleCompletedTodos
     | SwitchLayerToCreateTodoDialog
-    | SwitchLayerToEditTodoDialog Todo
+    | OpenEditTodoDialog Todo
     | OpenCreateContextDialog
     | OpenEditContextDialog Context
 
@@ -309,7 +309,7 @@ update message model =
                 )
                 model
 
-        SwitchLayerToEditTodoDialog todo ->
+        OpenEditTodoDialog todo ->
             attemptToOpenLayer
                 (updateTodoDialog
                     TodoDialog.autoFocus
@@ -689,10 +689,10 @@ createTodoViewModel contextStore todo =
         (defaultEmptyStringTo "<empty>" todo.content)
         todo.done
         (ContextStore.getNameOrDefaultById todo.contextId contextStore)
-        (SwitchLayerToEditTodoDialog todo)
+        (OpenEditTodoDialog todo)
         (MsgTodoStore <| TodoStore.markDone todo.id)
         (MsgTodoStore <| TodoStore.unmarkDone todo.id)
-        (SwitchLayerToEditTodoDialog todo)
+        (OpenEditTodoDialog todo)
 
 
 viewKeyedTodo : TodoViewModel msg -> ( String, Html msg )
