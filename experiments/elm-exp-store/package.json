@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "nodemon -w yarn.lock -w elm.json -x env ELM_DEBUGGER=true elm-app start",
-    "now-build": "npm add create-elm-app && elm-app build && mv build dist && now alias $NOW_URL elm-done && now alias $NOW_URL elm-done.functional-programmer.com",
+    "now-build": "npm add create-elm-app && elm-app build && mv build dist",
     "build": "elm-app build",
     "bs": "npm run build && serve build",
     "deploy": "now && now alias"
