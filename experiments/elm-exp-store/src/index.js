@@ -79,12 +79,12 @@ const app = Elm.Main.init({
   },
 })
 
-const sendToApp = curry(function sendToApp(port, data) {
-  return sendTo(app)(port)(data)
-})
+// const sendToApp = curry(function sendToApp(port, data) {
+//   return sendTo(app)(port)(data)
+// })
 
-console.log(`sendToApp.name`, sendToApp.name)
-console.log(app.ports)
+// console.log(`sendToApp.name`, sendToApp.name)
+// console.log(app.ports)
 
 // let documentHasFocus = document.hasFocus
 
