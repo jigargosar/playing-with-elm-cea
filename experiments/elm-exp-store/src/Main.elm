@@ -313,11 +313,11 @@ update message model =
                             mapModel (setLayer Layer.NoLayer)
                                 >> andThenUpdate
                                     (MsgTodoStore <|
-                                        TodoStore.addNew content cid
+                                        TodoStore.addNew contents cid
                                     )
 
                         _ ->
-                            pure model
+                            identity
             in
             pure model
 
