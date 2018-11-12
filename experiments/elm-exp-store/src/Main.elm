@@ -409,14 +409,15 @@ update message model =
             pure { model | showCompletedTodos = not model.showCompletedTodos }
 
 
-updateMsgContextDialog msg contextDialog_ model =
+updateMsgContextDialog msg contextDialog_ =
     let
         ( contextDialog, cmd, maybeOutMsg ) =
             ContextDialog.update msg contextDialog_
     in
-    pure { model | layer = Layer.ContextDialog contextDialog }
-        |> handleContextDialogOutMsg maybeOutMsg
-        |> addTaggedCmd MsgContextDialog cmd
+    pure
+        >> mapModel (\model -> { model | layer = Layer.ContextDialog contextDialog })
+        >> handleContextDialogOutMsg maybeOutMsg
+        >> addTaggedCmd MsgContextDialog cmd
 
 
 handleContextDialogOutMsg maybeOut =
