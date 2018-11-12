@@ -227,6 +227,10 @@ type alias ContextItem =
     ( String, ContextId )
 
 
+setLayer layer model =
+    { model | layer = layer }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -305,11 +309,10 @@ update message model =
         SwitchLayerToCreateContextDialog ->
             case model.layer of
                 Layer.NoLayer ->
-                    pure
-                        { model
-                            | layer = Layer.ContextDialog ContextDialog.initCreate
-                        }
-                        |> andThenUpdate (MsgContextDialog ContextDialog.autoFocus)
+                    updateMsgContextDialog
+                        ContextDialog.autoFocus
+                        ContextDialog.initCreate
+                        model
 
                 _ ->
                     pure model |> andThenUpdate (Warn [ "handle: replacing layer without closing it." ])
@@ -393,34 +396,8 @@ update message model =
 
         MsgContextDialog msg ->
             case model.layer of
-                Layer.ContextDialog layerModel ->
-                    let
-                        ( editContextDialogModel, cmd, maybeOutMsg ) =
-                            ContextDialog.update msg layerModel
-                    in
-                    maybeOutMsg
-                        |> unwrapMaybe
-                            (pure
-                                { model | layer = Layer.ContextDialog editContextDialogModel }
-                            )
-                            (\out ->
-                                ( { model | layer = Layer.NoLayer }
-                                , case out of
-                                    ContextDialog.Submit dialogMode name ->
-                                        msgToCmd <|
-                                            MsgContextStore <|
-                                                case dialogMode of
-                                                    ContextDialog.Create ->
-                                                        ContextStore.addNew name
-
-                                                    ContextDialog.Edit context ->
-                                                        ContextStore.setName context.id name
-
-                                    ContextDialog.Cancel ->
-                                        Cmd.none
-                                )
-                            )
-                        |> addTaggedCmd MsgContextDialog cmd
+                Layer.ContextDialog contextDialog ->
+                    updateMsgContextDialog msg contextDialog model
 
                 _ ->
                     pure model
@@ -430,6 +407,36 @@ update message model =
 
         ToggleCompletedTodos ->
             pure { model | showCompletedTodos = not model.showCompletedTodos }
+
+
+updateMsgContextDialog msg contextDialog_ model =
+    let
+        ( contextDialog, cmd, maybeOutMsg ) =
+            ContextDialog.update msg contextDialog_
+    in
+    maybeOutMsg
+        |> unwrapMaybe
+            (pure
+                { model | layer = Layer.ContextDialog contextDialog }
+            )
+            (\out ->
+                ( { model | layer = Layer.NoLayer }
+                , case out of
+                    ContextDialog.Submit dialogMode name ->
+                        msgToCmd <|
+                            MsgContextStore <|
+                                case dialogMode of
+                                    ContextDialog.Create ->
+                                        ContextStore.addNew name
+
+                                    ContextDialog.Edit context ->
+                                        ContextStore.setName context.id name
+
+                    ContextDialog.Cancel ->
+                        Cmd.none
+                )
+            )
+        |> addTaggedCmd MsgContextDialog cmd
 
 
 subscriptions : Model -> Sub Msg
