@@ -1,4 +1,4 @@
-module Layer exposing (Layer(..), eqContextPopupFor, initMaybeContextPopup)
+module Layer exposing (Layer(..), eqContextPopupFor)
 
 import ContextDialog
 import ContextPopup
@@ -20,9 +20,3 @@ eqContextPopupFor cid layer =
 
         _ ->
             False
-
-
-initMaybeContextPopup : ContextId -> ContextStore -> Maybe Layer
-initMaybeContextPopup cid contextStore =
-    ContextStore.get cid contextStore
-        |> Maybe.map (\context -> ContextPopup context ContextPopup.init)

@@ -283,13 +283,14 @@ update message model =
                    )
 
         ContextMoreClicked cid ->
-            Layer.initMaybeContextPopup cid model.contextStore
+            ContextStore.get cid model.contextStore
                 |> unwrapMaybe (pure model)
-                    (\contextPopup ->
+                    (\context ->
                         attemptToOpenLayer
                             (updateContextPopup
                                 ContextPopup.open
-                                contextPopup
+                                context
+                                ContextPopup.init
                             )
                             model
                     )
@@ -460,7 +461,7 @@ updateTodoDialog msg todoDialog_ =
 updateContextPopup msg context contextPopup_ =
     let
         ( contextPopup, cmd, maybeOutMsg ) =
-            ContextPopup.update msg contextPopup_
+            ContextPopup.update context.id msg contextPopup_
 
         handleOut =
             case maybeOutMsg of
@@ -482,7 +483,7 @@ updateContextPopup msg context contextPopup_ =
                     identity
     in
     pure
-        >> mapModel (setLayer <| Layer.ContextPopup contextPopup)
+        >> mapModel (setLayer <| Layer.ContextPopup context contextPopup)
         >> handleOut
         >> addTaggedCmd OnContextPopupMsg cmd
 
