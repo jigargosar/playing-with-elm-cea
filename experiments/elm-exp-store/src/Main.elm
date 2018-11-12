@@ -409,6 +409,22 @@ update message model =
             pure { model | showCompletedTodos = not model.showCompletedTodos }
 
 
+contextDialogOutMsgToMaybeMsg out =
+    case out of
+        ContextDialog.Submit dialogMode name ->
+            Just <|
+                MsgContextStore <|
+                    case dialogMode of
+                        ContextDialog.Create ->
+                            ContextStore.addNew name
+
+                        ContextDialog.Edit context ->
+                            ContextStore.setName context.id name
+
+        ContextDialog.Cancel ->
+            Nothing
+
+
 updateMsgContextDialog msg contextDialog_ model =
     let
         ( contextDialog, cmd, maybeOutMsg ) =
@@ -421,19 +437,7 @@ updateMsgContextDialog msg contextDialog_ model =
             )
             (\out ->
                 ( { model | layer = Layer.NoLayer }
-                , case out of
-                    ContextDialog.Submit dialogMode name ->
-                        msgToCmd <|
-                            MsgContextStore <|
-                                case dialogMode of
-                                    ContextDialog.Create ->
-                                        ContextStore.addNew name
-
-                                    ContextDialog.Edit context ->
-                                        ContextStore.setName context.id name
-
-                    ContextDialog.Cancel ->
-                        Cmd.none
+                , contextDialogOutMsgToMaybeMsg out |> unwrapMaybe Cmd.none msgToCmd
                 )
             )
         |> addTaggedCmd MsgContextDialog cmd
