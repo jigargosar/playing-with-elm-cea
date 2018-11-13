@@ -224,7 +224,6 @@ type Msg
     | OpenCreateTodoDialog
     | OpenEditTodoDialog Todo
     | OpenCreateContextDialog
-    | OpenEditContextDialog Context
     | LayerMsg Layer.Msg
 
 
@@ -278,7 +277,11 @@ update message model =
             pure model
                 |> (model.contextStore
                         |> ContextStore.get cid
-                        |> unwrapMaybe identity (andThenUpdate << OpenEditContextDialog)
+                        |> unwrapMaybe identity
+                            (\context ->
+                                andThen <|
+                                    updateLayer (Layer.OpenEditContextDialog context)
+                            )
                    )
 
         OpenContextPopup cid ->
@@ -305,9 +308,6 @@ update message model =
 
         OpenCreateContextDialog ->
             updateLayer Layer.OpenCreateContextDialog model
-
-        OpenEditContextDialog context ->
-            updateLayer (Layer.OpenEditContextDialog context) model
 
         OnContextPopupMsg msg ->
             case model.layer of
