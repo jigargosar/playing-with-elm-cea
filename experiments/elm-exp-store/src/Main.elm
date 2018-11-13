@@ -432,22 +432,6 @@ subscriptions model =
 ---- VIEW ----
 
 
-startAddingTodoMsg =
-    OpenCreateTodoDialog
-
-
-startAddingContextMsg =
-    OpenCreateContextDialog
-
-
-startEditingTodoContext =
-    OpenEditContextDialog
-
-
-contextMoreClicked =
-    ContextMoreClicked
-
-
 getAllContextsNameIdPairs =
     .contextStore
         >> ContextStore.list
@@ -530,7 +514,7 @@ createSideBarConfig model =
             , navigateToTodoList = NavigateToTodoListWithContextId id
             , activeTodoCount = getActiveTodoListCountForContextId id model
             , isSelected = isCurrentPageContextTodoListWithContextId id model
-            , moreClicked = contextMoreClicked id
+            , moreClicked = ContextMoreClicked id
             , moreOpen = Layer.eqContextPopupFor id model.layer
             }
 
@@ -543,7 +527,7 @@ createSideBarConfig model =
     in
     { inbox = inbox
     , contexts = contexts
-    , addContextClicked = startAddingContextMsg
+    , addContextClicked = OpenCreateContextDialog
     , showArchived = model.showArchivedContexts
     , toggleShowArchived = ToggleShowArchivedContexts
     }
@@ -587,7 +571,7 @@ viewTodoList model =
         , div [ css [ rowCY ], class "pa3" ]
             [ styled Btn.flatPl0
                 [ fontSize (rem 0.8), fa ]
-                [ onClick startAddingTodoMsg ]
+                [ onClick OpenCreateTodoDialog ]
                 [ Icons.plusSmall
                 , text "Add Task"
                 ]
