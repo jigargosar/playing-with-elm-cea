@@ -174,6 +174,7 @@ type Msg
     | OpenCreateContextDialog
     | OpenEditContextDialog ContextId
     | OpenContextPopup ContextId
+    | OpenCmdDialog
     | LayerMsg Layer.Msg
     | OnKeyDown HotKey.Event
     | OnTodoFocusIn Todo
@@ -312,6 +313,9 @@ update message model =
 
         OpenCreateContextDialog ->
             updateLayer Layer.OpenCreateContextDialog model
+
+        OpenCmdDialog ->
+            updateLayer Layer.OpenCmdDialog model
 
         MenuClicked ->
             pure { model | showTempSidebar = not model.showTempSidebar }
