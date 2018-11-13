@@ -2,6 +2,7 @@ module CmdDialog exposing (Model, Msg(..), OutMsg(..), init, update, view)
 
 import DomX exposing (DomId)
 import Html.Styled exposing (div, text)
+import Html.Styled.Attributes exposing (id)
 import Html.Styled.Events exposing (onClick)
 import UI exposing (sDiv)
 import UpdateReturn exposing (..)
@@ -55,4 +56,4 @@ getBackdropDomId =
 
 
 view model =
-    div [] [ UI.backdrop [ DomX.onClickTargetId BackDropClicked ] [] ]
+    div [] [ UI.backdrop [ id <| getBackdropDomId model, DomX.onClickTargetId BackDropClicked ] [] ]
