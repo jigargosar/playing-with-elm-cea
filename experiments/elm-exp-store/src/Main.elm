@@ -19,6 +19,8 @@ import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as HKeyed exposing (node)
 import HtmlX
 import Icons
+import Json.Decode as D
+import Json.Encode as E
 import JsonCodecX exposing (Value)
 import Layer exposing (Layer)
 import Log
@@ -170,6 +172,7 @@ type Msg
     | OpenEditContextDialog ContextId
     | OpenContextPopup ContextId
     | LayerMsg Layer.Msg
+    | OnKeyDown HotKey.Event
 
 
 type alias ContextItem =
@@ -181,6 +184,9 @@ update message model =
     case message of
         NoOp ->
             pure model
+
+        OnKeyDown ke ->
+            ( model, Cmd.none )
 
         Warn logMessages ->
             ( model, logCmd logMessages )
@@ -261,7 +267,7 @@ updateLayer message model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        []
+        [ Browser.Events.onKeyDown <| D.map OnKeyDown HotKey.decoder ]
 
 
 
