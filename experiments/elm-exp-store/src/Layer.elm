@@ -188,11 +188,11 @@ viewLayer { layer, contextStore } =
         ContextPopup contextPopup ->
             ContextPopup.view contextPopup |> Html.map ContextPopupMsg
 
-        TodoDialog dialogModel ->
-            TodoDialog.view contextStore dialogModel |> Html.map TodoDialogMsg
+        TodoDialog todoDialog ->
+            TodoDialog.view contextStore todoDialog |> Html.map TodoDialogMsg
 
-        ContextDialog dialogModel ->
-            ContextDialog.view dialogModel |> Html.map ContextDialogMsg
+        ContextDialog contextDialog ->
+            ContextDialog.view contextDialog |> Html.map ContextDialogMsg
 
         NoLayer ->
             noHtml
