@@ -348,14 +348,7 @@ viewTodoListHeader model =
     div
         [ class "ph3 flex flex-row" ]
         [ div [ class "flex-auto" ]
-            [ text name
-
-            {- SelectUI.view selectContextUIConfig
-               (Just <| getCurrentContextItem model)
-               (allContextItems model)
-               model.selectContextUI
-            -}
-            ]
+            [ text name ]
         ]
 
 
