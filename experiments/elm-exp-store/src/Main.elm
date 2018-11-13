@@ -383,6 +383,20 @@ updateLayer msg model =
                                 TodoStore.setContentAndContextId todo.id content contextId
                             )
 
+                Layer.ContextDialogOutMsg (ContextDialog.Submit ContextDialog.Create content) ->
+                    mapModel (setLayer Layer.NoLayer)
+                        >> andThenUpdate
+                            (MsgContextStore <|
+                                ContextStore.addNew content
+                            )
+
+                Layer.ContextDialogOutMsg (ContextDialog.Submit (ContextDialog.Edit context) name) ->
+                    mapModel (setLayer Layer.NoLayer)
+                        >> andThenUpdate
+                            (MsgContextStore <|
+                                ContextStore.setName context.id name
+                            )
+
                 _ ->
                     Debug.todo "Handle All Out Messages"
     in
