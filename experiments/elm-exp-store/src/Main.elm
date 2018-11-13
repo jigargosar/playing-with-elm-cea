@@ -15,7 +15,7 @@ import Dict exposing (Dict)
 import DomX exposing (DomId)
 import FeatherIcons as Icon
 import Focus
-import HotKey
+import HotKey exposing (SoftKey(..))
 import Html.Styled as Html exposing (Attribute, Html, button, div, fromUnstyled, span, styled, text)
 import Html.Styled.Attributes exposing (class, classList, css, id, style, tabindex)
 import Html.Styled.Events exposing (onClick)
@@ -264,6 +264,9 @@ update message model =
 
                         ( [], "ArrowUp" ) ->
                             cycleSelectedIndexBy -1 model
+
+                        ( [], "q" ) ->
+                            update OpenCreateTodoDialog model
 
                         _ ->
                             ( model, Cmd.none )
