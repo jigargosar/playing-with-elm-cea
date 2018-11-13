@@ -430,6 +430,7 @@ createSideBarConfig model =
     , addContextClicked = OpenCreateContextDialog
     , showArchived = model.showArchivedContexts
     , toggleShowArchived = ToggleShowArchivedContexts
+    , isSelected = \id -> isCurrentPageContextTodoListWithContextId id model
     }
 
 

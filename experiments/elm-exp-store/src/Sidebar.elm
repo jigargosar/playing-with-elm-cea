@@ -34,6 +34,7 @@ type alias Config msg =
     , addContextClicked : msg
     , showArchived : Bool
     , toggleShowArchived : msg
+    , isSelected : ContextId -> Bool
     }
 
 
@@ -48,19 +49,22 @@ view config =
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
-        [ viewInboxItem inbox
+        [ viewInboxItem config inbox
         , viewContextsHeader addContextClicked
-        , viewContextItems active
+        , viewContextItems config active
         , viewArchived config archived
         ]
 
 
-viewInboxItem inbox =
+viewInboxItem config inbox =
     let
-        viewContextItem { navigateToTodoList, activeTodoCount, isSelected } =
+        cid =
+            ContextStore.defaultId
+
+        viewContextItem { navigateToTodoList, activeTodoCount } =
             listItem
                 { styles = []
-                , isSelected = isSelected
+                , isSelected = config.isSelected cid
                 , domId = ContextPopup.getRefIdFromContextId ContextStore.defaultId
                 }
                 [ viewContextName
@@ -73,10 +77,14 @@ viewInboxItem inbox =
     viewKeyed viewContextItem [ inbox ]
 
 
-viewContextItems =
+viewContextItems config =
     let
         viewContextItem { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
-            listItem { styles = [ plRm 1 ], isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
+            listItem
+                { styles = [ plRm 1 ]
+                , isSelected = config.isSelected cid
+                , domId = ContextPopup.getRefIdFromContextId cid
+                }
                 [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
                 , viewMoreMenuIcon { isOpen = moreOpen, clickMsg = moreClicked }
                 ]
@@ -84,14 +92,18 @@ viewContextItems =
     viewKeyed viewContextItem
 
 
-viewArchived { showArchived, toggleShowArchived } archived =
+viewArchived config archived =
+    let
+        { showArchived, toggleShowArchived } =
+            config
+    in
     if archived |> List.isEmpty then
         noHtml
 
     else
         div []
             [ viewArchiveBtn showArchived toggleShowArchived
-            , HtmlX.when (always showArchived) viewContextItems archived
+            , HtmlX.when (always showArchived) (viewContextItems config) archived
             ]
 
 
