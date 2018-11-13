@@ -48,17 +48,25 @@ view config =
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
-        ([ viewKeyed (viewContextItem []) [ inbox ]
+        ([ viewInboxItem inbox
          , viewContextsHeader addContextClicked
-         , viewKeyed (viewContextItem [ plRm 1 ]) active
+         , viewContextItems active
          ]
             ++ HtmlX.emptyWhen (not << List.isEmpty) (viewArchivedWithHeader config) archived
         )
 
 
+viewInboxItem inbox =
+    viewKeyed (viewContextItem { styles = [] }) [ inbox ]
+
+
+viewContextItems =
+    viewKeyed (viewContextItem { styles = [ plRm 1 ] })
+
+
 viewArchivedWithHeader { showArchived, toggleShowArchived } archived =
     [ viewArchiveBtn showArchived toggleShowArchived
-    , HtmlX.when (always showArchived) (viewKeyed (viewContextItem [ plRm 1 ])) archived
+    , HtmlX.when (always showArchived) viewContextItems archived
     ]
 
 
@@ -110,8 +118,8 @@ liTextButton =
         ]
 
 
-viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
-    listItem { styles = moreStyles, isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
+viewContextItem { styles } { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
+    listItem { styles = styles, isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
         [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
         , viewMoreMenuIcon { isOpen = moreOpen, clickMsg = moreClicked }
         ]
