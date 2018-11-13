@@ -25,13 +25,13 @@ init =
     { query = "", selectedIndex = 0 }
 
 
-getCommands model =
+getFilteredCommands model =
     [ "foo", "bar", "baz", "Bar Zoo" ]
         |> Simple.Fuzzy.filter identity model.query
 
 
 computeSelectedIndex model =
-    model.selectedIndex
+    Basics.min model.selectedIndex <| List.length (getFilteredCommands model) - 1
 
 
 type Msg
@@ -133,8 +133,16 @@ viewCmdList model =
         si =
             computeSelectedIndex model
     in
-    getCommands model |> List.indexedMap (\idx -> viewCmd (idx == si))
+    getFilteredCommands model |> List.indexedMap (\idx -> viewCmd (idx == si))
 
 
 viewCmd isSelected cmdName =
-    sDiv [] [] [ text cmdName ]
+    sDiv
+        [ if isSelected then
+            bg "lightblue"
+
+          else
+            bg "inherit"
+        ]
+        [ class "pa2" ]
+        [ text cmdName ]
