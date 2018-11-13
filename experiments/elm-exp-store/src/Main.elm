@@ -282,12 +282,6 @@ update message model =
                         updateLayer (Layer.OpenContextPopup context) model
                     )
 
-        MenuClicked ->
-            pure { model | showTempSidebar = not model.showTempSidebar }
-
-        TempSidebarBackdropClicked ->
-            pure { model | showTempSidebar = False }
-
         LayerMsg msg ->
             updateLayer msg model
 
@@ -299,6 +293,12 @@ update message model =
 
         OpenCreateContextDialog ->
             updateLayer Layer.OpenCreateContextDialog model
+
+        MenuClicked ->
+            pure { model | showTempSidebar = not model.showTempSidebar }
+
+        TempSidebarBackdropClicked ->
+            pure { model | showTempSidebar = False }
 
         ToggleShowArchivedContexts ->
             pure { model | showArchivedContexts = not model.showArchivedContexts }
@@ -370,8 +370,8 @@ updateLayer msg model =
                     identity
     in
     pure { model | layer = layer }
-        |> handleOut
         |> addTaggedCmd LayerMsg cmd
+        |> handleOut
 
 
 subscriptions : Model -> Sub Msg
