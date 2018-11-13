@@ -204,7 +204,18 @@ update message model =
                             ( { model | selectedIndex = selectedIndex }, Cmd.none )
 
                         ( [], "ArrowUp" ) ->
-                            ( { model | selectedIndex = -1 + model.selectedIndex }, Cmd.none )
+                            let
+                                ( active, completed ) =
+                                    getSelectedContextTodoList model
+                                        |> List.partition TodoStore.isNotDone
+
+                                total =
+                                    List.length active
+
+                                selectedIndex =
+                                    max (model.selectedIndex - 1) 0
+                            in
+                            ( { model | selectedIndex = selectedIndex }, Cmd.none )
 
                         _ ->
                             ( model, Cmd.none )
