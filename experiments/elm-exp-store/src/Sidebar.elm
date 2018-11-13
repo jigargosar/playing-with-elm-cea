@@ -120,7 +120,7 @@ viewKeyedContextItem style vm =
 viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
     styled listItem
         [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3, fwb ] ]
-        [ id <| ContextPopup.getRefId cid
+        [ id <| ContextPopup.getRefIdFromContextId cid
         , class "hide-child"
         ]
         [ liTextButton
@@ -129,7 +129,7 @@ viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelect
                     Css.batch [ ttl, fgGray ]
 
                   else
-                    Css.batch [  ]
+                    Css.batch []
                 , rowCY
                 ]
             , onClick navigateToTodoList

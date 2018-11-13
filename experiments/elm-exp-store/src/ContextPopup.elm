@@ -3,7 +3,7 @@ module ContextPopup exposing
     , Model
     , Msg
     , OutMsg(..)
-    , getRefId
+    , getRefIdFromContextId
     , init
     , isOpenForContextId
     , open
@@ -82,8 +82,12 @@ getBackdropDomId =
     getPopperDomId >> (++) "-backdrop"
 
 
-getRefId model =
-    "context-popup-ref" ++ getContextId model
+getRefIdFromContextId cid =
+    "context-popup-ref" ++ cid
+
+
+getRefId =
+    getContextId >> getRefIdFromContextId
 
 
 getAutoFocusDomId model =

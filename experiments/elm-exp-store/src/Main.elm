@@ -375,6 +375,7 @@ view model =
         ]
 
 
+permanentSidebar : Model -> Html Msg
 permanentSidebar model =
     sDiv [ minWidth (px 180) ]
         [ class "flex-shrink-0  overflow-y-scroll w-30-ns dn db-ns " ]
