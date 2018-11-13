@@ -53,6 +53,10 @@ logCmd =
     Log.warn "Layer"
 
 
+setLayer layer model =
+    layer
+
+
 update : Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
 update message layer_ =
     (case ( message, layer_ ) of
@@ -84,42 +88,38 @@ updateTodoDialog msg todoDialog_ =
                 (withOutMsg << TodoDialogOutMsg)
                 maybeOutMsg
     in
-    pure
-        >> mapModel (\_ -> TodoDialog todoDialog)
+    mapModel (\_ -> TodoDialog todoDialog)
         >> addTaggedCmd TodoDialogMsg cmd
         >> handleOut
 
 
+updateContextDialog msg contextDialog_ =
+    let
+        ( contextDialog, cmd, maybeOutMsg ) =
+            ContextDialog.update msg contextDialog_
 
---updateContextDialog msg contextDialog_ =
---    let
---        ( contextDialog, cmd, maybeOutMsg ) =
---            ContextDialog.update msg contextDialog_
---
---        handleOut =
---            unwrapMaybe
---                withNoOutMsg
---                (withOutMsg << ContextDialogOutMsg)
---                maybeOutMsg
---    in
---    ContextDialog contextDialog
---        |> pure
---        >> addTaggedCmd ContextDialogMsg cmd
---        >> handleOut
---
---
---updateContextPopup msg context contextPopup_ =
---    let
---        ( contextPopup, cmd, maybeOutMsg ) =
---            ContextPopup.update context.id msg contextPopup_
---
---        handleOut =
---            unwrapMaybe
---                withNoOutMsg
---                (withOutMsg << ContextPopupOutMsg)
---                maybeOutMsg
---    in
---    ContextPopup context contextPopup
---        |> pure
---        >> addTaggedCmd ContextPopupMsg cmd
---        >> handleOut
+        handleOut =
+            unwrapMaybe
+                withNoOutMsg
+                (withOutMsg << ContextDialogOutMsg)
+                maybeOutMsg
+    in
+    mapModel (setLayer <| ContextDialog contextDialog)
+        >> addTaggedCmd ContextDialogMsg cmd
+        >> handleOut
+
+
+updateContextPopup msg context contextPopup_ =
+    let
+        ( contextPopup, cmd, maybeOutMsg ) =
+            ContextPopup.update context.id msg contextPopup_
+
+        handleOut =
+            unwrapMaybe
+                withNoOutMsg
+                (withOutMsg << ContextPopupOutMsg)
+                maybeOutMsg
+    in
+    mapModel (setLayer <| ContextPopup context contextPopup)
+        >> addTaggedCmd ContextPopupMsg cmd
+        >> handleOut
