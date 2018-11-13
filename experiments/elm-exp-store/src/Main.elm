@@ -214,8 +214,6 @@ type Msg
     | NavigateToTodoListWithContextId ContextId
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
-    | OpenEditContextDialog ContextId
-    | OpenContextPopup ContextId
     | MenuClicked
     | TempSidebarBackdropClicked
     | ToggleShowArchivedContexts
@@ -223,6 +221,8 @@ type Msg
     | OpenCreateTodoDialog
     | OpenEditTodoDialog Todo
     | OpenCreateContextDialog
+    | OpenEditContextDialog ContextId
+    | OpenContextPopup ContextId
     | LayerMsg Layer.Msg
 
 
