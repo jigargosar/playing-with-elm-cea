@@ -50,6 +50,22 @@ subscriptions model =
     Sub.batch [ Browser.Events.onKeyDown (D.map OnKeyDown HotKey.decoder) ]
 
 
+cycleSelectedIdxBy offset model =
+    let
+        total =
+            List.length (getFilteredCommands model)
+    in
+    if total > 0 then
+        let
+            si =
+                model.selectedIndex + offset
+        in
+        ( model, Cmd.none )
+
+    else
+        ( model, Cmd.none )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
 update message =
     (case message of
@@ -61,6 +77,14 @@ update message =
             case ke of
                 ( [], "Escape" ) ->
                     withOutMsg (always Cancel)
+
+                ( [], "ArrowDown" ) ->
+                    andThen (cycleSelectedIdxBy 1)
+                        >> withNoOutMsg
+
+                ( [], "ArrowUp" ) ->
+                    andThen (cycleSelectedIdxBy -1)
+                        >> withNoOutMsg
 
                 _ ->
                     withNoOutMsg
