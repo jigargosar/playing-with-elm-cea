@@ -51,6 +51,7 @@ type alias Model =
     , showArchivedContexts : Bool
     , showCompletedTodos : Bool
     , showTempSidebar : Bool
+    , selectedIndex : Int
     }
 
 
@@ -76,6 +77,7 @@ init flags =
             , showArchivedContexts = False
             , showCompletedTodos = False
             , showTempSidebar = False
+            , selectedIndex = -1
             }
     in
     ( model
