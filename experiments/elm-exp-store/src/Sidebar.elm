@@ -40,7 +40,7 @@ type alias Config msg =
 view : Config msg -> Html msg
 view config =
     let
-        { inbox, contexts, addContextClicked, showArchived, toggleShowArchived } =
+        { inbox, contexts, addContextClicked } =
             config
 
         ( archived, active ) =
