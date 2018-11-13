@@ -1,6 +1,6 @@
 module CmdDialog exposing (Model, Msg(..), OutMsg(..), init, update, view)
 
-import Css exposing (absolute, position)
+import Css exposing (absolute, left, none, pct, pointerEvents, pointerEventsAll, position, right, top, zero)
 import DomX exposing (DomId)
 import Focus
 import HotKey
@@ -76,7 +76,10 @@ view : Model -> Html Msg
 view model =
     div []
         [ UI.backdrop [ id <| getBackdropDomId model, DomX.onClickTargetId BackDropClicked ]
-            [ sDiv []
+            []
+        , sDiv [ position absolute, absFill, rowCXY, pointerEvents none ]
+            []
+            [ sDiv [ position absolute, top (pct 10), pointerEventsAll ]
                 [ class "bg-white br4 shadow-1 pa3 measure w-100"
                 ]
                 [ sDiv [ vs, w100, rowCY ]
@@ -92,6 +95,15 @@ view model =
                         ]
                         []
                     ]
+                , sDiv [] [] viewCmdList
                 ]
             ]
         ]
+
+
+viewCmdList =
+    List.map viewCmd [ "foo", "bar", "baz" ]
+
+
+viewCmd cmdName =
+    sDiv [] [] [ text cmdName ]
