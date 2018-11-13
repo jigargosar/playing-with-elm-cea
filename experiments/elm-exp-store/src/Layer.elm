@@ -158,6 +158,16 @@ update { contextStore, todoStore } message layer =
         pure layer
 
 
+updateLayer updateFn layerTagger msgTagger outFn msg layerModel_ =
+    let
+        ( layerModel, cmd, maybeOutMsg ) =
+            updateFn msg layerModel_
+    in
+    mapModel (\_ -> layerTagger layerModel)
+        >> addTaggedCmd msgTagger cmd
+        >> unwrapMaybe withNoOutMsg outFn maybeOutMsg
+
+
 updateTodoDialog msg todoDialog_ =
     let
         ( todoDialog, cmd, maybeOutMsg ) =
