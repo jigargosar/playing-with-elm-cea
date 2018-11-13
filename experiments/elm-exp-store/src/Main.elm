@@ -451,7 +451,7 @@ createTodoViewModel model idx todo =
 
 
 viewKeyedTodo : TodoViewModel msg -> ( String, Html msg )
-viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contextName, contextClicked } =
+viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contextName, contextClicked, isSelected } =
     let
         doneIconBtn =
             if done then
@@ -461,7 +461,14 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
                 Btn.sIcon [ fg "gray" ] [ onClick markDone ] [ Icons.circle |> Icons.default ]
     in
     ( key
-    , sDiv [ rowCY ]
+    , sDiv
+        [ rowCY
+        , if isSelected then
+            bg "lightblue"
+
+          else
+            bg "transparent"
+        ]
         [ class "pa3 bb b--light-gray" ]
         [ sDiv [ hs, rowCY ] [] [ doneIconBtn ]
         , sDiv [ hs ]
