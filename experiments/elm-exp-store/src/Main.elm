@@ -211,7 +211,7 @@ update message model =
                                     List.length active
 
                                 selectedIndex =
-                                    min (1 + model.selectedIndex) (total - 1)
+                                    modBy total (model.selectedIndex + 1)
                             in
                             ( { model | selectedIndex = selectedIndex }, Cmd.none )
 
@@ -225,7 +225,7 @@ update message model =
                                     List.length active
 
                                 selectedIndex =
-                                    max (model.selectedIndex - 1) 0
+                                    modBy total (model.selectedIndex - 1)
                             in
                             ( { model | selectedIndex = selectedIndex }, Cmd.none )
 
