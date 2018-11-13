@@ -49,10 +49,10 @@ view config =
     sDiv []
         [ class "min-h-100 bg-black-05" ]
         ([ HtmlX.keyedDiv [] <|
-            [ viewKeyedContextItem noStyle inbox ]
+            [ viewKeyedContextItem [] inbox ]
          , viewContextsHeader addContextClicked
          , HtmlX.keyedDiv [] <|
-            List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) active
+            List.map (viewKeyedContextItem <| [ plRm 1 ]) active
          ]
             ++ HtmlX.emptyWhen (not << List.isEmpty) (viewArchivedWithHeader config) archived
         )
@@ -66,7 +66,7 @@ viewArchivedWithHeader { showArchived, toggleShowArchived } archived =
 
 viewArchivedContexts archived =
     HtmlX.keyedDiv [] <|
-        List.map (viewKeyedContextItem <| Css.batch [ plRm 1 ]) archived
+        List.map (viewKeyedContextItem <| [ plRm 1 ]) archived
 
 
 viewArchiveBtn showArchived toggleShowArchived =
@@ -91,15 +91,15 @@ viewArchiveBtn showArchived toggleShowArchived =
 
 
 viewContextsHeader addContextClicked =
-    listItem []
+    listItem { styles = [], isSelected = False }
         []
         [ sDiv [ fa, fwb ] [] [ text "Contexts" ]
         , Btn.icon [ onClick addContextClicked ] [ Icons.plus |> Icons.default ]
         ]
 
 
-listItem styles =
-    styled div ([ fa, rowCY, pRm 0.5 ] ++ styles)
+listItem { styles, isSelected } =
+    styled div ([ fa, rowCY, pRm 0.5 ] ++ styles ++ [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3 ] ])
 
 
 liTextButton =
@@ -111,13 +111,12 @@ liTextButton =
         ]
 
 
-viewKeyedContextItem style vm =
-    ( vm.key, viewContextItem style vm )
+viewKeyedContextItem moreStyles vm =
+    ( vm.key, viewContextItem moreStyles vm )
 
 
 viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
-    listItem
-        [ moreStyles, boolCss isSelected [ bc <| hsla 210 1 0.56 0.3 ] ]
+    listItem { styles = moreStyles, isSelected = isSelected }
         [ id <| ContextPopup.getRefIdFromContextId cid
         , class "hide-child"
         ]
