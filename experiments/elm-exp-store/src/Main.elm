@@ -328,12 +328,9 @@ update message model =
                     (LayerMsg <| Layer.OpenCreateTodoDialog <| getSelectedContextId model)
 
         OpenEditTodoDialog todo ->
-            attemptToOpenLayer
-                (updateTodoDialog
-                    TodoDialog.autoFocus
-                    (TodoDialog.initEdit todo)
-                )
-                model
+            pure model
+                |> andThenUpdate
+                    (LayerMsg <| Layer.OpenEditTodoDialog todo)
 
         OpenCreateContextDialog ->
             attemptToOpenLayer

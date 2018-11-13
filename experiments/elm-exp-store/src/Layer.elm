@@ -6,6 +6,7 @@ import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextStore)
 import Log
 import TodoDialog
+import TodoStore exposing (Todo)
 import UpdateReturn exposing (..)
 
 
@@ -30,6 +31,7 @@ type Msg
     | ContextDialogMsg ContextDialog.Msg
     | ContextPopupMsg ContextPopup.Msg
     | OpenCreateTodoDialog ContextId
+    | OpenEditTodoDialog Todo
 
 
 type OutMsg
@@ -59,6 +61,9 @@ update message layer_ =
 
         ( OpenCreateTodoDialog cid, NoLayer ) ->
             updateTodoDialog TodoDialog.autoFocus (TodoDialog.initCreate cid)
+
+        ( OpenEditTodoDialog todo, NoLayer ) ->
+            updateTodoDialog TodoDialog.autoFocus (TodoDialog.initEdit todo)
 
         _ ->
             addCmd (logCmd [ "invalid msg,layer combination" ])
