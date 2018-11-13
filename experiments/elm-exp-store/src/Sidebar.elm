@@ -74,11 +74,6 @@ viewArchived { showArchived, toggleShowArchived } archived =
         ]
 
 
-viewKeyed fn =
-    HtmlX.keyedDiv []
-        << List.map (\config -> ( config.key, fn config ))
-
-
 viewArchiveBtn showArchived toggleShowArchived =
     let
         toggleIcon =
@@ -168,3 +163,8 @@ viewContextName { name, onClickMsg, count } =
             []
             [ text <| String.fromInt count ]
         ]
+
+
+viewKeyed fn =
+    HtmlX.keyedDiv []
+        << List.map (\config -> ( config.key, fn config ))
