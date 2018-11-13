@@ -11,6 +11,7 @@ module ContextStore exposing
     , get
     , getNameOrDefaultById
     , list
+    , listActive
     , load
     , nameDict
     , setName
@@ -222,3 +223,11 @@ getNameOrDefaultById id =
 get : ContextId -> ContextStore -> Maybe Context
 get id =
     .contextLookup >> Dict.get id
+
+
+isActive =
+    .archived >> eqs False
+
+
+listActive =
+    list >> List.filter isActive

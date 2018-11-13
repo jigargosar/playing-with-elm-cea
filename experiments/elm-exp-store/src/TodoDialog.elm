@@ -137,7 +137,7 @@ view : ContextStore -> Model -> Html Msg
 view contextStore model =
     let
         contexts =
-            ContextStore.list contextStore
+            ContextStore.listActive contextStore
 
         viewInboxOption =
             styled option [] [ value ContextStore.defaultId ] [ text <| ContextStore.defaultName ]
