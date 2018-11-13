@@ -190,7 +190,18 @@ update message model =
                 Layer.NoLayer ->
                     case ke of
                         ( [], "ArrowDown" ) ->
-                            ( { model | selectedIndex = 1 + model.selectedIndex }, Cmd.none )
+                            let
+                                ( active, completed ) =
+                                    getSelectedContextTodoList model
+                                        |> List.partition TodoStore.isNotDone
+
+                                total =
+                                    List.length active
+
+                                selectedIndex =
+                                    min (1 + model.selectedIndex) (total - 1)
+                            in
+                            ( { model | selectedIndex = selectedIndex }, Cmd.none )
 
                         ( [], "ArrowUp" ) ->
                             ( { model | selectedIndex = -1 + model.selectedIndex }, Cmd.none )
