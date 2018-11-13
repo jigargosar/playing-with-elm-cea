@@ -540,7 +540,7 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
           else
             bg "transparent"
         ]
-        [ id domId, class "pa3 bb b--light-gray", tabindex -1, DomX.onFocusIn focusInMsg ]
+        [ id domId, class "pa3 bb b--light-gray", tabindex 0, DomX.onFocusIn focusInMsg ]
         [ sDiv [ hs, rowCY ] [] [ doneIconBtn ]
         , sDiv [ hs ]
             [ class "flex-auto flex flex-column " ]
