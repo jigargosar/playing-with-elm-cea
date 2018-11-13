@@ -176,6 +176,7 @@ type Msg
     | OpenContextPopup ContextId
     | LayerMsg Layer.Msg
     | OnKeyDown HotKey.Event
+    | OnTodoFocusIn Todo
 
 
 type alias ContextItem =
@@ -224,6 +225,22 @@ cycleSelectedIndexBy num model =
         ( model, Cmd.none )
 
 
+setSelectedIndexOnFocusIn todo model =
+    let
+        ( active, completed ) =
+            getSelectedContextTodoList model
+                |> List.partition TodoStore.isNotDone
+
+        selectedIndex =
+            Array.fromList active
+                |> Array.toIndexedList
+                |> List.filter (Tuple.second >> .id >> eqs todo.id)
+                |> List.head
+                |> unwrapMaybe model.selectedIndex Tuple.first
+    in
+    ( { model | selectedIndex = selectedIndex }, Cmd.none )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -234,6 +251,9 @@ update message model =
             model
                 |> pure
                 >> addCmd (Log.focusResult "Main.elm" r)
+
+        OnTodoFocusIn todo ->
+            setSelectedIndexOnFocusIn todo model
 
         OnKeyDown ke ->
             case model.layer of
@@ -481,6 +501,7 @@ type alias TodoViewModel msg =
     , contextClicked : msg
     , isSelected : Bool
     , domId : DomId
+    , focusInMsg : msg
     }
 
 
@@ -497,10 +518,11 @@ createTodoViewModel model idx todo =
         (OpenEditTodoDialog todo.id)
         (idx == getComputedSelectedIndex model)
         (getTodoDomId todo)
+        (OnTodoFocusIn todo)
 
 
 viewKeyedTodo : TodoViewModel msg -> ( String, Html msg )
-viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contextName, contextClicked, isSelected, domId } =
+viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contextName, contextClicked, isSelected, domId, focusInMsg } =
     let
         doneIconBtn =
             if done then
@@ -518,7 +540,7 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
           else
             bg "transparent"
         ]
-        [ id domId, class "pa3 bb b--light-gray", tabindex -1 ]
+        [ id domId, class "pa3 bb b--light-gray", tabindex -1, DomX.onFocusIn focusInMsg ]
         [ sDiv [ hs, rowCY ] [] [ doneIconBtn ]
         , sDiv [ hs ]
             [ class "flex-auto flex flex-column " ]
