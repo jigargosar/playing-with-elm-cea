@@ -324,38 +324,34 @@ updateLayer msg model =
         handleOut =
             case outMsg of
                 Layer.TodoDialogOutMsg (TodoDialog.Submit TodoDialog.Create content contextId) ->
-                    mapModel (setLayer Layer.NoLayer)
-                        >> andThenUpdate
-                            (MsgTodoStore <|
-                                TodoStore.addNew content contextId
-                            )
+                    andThenUpdate
+                        (MsgTodoStore <|
+                            TodoStore.addNew content contextId
+                        )
 
                 Layer.TodoDialogOutMsg (TodoDialog.Submit (TodoDialog.Edit todo) content contextId) ->
-                    mapModel (setLayer Layer.NoLayer)
-                        >> andThenUpdate
-                            (MsgTodoStore <|
-                                TodoStore.setContentAndContextId todo.id content contextId
-                            )
+                    andThenUpdate
+                        (MsgTodoStore <|
+                            TodoStore.setContentAndContextId todo.id content contextId
+                        )
 
                 Layer.TodoDialogOutMsg TodoDialog.Cancel ->
-                    mapModel (setLayer Layer.NoLayer)
+                    identity
 
                 Layer.ContextDialogOutMsg (ContextDialog.Submit ContextDialog.Create content) ->
-                    mapModel (setLayer Layer.NoLayer)
-                        >> andThenUpdate
-                            (MsgContextStore <|
-                                ContextStore.addNew content
-                            )
+                    andThenUpdate
+                        (MsgContextStore <|
+                            ContextStore.addNew content
+                        )
 
                 Layer.ContextDialogOutMsg (ContextDialog.Submit (ContextDialog.Edit context) name) ->
-                    mapModel (setLayer Layer.NoLayer)
-                        >> andThenUpdate
-                            (MsgContextStore <|
-                                ContextStore.setName context.id name
-                            )
+                    andThenUpdate
+                        (MsgContextStore <|
+                            ContextStore.setName context.id name
+                        )
 
                 Layer.ContextDialogOutMsg ContextDialog.Cancel ->
-                    mapModel (setLayer Layer.NoLayer)
+                    identity
 
                 Layer.ContextPopupOutMsg context (ContextPopup.ActionOut ContextPopup.Rename) ->
                     andThenUpdate (OpenEditContextDialog context.id)
@@ -364,7 +360,7 @@ updateLayer msg model =
                     andThenUpdate (MsgContextStore <| ContextStore.toggleArchived context.id)
 
                 Layer.ContextPopupOutMsg context ContextPopup.ClosedOut ->
-                    mapModel (setLayer Layer.NoLayer)
+                    identity
 
                 Layer.NoOut ->
                     identity
