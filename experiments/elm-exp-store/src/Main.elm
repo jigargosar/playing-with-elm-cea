@@ -90,15 +90,6 @@ contextIdEq cid =
     propEq .contextId cid
 
 
-isDone : Pred { a | done : Bool }
-isDone =
-    propEq .done True
-
-
-isNotDone =
-    isDone >> not
-
-
 getSelectedContextTodoList : Model -> List Todo
 getSelectedContextTodoList model =
     getTodoListForContextId model.contextId model
@@ -111,7 +102,7 @@ getActiveTodoListCountForContextId cid =
 
 getActiveTodoListForContextId : ContextId -> Model -> List Todo
 getActiveTodoListForContextId cid =
-    .todoStore >> TodoStore.list >> List.filter (allPass [ contextIdEq cid, isNotDone ])
+    .todoStore >> TodoStore.list >> List.filter (allPass [ contextIdEq cid, TodoStore.isNotDone ])
 
 
 getTodoListForContextId : ContextId -> Model -> List Todo
@@ -373,7 +364,7 @@ viewTodoList model =
     let
         ( active, completed ) =
             getSelectedContextTodoList model
-                |> List.partition isNotDone
+                |> List.partition TodoStore.isNotDone
     in
     div [ css [] ]
         [ active

@@ -7,6 +7,8 @@ module TodoStore exposing
     , addNew
     , delete
     , get
+    , isDone
+    , isNotDone
     , list
     , load
     , markDone
@@ -213,3 +215,12 @@ list =
 get : TodoId -> TodoStore -> Maybe Todo
 get id =
     .todoLookup >> Dict.get id
+
+
+isDone : Pred { a | done : Bool }
+isDone =
+    propEq .done True
+
+
+isNotDone =
+    isDone >> not
