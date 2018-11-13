@@ -61,17 +61,37 @@ setLayer layer model =
     layer
 
 
+logInvalidLayer =
+    addCmd (logCmd [ "invalid msg,layer combination" ])
+        >> withNoOutMsg
+
+
 update : { x | contextStore : ContextStore, layer : Layer, todoStore : TodoStore } -> Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
 update { contextStore, layer, todoStore } message =
     (case ( message, layer ) of
-        ( TodoDialogMsg msg, TodoDialog model ) ->
-            updateTodoDialog msg model
+        ( TodoDialogMsg msg, _ ) ->
+            case layer of
+                TodoDialog model ->
+                    updateTodoDialog msg model
 
-        ( ContextDialogMsg msg, ContextDialog model ) ->
-            updateContextDialog msg model
+                _ ->
+                    logInvalidLayer
 
-        ( ContextPopupMsg msg, ContextPopup model ) ->
-            updateContextPopup msg model
+        ( ContextDialogMsg msg, _ ) ->
+            case layer of
+                ContextDialog model ->
+                    updateContextDialog msg model
+
+                _ ->
+                    logInvalidLayer
+
+        ( ContextPopupMsg msg, _ ) ->
+            case layer of
+                ContextPopup model ->
+                    updateContextPopup msg model
+
+                _ ->
+                    logInvalidLayer
 
         ( OpenCreateTodoDialog cid, NoLayer ) ->
             updateTodoDialog TodoDialog.autoFocus (TodoDialog.initCreate cid)
