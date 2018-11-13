@@ -163,25 +163,22 @@ updateTodoDialog msg todoDialog_ =
         ( todoDialog, cmd, maybeOutMsg ) =
             TodoDialog.update msg todoDialog_
 
-        handleOut =
-            unwrapMaybe withNoOutMsg
-                (\out ->
-                    (case out of
-                        TodoDialog.Submit TodoDialog.Create content contextId ->
-                            withOutMsg (TodoStoreMsg <| TodoStore.addNew content contextId)
+        handleOut out =
+            (case out of
+                TodoDialog.Submit TodoDialog.Create content contextId ->
+                    withOutMsg (TodoStoreMsg <| TodoStore.addNew content contextId)
 
-                        TodoDialog.Submit (TodoDialog.Edit todo) content contextId ->
-                            withOutMsg (TodoStoreMsg <| TodoStore.setContentAndContextId todo.id content contextId)
+                TodoDialog.Submit (TodoDialog.Edit todo) content contextId ->
+                    withOutMsg (TodoStoreMsg <| TodoStore.setContentAndContextId todo.id content contextId)
 
-                        TodoDialog.Cancel ->
-                            withNoOutMsg
-                    )
-                        << mapModel (\_ -> NoLayer)
-                )
+                TodoDialog.Cancel ->
+                    withNoOutMsg
+            )
+                << mapModel (\_ -> NoLayer)
     in
     mapModel (\_ -> TodoDialog todoDialog)
         >> addTaggedCmd TodoDialogMsg cmd
-        >> handleOut maybeOutMsg
+        >> unwrapMaybe withNoOutMsg handleOut maybeOutMsg
 
 
 updateContextDialog msg contextDialog_ =
@@ -189,26 +186,22 @@ updateContextDialog msg contextDialog_ =
         ( contextDialog, cmd, maybeOutMsg ) =
             ContextDialog.update msg contextDialog_
 
-        handleOut =
-            unwrapMaybe withNoOutMsg
-                (\out ->
-                    (case out of
-                        ContextDialog.Submit ContextDialog.Create name ->
-                            withOutMsg (ContextStoreMsg <| ContextStore.addNew name)
+        handleOut out =
+            (case out of
+                ContextDialog.Submit ContextDialog.Create name ->
+                    withOutMsg (ContextStoreMsg <| ContextStore.addNew name)
 
-                        ContextDialog.Submit (ContextDialog.Edit context) name ->
-                            withOutMsg (ContextStoreMsg <| ContextStore.setName context.id name)
+                ContextDialog.Submit (ContextDialog.Edit context) name ->
+                    withOutMsg (ContextStoreMsg <| ContextStore.setName context.id name)
 
-                        ContextDialog.Cancel ->
-                            withNoOutMsg
-                    )
-                        << mapModel (\_ -> NoLayer)
-                )
-                maybeOutMsg
+                ContextDialog.Cancel ->
+                    withNoOutMsg
+            )
+                << mapModel (\_ -> NoLayer)
     in
     mapModel (setLayer <| ContextDialog contextDialog)
         >> addTaggedCmd ContextDialogMsg cmd
-        >> handleOut
+        >> unwrapMaybe withNoOutMsg handleOut maybeOutMsg
 
 
 updateContextPopup msg contextPopup_ =
