@@ -34,6 +34,7 @@ type alias Config msg =
     , showArchived : Bool
     , toggleShowArchived : msg
     , isSelected : ContextId -> Bool
+    , navigateToTodoList : ContextId -> msg
     }
 
 
@@ -57,7 +58,7 @@ view config =
 
 viewInboxItem config inbox =
     let
-        viewContextItem { navigateToTodoList, activeTodoCount, cid } =
+        viewContextItem { activeTodoCount, cid } =
             listItem
                 { styles = []
                 , isSelected = config.isSelected cid
@@ -65,7 +66,7 @@ viewInboxItem config inbox =
                 }
                 [ viewContextName
                     { name = ContextStore.defaultName
-                    , onClickMsg = navigateToTodoList
+                    , onClickMsg = config.navigateToTodoList cid
                     , count = activeTodoCount
                     }
                 ]

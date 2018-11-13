@@ -430,6 +430,7 @@ createSideBarConfig model =
     , showArchived = model.showArchivedContexts
     , toggleShowArchived = ToggleShowArchivedContexts
     , isSelected = \id -> isCurrentPageContextTodoListWithContextId id model
+    , navigateToTodoList = NavigateToTodoListWithContextId
     }
 
 
