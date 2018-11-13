@@ -269,6 +269,9 @@ update message model =
                         ( [], "q" ) ->
                             update OpenCreateTodoDialog model
 
+                        ( [ Shift, Meta ], "a" ) ->
+                            update OpenCmdDialog model
+
                         _ ->
                             ( model, Cmd.none )
 
