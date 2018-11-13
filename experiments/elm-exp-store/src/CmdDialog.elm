@@ -48,7 +48,12 @@ update message =
                 >> withNoOutMsg
 
         OnKeyDown ke ->
-            withNoOutMsg
+            case ke of
+                ( [], "Escape" ) ->
+                    withOutMsg (always Cancel)
+
+                _ ->
+                    withNoOutMsg
 
         FocusResult r ->
             addCmd (Log.focusResult "CmdDialog.elm" r)
