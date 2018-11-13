@@ -48,11 +48,9 @@ view config =
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
-        ([ HtmlX.keyedDiv [] <|
-            [ viewKeyedContextItem [] inbox ]
+        ([ viewKeyed (viewKeyedContextItem []) [ inbox ]
          , viewContextsHeader addContextClicked
-         , HtmlX.keyedDiv [] <|
-            List.map (viewKeyedContextItem <| [ plRm 1 ]) active
+         , viewKeyed (viewKeyedContextItem [ plRm 1 ]) active
          ]
             ++ HtmlX.emptyWhen (not << List.isEmpty) (viewArchivedWithHeader config) archived
         )
@@ -60,13 +58,13 @@ view config =
 
 viewArchivedWithHeader { showArchived, toggleShowArchived } archived =
     [ viewArchiveBtn showArchived toggleShowArchived
-    , HtmlX.when (always showArchived) viewArchivedContexts archived
+    , HtmlX.when (always showArchived) (viewKeyed (viewKeyedContextItem [ plRm 1 ])) archived
     ]
 
 
-viewArchivedContexts archived =
-    HtmlX.keyedDiv [] <|
-        List.map (viewKeyedContextItem <| [ plRm 1 ]) archived
+viewKeyed fn =
+    HtmlX.keyedDiv []
+        << List.map (\config -> ( config.key, fn config ))
 
 
 viewArchiveBtn showArchived toggleShowArchived =
@@ -112,13 +110,11 @@ liTextButton =
         ]
 
 
-viewKeyedContextItem moreStyles { key, name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
-    ( key
-    , listItem { styles = moreStyles, isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
+viewKeyedContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
+    listItem { styles = moreStyles, isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
         [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
         , viewMoreMenuIcon { isOpen = moreOpen, clickMsg = moreClicked }
         ]
-    )
 
 
 viewMoreMenuIcon { isOpen, clickMsg } =
