@@ -375,7 +375,7 @@ permanentSidebar : Model -> Html Msg
 permanentSidebar model =
     sDiv [ minWidth (px 180) ]
         [ class "flex-shrink-0  overflow-y-scroll w-30-ns dn db-ns " ]
-        [ Sidebar.view <| createSideBarConfig model
+        [ viewSidebar model
         ]
 
 
@@ -383,23 +383,21 @@ viewTempSidebar model =
     sDiv [ position absolute, absFill, dFlexRow, bcBlackA 0.4 ]
         []
         [ sDiv
-            [ {- position absolute
-                 , left zero
-                 , top zero
-                 , height (vh 100)
-                 ,
-              -}
-              bg "white"
+            [ bg "white"
             , Css.width (pct 80)
             ]
             []
-            [ Sidebar.view <| createSideBarConfig model ]
+            [ viewSidebar model ]
         , sDiv [ fa ] [ onClick TempSidebarBackdropClicked ] []
         ]
 
 
 viewLayer model =
     Layer.viewLayer model |> Html.map LayerMsg
+
+
+viewSidebar =
+    Sidebar.view << createSideBarConfig
 
 
 createSideBarConfig : Model -> Sidebar.Config Msg
