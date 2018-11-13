@@ -79,7 +79,7 @@ init flags =
             , showArchivedContexts = False
             , showCompletedTodos = False
             , showTempSidebar = False
-            , selectedIndex = -1
+            , selectedIndex = 0
             }
     in
     ( model
