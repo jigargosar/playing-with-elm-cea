@@ -397,6 +397,7 @@ updateLayer msg model =
     in
     pure { model | layer = layer }
         |> handleOut
+        |> addTaggedCmd LayerMsg cmd
 
 
 updateContextPopup msg context contextPopup_ =
