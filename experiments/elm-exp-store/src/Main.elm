@@ -225,7 +225,7 @@ update message model =
                                     List.length active
 
                                 selectedIndex =
-                                    modBy total (model.selectedIndex - 1)
+                                    safeModMy total (model.selectedIndex - 1)
                             in
                             ( { model | selectedIndex = selectedIndex }, Cmd.none )
 
