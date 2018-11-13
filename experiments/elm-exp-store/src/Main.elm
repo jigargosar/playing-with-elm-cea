@@ -357,7 +357,9 @@ updateLayer message model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Browser.Events.onKeyDown <| D.map OnKeyDown HotKey.decoder ]
+        [ Browser.Events.onKeyDown <| D.map OnKeyDown HotKey.decoder
+        , Layer.subscriptions model.layer |> Sub.map LayerMsg
+        ]
 
 
 

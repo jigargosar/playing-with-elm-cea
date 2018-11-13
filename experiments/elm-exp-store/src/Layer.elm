@@ -1,4 +1,4 @@
-module Layer exposing (Layer(..), Msg(..), OutMsg(..), eqContextPopupFor, update, viewLayer)
+module Layer exposing (Layer(..), Msg(..), OutMsg(..), eqContextPopupFor, subscriptions, update, viewLayer)
 
 import BasicsX exposing (unwrapMaybe)
 import CmdDialog
@@ -80,6 +80,17 @@ withTodoFromId fn tid contextStore =
     contextStore
         |> TodoStore.get tid
         |> unwrapMaybe withNoOutMsg fn
+
+
+subscriptions layer =
+    Sub.batch
+        [ case layer of
+            CmdDialog model ->
+                CmdDialog.subscriptions model |> Sub.map CmdDialogMsg
+
+            _ ->
+                Sub.none
+        ]
 
 
 update : { x | contextStore : ContextStore, todoStore : TodoStore } -> Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
