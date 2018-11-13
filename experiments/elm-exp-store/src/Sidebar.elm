@@ -76,13 +76,17 @@ viewInboxItem config =
 
 viewContextItems config =
     let
-        viewContextItem { name, navigateToTodoList, activeTodoCount, moreClicked, moreOpen, cid } =
+        viewContextItem { name, moreClicked, moreOpen, cid } =
             listItem
                 { styles = [ plRm 1 ]
                 , isSelected = config.isSelected cid
                 , domId = ContextPopup.getRefIdFromContextId cid
                 }
-                [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
+                [ viewContextName
+                    { name = name
+                    , onClickMsg = config.navigateToTodoList cid
+                    , count = config.activeTodoCount cid
+                    }
                 , viewMoreMenuIcon { isOpen = moreOpen, clickMsg = moreClicked }
                 ]
     in
