@@ -169,8 +169,10 @@ updateLayer updateFn layerTagger msgTagger outFn msg layerModel_ =
 
 
 updateTodoDialog =
-    let
-        handleOut out =
+    updateLayer TodoDialog.update
+        TodoDialog
+        TodoDialogMsg
+        (\out ->
             (case out of
                 TodoDialog.Submit TodoDialog.Create content contextId ->
                     withOutMsg (TodoStoreMsg <| TodoStore.addNew content contextId)
@@ -182,11 +184,7 @@ updateTodoDialog =
                     withNoOutMsg
             )
                 << mapModel (\_ -> NoLayer)
-    in
-    updateLayer TodoDialog.update
-        TodoDialog
-        TodoDialogMsg
-        handleOut
+        )
 
 
 updateContextDialog msg contextDialog_ =
