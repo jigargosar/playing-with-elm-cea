@@ -34,6 +34,7 @@ type Msg
     | OpenEditTodoDialog Todo
     | OpenCreateContextDialog
     | OpenEditContextDialog Context
+    | OpenContextPopup Context
 
 
 type OutMsg
@@ -82,6 +83,9 @@ update message layer_ =
 
         ( OpenEditContextDialog context, NoLayer ) ->
             updateContextDialog ContextDialog.autoFocus (ContextDialog.initEdit context)
+
+        ( OpenContextPopup context, NoLayer ) ->
+            updateContextPopup ContextPopup.open context ContextPopup.init
 
         _ ->
             addCmd (logCmd [ "invalid msg,layer combination" ])
