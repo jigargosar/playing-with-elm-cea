@@ -139,10 +139,10 @@ update { contextStore, todoStore } message layer =
         OpenContextPopup cid ->
             case layer of
                 NoLayer ->
-                    contextStore
-                        |> ContextStore.get cid
-                        |> unwrapMaybe withNoOutMsg
-                            (updateContextPopup ContextPopup.open << ContextPopup.init)
+                    withContextFromCid
+                        (updateContextPopup ContextPopup.open << ContextPopup.init)
+                        cid
+                        contextStore
 
                 _ ->
                     logInvalidLayer
