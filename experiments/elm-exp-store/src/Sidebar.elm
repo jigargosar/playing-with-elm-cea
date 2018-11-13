@@ -1,9 +1,9 @@
-module Sidebar exposing (Config, ContextConfig, view)
+module Sidebar exposing (Config, view)
 
 import BasicsX exposing (..)
 import Btn
 import ContextPopup
-import ContextStore exposing (ContextId, ContextName)
+import ContextStore exposing (Context, ContextId, ContextName)
 import Css exposing (..)
 import Html.Styled as Html exposing (Html, button, div, styled, text)
 import Html.Styled.Attributes exposing (class, css, id, style)
@@ -15,24 +15,16 @@ import Styles exposing (..)
 import UI exposing (..)
 
 
-type alias ContextConfig msg =
-    { key : String
-    , cid : ContextId
-    , name : ContextName
-    , isArchived : Bool
-    , moreClicked : msg
-    , moreOpen : Bool
-    }
-
-
 type alias Config msg =
-    { contexts : List (ContextConfig msg)
+    { contexts : List Context
     , addContextClicked : msg
     , showArchived : Bool
     , toggleShowArchived : msg
     , isSelected : ContextId -> Bool
     , navigateToTodoList : ContextId -> msg
     , activeTodoCount : ContextId -> Int
+    , moreClicked : ContextId -> msg
+    , moreOpen : ContextId -> Bool
     }
 
 
@@ -43,7 +35,7 @@ view config =
             config
 
         ( archived, active ) =
-            List.partition .isArchived contexts
+            List.partition .archived contexts
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
@@ -77,21 +69,21 @@ viewInboxItem config =
 
 viewContextItems config =
     let
-        viewContextItem { name, moreClicked, moreOpen, cid } =
+        viewContextItem { name, id } =
             listItem
                 { styles = [ plRm 1 ]
-                , isSelected = config.isSelected cid
-                , domId = ContextPopup.getRefIdFromContextId cid
+                , isSelected = config.isSelected id
+                , domId = ContextPopup.getRefIdFromContextId id
                 }
                 [ viewContextName
                     { name = name
-                    , onClickMsg = config.navigateToTodoList cid
-                    , count = config.activeTodoCount cid
+                    , onClickMsg = config.navigateToTodoList id
+                    , count = config.activeTodoCount id
                     }
-                , viewMoreMenuIcon { isOpen = moreOpen, clickMsg = moreClicked }
+                , viewMoreMenuIcon { isOpen = config.moreOpen id, clickMsg = config.moreClicked id }
                 ]
     in
-    viewKeyed viewContextItem
+    viewKeyedContexts viewContextItem
 
 
 viewArchived config archived =
@@ -193,6 +185,6 @@ viewContextName { name, onClickMsg, count } =
         ]
 
 
-viewKeyed fn =
+viewKeyedContexts fn =
     HtmlX.keyedDiv []
-        << List.map (\config -> ( config.key, fn config ))
+        << List.map (\context -> ( context.id, fn context ))

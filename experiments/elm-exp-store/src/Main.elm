@@ -404,31 +404,15 @@ viewLayer model =
 
 createSideBarConfig : Model -> Sidebar.Config Msg
 createSideBarConfig model =
-    let
-        createContextConfig : ContextId -> ContextName -> Bool -> Sidebar.ContextConfig Msg
-        createContextConfig id name isArchived =
-            { key = id
-            , cid = id
-            , name = name
-            , isArchived = isArchived
-            , moreClicked = OpenContextPopup id
-            , moreOpen = Layer.eqContextPopupFor id model.layer
-            }
-
-        contexts =
-            getUserDefinedContextList model
-                |> List.map (\c -> createContextConfig c.id c.name c.archived)
-
-        inbox =
-            createContextConfig ContextStore.defaultId ContextStore.defaultName False
-    in
-    { contexts = contexts
+    { contexts = getUserDefinedContextList model
     , addContextClicked = OpenCreateContextDialog
     , showArchived = model.showArchivedContexts
     , toggleShowArchived = ToggleShowArchivedContexts
     , isSelected = \id -> isCurrentPageContextTodoListWithContextId id model
     , navigateToTodoList = NavigateToTodoListWithContextId
     , activeTodoCount = \id -> getActiveTodoListCountForContextId id model
+    , moreClicked = OpenContextPopup
+    , moreOpen = \id -> Layer.eqContextPopupFor id model.layer
     }
 
 
