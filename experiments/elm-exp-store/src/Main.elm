@@ -368,6 +368,9 @@ updateLayer msg model =
                                 TodoStore.setContentAndContextId todo.id content contextId
                             )
 
+                Layer.TodoDialogOutMsg TodoDialog.Cancel ->
+                    mapModel (setLayer Layer.NoLayer)
+
                 Layer.ContextDialogOutMsg (ContextDialog.Submit ContextDialog.Create content) ->
                     mapModel (setLayer Layer.NoLayer)
                         >> andThenUpdate
@@ -382,8 +385,15 @@ updateLayer msg model =
                                 ContextStore.setName context.id name
                             )
 
+                Layer.ContextDialogOutMsg ContextDialog.Cancel ->
+                    mapModel (setLayer Layer.NoLayer)
+
+                Layer.NoOut ->
+                    identity
+
                 _ ->
-                    Debug.todo "Handle All Out Messages"
+                    Debug.log "( outMsg, model.layer )" ( outMsg, model.layer )
+                        |> (\_ -> identity)
     in
     pure { model | layer = layer }
         |> handleOut
