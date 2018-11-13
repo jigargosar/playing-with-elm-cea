@@ -1,5 +1,6 @@
 module CmdDialog exposing (Model, Msg(..), OutMsg(..), init, subscriptions, update, view)
 
+import BasicsX exposing (safeModBy)
 import Browser.Events
 import Css exposing (absolute, left, none, pct, pointerEvents, pointerEventsAll, position, right, top, zero)
 import DomX exposing (DomId)
@@ -58,9 +59,9 @@ cycleSelectedIdxBy offset model =
     if total > 0 then
         let
             si =
-                model.selectedIndex + offset
+                safeModBy total <| model.selectedIndex + offset
         in
-        ( model, Cmd.none )
+        ( { model | selectedIndex = si }, Cmd.none )
 
     else
         ( model, Cmd.none )

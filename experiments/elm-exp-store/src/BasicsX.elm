@@ -26,7 +26,7 @@ module BasicsX exposing
     , optionalOr
     , propEq
     , replaceHead
-    , safeModMy
+    , safeModBy
     , swap
     , ter
     , tsDecoder
@@ -228,7 +228,7 @@ isWhitespaceOrEmptyString =
     String.trim >> String.isEmpty
 
 
-safeModMy total num =
+safeModBy total num =
     if total == 0 then
         0
 

@@ -212,7 +212,7 @@ cycleSelectedIndexBy num model =
     if total > 0 then
         let
             selectedIndex =
-                safeModMy total (model.selectedIndex + num)
+                safeModBy total (model.selectedIndex + num)
 
             focusCmd =
                 Array.fromList active
