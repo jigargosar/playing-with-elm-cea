@@ -191,6 +191,21 @@ getComputedSelectedIndex model =
     min (total - 1) model.selectedIndex
 
 
+cycleSelectedIndexBy num model =
+    let
+        ( active, completed ) =
+            getSelectedContextTodoList model
+                |> List.partition TodoStore.isNotDone
+
+        total =
+            List.length active
+
+        selectedIndex =
+            safeModMy total (model.selectedIndex + num)
+    in
+    ( { model | selectedIndex = selectedIndex }, Cmd.none )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -202,32 +217,10 @@ update message model =
                 Layer.NoLayer ->
                     case ke of
                         ( [], "ArrowDown" ) ->
-                            let
-                                ( active, completed ) =
-                                    getSelectedContextTodoList model
-                                        |> List.partition TodoStore.isNotDone
-
-                                total =
-                                    List.length active
-
-                                selectedIndex =
-                                    safeModMy total (model.selectedIndex + 1)
-                            in
-                            ( { model | selectedIndex = selectedIndex }, Cmd.none )
+                            cycleSelectedIndexBy 1 model
 
                         ( [], "ArrowUp" ) ->
-                            let
-                                ( active, completed ) =
-                                    getSelectedContextTodoList model
-                                        |> List.partition TodoStore.isNotDone
-
-                                total =
-                                    List.length active
-
-                                selectedIndex =
-                                    safeModMy total (model.selectedIndex - 1)
-                            in
-                            ( { model | selectedIndex = selectedIndex }, Cmd.none )
+                            cycleSelectedIndexBy -1 model
 
                         _ ->
                             ( model, Cmd.none )
