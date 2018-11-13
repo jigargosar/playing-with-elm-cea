@@ -41,10 +41,12 @@ type Msg
     | FocusResult Focus.FocusResult
     | QueryChanged String
     | OnKeyDown HotKey.Event
+    | SelectAction String
 
 
 type OutMsg
     = Cancel
+    | Execute String
 
 
 subscriptions model =
@@ -107,6 +109,9 @@ update message =
                     else
                         Nothing
                 )
+
+        SelectAction action ->
+            withOutMsg (always <| Execute action)
     )
         << pure
 
@@ -165,5 +170,5 @@ viewCmd isSelected cmdName =
           else
             bg "inherit"
         ]
-        [ class "pa2" ]
+        [ class "pa2", onClick <| SelectAction cmdName ]
         [ text cmdName ]
