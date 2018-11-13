@@ -15,14 +15,14 @@ import UpdateReturn exposing (..)
 type Layer
     = TodoDialog TodoDialog.Model
     | ContextDialog ContextDialog.Model
-    | ContextPopup Context ContextPopup.Model
+    | ContextPopup ContextPopup.Model
     | NoLayer
 
 
 eqContextPopupFor cid layer =
     case layer of
-        ContextPopup context contextPopup ->
-            cid == context.id
+        ContextPopup contextPopup ->
+            ContextPopup.isOpenForContextId cid contextPopup
 
         _ ->
             False
@@ -70,8 +70,8 @@ update { contextStore, layer } message =
         ( ContextDialogMsg msg, ContextDialog model ) ->
             updateContextDialog msg model
 
-        ( ContextPopupMsg msg, ContextPopup context model ) ->
-            updateContextPopup msg context model
+        ( ContextPopupMsg msg, ContextPopup model ) ->
+            updateContextPopup msg model
 
         ( OpenCreateTodoDialog cid, NoLayer ) ->
             updateTodoDialog TodoDialog.autoFocus (TodoDialog.initCreate cid)
@@ -88,7 +88,7 @@ update { contextStore, layer } message =
                 |> unwrapMaybe withNoOutMsg (updateContextDialog ContextDialog.autoFocus << ContextDialog.initEdit)
 
         ( OpenContextPopup context, NoLayer ) ->
-            updateContextPopup ContextPopup.open context ContextPopup.init
+            updateContextPopup ContextPopup.open <| ContextPopup.init context
 
         _ ->
             let
@@ -154,20 +154,20 @@ updateContextDialog msg contextDialog_ =
         >> handleOut
 
 
-updateContextPopup msg context contextPopup_ =
+updateContextPopup msg contextPopup_ =
     let
         ( contextPopup, cmd, maybeOutMsg ) =
-            ContextPopup.update context.id msg contextPopup_
+            ContextPopup.update msg contextPopup_
 
         handleOut =
             unwrapMaybe
                 withNoOutMsg
                 (\out ->
                     (case out of
-                        ContextPopup.ActionOut ContextPopup.Rename ->
+                        ContextPopup.ActionOut context ContextPopup.Rename ->
                             updateContextDialog ContextDialog.autoFocus <| ContextDialog.initEdit context
 
-                        ContextPopup.ActionOut ContextPopup.ToggleArchive ->
+                        ContextPopup.ActionOut context ContextPopup.ToggleArchive ->
                             withOutMsg (ContextStoreMsg <| ContextStore.toggleArchived context.id)
 
                         ContextPopup.ClosedOut ->
@@ -177,7 +177,7 @@ updateContextPopup msg context contextPopup_ =
                 )
                 maybeOutMsg
     in
-    mapModel (setLayer <| ContextPopup context contextPopup)
+    mapModel (setLayer <| ContextPopup contextPopup)
         >> addTaggedCmd ContextPopupMsg cmd
         >> handleOut
 
@@ -185,8 +185,8 @@ updateContextPopup msg context contextPopup_ =
 viewLayer : { x | layer : Layer, contextStore : ContextStore } -> Html Msg
 viewLayer { layer, contextStore } =
     case layer of
-        ContextPopup context contextPopup ->
-            ContextPopup.view context contextPopup |> Html.map ContextPopupMsg
+        ContextPopup contextPopup ->
+            ContextPopup.view contextPopup |> Html.map ContextPopupMsg
 
         TodoDialog dialogModel ->
             TodoDialog.view contextStore dialogModel |> Html.map TodoDialogMsg

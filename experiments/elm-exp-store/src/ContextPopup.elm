@@ -5,6 +5,7 @@ module ContextPopup exposing
     , OutMsg(..)
     , getRefId
     , init
+    , isOpenForContextId
     , open
     , update
     , view
@@ -30,13 +31,15 @@ import UpdateReturn exposing (..)
 type alias Model =
     { refEle : Maybe Element
     , popperEle : Maybe Element
+    , context : Context
     }
 
 
-init : Model
-init =
+init : Context -> Model
+init context =
     { refEle = Nothing
     , popperEle = Nothing
+    , context = context
     }
 
 
@@ -63,20 +66,28 @@ type alias Config msg =
     }
 
 
-getPopperDomId uid =
-    "context-popup-" ++ uid
+isOpenForContextId cid =
+    getContextId >> eqs cid
+
+
+getContextId =
+    .context >> .id
+
+
+getPopperDomId model =
+    "context-popup-" ++ getContextId model
 
 
 getBackdropDomId =
     getPopperDomId >> (++) "-backdrop"
 
 
-getRefId uid =
-    "context-popup-ref" ++ uid
+getRefId model =
+    "context-popup-ref" ++ getContextId model
 
 
-getAutoFocusDomId uid =
-    getChildDomId (getPopperDomId uid) 0
+getAutoFocusDomId model =
+    getChildDomId (getPopperDomId model) 0
 
 
 type alias ElementResult =
@@ -90,12 +101,12 @@ attemptGetElement resultToMsg domId =
 
 
 type OutMsg
-    = ActionOut Action
+    = ActionOut Context Action
     | ClosedOut
 
 
-update : String -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
-update uniqueId message =
+update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
+update message =
     (case message of
         FocusResult r ->
             addCmd (Log.focusResult "ContextPopup.elm" r)
@@ -107,8 +118,8 @@ update uniqueId message =
 
         RefElementResult (Ok element) ->
             mapModel (\model -> { model | refEle = Just element })
-                >> addCmd (getAutoFocusDomId uniqueId |> Focus.attempt FocusResult)
-                >> addCmd (attemptGetElement PopperElementResult (getPopperDomId uniqueId))
+                >> addEffect (getAutoFocusDomId >> Focus.attempt FocusResult)
+                >> addEffect (attemptGetElement PopperElementResult << getPopperDomId)
                 >> withNoOutMsg
 
         PopperElementResult (Err _) ->
@@ -117,22 +128,25 @@ update uniqueId message =
 
         PopperElementResult (Ok element) ->
             mapModel (\model -> { model | popperEle = Just element })
-                >> addCmd (getAutoFocusDomId uniqueId |> Focus.attempt FocusResult)
+                >> addEffect (getAutoFocusDomId >> Focus.attempt FocusResult)
                 >> withNoOutMsg
 
         BackdropClicked targetId ->
-            if targetId == getBackdropDomId uniqueId then
-                withOutMsg (\_ -> ClosedOut)
+            withMaybeOutMsg
+                (\model ->
+                    if targetId == getBackdropDomId model then
+                        Just ClosedOut
 
-            else
-                withNoOutMsg
+                    else
+                        Nothing
+                )
 
         ActionClicked action ->
-            withOutMsg (\_ -> ActionOut action)
+            withOutMsg (\{ context } -> ActionOut context action)
 
         Open ->
             mapModel (\model -> { model | refEle = Nothing, popperEle = Nothing })
-                >> addCmd (attemptGetElement RefElementResult (getRefId uniqueId))
+                >> addEffect (attemptGetElement RefElementResult << getRefId)
                 >> withNoOutMsg
     )
         << pure
@@ -177,24 +191,24 @@ childContent idx context popperDomId child =
     ]
 
 
-view : Context -> Model -> Html Msg
-view context model =
+view : Model -> Html Msg
+view model =
     case model.refEle of
         Just element ->
-            viewPopup context element model
+            viewPopup element model
 
         _ ->
             noHtml
 
 
-viewPopup : Context -> Element -> Model -> Html Msg
-viewPopup context ref model =
+viewPopup : Element -> Model -> Html Msg
+viewPopup ref model =
     let
-        uniqueId =
-            context.id
+        context =
+            model.context
 
         popperDomId =
-            getPopperDomId uniqueId
+            getPopperDomId model
 
         viewChild idx child =
             div
@@ -236,7 +250,7 @@ viewPopup context ref model =
                 (List.indexedMap viewChild actions)
 
         backdropAttrs =
-            [ id <| getBackdropDomId uniqueId, onClickTargetId BackdropClicked ]
+            [ id <| getBackdropDomId model, onClickTargetId BackdropClicked ]
     in
     --    viewModalContent
     UI.backdrop backdropAttrs [ viewModalContent ]
