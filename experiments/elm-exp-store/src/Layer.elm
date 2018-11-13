@@ -19,10 +19,10 @@ type Layer
     | NoLayer
 
 
-eqContextPopupFor cid layer =
+eqContextPopupFor contextId layer =
     case layer of
         ContextPopup contextPopup ->
-            ContextPopup.isOpenForContextId cid contextPopup
+            ContextPopup.isOpenForContextId contextId contextPopup
 
         _ ->
             False
@@ -66,9 +66,15 @@ logInvalidLayer =
         >> withNoOutMsg
 
 
-withContextFromCid fn cid contextStore =
+withContextFromCid fn contextId contextStore =
     contextStore
-        |> ContextStore.get cid
+        |> ContextStore.get contextId
+        |> unwrapMaybe withNoOutMsg fn
+
+
+withTodoFromId fn tid contextStore =
+    contextStore
+        |> TodoStore.get tid
         |> unwrapMaybe withNoOutMsg fn
 
 
@@ -99,10 +105,10 @@ update { contextStore, todoStore } message layer =
                 _ ->
                     logInvalidLayer
 
-        OpenCreateTodoDialog cid ->
+        OpenCreateTodoDialog contextId ->
             case layer of
                 NoLayer ->
-                    updateTodoDialog TodoDialog.autoFocus (TodoDialog.initCreate cid)
+                    updateTodoDialog TodoDialog.autoFocus (TodoDialog.initCreate contextId)
 
                 _ ->
                     logInvalidLayer
@@ -110,9 +116,10 @@ update { contextStore, todoStore } message layer =
         OpenEditTodoDialog todoId ->
             case layer of
                 NoLayer ->
-                    TodoStore.get todoId todoStore
-                        |> unwrapMaybe withNoOutMsg
-                            (updateTodoDialog TodoDialog.autoFocus << TodoDialog.initEdit)
+                    withTodoFromId
+                        (updateTodoDialog TodoDialog.autoFocus << TodoDialog.initEdit)
+                        todoId
+                        todoStore
 
                 _ ->
                     logInvalidLayer
@@ -125,23 +132,23 @@ update { contextStore, todoStore } message layer =
                 _ ->
                     logInvalidLayer
 
-        OpenEditContextDialog cid ->
+        OpenEditContextDialog contextId ->
             case layer of
                 NoLayer ->
                     withContextFromCid
                         (updateContextDialog ContextDialog.autoFocus << ContextDialog.initEdit)
-                        cid
+                        contextId
                         contextStore
 
                 _ ->
                     logInvalidLayer
 
-        OpenContextPopup cid ->
+        OpenContextPopup contextId ->
             case layer of
                 NoLayer ->
                     withContextFromCid
                         (updateContextPopup ContextPopup.open << ContextPopup.init)
-                        cid
+                        contextId
                         contextStore
 
                 _ ->
