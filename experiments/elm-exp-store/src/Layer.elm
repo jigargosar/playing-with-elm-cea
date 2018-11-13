@@ -36,7 +36,7 @@ type Msg
     | OpenEditTodoDialog Todo
     | OpenCreateContextDialog
     | OpenEditContextDialog ContextId
-    | OpenContextPopup Context
+    | OpenContextPopup ContextId
 
 
 type OutMsg
@@ -87,8 +87,11 @@ update { contextStore, layer } message =
                 |> ContextStore.get cid
                 |> unwrapMaybe withNoOutMsg (updateContextDialog ContextDialog.autoFocus << ContextDialog.initEdit)
 
-        ( OpenContextPopup context, NoLayer ) ->
-            updateContextPopup ContextPopup.open <| ContextPopup.init context
+        ( OpenContextPopup cid, NoLayer ) ->
+            contextStore
+                |> ContextStore.get cid
+                |> unwrapMaybe withNoOutMsg
+                    (updateContextPopup ContextPopup.open << ContextPopup.init)
 
         _ ->
             let

@@ -276,11 +276,7 @@ update message model =
             updateLayer (Layer.OpenEditContextDialog cid) model
 
         OpenContextPopup cid ->
-            ContextStore.get cid model.contextStore
-                |> unwrapMaybe (pure model)
-                    (\context ->
-                        updateLayer (Layer.OpenContextPopup context) model
-                    )
+            updateLayer (Layer.OpenContextPopup cid) model
 
         LayerMsg msg ->
             updateLayer msg model
