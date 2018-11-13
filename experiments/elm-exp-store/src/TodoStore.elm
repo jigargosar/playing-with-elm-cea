@@ -6,6 +6,7 @@ module TodoStore exposing
     , TodoStore
     , addNew
     , delete
+    , get
     , list
     , load
     , markDone
@@ -207,3 +208,8 @@ andThenUpdate msg =
 
 list =
     .todoLookup >> Dict.values
+
+
+get : TodoId -> TodoStore -> Maybe Todo
+get id =
+    .todoLookup >> Dict.get id

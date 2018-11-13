@@ -7,7 +7,7 @@ import ContextStore exposing (Context, ContextId, ContextStore)
 import Html.Styled as Html exposing (Html)
 import Log
 import TodoDialog
-import TodoStore exposing (Todo)
+import TodoStore exposing (Todo, TodoId, TodoStore)
 import UI exposing (noHtml)
 import UpdateReturn exposing (..)
 
@@ -33,7 +33,7 @@ type Msg
     | ContextDialogMsg ContextDialog.Msg
     | ContextPopupMsg ContextPopup.Msg
     | OpenCreateTodoDialog ContextId
-    | OpenEditTodoDialog Todo
+    | OpenEditTodoDialog TodoId
     | OpenCreateContextDialog
     | OpenEditContextDialog ContextId
     | OpenContextPopup ContextId
@@ -61,8 +61,8 @@ setLayer layer model =
     layer
 
 
-update : { x | contextStore : ContextStore, layer : Layer } -> Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
-update { contextStore, layer } message =
+update : { x | contextStore : ContextStore, layer : Layer, todoStore : TodoStore } -> Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
+update { contextStore, layer, todoStore } message =
     (case ( message, layer ) of
         ( TodoDialogMsg msg, TodoDialog model ) ->
             updateTodoDialog msg model
@@ -76,8 +76,10 @@ update { contextStore, layer } message =
         ( OpenCreateTodoDialog cid, NoLayer ) ->
             updateTodoDialog TodoDialog.autoFocus (TodoDialog.initCreate cid)
 
-        ( OpenEditTodoDialog todo, NoLayer ) ->
-            updateTodoDialog TodoDialog.autoFocus (TodoDialog.initEdit todo)
+        ( OpenEditTodoDialog todoId, NoLayer ) ->
+            TodoStore.get todoId todoStore
+                |> unwrapMaybe withNoOutMsg
+                    (updateTodoDialog TodoDialog.autoFocus << TodoDialog.initEdit)
 
         ( OpenCreateContextDialog, NoLayer ) ->
             updateContextDialog ContextDialog.autoFocus ContextDialog.initCreate

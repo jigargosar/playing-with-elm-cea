@@ -219,7 +219,7 @@ type Msg
     | ToggleShowArchivedContexts
     | ToggleCompletedTodos
     | OpenCreateTodoDialog
-    | OpenEditTodoDialog Todo
+    | OpenEditTodoDialog TodoId
     | OpenCreateContextDialog
     | OpenEditContextDialog ContextId
     | OpenContextPopup ContextId
@@ -284,8 +284,8 @@ update message model =
         OpenCreateTodoDialog ->
             updateLayer (Layer.OpenCreateTodoDialog <| getSelectedContextId model) model
 
-        OpenEditTodoDialog todo ->
-            updateLayer (Layer.OpenEditTodoDialog todo) model
+        OpenEditTodoDialog todoId ->
+            updateLayer (Layer.OpenEditTodoDialog todoId) model
 
         OpenCreateContextDialog ->
             updateLayer Layer.OpenCreateContextDialog model
@@ -531,10 +531,10 @@ createTodoViewModel contextStore todo =
         (defaultEmptyStringTo "<empty>" todo.content)
         todo.done
         (ContextStore.getNameOrDefaultById todo.contextId contextStore)
-        (OpenEditTodoDialog todo)
+        (OpenEditTodoDialog todo.id)
         (MsgTodoStore <| TodoStore.markDone todo.id)
         (MsgTodoStore <| TodoStore.unmarkDone todo.id)
-        (OpenEditTodoDialog todo)
+        (OpenEditTodoDialog todo.id)
 
 
 viewKeyedTodo : TodoViewModel msg -> ( String, Html msg )
