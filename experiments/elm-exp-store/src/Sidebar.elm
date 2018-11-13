@@ -41,7 +41,7 @@ view config =
         [ class "min-h-100 bg-black-05" ]
         [ viewInboxItem config
         , viewContextsHeader addContextClicked
-        , viewContextItems config active
+        , viewActive config active
         , viewArchived config archived
         ]
 
@@ -67,7 +67,7 @@ viewInboxItem config =
         ]
 
 
-viewContextItems config =
+viewActive config =
     let
         viewContextItem { name, id } =
             listItem
@@ -97,7 +97,7 @@ viewArchived config archived =
     else
         div []
             [ viewArchiveBtn showArchived toggleShowArchived
-            , HtmlX.when (always showArchived) (viewContextItems config) archived
+            , HtmlX.when (always showArchived) (viewActive config) archived
             ]
 
 
