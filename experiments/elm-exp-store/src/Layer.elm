@@ -168,11 +168,8 @@ updateLayer updateFn layerTagger msgTagger outFn msg layerModel_ =
         >> unwrapMaybe withNoOutMsg outFn maybeOutMsg
 
 
-updateTodoDialog msg todoDialog_ =
+updateTodoDialog =
     let
-        ( todoDialog, cmd, maybeOutMsg ) =
-            TodoDialog.update msg todoDialog_
-
         handleOut out =
             (case out of
                 TodoDialog.Submit TodoDialog.Create content contextId ->
@@ -186,9 +183,10 @@ updateTodoDialog msg todoDialog_ =
             )
                 << mapModel (\_ -> NoLayer)
     in
-    mapModel (\_ -> TodoDialog todoDialog)
-        >> addTaggedCmd TodoDialogMsg cmd
-        >> unwrapMaybe withNoOutMsg handleOut maybeOutMsg
+    updateLayer TodoDialog.update
+        TodoDialog
+        TodoDialogMsg
+        handleOut
 
 
 updateContextDialog msg contextDialog_ =
