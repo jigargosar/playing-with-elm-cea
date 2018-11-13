@@ -58,10 +58,7 @@ view config =
 
 viewInboxItem config inbox =
     let
-        cid =
-            ContextStore.defaultId
-
-        viewContextItem { navigateToTodoList, activeTodoCount } =
+        viewContextItem { navigateToTodoList, activeTodoCount, cid } =
             listItem
                 { styles = []
                 , isSelected = config.isSelected cid
