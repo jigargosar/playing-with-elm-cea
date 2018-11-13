@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import AppBar
+import Array
 import BasicsX exposing (..)
 import Browser
 import Browser.Dom
@@ -12,6 +13,7 @@ import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
 import Dict exposing (Dict)
 import FeatherIcons as Icon
+import Focus
 import HotKey
 import Html.Styled as Html exposing (Attribute, Html, button, div, fromUnstyled, span, styled, text)
 import Html.Styled.Attributes exposing (class, classList, css, id, style)
@@ -158,6 +160,7 @@ logCmd =
 
 type Msg
     = NoOp
+    | FocusResult Focus.FocusResult
     | NavigateToTodoListWithContextId ContextId
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
@@ -190,6 +193,10 @@ getComputedSelectedIndex model =
     min (total - 1) model.selectedIndex
 
 
+getTodoDomId todo =
+    "todo-list-item" ++ todo.id
+
+
 cycleSelectedIndexBy num model =
     let
         ( active, completed ) =
@@ -198,11 +205,22 @@ cycleSelectedIndexBy num model =
 
         total =
             List.length active
-
-        selectedIndex =
-            safeModMy total (model.selectedIndex + num)
     in
-    ( { model | selectedIndex = selectedIndex }, Cmd.none )
+    if total > 0 then
+        let
+            selectedIndex =
+                safeModMy total (model.selectedIndex + num)
+
+            focusCmd =
+                Array.fromList active
+                    |> Array.get selectedIndex
+                    |> Maybe.map getTodoDomId
+                    |> Focus.attemptMaybe FocusResult
+        in
+        ( { model | selectedIndex = selectedIndex }, focusCmd )
+
+    else
+        ( model, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -210,6 +228,11 @@ update message model =
     case message of
         NoOp ->
             pure model
+
+        FocusResult r ->
+            model
+                |> pure
+                >> addCmd (Log.focusResult "Main.elm" r)
 
         OnKeyDown ke ->
             case model.layer of
