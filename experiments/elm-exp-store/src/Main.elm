@@ -424,13 +424,13 @@ createSideBarConfig model =
         inbox =
             createContextConfig ContextStore.defaultId ContextStore.defaultName False
     in
-    { inbox = inbox
-    , contexts = contexts
+    { contexts = contexts
     , addContextClicked = OpenCreateContextDialog
     , showArchived = model.showArchivedContexts
     , toggleShowArchived = ToggleShowArchivedContexts
     , isSelected = \id -> isCurrentPageContextTodoListWithContextId id model
     , navigateToTodoList = NavigateToTodoListWithContextId
+    , activeTodoCount = \id -> getActiveTodoListCountForContextId id model
     }
 
 

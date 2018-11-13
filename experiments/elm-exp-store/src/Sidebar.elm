@@ -28,20 +28,20 @@ type alias ContextConfig msg =
 
 
 type alias Config msg =
-    { inbox : ContextConfig msg
-    , contexts : List (ContextConfig msg)
+    { contexts : List (ContextConfig msg)
     , addContextClicked : msg
     , showArchived : Bool
     , toggleShowArchived : msg
     , isSelected : ContextId -> Bool
     , navigateToTodoList : ContextId -> msg
+    , activeTodoCount : ContextId -> Int
     }
 
 
 view : Config msg -> Html msg
 view config =
     let
-        { inbox, contexts, addContextClicked } =
+        { contexts, addContextClicked } =
             config
 
         ( archived, active ) =
@@ -49,29 +49,29 @@ view config =
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
-        [ viewInboxItem config inbox
+        [ viewInboxItem config
         , viewContextsHeader addContextClicked
         , viewContextItems config active
         , viewArchived config archived
         ]
 
 
-viewInboxItem config inbox =
+viewInboxItem config =
     let
-        viewContextItem { activeTodoCount, cid } =
-            listItem
-                { styles = []
-                , isSelected = config.isSelected cid
-                , domId = ContextPopup.getRefIdFromContextId ContextStore.defaultId
-                }
-                [ viewContextName
-                    { name = ContextStore.defaultName
-                    , onClickMsg = config.navigateToTodoList cid
-                    , count = activeTodoCount
-                    }
-                ]
+        cid =
+            ContextStore.defaultId
     in
-    viewKeyed viewContextItem [ inbox ]
+    listItem
+        { styles = []
+        , isSelected = config.isSelected cid
+        , domId = ContextPopup.getRefIdFromContextId ContextStore.defaultId
+        }
+        [ viewContextName
+            { name = ContextStore.defaultName
+            , onClickMsg = config.navigateToTodoList cid
+            , count = config.activeTodoCount cid
+            }
+        ]
 
 
 viewContextItems config =
