@@ -357,22 +357,20 @@ view model =
         , div [ class " flex-auto flex flex-row justify-center" ]
             [ sDiv [ maxWidth (px 940) ]
                 [ class "flex-auto flex flex-row" ]
-                [ HtmlX.when (not << .showTempSidebar) permanentSidebar model
+                [ HtmlX.when (not << .showTempSidebar) viewPermanentSidebar model
                 , div [ class "bl br b--black-05 flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
                     [ viewTodoListHeader model
                     , viewTodoList model
                     ]
                 ]
             ]
-
-        --        , QuickAction.view
         , HtmlX.when .showTempSidebar viewDrawerSidebar model
         , viewLayer model
         ]
 
 
-permanentSidebar : Model -> Html Msg
-permanentSidebar model =
+viewPermanentSidebar : Model -> Html Msg
+viewPermanentSidebar model =
     sDiv [ minWidth (px 180) ]
         [ class "flex-shrink-0  overflow-y-scroll w-30-ns dn db-ns " ]
         [ viewSidebar model
