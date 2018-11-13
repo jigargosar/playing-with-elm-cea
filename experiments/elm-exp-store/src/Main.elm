@@ -302,31 +302,7 @@ update message model =
             pure { model | showTempSidebar = False }
 
         LayerMsg msg ->
-            let
-                ( layer, cmd, outMsg ) =
-                    Layer.update msg model.layer
-
-                handleOut =
-                    case outMsg of
-                        Layer.TodoDialogOutMsg (TodoDialog.Submit TodoDialog.Create content contextId) ->
-                            mapModel (setLayer Layer.NoLayer)
-                                >> andThenUpdate
-                                    (MsgTodoStore <|
-                                        TodoStore.addNew content contextId
-                                    )
-
-                        Layer.TodoDialogOutMsg (TodoDialog.Submit (TodoDialog.Edit todo) content contextId) ->
-                            mapModel (setLayer Layer.NoLayer)
-                                >> andThenUpdate
-                                    (MsgTodoStore <|
-                                        TodoStore.setContentAndContextId todo.id content contextId
-                                    )
-
-                        _ ->
-                            Debug.todo "Handle All Out Messages"
-            in
-            pure { model | layer = layer }
-                |> handleOut
+            updateLayer msg model
 
         OpenCreateTodoDialog ->
             pure model
@@ -384,6 +360,34 @@ attemptToOpenLayer fn model =
 
         _ ->
             ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
+
+
+updateLayer msg model =
+    let
+        ( layer, cmd, outMsg ) =
+            Layer.update msg model.layer
+
+        handleOut =
+            case outMsg of
+                Layer.TodoDialogOutMsg (TodoDialog.Submit TodoDialog.Create content contextId) ->
+                    mapModel (setLayer Layer.NoLayer)
+                        >> andThenUpdate
+                            (MsgTodoStore <|
+                                TodoStore.addNew content contextId
+                            )
+
+                Layer.TodoDialogOutMsg (TodoDialog.Submit (TodoDialog.Edit todo) content contextId) ->
+                    mapModel (setLayer Layer.NoLayer)
+                        >> andThenUpdate
+                            (MsgTodoStore <|
+                                TodoStore.setContentAndContextId todo.id content contextId
+                            )
+
+                _ ->
+                    Debug.todo "Handle All Out Messages"
+    in
+    pure { model | layer = layer }
+        |> handleOut
 
 
 updateContextDialog msg contextDialog_ =
