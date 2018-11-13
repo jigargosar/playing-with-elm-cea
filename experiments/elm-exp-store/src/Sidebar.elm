@@ -22,7 +22,6 @@ type alias ContextConfig msg =
     , isArchived : Bool
     , navigateToTodoList : msg
     , activeTodoCount : Int
-    , isSelected : Bool
     , moreClicked : msg
     , moreOpen : Bool
     }
