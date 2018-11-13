@@ -66,6 +66,12 @@ logInvalidLayer =
         >> withNoOutMsg
 
 
+withContextFromCid fn cid contextStore =
+    contextStore
+        |> ContextStore.get cid
+        |> unwrapMaybe withNoOutMsg fn
+
+
 update : { x | contextStore : ContextStore, todoStore : TodoStore } -> Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
 update { contextStore, todoStore } message layer =
     (case message of
@@ -122,9 +128,10 @@ update { contextStore, todoStore } message layer =
         OpenEditContextDialog cid ->
             case layer of
                 NoLayer ->
-                    contextStore
-                        |> ContextStore.get cid
-                        |> unwrapMaybe withNoOutMsg (updateContextDialog ContextDialog.autoFocus << ContextDialog.initEdit)
+                    withContextFromCid
+                        (updateContextDialog ContextDialog.autoFocus << ContextDialog.initEdit)
+                        cid
+                        contextStore
 
                 _ ->
                     logInvalidLayer
