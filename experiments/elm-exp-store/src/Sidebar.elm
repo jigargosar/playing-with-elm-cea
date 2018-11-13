@@ -51,11 +51,7 @@ view config =
         [ viewInboxItem inbox
         , viewContextsHeader addContextClicked
         , viewContextItems active
-        , if archived |> List.isEmpty then
-            noHtml
-
-          else
-            viewArchived config archived
+        , viewArchived config archived
         ]
 
 
@@ -68,10 +64,14 @@ viewContextItems =
 
 
 viewArchived { showArchived, toggleShowArchived } archived =
-    div []
-        [ viewArchiveBtn showArchived toggleShowArchived
-        , HtmlX.when (always showArchived) viewContextItems archived
-        ]
+    if archived |> List.isEmpty then
+        noHtml
+
+    else
+        div []
+            [ viewArchiveBtn showArchived toggleShowArchived
+            , HtmlX.when (always showArchived) viewContextItems archived
+            ]
 
 
 viewArchiveBtn showArchived toggleShowArchived =
