@@ -12,11 +12,12 @@ import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
 import Dict exposing (Dict)
+import DomX exposing (DomId)
 import FeatherIcons as Icon
 import Focus
 import HotKey
 import Html.Styled as Html exposing (Attribute, Html, button, div, fromUnstyled, span, styled, text)
-import Html.Styled.Attributes exposing (class, classList, css, id, style)
+import Html.Styled.Attributes exposing (class, classList, css, id, style, tabindex)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as HKeyed exposing (node)
 import HtmlX
@@ -479,6 +480,7 @@ type alias TodoViewModel msg =
     , unmarkDone : msg
     , contextClicked : msg
     , isSelected : Bool
+    , domId : DomId
     }
 
 
@@ -494,10 +496,11 @@ createTodoViewModel model idx todo =
         (MsgTodoStore <| TodoStore.unmarkDone todo.id)
         (OpenEditTodoDialog todo.id)
         (idx == getComputedSelectedIndex model)
+        (getTodoDomId todo)
 
 
 viewKeyedTodo : TodoViewModel msg -> ( String, Html msg )
-viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contextName, contextClicked, isSelected } =
+viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contextName, contextClicked, isSelected, domId } =
     let
         doneIconBtn =
             if done then
@@ -515,7 +518,7 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
           else
             bg "transparent"
         ]
-        [ class "pa3 bb b--light-gray" ]
+        [ id domId, class "pa3 bb b--light-gray", tabindex -1 ]
         [ sDiv [ hs, rowCY ] [] [ doneIconBtn ]
         , sDiv [ hs ]
             [ class "flex-auto flex flex-column " ]
