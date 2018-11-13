@@ -214,7 +214,6 @@ type Msg
     | NavigateToTodoListWithContextId ContextId
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
-    | OnContextPopupMsg ContextPopup.Msg
     | OpenEditContextDialog ContextId
     | OpenContextPopup ContextId
     | MenuClicked
@@ -274,15 +273,7 @@ update message model =
                 model
 
         OpenEditContextDialog cid ->
-            pure model
-                |> (model.contextStore
-                        |> ContextStore.get cid
-                        |> unwrapMaybe identity
-                            (\context ->
-                                andThen <|
-                                    updateLayer (Layer.OpenEditContextDialog context)
-                            )
-                   )
+            updateLayer (Layer.OpenEditContextDialog cid) model
 
         OpenContextPopup cid ->
             ContextStore.get cid model.contextStore
@@ -309,14 +300,6 @@ update message model =
         OpenCreateContextDialog ->
             updateLayer Layer.OpenCreateContextDialog model
 
-        OnContextPopupMsg msg ->
-            case model.layer of
-                Layer.ContextPopup context contextPopup ->
-                    updateContextPopup msg context contextPopup model
-
-                _ ->
-                    ( model, logInvalidLayerMsgCmd )
-
         ToggleShowArchivedContexts ->
             pure { model | showArchivedContexts = not model.showArchivedContexts }
 
@@ -336,7 +319,7 @@ attemptToOpenLayer fn model =
 updateLayer msg model =
     let
         ( layer, cmd, outMsg ) =
-            Layer.update msg model.layer
+            Layer.update model msg model.layer
 
         handleOut =
             case outMsg of
@@ -389,36 +372,6 @@ updateLayer msg model =
     pure { model | layer = layer }
         |> handleOut
         |> addTaggedCmd LayerMsg cmd
-
-
-updateContextPopup msg context contextPopup_ =
-    let
-        ( contextPopup, cmd, maybeOutMsg ) =
-            ContextPopup.update context.id msg contextPopup_
-
-        handleOut =
-            case maybeOutMsg of
-                Just (ContextPopup.ActionOut action) ->
-                    mapModel (\model -> { model | layer = Layer.NoLayer })
-                        >> andThenUpdate
-                            (case action of
-                                ContextPopup.Rename ->
-                                    OpenEditContextDialog context.id
-
-                                ContextPopup.ToggleArchive ->
-                                    MsgContextStore <| ContextStore.toggleArchived context.id
-                            )
-
-                Just ContextPopup.ClosedOut ->
-                    mapModel (\model -> { model | layer = Layer.NoLayer })
-
-                Nothing ->
-                    identity
-    in
-    pure
-        >> mapModel (setLayer <| Layer.ContextPopup context contextPopup)
-        >> handleOut
-        >> addTaggedCmd OnContextPopupMsg cmd
 
 
 subscriptions : Model -> Sub Msg
@@ -486,18 +439,7 @@ viewTempSidebar model =
 
 
 viewLayer model =
-    case model.layer of
-        Layer.ContextPopup context contextPopup ->
-            ContextPopup.view context contextPopup |> Html.map OnContextPopupMsg
-
-        Layer.TodoDialog dialogModel ->
-            TodoDialog.view model.contextStore dialogModel |> Html.map Layer.TodoDialogMsg |> Html.map LayerMsg
-
-        Layer.ContextDialog dialogModel ->
-            ContextDialog.view dialogModel |> Html.map Layer.ContextDialogMsg |> Html.map LayerMsg
-
-        Layer.NoLayer ->
-            noHtml
+    Layer.viewLayer model |> Html.map LayerMsg
 
 
 createSideBarConfig : Model -> Sidebar.Config Msg

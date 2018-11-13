@@ -1,12 +1,14 @@
-module Layer exposing (Layer(..), Msg(..), OutMsg(..), eqContextPopupFor, update)
+module Layer exposing (Layer(..), Msg(..), OutMsg(..), eqContextPopupFor, update, viewLayer)
 
 import BasicsX exposing (unwrapMaybe)
 import ContextDialog
 import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextStore)
+import Html.Styled as Html exposing (Html)
 import Log
 import TodoDialog
 import TodoStore exposing (Todo)
+import UI exposing (noHtml)
 import UpdateReturn exposing (..)
 
 
@@ -33,7 +35,7 @@ type Msg
     | OpenCreateTodoDialog ContextId
     | OpenEditTodoDialog Todo
     | OpenCreateContextDialog
-    | OpenEditContextDialog Context
+    | OpenEditContextDialog ContextId
     | OpenContextPopup Context
 
 
@@ -60,9 +62,9 @@ setLayer layer model =
     layer
 
 
-update : Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
-update message layer_ =
-    (case ( message, layer_ ) of
+update : { x | contextStore : ContextStore, layer : Layer } -> Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
+update { contextStore, layer } message =
+    (case ( message, layer ) of
         ( TodoDialogMsg msg, TodoDialog model ) ->
             updateTodoDialog msg model
 
@@ -81,8 +83,10 @@ update message layer_ =
         ( OpenCreateContextDialog, NoLayer ) ->
             updateContextDialog ContextDialog.autoFocus ContextDialog.initCreate
 
-        ( OpenEditContextDialog context, NoLayer ) ->
-            updateContextDialog ContextDialog.autoFocus (ContextDialog.initEdit context)
+        ( OpenEditContextDialog cid, NoLayer ) ->
+            contextStore
+                |> ContextStore.get cid
+                |> unwrapMaybe withNoOutMsg (updateContextDialog ContextDialog.autoFocus << ContextDialog.initEdit)
 
         ( OpenContextPopup context, NoLayer ) ->
             updateContextPopup ContextPopup.open context ContextPopup.init
@@ -91,8 +95,7 @@ update message layer_ =
             addCmd (logCmd [ "invalid msg,layer combination" ])
                 >> withNoOutMsg
     )
-    <|
-        pure layer_
+        << pure
 
 
 updateTodoDialog msg todoDialog_ =
@@ -141,3 +144,19 @@ updateContextPopup msg context contextPopup_ =
     mapModel (setLayer <| ContextPopup context contextPopup)
         >> addTaggedCmd ContextPopupMsg cmd
         >> handleOut
+
+
+viewLayer : { x | layer : Layer, contextStore : ContextStore } -> Html Msg
+viewLayer { layer, contextStore } =
+    case layer of
+        ContextPopup context contextPopup ->
+            ContextPopup.view context contextPopup |> Html.map ContextPopupMsg
+
+        TodoDialog dialogModel ->
+            TodoDialog.view contextStore dialogModel |> Html.map TodoDialogMsg
+
+        ContextDialog dialogModel ->
+            ContextDialog.view dialogModel |> Html.map ContextDialogMsg
+
+        NoLayer ->
+            noHtml
