@@ -107,7 +107,7 @@ updateTodoDialog msg todoDialog_ =
                 (\out ->
                     (case out of
                         TodoDialog.Submit TodoDialog.Create content contextId ->
-                            withOutMsg (TodoStoreMsg << TodoStore.addNew content contextId)
+                            withOutMsg (TodoStoreMsg <| TodoStore.addNew content contextId)
 
                         TodoDialog.Submit (TodoDialog.Edit todo) content contextId ->
                             withOutMsg (TodoStoreMsg <| TodoStore.setContentAndContextId todo.id content contextId)
@@ -133,7 +133,7 @@ updateContextDialog msg contextDialog_ =
                 (\out ->
                     (case out of
                         ContextDialog.Submit ContextDialog.Create name ->
-                            withOutMsg (ContextStoreMsg << ContextStore.addNew name)
+                            withOutMsg (ContextStoreMsg <| ContextStore.addNew name)
 
                         ContextDialog.Submit (ContextDialog.Edit context) name ->
                             withOutMsg (ContextStoreMsg <| ContextStore.setName context.id name)
@@ -158,7 +158,19 @@ updateContextPopup msg context contextPopup_ =
         handleOut =
             unwrapMaybe
                 withNoOutMsg
-                (withOutMsg << ContextPopupOutMsg context)
+                (\out ->
+                    (case out of
+                        ContextPopup.ActionOut ContextPopup.Rename ->
+                            updateContextDialog ContextDialog.autoFocus <| ContextDialog.initEdit context
+
+                        ContextPopup.ActionOut ContextPopup.ToggleArchive ->
+                            withOutMsg (ContextStoreMsg <| ContextStore.toggleArchived context.id)
+
+                        ContextPopup.ClosedOut ->
+                            withNoOutMsg
+                    )
+                        << mapModel (\_ -> NoLayer)
+                )
                 maybeOutMsg
     in
     mapModel (setLayer <| ContextPopup context contextPopup)
