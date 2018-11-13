@@ -1,6 +1,8 @@
 module CmdDialog exposing (Model, Msg(..), OutMsg(..), init, update, view)
 
-import Html.Styled exposing (text)
+import DomX exposing (DomId)
+import Html.Styled exposing (div, text)
+import Html.Styled.Events exposing (onClick)
 import UI exposing (sDiv)
 import UpdateReturn exposing (..)
 
@@ -14,24 +16,43 @@ init =
 
 
 type Msg
-    = NoOp
+    = BackDropClicked DomId
+    | AutoFocus
 
 
 type OutMsg
-    = Out1
+    = Cancel
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
 update message =
     (case message of
+        AutoFocus ->
+            withNoOutMsg
+
         --        FocusResult r ->
         --            addCmd (Log.focusResult "ContextPopup.elm" r)
         --                >> withNoOutMsg
-        NoOp ->
-            withNoOutMsg
+        BackDropClicked targetId ->
+            withMaybeOutMsg
+                (\model ->
+                    if targetId == getBackdropDomId model then
+                        Just Cancel
+
+                    else
+                        Nothing
+                )
     )
         << pure
 
 
+getDomIdPrefix model =
+    "cmd-dialog"
+
+
+getBackdropDomId =
+    getDomIdPrefix >> (++) "-backdrop"
+
+
 view model =
-    sDiv [] [] [ text "foo" ]
+    div [] [ UI.backdrop [ DomX.onClickTargetId BackDropClicked ] [] ]

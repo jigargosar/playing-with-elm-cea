@@ -169,7 +169,7 @@ update { contextStore, todoStore } message layer =
         OpenCmdDialog ->
             case layer of
                 NoLayer ->
-                    updateCmdDialog CmdDialog.NoOp CmdDialog.init
+                    updateCmdDialog CmdDialog.AutoFocus CmdDialog.init
 
                 _ ->
                     logInvalidLayer
