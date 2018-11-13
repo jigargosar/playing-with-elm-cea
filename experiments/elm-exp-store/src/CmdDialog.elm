@@ -14,17 +14,18 @@ import UpdateReturn exposing (..)
 
 
 type alias Model =
-    {}
+    { query : String }
 
 
 init =
-    {}
+    { query = "" }
 
 
 type Msg
     = BackDropClicked DomId
     | AutoFocus
     | FocusResult Focus.FocusResult
+    | QueryChanged String
 
 
 type OutMsg
@@ -35,11 +36,15 @@ update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
 update message =
     (case message of
         AutoFocus ->
-            addEffect (getInputId >> Focus.attempt FocusResult)
+            addEffect (getQueryInputId >> Focus.attempt FocusResult)
                 >> withNoOutMsg
 
         FocusResult r ->
             addCmd (Log.focusResult "CmdDialog.elm" r)
+                >> withNoOutMsg
+
+        QueryChanged query ->
+            mapModel (\model -> { model | query = query })
                 >> withNoOutMsg
 
         BackDropClicked targetId ->
@@ -63,8 +68,8 @@ getBackdropDomId =
     getDomIdPrefix >> (++) "-backdrop"
 
 
-getInputId =
-    getDomIdPrefix >> (++) "-cmd-input"
+getQueryInputId =
+    getDomIdPrefix >> (++) "-query-input"
 
 
 view : Model -> Html Msg
@@ -77,13 +82,13 @@ view model =
                 [ sDiv [ vs, w100, rowCY ]
                     []
                     [ input
-                        [ id <| getInputId model
-                        , placeholder "Task Content"
+                        [ id <| getQueryInputId model
+                        , placeholder "Type Command Name"
                         , class "flex-auto pa3"
-                        , value "model.content"
+                        , value model.query
+                        , onInput QueryChanged
 
-                        --                          , onInput ContentChanged
-                        --                          , HotKey.onKeyDown ContentInputKeyDown
+                        --                                                  , HotKey.onKeyDown ContentInputKeyDown
                         ]
                         []
                     ]
