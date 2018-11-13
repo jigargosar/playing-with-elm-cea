@@ -95,14 +95,23 @@ view model =
                         ]
                         []
                     ]
-                , sDiv [] [] viewCmdList
+                , sDiv [] [] (viewCmdList model)
                 ]
             ]
         ]
 
 
-viewCmdList =
-    List.map viewCmd [ "foo", "bar", "baz" ]
+viewCmdList : Model -> List (Html Msg)
+viewCmdList model =
+    List.filterMap
+        (\name ->
+            if String.contains model.query name then
+                Just <| viewCmd name
+
+            else
+                Nothing
+        )
+        [ "foo", "bar", "baz" ]
 
 
 viewCmd cmdName =
