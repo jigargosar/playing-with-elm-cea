@@ -40,7 +40,7 @@ view config =
     sDiv []
         [ class "min-h-100 bg-black-05" ]
         [ viewInbox config
-        , viewContextsHeader addContextClicked
+        , viewContextsSubHeading addContextClicked
         , viewActive config active
         , viewArchived config archived
         ]
@@ -122,7 +122,7 @@ viewArchiveBtn showArchived toggleShowArchived =
         ]
 
 
-viewContextsHeader addContextClicked =
+viewContextsSubHeading addContextClicked =
     listItem { styles = [], isSelected = False, domId = "contexts-title" }
         [ sDiv [ fa, fwb ] [] [ text "Contexts" ]
         , Btn.icon [ onClick addContextClicked ] [ Icons.plus |> Icons.default ]
