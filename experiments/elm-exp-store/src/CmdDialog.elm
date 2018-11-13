@@ -129,11 +129,7 @@ view model =
 
 viewCmdList : Model -> List (Html Msg)
 viewCmdList model =
-    let
-        si =
-            computeSelectedIndex model
-    in
-    getFilteredCommands model |> List.indexedMap (\idx -> viewCmd (idx == si))
+    getFilteredCommands model |> List.indexedMap (\idx -> viewCmd (idx == computeSelectedIndex model))
 
 
 viewCmd isSelected cmdName =
