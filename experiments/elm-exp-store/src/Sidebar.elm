@@ -121,20 +121,24 @@ viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelect
         , class "hide-child"
         ]
         [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
-        , Btn.sIcon
-            [ fgGray
-            , focus [ opacity (int 1) ]
-            ]
-            [ class "child"
-            , if moreOpen then
-                style "opacity" "1"
-
-              else
-                style "" ""
-            , onClick moreClicked
-            ]
-            [ Icons.moreHDef ]
+        , viewMoreMenuIcon { isOpen = moreOpen, clickMsg = moreClicked }
         ]
+
+
+viewMoreMenuIcon { isOpen, clickMsg } =
+    Btn.sIcon
+        [ fgGray
+        , focus [ opacity (int 1) ]
+        ]
+        [ class "child"
+        , if isOpen then
+            style "opacity" "1"
+
+          else
+            style "" ""
+        , onClick clickMsg
+        ]
+        [ Icons.moreHDef ]
 
 
 viewContextName { name, onClickMsg, count } =
