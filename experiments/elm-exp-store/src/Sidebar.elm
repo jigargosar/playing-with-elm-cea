@@ -55,7 +55,7 @@ view config =
             noHtml
 
           else
-            viewArchivedWithHeader config archived
+            viewArchived config archived
         ]
 
 
@@ -67,7 +67,7 @@ viewContextItems =
     viewKeyed (viewContextItem { styles = [ plRm 1 ] })
 
 
-viewArchivedWithHeader { showArchived, toggleShowArchived } archived =
+viewArchived { showArchived, toggleShowArchived } archived =
     div []
         [ viewArchiveBtn showArchived toggleShowArchived
         , HtmlX.when (always showArchived) viewContextItems archived
