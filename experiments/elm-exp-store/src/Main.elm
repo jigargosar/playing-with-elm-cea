@@ -285,13 +285,7 @@ update message model =
             ContextStore.get cid model.contextStore
                 |> unwrapMaybe (pure model)
                     (\context ->
-                        attemptToOpenLayer
-                            (updateContextPopup
-                                ContextPopup.open
-                                context
-                                ContextPopup.init
-                            )
-                            model
+                        updateLayer (Layer.OpenContextPopup context) model
                     )
 
         MenuClicked ->
