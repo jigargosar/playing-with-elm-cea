@@ -11,6 +11,7 @@ import Html.Styled.Events exposing (onClick, onInput)
 import Json.Decode as D
 import Json.Encode as E
 import Log
+import Simple.Fuzzy
 import Styles exposing (..)
 import UI exposing (..)
 import UpdateReturn exposing (..)
@@ -119,15 +120,9 @@ view model =
 
 viewCmdList : Model -> List (Html Msg)
 viewCmdList model =
-    List.filterMap
-        (\name ->
-            if String.contains model.query name then
-                Just <| viewCmd name
-
-            else
-                Nothing
-        )
-        [ "foo", "bar", "baz" ]
+    [ "foo", "bar", "baz", "Bar Zoo" ]
+        |> Simple.Fuzzy.filter identity model.query
+        |> List.map viewCmd
 
 
 viewCmd cmdName =
