@@ -208,11 +208,8 @@ updateContextDialog =
         handleOut
 
 
-updateContextPopup msg contextPopup_ =
+updateContextPopup =
     let
-        ( contextPopup, cmd, maybeOutMsg ) =
-            ContextPopup.update msg contextPopup_
-
         handleOut out =
             (case out of
                 ContextPopup.ActionOut context ContextPopup.Rename ->
@@ -226,9 +223,10 @@ updateContextPopup msg contextPopup_ =
             )
                 << mapModel (\_ -> NoLayer)
     in
-    mapModel (setLayer <| ContextPopup contextPopup)
-        >> addTaggedCmd ContextPopupMsg cmd
-        >> unwrapMaybe withNoOutMsg handleOut maybeOutMsg
+    updateLayer ContextPopup.update
+        ContextPopup
+        ContextPopupMsg
+        handleOut
 
 
 viewLayer : { x | layer : Layer, contextStore : ContextStore } -> Html Msg
