@@ -1,10 +1,13 @@
 module CmdDialog exposing (Model, Msg(..), OutMsg(..), init, update, view)
 
+import Css exposing (absolute, position)
 import DomX exposing (DomId)
-import Html.Styled exposing (div, text)
-import Html.Styled.Attributes exposing (id)
-import Html.Styled.Events exposing (onClick)
-import UI exposing (sDiv)
+import HotKey
+import Html.Styled exposing (Html, div, input, text)
+import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (onClick, onInput)
+import Styles exposing (..)
+import UI exposing (..)
 import UpdateReturn exposing (..)
 
 
@@ -55,5 +58,30 @@ getBackdropDomId =
     getDomIdPrefix >> (++) "-backdrop"
 
 
+getInputId =
+    getDomIdPrefix >> (++) "-cmd-input"
+
+
+view : Model -> Html Msg
 view model =
-    div [] [ UI.backdrop [ id <| getBackdropDomId model, DomX.onClickTargetId BackDropClicked ] [] ]
+    div []
+        [ UI.backdrop [ id <| getBackdropDomId model, DomX.onClickTargetId BackDropClicked ]
+            [ sDiv []
+                [ class "bg-white br4 shadow-1 pa3 measure w-100"
+                ]
+                [ sDiv [ vs, w100, rowCY ]
+                    []
+                    [ input
+                        [ id <| getInputId model
+                        , placeholder "Task Content"
+                        , class "flex-auto pa3"
+                        , value "model.content"
+
+                        --                          , onInput ContentChanged
+                        --                          , HotKey.onKeyDown ContentInputKeyDown
+                        ]
+                        []
+                    ]
+                ]
+            ]
+        ]
