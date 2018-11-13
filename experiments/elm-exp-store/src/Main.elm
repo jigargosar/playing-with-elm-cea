@@ -215,7 +215,7 @@ type Msg
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
     | OnContextPopupMsg ContextPopup.Msg
-    | StartEditingContext ContextId
+    | OpenEditContextDialog ContextId
     | OpenContextPopup ContextId
     | MenuClicked
     | TempSidebarBackdropClicked
@@ -273,7 +273,7 @@ update message model =
                 msg
                 model
 
-        StartEditingContext cid ->
+        OpenEditContextDialog cid ->
             pure model
                 |> (model.contextStore
                         |> ContextStore.get cid
@@ -375,7 +375,7 @@ updateLayer msg model =
                     mapModel (setLayer Layer.NoLayer)
 
                 Layer.ContextPopupOutMsg context (ContextPopup.ActionOut ContextPopup.Rename) ->
-                    andThenUpdate (StartEditingContext context.id)
+                    andThenUpdate (OpenEditContextDialog context.id)
 
                 Layer.ContextPopupOutMsg context (ContextPopup.ActionOut ContextPopup.ToggleArchive) ->
                     andThenUpdate (MsgContextStore <| ContextStore.toggleArchived context.id)
@@ -403,7 +403,7 @@ updateContextPopup msg context contextPopup_ =
                         >> andThenUpdate
                             (case action of
                                 ContextPopup.Rename ->
-                                    StartEditingContext context.id
+                                    OpenEditContextDialog context.id
 
                                 ContextPopup.ToggleArchive ->
                                     MsgContextStore <| ContextStore.toggleArchived context.id
