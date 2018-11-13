@@ -316,48 +316,18 @@ attemptToOpenLayer fn model =
             ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
 
 
-updateLayer msg model =
+updateLayer message model =
     let
         ( layer, cmd, outMsg ) =
-            Layer.update model msg model.layer
+            Layer.update model message model.layer
 
         handleOut =
             case outMsg of
                 Layer.TodoStoreMsg msg ->
                     andThenUpdate (MsgTodoStore msg)
 
-                Layer.TodoDialogOutMsg (TodoDialog.Submit (TodoDialog.Edit todo) content contextId) ->
-                    andThenUpdate
-                        (MsgTodoStore <|
-                            TodoStore.setContentAndContextId todo.id content contextId
-                        )
-
-                Layer.TodoDialogOutMsg TodoDialog.Cancel ->
-                    identity
-
-                Layer.ContextDialogOutMsg (ContextDialog.Submit ContextDialog.Create content) ->
-                    andThenUpdate
-                        (MsgContextStore <|
-                            ContextStore.addNew content
-                        )
-
-                Layer.ContextDialogOutMsg (ContextDialog.Submit (ContextDialog.Edit context) name) ->
-                    andThenUpdate
-                        (MsgContextStore <|
-                            ContextStore.setName context.id name
-                        )
-
-                Layer.ContextDialogOutMsg ContextDialog.Cancel ->
-                    identity
-
-                Layer.ContextPopupOutMsg context (ContextPopup.ActionOut ContextPopup.Rename) ->
-                    andThenUpdate (OpenEditContextDialog context.id)
-
-                Layer.ContextPopupOutMsg context (ContextPopup.ActionOut ContextPopup.ToggleArchive) ->
-                    andThenUpdate (MsgContextStore <| ContextStore.toggleArchived context.id)
-
-                Layer.ContextPopupOutMsg context ContextPopup.ClosedOut ->
-                    identity
+                Layer.ContextStoreMsg msg ->
+                    andThenUpdate (MsgContextStore msg)
 
                 Layer.NoOut ->
                     identity
