@@ -130,11 +130,6 @@ allPass plist a =
     List.all (applyTo a) plist
 
 
-getSelectedContextActiveTodoList : Model -> List Todo
-getSelectedContextActiveTodoList model =
-    getActiveTodoListForContextId model.contextId model
-
-
 getSelectedContextTodoList : Model -> List Todo
 getSelectedContextTodoList model =
     getTodoListForContextId model.contextId model
