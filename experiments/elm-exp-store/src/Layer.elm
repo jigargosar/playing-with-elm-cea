@@ -209,27 +209,22 @@ updateContextPopup msg contextPopup_ =
         ( contextPopup, cmd, maybeOutMsg ) =
             ContextPopup.update msg contextPopup_
 
-        handleOut =
-            unwrapMaybe
-                withNoOutMsg
-                (\out ->
-                    (case out of
-                        ContextPopup.ActionOut context ContextPopup.Rename ->
-                            updateContextDialog ContextDialog.autoFocus <| ContextDialog.initEdit context
+        handleOut out =
+            (case out of
+                ContextPopup.ActionOut context ContextPopup.Rename ->
+                    updateContextDialog ContextDialog.autoFocus <| ContextDialog.initEdit context
 
-                        ContextPopup.ActionOut context ContextPopup.ToggleArchive ->
-                            withOutMsg (ContextStoreMsg <| ContextStore.toggleArchived context.id)
+                ContextPopup.ActionOut context ContextPopup.ToggleArchive ->
+                    withOutMsg (ContextStoreMsg <| ContextStore.toggleArchived context.id)
 
-                        ContextPopup.ClosedOut ->
-                            withNoOutMsg
-                    )
-                        << mapModel (\_ -> NoLayer)
-                )
-                maybeOutMsg
+                ContextPopup.ClosedOut ->
+                    withNoOutMsg
+            )
+                << mapModel (\_ -> NoLayer)
     in
     mapModel (setLayer <| ContextPopup contextPopup)
         >> addTaggedCmd ContextPopupMsg cmd
-        >> handleOut
+        >> unwrapMaybe withNoOutMsg handleOut maybeOutMsg
 
 
 viewLayer : { x | layer : Layer, contextStore : ContextStore } -> Html Msg
