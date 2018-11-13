@@ -1,6 +1,7 @@
 module Layer exposing (Layer(..), Msg(..), OutMsg(..), eqContextPopupFor, update, viewLayer)
 
 import BasicsX exposing (unwrapMaybe)
+import CmdDialog
 import ContextDialog
 import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextStore)
@@ -16,6 +17,7 @@ type Layer
     = TodoDialog TodoDialog.Model
     | ContextDialog ContextDialog.Model
     | ContextPopup ContextPopup.Model
+    | CmdDialog CmdDialog.Model
     | NoLayer
 
 
@@ -31,8 +33,10 @@ eqContextPopupFor contextId layer =
 type Msg
     = TodoDialogMsg TodoDialog.Msg
     | ContextDialogMsg ContextDialog.Msg
+    | CmdDialogMsg CmdDialog.Msg
     | ContextPopupMsg ContextPopup.Msg
     | OpenCreateTodoDialog ContextId
+    | OpenCmdDialog
     | OpenEditTodoDialog TodoId
     | OpenCreateContextDialog
     | OpenEditContextDialog ContextId
@@ -105,6 +109,14 @@ update { contextStore, todoStore } message layer =
                 _ ->
                     logInvalidLayer
 
+        CmdDialogMsg msg ->
+            case layer of
+                CmdDialog model ->
+                    updateCmdDialog msg model
+
+                _ ->
+                    logInvalidLayer
+
         OpenCreateTodoDialog contextId ->
             case layer of
                 NoLayer ->
@@ -150,6 +162,14 @@ update { contextStore, todoStore } message layer =
                         (updateContextPopup ContextPopup.open << ContextPopup.init)
                         contextId
                         contextStore
+
+                _ ->
+                    logInvalidLayer
+
+        OpenCmdDialog ->
+            case layer of
+                NoLayer ->
+                    updateCmdDialog CmdDialog.NoOp CmdDialog.init
 
                 _ ->
                     logInvalidLayer
@@ -229,6 +249,21 @@ updateContextPopup =
         handleOut
 
 
+updateCmdDialog =
+    let
+        handleOut out =
+            (case out of
+                _ ->
+                    withNoOutMsg
+            )
+                << mapModel (\_ -> NoLayer)
+    in
+    updateLayer CmdDialog.update
+        CmdDialog
+        CmdDialogMsg
+        handleOut
+
+
 viewLayer : { x | layer : Layer, contextStore : ContextStore } -> Html Msg
 viewLayer { layer, contextStore } =
     case layer of
@@ -240,6 +275,9 @@ viewLayer { layer, contextStore } =
 
         ContextDialog contextDialog ->
             ContextDialog.view contextDialog |> Html.map ContextDialogMsg
+
+        CmdDialog cmdDialog ->
+            CmdDialog.view cmdDialog |> Html.map CmdDialogMsg
 
         NoLayer ->
             noHtml
