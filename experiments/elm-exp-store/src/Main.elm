@@ -315,20 +315,14 @@ update message model =
                     (LayerMsg <| Layer.OpenEditTodoDialog todo)
 
         OpenCreateContextDialog ->
-            attemptToOpenLayer
-                (updateContextDialog
-                    ContextDialog.autoFocus
-                    ContextDialog.initCreate
-                )
-                model
+            pure model
+                |> andThenUpdate
+                    (LayerMsg <| Layer.OpenCreateContextDialog)
 
         OpenEditContextDialog context ->
-            attemptToOpenLayer
-                (updateContextDialog
-                    ContextDialog.autoFocus
-                    (ContextDialog.initEdit context)
-                )
-                model
+            pure model
+                |> andThenUpdate
+                    (LayerMsg <| Layer.OpenEditContextDialog context)
 
         OnContextPopupMsg msg ->
             case model.layer of
