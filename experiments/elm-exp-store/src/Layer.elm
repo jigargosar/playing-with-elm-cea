@@ -63,6 +63,12 @@ update message layer_ =
         ( TodoDialogMsg msg, TodoDialog model ) ->
             updateTodoDialog msg model
 
+        ( ContextDialogMsg msg, ContextDialog model ) ->
+            updateContextDialog msg model
+
+        ( ContextPopupMsg msg, ContextPopup context model ) ->
+            updateContextPopup msg context model
+
         ( OpenCreateTodoDialog cid, NoLayer ) ->
             updateTodoDialog TodoDialog.autoFocus (TodoDialog.initCreate cid)
 
