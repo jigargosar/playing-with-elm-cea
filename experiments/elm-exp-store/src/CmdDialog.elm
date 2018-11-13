@@ -18,11 +18,20 @@ import UpdateReturn exposing (..)
 
 
 type alias Model =
-    { query : String }
+    { query : String, selectedIndex : Int }
 
 
 init =
-    { query = "" }
+    { query = "", selectedIndex = 0 }
+
+
+getCommands model =
+    [ "foo", "bar", "baz", "Bar Zoo" ]
+        |> Simple.Fuzzy.filter identity model.query
+
+
+computeSelectedIndex model =
+    model.selectedIndex
 
 
 type Msg
@@ -120,10 +129,12 @@ view model =
 
 viewCmdList : Model -> List (Html Msg)
 viewCmdList model =
-    [ "foo", "bar", "baz", "Bar Zoo" ]
-        |> Simple.Fuzzy.filter identity model.query
-        |> List.map viewCmd
+    let
+        si =
+            computeSelectedIndex model
+    in
+    getCommands model |> List.indexedMap (\idx -> viewCmd (idx == si))
 
 
-viewCmd cmdName =
+viewCmd isSelected cmdName =
     sDiv [] [] [ text cmdName ]
