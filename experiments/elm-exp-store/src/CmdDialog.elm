@@ -46,7 +46,7 @@ type Msg
 
 type OutMsg
     = Cancel
-    | Execute String
+    | Submit String
 
 
 subscriptions model =
@@ -111,7 +111,7 @@ update message =
                 )
 
         SelectAction action ->
-            withOutMsg (always <| Execute action)
+            withOutMsg (always <| Submit action)
     )
         << pure
 
