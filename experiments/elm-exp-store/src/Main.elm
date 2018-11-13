@@ -304,24 +304,16 @@ update message model =
             updateLayer msg model
 
         OpenCreateTodoDialog ->
-            pure model
-                |> andThenUpdate
-                    (LayerMsg <| Layer.OpenCreateTodoDialog <| getSelectedContextId model)
+            updateLayer (Layer.OpenCreateTodoDialog <| getSelectedContextId model) model
 
         OpenEditTodoDialog todo ->
-            pure model
-                |> andThenUpdate
-                    (LayerMsg <| Layer.OpenEditTodoDialog todo)
+            updateLayer (Layer.OpenEditTodoDialog todo) model
 
         OpenCreateContextDialog ->
-            pure model
-                |> andThenUpdate
-                    (LayerMsg <| Layer.OpenCreateContextDialog)
+            updateLayer Layer.OpenCreateContextDialog model
 
         OpenEditContextDialog context ->
-            pure model
-                |> andThenUpdate
-                    (LayerMsg <| Layer.OpenEditContextDialog context)
+            updateLayer (Layer.OpenEditContextDialog context) model
 
         OnContextPopupMsg msg ->
             case model.layer of
