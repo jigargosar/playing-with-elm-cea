@@ -112,15 +112,13 @@ liTextButton =
         ]
 
 
-viewKeyedContextItem moreStyles vm =
-    ( vm.key, viewContextItem moreStyles vm )
-
-
-viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
-    listItem { styles = moreStyles, isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
+viewKeyedContextItem moreStyles { key, name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
+    ( key
+    , listItem { styles = moreStyles, isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
         [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
         , viewMoreMenuIcon { isOpen = moreOpen, clickMsg = moreClicked }
         ]
+    )
 
 
 viewMoreMenuIcon { isOpen, clickMsg } =
