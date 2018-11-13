@@ -85,10 +85,6 @@ init flags =
     )
 
 
-isCurrentPageContextTodoListWithContextId contextId model =
-    getSelectedContextId model == contextId
-
-
 contextIdEq : ContextId -> Pred { a | contextId : ContextId }
 contextIdEq cid =
     propEq .contextId cid
@@ -138,10 +134,6 @@ getNameByContextId contextId =
 getCurrentContextItem : Model -> ContextItem
 getCurrentContextItem model =
     ( getNameByContextId model.contextId model, model.contextId )
-
-
-isSelectedContextEditable =
-    getSelectedContextId >> eqs ContextStore.defaultId >> not
 
 
 getSelectedContextId =
@@ -344,7 +336,7 @@ createSideBarConfig model =
     , addContextClicked = OpenCreateContextDialog
     , showArchived = model.showArchivedContexts
     , toggleShowArchived = ToggleShowArchivedContexts
-    , isSelected = \id -> isCurrentPageContextTodoListWithContextId id model
+    , isSelected = \id -> contextIdEq id model
     , navigateToTodoList = NavigateToTodoListWithContextId
     , activeTodoCount = \id -> getActiveTodoListCountForContextId id model
     , moreClicked = OpenContextPopup
