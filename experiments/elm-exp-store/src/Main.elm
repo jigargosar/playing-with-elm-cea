@@ -359,7 +359,7 @@ viewTodoList model =
     in
     div [ css [] ]
         [ active
-            |> List.map (viewKeyedTodo << createTodoViewModel model.contextStore)
+            |> List.indexedMap (\idx todo -> viewKeyedTodo (createTodoViewModel model idx todo))
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY ], class "pa3" ]
             [ styled Btn.flatPl0
@@ -371,20 +371,20 @@ viewTodoList model =
             , viewCompletedBtn model.showCompletedTodos
             ]
         , if model.showCompletedTodos then
-            viewCompletedSection model.contextStore completed
+            viewCompletedSection model completed
 
           else
             noHtml
         ]
 
 
-viewCompletedSection contextStore completed =
+viewCompletedSection model completed =
     if List.isEmpty completed then
         sDiv [ fgGray ] [ class "pa3" ] [ text "No Completed Tasks" ]
 
     else
         completed
-            |> List.map (viewKeyedTodo << createTodoViewModel contextStore)
+            |> List.indexedMap (\idx todo -> viewKeyedTodo (createTodoViewModel model idx todo))
             |> HKeyed.node "div" [ css [ vs ] ]
 
 
@@ -413,20 +413,22 @@ type alias TodoViewModel msg =
     , markDone : msg
     , unmarkDone : msg
     , contextClicked : msg
+    , isSelected : Bool
     }
 
 
-createTodoViewModel : ContextStore -> Todo -> TodoViewModel Msg
-createTodoViewModel contextStore todo =
+createTodoViewModel : Model -> Int -> Todo -> TodoViewModel Msg
+createTodoViewModel model idx todo =
     TodoViewModel
         todo.id
         (defaultEmptyStringTo "<empty>" todo.content)
         todo.done
-        (ContextStore.getNameOrDefaultById todo.contextId contextStore)
+        (ContextStore.getNameOrDefaultById todo.contextId model.contextStore)
         (OpenEditTodoDialog todo.id)
         (MsgTodoStore <| TodoStore.markDone todo.id)
         (MsgTodoStore <| TodoStore.unmarkDone todo.id)
         (OpenEditTodoDialog todo.id)
+        (idx == model.selectedIndex)
 
 
 viewKeyedTodo : TodoViewModel msg -> ( String, Html msg )
