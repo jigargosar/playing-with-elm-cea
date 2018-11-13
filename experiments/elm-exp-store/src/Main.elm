@@ -216,7 +216,7 @@ type Msg
     | MsgContextStore ContextStore.Msg
     | OnContextPopupMsg ContextPopup.Msg
     | StartEditingContext ContextId
-    | ContextMoreClicked ContextId
+    | OpenContextPopup ContextId
     | MenuClicked
     | TempSidebarBackdropClicked
     | ToggleShowArchivedContexts
@@ -281,7 +281,7 @@ update message model =
                         |> unwrapMaybe identity (andThenUpdate << OpenEditContextDialog)
                    )
 
-        ContextMoreClicked cid ->
+        OpenContextPopup cid ->
             ContextStore.get cid model.contextStore
                 |> unwrapMaybe (pure model)
                     (\context ->
@@ -514,7 +514,7 @@ createSideBarConfig model =
             , navigateToTodoList = NavigateToTodoListWithContextId id
             , activeTodoCount = getActiveTodoListCountForContextId id model
             , isSelected = isCurrentPageContextTodoListWithContextId id model
-            , moreClicked = ContextMoreClicked id
+            , moreClicked = OpenContextPopup id
             , moreOpen = Layer.eqContextPopupFor id model.layer
             }
 
