@@ -188,7 +188,15 @@ update message model =
         OnKeyDown ke ->
             case model.layer of
                 Layer.NoLayer ->
-                    ( model, Cmd.none )
+                    case ke of
+                        ( [], "ArrowDown" ) ->
+                            ( { model | selectedIndex = 1 + model.selectedIndex }, Cmd.none )
+
+                        ( [], "ArrowUp" ) ->
+                            ( { model | selectedIndex = -1 + model.selectedIndex }, Cmd.none )
+
+                        _ ->
+                            ( model, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
