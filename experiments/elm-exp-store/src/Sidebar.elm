@@ -91,15 +91,16 @@ viewArchiveBtn showArchived toggleShowArchived =
 
 
 viewContextsHeader addContextClicked =
-    listItem { styles = [], isSelected = False }
-        []
+    listItem { styles = [], isSelected = False, domId = "contexts-title" }
         [ sDiv [ fa, fwb ] [] [ text "Contexts" ]
         , Btn.icon [ onClick addContextClicked ] [ Icons.plus |> Icons.default ]
         ]
 
 
-listItem { styles, isSelected } =
-    styled div ([ fa, rowCY, pRm 0.5 ] ++ styles ++ [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3 ] ])
+listItem { styles, isSelected, domId } =
+    styled div
+        ([ fa, rowCY, pRm 0.5 ] ++ styles ++ [ boolCss isSelected [ bc <| hsla 210 1 0.56 0.3 ] ])
+        [ id domId, class "hide-child" ]
 
 
 liTextButton =
@@ -116,10 +117,7 @@ viewKeyedContextItem moreStyles vm =
 
 
 viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
-    listItem { styles = moreStyles, isSelected = isSelected }
-        [ id <| ContextPopup.getRefIdFromContextId cid
-        , class "hide-child"
-        ]
+    listItem { styles = moreStyles, isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
         [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
         , viewMoreMenuIcon { isOpen = moreOpen, clickMsg = moreClicked }
         ]
