@@ -257,4 +257,5 @@ viewPopup ref model =
             [ id <| getBackdropDomId model, onClickTargetId BackdropClicked ]
     in
     --    viewModalContent
-    UI.backdrop backdropAttrs [ viewModalContent ]
+    --    UI.backdrop backdropAttrs [ viewModalContent ]
+    div [] [ UI.backdrop backdropAttrs [], viewModalContent ]
