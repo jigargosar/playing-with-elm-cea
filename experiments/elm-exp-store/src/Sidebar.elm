@@ -161,6 +161,7 @@ viewContextName { name, onClickMsg, count } =
         , hs
         , fa
         , fBody
+        , rowCY
         ]
         [ css
             [ if String.isEmpty name then
@@ -168,7 +169,6 @@ viewContextName { name, onClickMsg, count } =
 
               else
                 Css.batch []
-            , rowCY
             ]
         , onClick onClickMsg
         ]
