@@ -1,6 +1,9 @@
 module BasicsX exposing
     ( Encoder
+    , Getter
     , Millis
+    , Pred
+    , PredList
     , activeElement
     , allPass
     , applyMaybe
@@ -18,8 +21,10 @@ module BasicsX exposing
     , isWhitespaceOrEmptyString
     , maybeBool
     , maybeWhen
+    , notPred
     , nowMilli
     , optionalOr
+    , propEq
     , replaceHead
     , swap
     , ter
@@ -39,6 +44,33 @@ import Json.Encode as E exposing (Value)
 import Log
 import Task exposing (Task)
 import Time
+
+
+type alias Pred a =
+    a -> Bool
+
+
+type alias PredList a =
+    List (Pred a)
+
+
+allPass : PredList a -> Pred a
+allPass plist a =
+    List.all (applyTo a) plist
+
+
+notPred : Pred a -> Pred a
+notPred pred =
+    pred >> not
+
+
+type alias Getter big small =
+    big -> small
+
+
+propEq : Getter big small -> small -> Pred big
+propEq getter small =
+    getter >> eqs small
 
 
 replaceHead newHead list =
@@ -189,11 +221,6 @@ flip fn a b =
 
 swap ( a, b ) =
     ( b, a )
-
-
-allPass : a -> List (a -> Bool) -> Bool
-allPass item predList =
-    List.all (\pred -> pred item) predList
 
 
 isWhitespaceOrEmptyString =

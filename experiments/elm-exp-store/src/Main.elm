@@ -89,28 +89,6 @@ isCurrentPageContextTodoListWithContextId contextId model =
     getSelectedContextId model == contextId
 
 
-type alias Pred a =
-    a -> Bool
-
-
-type alias PredList a =
-    List (Pred a)
-
-
-notPred : Pred a -> Pred a
-notPred pred =
-    pred >> not
-
-
-type alias Getter big small =
-    big -> small
-
-
-propEq : Getter big small -> small -> Pred big
-propEq getter small =
-    getter >> eqs small
-
-
 contextIdEq : ContextId -> Pred { a | contextId : ContextId }
 contextIdEq cid =
     propEq .contextId cid
@@ -123,11 +101,6 @@ isDone =
 
 isNotDone =
     isDone >> not
-
-
-allPass : PredList a -> Pred a
-allPass plist a =
-    List.all (applyTo a) plist
 
 
 getSelectedContextTodoList : Model -> List Todo
