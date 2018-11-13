@@ -366,7 +366,7 @@ view model =
             ]
 
         --        , QuickAction.view
-        , HtmlX.when .showTempSidebar viewTempSidebar model
+        , HtmlX.when .showTempSidebar viewDrawerSidebar model
         , viewLayer model
         ]
 
@@ -379,7 +379,7 @@ permanentSidebar model =
         ]
 
 
-viewTempSidebar model =
+viewDrawerSidebar model =
     sDiv [ position absolute, absFill, dFlexRow, bcBlackA 0.4 ]
         []
         [ sDiv
