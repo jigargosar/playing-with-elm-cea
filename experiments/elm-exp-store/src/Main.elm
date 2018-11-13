@@ -323,11 +323,8 @@ updateLayer msg model =
 
         handleOut =
             case outMsg of
-                Layer.TodoDialogOutMsg (TodoDialog.Submit TodoDialog.Create content contextId) ->
-                    andThenUpdate
-                        (MsgTodoStore <|
-                            TodoStore.addNew content contextId
-                        )
+                Layer.TodoStoreMsg msg ->
+                    andThenUpdate (MsgTodoStore msg)
 
                 Layer.TodoDialogOutMsg (TodoDialog.Submit (TodoDialog.Edit todo) content contextId) ->
                     andThenUpdate

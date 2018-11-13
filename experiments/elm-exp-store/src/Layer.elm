@@ -40,9 +40,8 @@ type Msg
 
 
 type OutMsg
-    = TodoDialogOutMsg TodoDialog.OutMsg
-    | ContextDialogOutMsg ContextDialog.OutMsg
-    | ContextPopupOutMsg Context ContextPopup.OutMsg
+    = TodoStoreMsg TodoStore.Msg
+    | ContextStoreMsg ContextStore.Msg
     | NoOut
 
 
@@ -104,14 +103,24 @@ updateTodoDialog msg todoDialog_ =
             TodoDialog.update msg todoDialog_
 
         handleOut =
-            unwrapMaybe
-                withNoOutMsg
-                (withOutMsg << TodoDialogOutMsg)
-                maybeOutMsg
+            unwrapMaybe withNoOutMsg
+                (\out ->
+                    (case out of
+                        TodoDialog.Submit TodoDialog.Create content contextId ->
+                            withOutMsg (TodoStoreMsg << TodoStore.addNew content contextId)
+
+                        TodoDialog.Submit (TodoDialog.Edit todo) content contextId ->
+                            withOutMsg (TodoStoreMsg <| TodoStore.setContentAndContextId todo.id content contextId)
+
+                        TodoDialog.Cancel ->
+                            withNoOutMsg
+                    )
+                        << mapModel (\_ -> NoLayer)
+                )
     in
     mapModel (\_ -> TodoDialog todoDialog)
         >> addTaggedCmd TodoDialogMsg cmd
-        >> handleOut
+        >> handleOut maybeOutMsg
 
 
 updateContextDialog msg contextDialog_ =
@@ -120,9 +129,20 @@ updateContextDialog msg contextDialog_ =
             ContextDialog.update msg contextDialog_
 
         handleOut =
-            unwrapMaybe
-                withNoOutMsg
-                (withOutMsg << ContextDialogOutMsg)
+            unwrapMaybe withNoOutMsg
+                (\out ->
+                    (case out of
+                        ContextDialog.Submit ContextDialog.Create name ->
+                            withOutMsg (ContextStoreMsg << ContextStore.addNew name)
+
+                        ContextDialog.Submit (ContextDialog.Edit context) name ->
+                            withOutMsg (ContextStoreMsg <| ContextStore.setName context.id name)
+
+                        ContextDialog.Cancel ->
+                            withNoOutMsg
+                    )
+                        << mapModel (\_ -> NoLayer)
+                )
                 maybeOutMsg
     in
     mapModel (setLayer <| ContextDialog contextDialog)
