@@ -57,9 +57,17 @@ view config =
 
 viewInboxItem inbox =
     let
-        viewContextItem { name, navigateToTodoList, activeTodoCount, isSelected, cid } =
-            listItem { styles = [], isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
-                [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
+        viewContextItem { navigateToTodoList, activeTodoCount, isSelected } =
+            listItem
+                { styles = []
+                , isSelected = isSelected
+                , domId = ContextPopup.getRefIdFromContextId ContextStore.defaultId
+                }
+                [ viewContextName
+                    { name = ContextStore.defaultName
+                    , onClickMsg = navigateToTodoList
+                    , count = activeTodoCount
+                    }
                 ]
     in
     viewKeyed viewContextItem [ inbox ]
