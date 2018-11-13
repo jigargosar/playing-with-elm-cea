@@ -187,11 +187,8 @@ updateTodoDialog =
         )
 
 
-updateContextDialog msg contextDialog_ =
+updateContextDialog =
     let
-        ( contextDialog, cmd, maybeOutMsg ) =
-            ContextDialog.update msg contextDialog_
-
         handleOut out =
             (case out of
                 ContextDialog.Submit ContextDialog.Create name ->
@@ -205,9 +202,10 @@ updateContextDialog msg contextDialog_ =
             )
                 << mapModel (\_ -> NoLayer)
     in
-    mapModel (setLayer <| ContextDialog contextDialog)
-        >> addTaggedCmd ContextDialogMsg cmd
-        >> unwrapMaybe withNoOutMsg handleOut maybeOutMsg
+    updateLayer ContextDialog.update
+        ContextDialog
+        ContextDialogMsg
+        handleOut
 
 
 updateContextPopup msg contextPopup_ =
