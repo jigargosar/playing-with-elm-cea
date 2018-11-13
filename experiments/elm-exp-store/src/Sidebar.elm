@@ -120,28 +120,7 @@ viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelect
         [ id <| ContextPopup.getRefIdFromContextId cid
         , class "hide-child"
         ]
-        [ liTextButton
-            [ css
-                [ if String.isEmpty name then
-                    Css.batch [ ttl, fgGray ]
-
-                  else
-                    Css.batch []
-                , rowCY
-                ]
-            , onClick navigateToTodoList
-            ]
-            [ sDiv [ Css.property "word-break" "break-word" ] [] [ text <| defaultEmptyStringTo "<empty>" name ]
-            , sDiv
-                [ plRm 0.1
-                , Css.fontSize (em 0.8)
-                , Css.alignSelf Css.flexEnd
-                , fwb
-                , fgGray
-                ]
-                []
-                [ text <| String.fromInt activeTodoCount ]
-            ]
+        [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
         , Btn.sIcon
             [ fgGray
             , focus [ opacity (int 1) ]
@@ -155,4 +134,29 @@ viewContextItem moreStyles { name, navigateToTodoList, activeTodoCount, isSelect
             , onClick moreClicked
             ]
             [ Icons.moreHDef ]
+        ]
+
+
+viewContextName { name, onClickMsg, count } =
+    liTextButton
+        [ css
+            [ if String.isEmpty name then
+                Css.batch [ ttl, fgGray ]
+
+              else
+                Css.batch []
+            , rowCY
+            ]
+        , onClick onClickMsg
+        ]
+        [ sDiv [ Css.property "word-break" "break-word" ] [] [ text <| defaultEmptyStringTo "<empty>" name ]
+        , sDiv
+            [ plRm 0.1
+            , Css.fontSize (em 0.8)
+            , Css.alignSelf Css.flexEnd
+            , fwb
+            , fgGray
+            ]
+            []
+            [ text <| String.fromInt count ]
         ]
