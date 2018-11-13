@@ -60,14 +60,17 @@ viewInboxItem config =
     let
         cid =
             ContextStore.defaultId
+
+        name =
+            ContextStore.defaultName
     in
     listItem
         { styles = []
         , isSelected = config.isSelected cid
-        , domId = ContextPopup.getRefIdFromContextId ContextStore.defaultId
+        , domId = ContextPopup.getRefIdFromContextId cid
         }
         [ viewContextName
-            { name = ContextStore.defaultName
+            { name = name
             , onClickMsg = config.navigateToTodoList cid
             , count = config.activeTodoCount cid
             }
