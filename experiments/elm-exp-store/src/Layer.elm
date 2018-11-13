@@ -91,6 +91,10 @@ update { contextStore, layer } message =
             updateContextPopup ContextPopup.open context ContextPopup.init
 
         _ ->
+            let
+                _ =
+                    Debug.log "( message, layer )" ( message, layer )
+            in
             addCmd (logCmd [ "invalid msg,layer combination" ])
                 >> withNoOutMsg
     )
