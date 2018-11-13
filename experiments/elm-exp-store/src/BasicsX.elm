@@ -230,7 +230,7 @@ isWhitespaceOrEmptyString =
 
 safeModMy total num =
     if total == 0 then
-        num
+        0
 
     else
         modBy total num
