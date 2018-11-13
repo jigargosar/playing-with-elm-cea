@@ -66,8 +66,8 @@ logInvalidLayer =
         >> withNoOutMsg
 
 
-update : { x | contextStore : ContextStore, layer : Layer, todoStore : TodoStore } -> Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
-update { contextStore, layer, todoStore } message =
+update : { x | contextStore : ContextStore, todoStore : TodoStore } -> Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
+update { contextStore, todoStore } message layer =
     (case message of
         TodoDialogMsg msg ->
             case layer of
@@ -140,7 +140,8 @@ update { contextStore, layer, todoStore } message =
                 _ ->
                     logInvalidLayer
     )
-        << pure
+    <|
+        pure layer
 
 
 updateTodoDialog msg todoDialog_ =
