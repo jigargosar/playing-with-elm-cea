@@ -97,7 +97,11 @@ viewArchived config archived =
     else
         div []
             [ viewArchiveBtn showArchived toggleShowArchived
-            , HtmlX.when (always showArchived) (viewContexts config) archived
+            , if showArchived then
+                viewContexts config archived
+
+              else
+                noHtml
             ]
 
 
