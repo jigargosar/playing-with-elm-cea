@@ -288,7 +288,7 @@ view model =
                 ]
             ]
         , HtmlX.when .showTempSidebar viewDrawerSidebar model
-        , viewLayer model
+        , Layer.viewLayer model |> Html.map LayerMsg
         ]
 
 
@@ -311,10 +311,6 @@ viewDrawerSidebar model =
             [ viewSidebar model ]
         , sDiv [ fa ] [ onClick TempSidebarBackdropClicked ] []
         ]
-
-
-viewLayer model =
-    Layer.viewLayer model |> Html.map LayerMsg
 
 
 viewSidebar =
