@@ -68,8 +68,8 @@ logInvalidLayer =
 
 update : { x | contextStore : ContextStore, layer : Layer, todoStore : TodoStore } -> Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
 update { contextStore, layer, todoStore } message =
-    (case ( message, layer ) of
-        ( TodoDialogMsg msg, _ ) ->
+    (case message of
+        TodoDialogMsg msg ->
             case layer of
                 TodoDialog model ->
                     updateTodoDialog msg model
@@ -77,7 +77,7 @@ update { contextStore, layer, todoStore } message =
                 _ ->
                     logInvalidLayer
 
-        ( ContextDialogMsg msg, _ ) ->
+        ContextDialogMsg msg ->
             case layer of
                 ContextDialog model ->
                     updateContextDialog msg model
@@ -85,7 +85,7 @@ update { contextStore, layer, todoStore } message =
                 _ ->
                     logInvalidLayer
 
-        ( ContextPopupMsg msg, _ ) ->
+        ContextPopupMsg msg ->
             case layer of
                 ContextPopup model ->
                     updateContextPopup msg model
@@ -93,35 +93,52 @@ update { contextStore, layer, todoStore } message =
                 _ ->
                     logInvalidLayer
 
-        ( OpenCreateTodoDialog cid, NoLayer ) ->
-            updateTodoDialog TodoDialog.autoFocus (TodoDialog.initCreate cid)
+        OpenCreateTodoDialog cid ->
+            case layer of
+                NoLayer ->
+                    updateTodoDialog TodoDialog.autoFocus (TodoDialog.initCreate cid)
 
-        ( OpenEditTodoDialog todoId, NoLayer ) ->
-            TodoStore.get todoId todoStore
-                |> unwrapMaybe withNoOutMsg
-                    (updateTodoDialog TodoDialog.autoFocus << TodoDialog.initEdit)
+                _ ->
+                    logInvalidLayer
 
-        ( OpenCreateContextDialog, NoLayer ) ->
-            updateContextDialog ContextDialog.autoFocus ContextDialog.initCreate
+        OpenEditTodoDialog todoId ->
+            case layer of
+                NoLayer ->
+                    TodoStore.get todoId todoStore
+                        |> unwrapMaybe withNoOutMsg
+                            (updateTodoDialog TodoDialog.autoFocus << TodoDialog.initEdit)
 
-        ( OpenEditContextDialog cid, NoLayer ) ->
-            contextStore
-                |> ContextStore.get cid
-                |> unwrapMaybe withNoOutMsg (updateContextDialog ContextDialog.autoFocus << ContextDialog.initEdit)
+                _ ->
+                    logInvalidLayer
 
-        ( OpenContextPopup cid, NoLayer ) ->
-            contextStore
-                |> ContextStore.get cid
-                |> unwrapMaybe withNoOutMsg
-                    (updateContextPopup ContextPopup.open << ContextPopup.init)
+        OpenCreateContextDialog ->
+            case layer of
+                NoLayer ->
+                    updateContextDialog ContextDialog.autoFocus ContextDialog.initCreate
 
-        _ ->
-            let
-                _ =
-                    Debug.log "( message, layer )" ( message, layer )
-            in
-            addCmd (logCmd [ "invalid msg,layer combination" ])
-                >> withNoOutMsg
+                _ ->
+                    logInvalidLayer
+
+        OpenEditContextDialog cid ->
+            case layer of
+                NoLayer ->
+                    contextStore
+                        |> ContextStore.get cid
+                        |> unwrapMaybe withNoOutMsg (updateContextDialog ContextDialog.autoFocus << ContextDialog.initEdit)
+
+                _ ->
+                    logInvalidLayer
+
+        OpenContextPopup cid ->
+            case layer of
+                NoLayer ->
+                    contextStore
+                        |> ContextStore.get cid
+                        |> unwrapMaybe withNoOutMsg
+                            (updateContextPopup ContextPopup.open << ContextPopup.init)
+
+                _ ->
+                    logInvalidLayer
     )
         << pure
 
