@@ -408,7 +408,6 @@ createSideBarConfig model =
         createContextConfig : ContextId -> ContextName -> Bool -> Sidebar.ContextConfig Msg
         createContextConfig id name isArchived =
             { key = id
-            , id = id
             , cid = id
             , name = name
             , isArchived = isArchived

@@ -17,7 +17,6 @@ import UI exposing (..)
 
 type alias ContextConfig msg =
     { key : String
-    , id : ContextId
     , cid : ContextId
     , name : ContextName
     , isArchived : Bool
