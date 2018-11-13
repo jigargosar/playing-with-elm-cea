@@ -215,7 +215,6 @@ type Msg
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
     | OnContextPopupMsg ContextPopup.Msg
-    | OnContextDialogMsg ContextDialog.Msg
     | StartEditingContext ContextId
     | ContextMoreClicked ContextId
     | MenuClicked
@@ -332,14 +331,6 @@ update message model =
                 _ ->
                     ( model, logInvalidLayerMsgCmd )
 
-        OnContextDialogMsg msg ->
-            case model.layer of
-                Layer.ContextDialog contextDialog ->
-                    updateContextDialog msg contextDialog model
-
-                _ ->
-                    ( model, logInvalidLayerMsgCmd )
-
         ToggleShowArchivedContexts ->
             pure { model | showArchivedContexts = not model.showArchivedContexts }
 
@@ -396,37 +387,6 @@ updateLayer msg model =
     in
     pure { model | layer = layer }
         |> handleOut
-
-
-updateContextDialog msg contextDialog_ =
-    let
-        ( contextDialog, cmd, maybeOutMsg ) =
-            ContextDialog.update msg contextDialog_
-
-        handleOut =
-            case maybeOutMsg of
-                Just (ContextDialog.Submit dialogMode name) ->
-                    mapModel (\model -> { model | layer = Layer.NoLayer })
-                        >> (andThenUpdate <|
-                                MsgContextStore <|
-                                    case dialogMode of
-                                        ContextDialog.Create ->
-                                            ContextStore.addNew name
-
-                                        ContextDialog.Edit context ->
-                                            ContextStore.setName context.id name
-                           )
-
-                Just ContextDialog.Cancel ->
-                    mapModel (\model -> { model | layer = Layer.NoLayer })
-
-                Nothing ->
-                    identity
-    in
-    pure
-        >> mapModel (setLayer <| Layer.ContextDialog contextDialog)
-        >> handleOut
-        >> addTaggedCmd OnContextDialogMsg cmd
 
 
 updateContextPopup msg context contextPopup_ =
@@ -548,7 +508,7 @@ viewLayer model =
             TodoDialog.view model.contextStore dialogModel |> Html.map Layer.TodoDialogMsg |> Html.map LayerMsg
 
         Layer.ContextDialog dialogModel ->
-            ContextDialog.view dialogModel |> Html.map OnContextDialogMsg
+            ContextDialog.view dialogModel |> Html.map Layer.ContextDialogMsg |> Html.map LayerMsg
 
         Layer.NoLayer ->
             noHtml
