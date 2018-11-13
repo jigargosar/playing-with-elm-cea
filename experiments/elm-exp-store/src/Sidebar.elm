@@ -20,8 +20,6 @@ type alias ContextConfig msg =
     , cid : ContextId
     , name : ContextName
     , isArchived : Bool
-    , navigateToTodoList : msg
-    , activeTodoCount : Int
     , moreClicked : msg
     , moreOpen : Bool
     }

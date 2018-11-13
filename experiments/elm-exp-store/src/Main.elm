@@ -411,8 +411,6 @@ createSideBarConfig model =
             , cid = id
             , name = name
             , isArchived = isArchived
-            , navigateToTodoList = NavigateToTodoListWithContextId id
-            , activeTodoCount = getActiveTodoListCountForContextId id model
             , moreClicked = OpenContextPopup id
             , moreOpen = Layer.eqContextPopupFor id model.layer
             }
