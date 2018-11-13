@@ -374,12 +374,17 @@ updateLayer msg model =
                 Layer.ContextDialogOutMsg ContextDialog.Cancel ->
                     mapModel (setLayer Layer.NoLayer)
 
+                Layer.ContextPopupOutMsg context (ContextPopup.ActionOut ContextPopup.Rename) ->
+                    andThenUpdate (StartEditingContext context.id)
+
+                Layer.ContextPopupOutMsg context (ContextPopup.ActionOut ContextPopup.ToggleArchive) ->
+                    andThenUpdate (MsgContextStore <| ContextStore.toggleArchived context.id)
+
+                Layer.ContextPopupOutMsg context ContextPopup.ClosedOut ->
+                    mapModel (setLayer Layer.NoLayer)
+
                 Layer.NoOut ->
                     identity
-
-                _ ->
-                    Debug.log "( outMsg, model.layer )" ( outMsg, model.layer )
-                        |> (\_ -> identity)
     in
     pure { model | layer = layer }
         |> handleOut

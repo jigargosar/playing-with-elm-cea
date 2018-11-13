@@ -40,7 +40,7 @@ type Msg
 type OutMsg
     = TodoDialogOutMsg TodoDialog.OutMsg
     | ContextDialogOutMsg ContextDialog.OutMsg
-    | ContextPopupOutMsg ContextPopup.OutMsg
+    | ContextPopupOutMsg Context ContextPopup.OutMsg
     | NoOut
 
 
@@ -135,7 +135,7 @@ updateContextPopup msg context contextPopup_ =
         handleOut =
             unwrapMaybe
                 withNoOutMsg
-                (withOutMsg << ContextPopupOutMsg)
+                (withOutMsg << ContextPopupOutMsg context)
                 maybeOutMsg
     in
     mapModel (setLayer <| ContextPopup context contextPopup)
