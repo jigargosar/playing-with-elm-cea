@@ -88,7 +88,7 @@ viewArchiveBtn showArchived toggleShowArchived =
             else
                 Icons.toggleLeftDef
     in
-    sDiv [ pRm 1, paddingBottom (rem 0) ]
+    sDiv [ pRm 1, paddingBottom (rem 0.5) ]
         []
         [ Btn.flat
             [ css [ rowCY, fontSize (rem 0.8) ]
