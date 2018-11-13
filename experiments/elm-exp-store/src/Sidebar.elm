@@ -39,14 +39,14 @@ view config =
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
-        [ viewInboxItem config
+        [ viewInbox config
         , viewContextsHeader addContextClicked
         , viewActive config active
         , viewArchived config archived
         ]
 
 
-viewInboxItem config =
+viewInbox config =
     let
         cid =
             ContextStore.defaultId
