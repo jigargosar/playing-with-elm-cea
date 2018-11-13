@@ -56,11 +56,24 @@ view config =
 
 
 viewInboxItem inbox =
-    viewKeyed (viewContextItem { styles = [] }) [ inbox ]
+    let
+        viewContextItem { name, navigateToTodoList, activeTodoCount, isSelected, cid } =
+            listItem { styles = [], isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
+                [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
+                ]
+    in
+    viewKeyed viewContextItem [ inbox ]
 
 
 viewContextItems =
-    viewKeyed (viewContextItem { styles = [ plRm 1 ] })
+    let
+        viewContextItem { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
+            listItem { styles = [ plRm 1 ], isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
+                [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
+                , viewMoreMenuIcon { isOpen = moreOpen, clickMsg = moreClicked }
+                ]
+    in
+    viewKeyed viewContextItem
 
 
 viewArchived { showArchived, toggleShowArchived } archived =
@@ -114,13 +127,6 @@ liTextButton =
         , hs
         , fa
         , fBody
-        ]
-
-
-viewContextItem { styles } { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
-    listItem { styles = styles, isSelected = isSelected, domId = ContextPopup.getRefIdFromContextId cid }
-        [ viewContextName { name = name, onClickMsg = navigateToTodoList, count = activeTodoCount }
-        , viewMoreMenuIcon { isOpen = moreOpen, clickMsg = moreClicked }
         ]
 
 
