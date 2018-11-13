@@ -158,7 +158,6 @@ logCmd =
 
 type Msg
     = NoOp
-    | Warn Log.Line
     | NavigateToTodoListWithContextId ContextId
     | MsgTodoStore TodoStore.Msg
     | MsgContextStore ContextStore.Msg
@@ -227,9 +226,6 @@ update message model =
 
                 _ ->
                     ( model, Cmd.none )
-
-        Warn logMessages ->
-            ( model, logCmd logMessages )
 
         NavigateToTodoListWithContextId contextId ->
             pure { model | contextId = contextId, showTempSidebar = False }
