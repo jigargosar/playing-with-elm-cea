@@ -26,6 +26,7 @@ module BasicsX exposing
     , optionalOr
     , propEq
     , replaceHead
+    , safeModMy
     , swap
     , ter
     , tsDecoder
@@ -225,6 +226,14 @@ swap ( a, b ) =
 
 isWhitespaceOrEmptyString =
     String.trim >> String.isEmpty
+
+
+safeModMy total num =
+    if total == 0 then
+        num
+
+    else
+        modBy total num
 
 
 
