@@ -29,7 +29,7 @@ type Msg
     = TodoDialogMsg TodoDialog.Msg
     | ContextDialogMsg ContextDialog.Msg
     | ContextPopupMsg ContextPopup.Msg
-    | OpenTodoDialog TodoDialog.Msg TodoDialog.Model
+    | OpenCreateTodoDialog ContextId
 
 
 type OutMsg
@@ -57,8 +57,8 @@ update message layer_ =
         ( TodoDialogMsg msg, TodoDialog model ) ->
             updateTodoDialog msg model
 
-        ( OpenTodoDialog msg model, NoLayer ) ->
-            updateTodoDialog msg model
+        ( OpenCreateTodoDialog cid, NoLayer ) ->
+            updateTodoDialog TodoDialog.autoFocus (TodoDialog.initCreate cid)
 
         _ ->
             addCmd (logCmd [ "invalid msg,layer combination" ])

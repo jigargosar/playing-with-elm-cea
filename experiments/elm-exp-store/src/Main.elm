@@ -307,7 +307,7 @@ update message model =
                 ( layer, cmd, outMsg ) =
                     Layer.update msg model.layer
 
-                _ =
+                handleOut =
                     case outMsg of
                         Layer.TodoDialogOutMsg (TodoDialog.Submit TodoDialog.Create contents cid) ->
                             mapModel (setLayer Layer.NoLayer)
@@ -319,15 +319,13 @@ update message model =
                         _ ->
                             identity
             in
-            pure model
+            pure { model | layer = layer }
+                |> handleOut
 
         OpenCreateTodoDialog ->
-            attemptToOpenLayer
-                (updateTodoDialog
-                    TodoDialog.autoFocus
-                    (TodoDialog.initCreate (getSelectedContextId model))
-                )
-                model
+            pure model
+                |> andThenUpdate
+                    (LayerMsg <| Layer.OpenCreateTodoDialog <| getSelectedContextId model)
 
         OpenEditTodoDialog todo ->
             attemptToOpenLayer
