@@ -76,7 +76,7 @@ viewInboxItem config inbox =
 
 viewContextItems config =
     let
-        viewContextItem { name, navigateToTodoList, activeTodoCount, isSelected, moreClicked, moreOpen, cid } =
+        viewContextItem { name, navigateToTodoList, activeTodoCount, moreClicked, moreOpen, cid } =
             listItem
                 { styles = [ plRm 1 ]
                 , isSelected = config.isSelected cid
