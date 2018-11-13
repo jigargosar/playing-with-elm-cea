@@ -2,10 +2,12 @@ module CmdDialog exposing (Model, Msg(..), OutMsg(..), init, update, view)
 
 import Css exposing (absolute, position)
 import DomX exposing (DomId)
+import Focus
 import HotKey
 import Html.Styled exposing (Html, div, input, text)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput)
+import Log
 import Styles exposing (..)
 import UI exposing (..)
 import UpdateReturn exposing (..)
@@ -22,6 +24,7 @@ init =
 type Msg
     = BackDropClicked DomId
     | AutoFocus
+    | FocusResult Focus.FocusResult
 
 
 type OutMsg
@@ -32,11 +35,13 @@ update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
 update message =
     (case message of
         AutoFocus ->
-            withNoOutMsg
+            addEffect (getInputId >> Focus.attempt FocusResult)
+                >> withNoOutMsg
 
-        --        FocusResult r ->
-        --            addCmd (Log.focusResult "ContextPopup.elm" r)
-        --                >> withNoOutMsg
+        FocusResult r ->
+            addCmd (Log.focusResult "CmdDialog.elm" r)
+                >> withNoOutMsg
+
         BackDropClicked targetId ->
             withMaybeOutMsg
                 (\model ->
