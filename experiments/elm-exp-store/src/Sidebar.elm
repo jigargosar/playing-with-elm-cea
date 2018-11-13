@@ -139,15 +139,6 @@ listItem { styles, isSelected, domId } =
         [ id domId, class "hide-child" ]
 
 
-liTextButton =
-    styled button
-        [ btnReset
-        , hs
-        , fa
-        , fBody
-        ]
-
-
 viewMoreMenuIcon { isOpen, clickMsg } =
     Btn.sIcon
         [ fgGray
@@ -165,7 +156,12 @@ viewMoreMenuIcon { isOpen, clickMsg } =
 
 
 viewContextName { name, onClickMsg, count } =
-    liTextButton
+    styled button
+        [ btnReset
+        , hs
+        , fa
+        , fBody
+        ]
         [ css
             [ if String.isEmpty name then
                 Css.batch [ ttl, fgGray ]
