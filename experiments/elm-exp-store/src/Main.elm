@@ -172,13 +172,6 @@ getCurrentContextItem model =
     ( getNameByContextId model.contextId model, model.contextId )
 
 
-allContextItems : Model -> List ContextItem
-allContextItems model =
-    ContextStore.nameDict model.contextStore
-        |> Dict.toList
-        |> List.map swap
-
-
 isSelectedContextEditable =
     getSelectedContextId >> eqs ContextStore.defaultId >> not
 
