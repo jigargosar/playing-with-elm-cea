@@ -186,7 +186,12 @@ update message model =
             pure model
 
         OnKeyDown ke ->
-            ( model, Cmd.none )
+            case model.layer of
+                Layer.NoLayer ->
+                    ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
 
         Warn logMessages ->
             ( model, logCmd logMessages )
