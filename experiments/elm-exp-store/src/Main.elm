@@ -179,6 +179,18 @@ type alias ContextItem =
     ( String, ContextId )
 
 
+getComputedSelectedIndex model =
+    let
+        ( active, completed ) =
+            getSelectedContextTodoList model
+                |> List.partition TodoStore.isNotDone
+
+        total =
+            List.length active
+    in
+    min (total - 1) model.selectedIndex
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -469,7 +481,7 @@ createTodoViewModel model idx todo =
         (MsgTodoStore <| TodoStore.markDone todo.id)
         (MsgTodoStore <| TodoStore.unmarkDone todo.id)
         (OpenEditTodoDialog todo.id)
-        (idx == model.selectedIndex)
+        (idx == getComputedSelectedIndex model)
 
 
 viewKeyedTodo : TodoViewModel msg -> ( String, Html msg )
