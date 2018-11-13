@@ -230,18 +230,6 @@ type alias ContextItem =
     ( String, ContextId )
 
 
-setLayer layer model =
-    { model | layer = layer }
-
-
-logPreventedInvalidAttemptToReplaceAnotherLayerCmd =
-    logCmd [ "handle case of replacing layer without closing it." ]
-
-
-logInvalidLayerMsgCmd =
-    logCmd [ "Invalid msg received for current layer" ]
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
@@ -301,15 +289,6 @@ update message model =
 
         ToggleCompletedTodos ->
             pure { model | showCompletedTodos = not model.showCompletedTodos }
-
-
-attemptToOpenLayer fn model =
-    case model.layer of
-        Layer.NoLayer ->
-            fn model
-
-        _ ->
-            ( model, logPreventedInvalidAttemptToReplaceAnotherLayerCmd )
 
 
 updateLayer message model =
