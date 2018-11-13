@@ -48,12 +48,15 @@ view config =
     in
     sDiv []
         [ class "min-h-100 bg-black-05" ]
-        ([ viewInboxItem inbox
-         , viewContextsHeader addContextClicked
-         , viewContextItems active
-         ]
-            ++ HtmlX.emptyWhen (not << List.isEmpty) (viewArchivedWithHeader config) archived
-        )
+        [ viewInboxItem inbox
+        , viewContextsHeader addContextClicked
+        , viewContextItems active
+        , if archived |> List.isEmpty then
+            noHtml
+
+          else
+            viewArchivedWithHeader config archived
+        ]
 
 
 viewInboxItem inbox =
@@ -65,9 +68,10 @@ viewContextItems =
 
 
 viewArchivedWithHeader { showArchived, toggleShowArchived } archived =
-    [ viewArchiveBtn showArchived toggleShowArchived
-    , HtmlX.when (always showArchived) viewContextItems archived
-    ]
+    div []
+        [ viewArchiveBtn showArchived toggleShowArchived
+        , HtmlX.when (always showArchived) viewContextItems archived
+        ]
 
 
 viewKeyed fn =
