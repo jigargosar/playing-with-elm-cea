@@ -1,6 +1,7 @@
 module ContextTodoList exposing
     ( Model
     , Msg
+    , OutMsg(..)
     , TodoListConfig
     , cycleSelectionBy
     , editSelected

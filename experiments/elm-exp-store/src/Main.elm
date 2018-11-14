@@ -303,8 +303,11 @@ updateContextTodoList message model =
 
         handleOut out =
             case out of
-                _ ->
-                    identity
+                ContextTodoList.TodoStoreMsg msg ->
+                    andThenUpdate <| TodoStoreMsg msg
+
+                ContextTodoList.LayerMsg msg ->
+                    andThenUpdate <| LayerMsg msg
     in
     pure { model | contextTodoList = contextTodoList }
         |> addTaggedCmd ContextTodoListMsg cmd
