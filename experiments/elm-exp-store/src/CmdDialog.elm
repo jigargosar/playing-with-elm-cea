@@ -327,14 +327,4 @@ viewFuzzyString result str =
         indexCharPair =
             String.foldl accumulateChar ( [], 0 ) str
     in
-    --    sDiv []
-    --        []
-    --        [ {- span
-    --                 [ style "color" "red"
-    --                 ]
-    --                 [ text (String.fromInt result.score ++ " ") ]
-    --             ,
-    --          -}
-    --          span [] (Tuple.first highlight)
-    --        ]
     Elements.highlightedChars isKey str
