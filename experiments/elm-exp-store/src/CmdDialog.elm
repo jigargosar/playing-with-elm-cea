@@ -21,7 +21,7 @@ import UpdateReturn exposing (..)
 
 
 type alias Command =
-    { name : String, outMsg : OutMsg, searchText : String }
+    { name : String, prefix : String, outMsg : OutMsg, searchText : String }
 
 
 type alias Model =
@@ -34,7 +34,7 @@ init =
 
 createContextCommand : { x | name : String, id : ContextId } -> Command
 createContextCommand { name, id } =
-    { name = name, outMsg = GotoContextTodoList id, searchText = name }
+    { name = name, prefix = "Context", outMsg = GotoContextTodoList id, searchText = name }
 
 
 getFilteredCommands contextStore model =
