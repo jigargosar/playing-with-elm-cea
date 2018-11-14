@@ -69,7 +69,7 @@ update config message =
 
         FocusInMsg todoId ->
             unwrapMaybe identity
-                (\selectedIndex -> identity)
+                (\selectedIndex -> mapModel (\model -> { model | selectedIndex = selectedIndex }))
                 (getMaybeSelectedIndexOnFocusIn todoId config)
                 >> withNothingOutMsg
 
