@@ -57,6 +57,7 @@ type alias Model =
     , showCompletedTodos : Bool
     , showTempSidebar : Bool
     , selectedIndex : Int
+    , windowSize : WindowSize
     }
 
 
