@@ -9,7 +9,7 @@ import DomX exposing (DomId)
 import Focus
 import Fuzzy
 import HotKey
-import Html.Styled exposing (Html, div, input, text)
+import Html.Styled exposing (Html, div, input, span, styled, text)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput)
 import Json.Decode as D
@@ -207,13 +207,49 @@ viewCmdList contextStore model =
         |> List.indexedMap (\idx -> viewCmd (idx == computeSelectedIndex contextStore model))
 
 
-viewCmd isSelected ( match, command ) =
+viewCmd isSelected ( result, command ) =
+    let
+        _ =
+            Debug.log "match" result
+    in
     sDiv
-        [ if isSelected then
+        [ rowCY
+        , if isSelected then
             bg "lightblue"
 
           else
             bg "inherit"
         ]
         [ class "pa2", onClick <| SelectCommand command ]
-        [ text command.name ]
+        [ sDiv [] [] [ viewFuzzyString result command.name ]
+        , sDiv [] [] [ text <| Debug.toString result ]
+        ]
+
+
+viewFuzzyString result str =
+    let
+        isKey index =
+            List.foldl
+                (\e sum ->
+                    if not sum then
+                        List.member (index - e.offset) e.keys
+
+                    else
+                        sum
+                )
+                False
+                result.matches
+
+        isMatch index =
+            List.foldl
+                (\e sum ->
+                    if not sum then
+                        e.offset <= index && (e.offset + e.length) > index
+
+                    else
+                        sum
+                )
+                False
+                result.matches
+    in
+    span [] []
