@@ -11,6 +11,7 @@ import Array
 import BasicsX exposing (eqs, safeModBy, unwrapMaybe)
 import ContextStore exposing (ContextId)
 import ContextTodoList
+import DomX exposing (DomId)
 import Focus exposing (FocusResult)
 import Html.Styled exposing (Html)
 import TodoStore exposing (Todo, TodoStore)
@@ -101,11 +102,19 @@ getMaybeSelectedIndexOnFocusIn todoId config =
 
 
 type Msg
-    = NoOp
+    = Inc
+    | Dec
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update message model =
+type OutMsg
+    = Focus DomId
+
+
+update : Config -> Msg -> Model -> ( Model, Cmd Msg )
+update config message model =
     case message of
-        NoOp ->
+        Inc ->
+            ( model, Cmd.none )
+
+        Dec ->
             ( model, Cmd.none )
