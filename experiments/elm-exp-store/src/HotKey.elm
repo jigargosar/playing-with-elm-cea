@@ -1,6 +1,8 @@
-module HotKey exposing (Event, SoftKey(..), decoder, onKeyDown)
+module HotKey exposing (Event, SoftKey(..), decoder, onKeyDown, onKeyDownHtml)
 
 import BasicsX exposing (ter)
+import Html.Events
+import Html.Styled.Attributes
 import Html.Styled.Events
 import Json.Decode as D
 import Json.Encode as E
@@ -43,8 +45,12 @@ decoder =
         (D.field "key" D.string)
 
 
-onKeyDown handler =
-    Html.Styled.Events.on "keydown"
+onKeyDown =
+    onKeyDownHtml >> Html.Styled.Attributes.fromUnstyled
+
+
+onKeyDownHtml handler =
+    Html.Events.on "keydown"
         (D.map
             handler
             decoder

@@ -13,7 +13,9 @@ import Elements
 import Focus
 import Fuzzy
 import HotKey
-import Html.Attributes exposing (id)
+import Html exposing (input)
+import Html.Attributes exposing (class, id, placeholder, value)
+import Html.Events exposing (onInput)
 import Json.Decode as D
 import Json.Encode as E
 import Log
@@ -180,7 +182,19 @@ viewLazy contextStore model =
             [ Element.alignTop
             , Element.moveDown 100
             ]
-        , content = Element.row [ Element.centerX ] [ Element.text "Hello World!" ]
+        , content =
+            Element.row [ Element.centerX ]
+                [ input
+                    [ id <| getQueryInputId model
+                    , placeholder "Type Command Name"
+                    , class "flex-auto pa3"
+                    , value model.query
+                    , onInput QueryChanged
+                    , HotKey.onKeyDownHtml QueryInputKeyDown
+                    ]
+                    []
+                    |> Element.html
+                ]
         }
 
 
