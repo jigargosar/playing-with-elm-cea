@@ -16,6 +16,7 @@
             "elm/svg": "1.0.1",
             "elm/time": "1.0.0",
             "feathericons/elm-feather": "1.0.0",
+            "mdgriffith/elm-ui": "1.1.0",
             "prozacchiwawa/elm-json-codec": "3.3.1",
             "rtfeldman/elm-css": "15.1.0",
             "the-sett/elm-update-helper": "1.4.1",

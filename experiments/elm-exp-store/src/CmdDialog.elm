@@ -6,10 +6,12 @@ import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextStore)
 import Css exposing (absolute, borderRadius, left, none, pct, pointerEvents, pointerEventsAll, position, px, right, top, zero)
 import DomX exposing (DomId)
+import Element
+import Elements
 import Focus
 import Fuzzy
 import HotKey
-import Html.Styled exposing (Html, div, input, span, styled, text)
+import Html.Styled as Html exposing (Html, div, input, span, styled, text)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput)
 import Html.Styled.Lazy
@@ -217,7 +219,20 @@ viewCmd isSelected ( result, command ) =
         , dFlexRow
         ]
         [ class "pa2", onClick <| SelectCommand command ]
-        [ sDiv [ rowCXY, hs, bg "#79b8ff", p2Rm 0 0.2, borderRadius (px 4) ] [] [ sDiv [ fzPx 10 ] [] [ text command.prefix ] ]
+        [ sDiv
+            [ rowCXY
+            , hs
+            , bg "#79b8ff"
+            , p2Rm 0 0.2
+            , borderRadius (px 4)
+            ]
+            []
+            [ {- sDiv [ fzPx 10 ] [] [ text command.prefix ]
+                 ,
+              -}
+              fromElement <| Elements.tag command.prefix
+            ]
+        , fromElement <| Elements.tag command.prefix
         , viewFuzzyString result command.name
 
         --        , sDiv [] [] [ text <| Debug.toString result ]

@@ -1,7 +1,8 @@
-module UI exposing (appBar, backdrop, boolHtml, maybeHtml, noHtml, row, sDiv, section1)
+module UI exposing (appBar, backdrop, boolHtml, fromElement, maybeHtml, noHtml, row, sDiv, section1)
 
 import BasicsX exposing (..)
 import Css exposing (..)
+import Element
 import FeatherIcons
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
@@ -67,3 +68,7 @@ rowStyles containerOptions =
 row : List ContainerOption -> HtmlNode msg
 row containerOptions =
     styled div (rowStyles containerOptions)
+
+
+fromElement el =
+    sDiv [] [] [ Html.fromUnstyled <| Element.layout [] el ]
