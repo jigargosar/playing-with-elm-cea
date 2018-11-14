@@ -167,7 +167,7 @@ cycleSelectedIndexBy num model =
             , Focus.attempt OnFocusResult <| ContextTodoList.getTodoDomId todo
             )
         )
-        (TodoListSelection.cycleSelectedIndexBy__ num (selectionConfig model))
+        (TodoListSelection.cycleSelectedIndexBy num (selectionConfig model))
 
 
 setSelectedIndexOnFocusIn todoId model =

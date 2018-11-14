@@ -1,7 +1,7 @@
 module TodoListSelection exposing
     ( Config
     , SelectedIndex
-    , cycleSelectedIndexBy__
+    , cycleSelectedIndexBy
     , getComputedSelectedIndex
     , getMaybeSelectedIndexOnFocusIn
     , getMaybeSelectedTodo
@@ -66,8 +66,8 @@ getMaybeSelectedTodo config =
         active |> Array.fromList |> Array.get (getComputedSelectedIndex config)
 
 
-cycleSelectedIndexBy__ : Int -> Config -> Maybe ( SelectedIndex, Todo )
-cycleSelectedIndexBy__ num config =
+cycleSelectedIndexBy : Int -> Config -> Maybe ( SelectedIndex, Todo )
+cycleSelectedIndexBy num config =
     let
         ( active, completed ) =
             getSelectedContextTodoList config
@@ -100,11 +100,3 @@ getMaybeSelectedIndexOnFocusIn todoId config =
         |> List.filter (Tuple.second >> .id >> eqs todoId)
         |> List.head
         |> Maybe.map Tuple.first
-
-
-type Msg
-    = Inc Int
-
-
-type OutMsg
-    = FocusTodoId TodoId
