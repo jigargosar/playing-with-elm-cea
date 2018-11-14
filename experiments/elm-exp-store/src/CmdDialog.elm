@@ -254,11 +254,12 @@ viewFuzzyString result str =
 
               else
                 []
-            , if isMatch index then
-                [ bg "yellow" ]
 
-              else
-                []
+            --            , if isMatch index then
+            --                [ bg "yellow" ]
+            --
+            --              else
+            --                []
             ]
                 |> List.concat
 
