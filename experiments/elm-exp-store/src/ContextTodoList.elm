@@ -88,7 +88,7 @@ getSelectedContextTodoList { todoStore, selectedContextId } =
     todoStore |> TodoStore.listForContextId selectedContextId
 
 
-getComputedSelectedIndex config =
+getComputedSelectedIndex config model =
     let
         ( active, completed ) =
             getSelectedContextTodoList config
@@ -97,10 +97,10 @@ getComputedSelectedIndex config =
         total =
             List.length active
     in
-    min (total - 1) config.selectedIndex
+    min (total - 1) model.selectedIndex
 
 
-getMaybeSelectedTodo config =
+getMaybeSelectedTodo config model =
     let
         ( active, completed ) =
             getSelectedContextTodoList config
@@ -113,11 +113,11 @@ getMaybeSelectedTodo config =
         Nothing
 
     else
-        active |> Array.fromList |> Array.get (getComputedSelectedIndex config)
+        active |> Array.fromList |> Array.get (getComputedSelectedIndex config model)
 
 
-cycleSelectedIndexBy : Int -> TodoListConfig -> Maybe ( SelectedIndex, Todo )
-cycleSelectedIndexBy num config =
+cycleSelectedIndexBy : Int -> TodoListConfig -> Model -> Maybe ( SelectedIndex, Todo )
+cycleSelectedIndexBy num config model =
     let
         ( active, completed ) =
             getSelectedContextTodoList config
@@ -129,7 +129,7 @@ cycleSelectedIndexBy num config =
     if total > 0 then
         let
             selectedIndex =
-                safeModBy total (config.selectedIndex + num)
+                safeModBy total (model.selectedIndex + num)
         in
         Array.fromList active
             |> Array.get selectedIndex
@@ -189,7 +189,10 @@ viewTodoList config model =
     in
     div [ css [] ]
         [ active
-            |> List.indexedMap (\idx todo -> viewKeyedTodo config idx todo)
+            |> List.indexedMap
+                (\idx todo ->
+                    viewKeyedTodo config (getComputedSelectedIndex config model == idx) todo
+                )
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY ], class "pa3" ]
             [ styled Btn.flatPl0
@@ -201,20 +204,20 @@ viewTodoList config model =
             , viewCompletedBtn model.completedVisible
             ]
         , if model.completedVisible then
-            viewCompletedSection config completed
+            viewCompletedSection config completed model
 
           else
             noHtml
         ]
 
 
-viewCompletedSection config completed =
+viewCompletedSection config completed model =
     if List.isEmpty completed then
         sDiv [ fgGray ] [ class "pa3" ] [ text "No Completed Tasks" ]
 
     else
         completed
-            |> List.indexedMap (\idx todo -> viewKeyedTodo config idx todo)
+            |> List.indexedMap (\idx todo -> viewKeyedTodo config (getComputedSelectedIndex config model == idx) todo)
             |> HKeyed.node "div" [ css [ vs ] ]
 
 
@@ -234,8 +237,8 @@ viewCompletedBtn completedVisible =
         ]
 
 
-viewKeyedTodo : TodoListConfig -> Int -> Todo -> ( String, Html Msg )
-viewKeyedTodo config idx todo =
+viewKeyedTodo : TodoListConfig -> Bool -> Todo -> ( String, Html Msg )
+viewKeyedTodo config isSelected todo =
     let
         doneIconBtn =
             if todo.done then
@@ -262,7 +265,7 @@ viewKeyedTodo config idx todo =
     ( domId
     , sDiv
         [ rowCY
-        , if config.selectedIndex == idx then
+        , if isSelected then
             bg "lightblue"
 
           else
