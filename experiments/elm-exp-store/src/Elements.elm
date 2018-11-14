@@ -1,9 +1,9 @@
-module Elements exposing (myElement, tag)
+module Elements exposing (myElement, rootFontFamily, tag)
 
 import Element exposing (Element, centerY, el, fill, height, padding, paddingXY, rgb, rgb255, row, spacing)
 import Element.Background as Background
 import Element.Border as Border
-import Element.Font
+import Element.Font as Font
 
 
 myElement : Element msg
@@ -29,7 +29,25 @@ tag content =
         , paddingXY 4 0
         ]
         [ el
-            [ Element.Font.size 10
+            [ Font.size 10
             ]
             (Element.text content)
         ]
+
+
+rootFontFamily =
+    [ "-apple-system"
+    , "BlinkMacSystemFont"
+    , "avenir next"
+    , "avenir"
+    , "helvetica neue"
+    , "helvetica"
+    , "ubuntu"
+    , "roboto"
+    , "noto"
+    , "segoe ui"
+    , "arial"
+    , "sans-serif"
+    ]
+        |> List.map Font.typeface
+        |> Font.family

@@ -3,6 +3,8 @@ module UI exposing (appBar, backdrop, boolHtml, fromElement, maybeHtml, noHtml, 
 import BasicsX exposing (..)
 import Css exposing (..)
 import Element
+import Element.Font
+import Elements
 import FeatherIcons
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
@@ -71,4 +73,4 @@ row containerOptions =
 
 
 fromElement el =
-    sDiv [] [] [ Html.fromUnstyled <| Element.layout [] el ]
+    sDiv [] [] [ Html.fromUnstyled <| Element.layout [ Elements.rootFontFamily ] el ]
