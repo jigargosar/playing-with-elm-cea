@@ -5,6 +5,7 @@ import CmdDialog
 import ContextDialog
 import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextStore)
+import DomX exposing (WindowSize)
 import Element
 import Html.Styled as Html exposing (Html, fromUnstyled)
 import Log
@@ -95,8 +96,12 @@ subscriptions layer =
         ]
 
 
-update : { x | contextStore : ContextStore, todoStore : TodoStore } -> Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
-update { contextStore, todoStore } message layer =
+type alias UpdateConfig x =
+    { x | contextStore : ContextStore, todoStore : TodoStore, windowSize : WindowSize }
+
+
+update : UpdateConfig x -> Msg -> Layer -> ( Layer, Cmd Msg, OutMsg )
+update { contextStore, todoStore, windowSize } message layer =
     (case message of
         TodoDialogMsg msg ->
             case layer of

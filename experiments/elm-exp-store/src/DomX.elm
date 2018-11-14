@@ -1,10 +1,14 @@
-module DomX exposing (DomId, domIdDecoder, onClickTargetId, onClickTargetIdHtml, onFocusIn, onFocusInHtml, onFocusOut, onFocusOutHtml)
+module DomX exposing (DomId, WindowSize, domIdDecoder, onClickTargetId, onClickTargetIdHtml, onFocusIn, onFocusInHtml, onFocusOut, onFocusOutHtml)
 
 import Html exposing (Attribute)
 import Html.Events
 import Html.Styled.Attributes
 import Json.Decode as D exposing (Decoder)
 import Task exposing (Task)
+
+
+type alias WindowSize =
+    { width : Int, height : Int }
 
 
 type alias DomId =

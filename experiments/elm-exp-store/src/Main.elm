@@ -12,7 +12,7 @@ import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
 import Dict exposing (Dict)
-import DomX exposing (DomId)
+import DomX exposing (DomId, WindowSize)
 import FeatherIcons as Icon
 import Focus
 import HotKey exposing (SoftKey(..))
@@ -59,10 +59,6 @@ type alias Model =
     , selectedIndex : Int
     , windowSize : WindowSize
     }
-
-
-type alias WindowSize =
-    { width : Int, height : Int }
 
 
 type alias Flags =
