@@ -39,7 +39,6 @@ import Svg.Styled exposing (svg)
 import Task
 import Time
 import TodoDialog
-import TodoListSelection
 import TodoStore exposing (Todo, TodoContent, TodoId, TodoStore)
 import UI exposing (..)
 import Update2
