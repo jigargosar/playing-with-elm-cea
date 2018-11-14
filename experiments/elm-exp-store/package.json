@@ -8,6 +8,7 @@
     "flyd": "^0.2.8",
     "lodash.debounce": "^4.0.8",
     "popper.js": "^1.14.4",
+    "primer": "^10.9.0",
     "ramda": "^0.25.0",
     "tachyons": "^4.11.1"
   },

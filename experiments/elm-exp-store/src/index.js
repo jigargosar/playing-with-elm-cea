@@ -1,3 +1,4 @@
+import 'primer'
 import 'tachyons'
 import './main.css'
 // noinspection ES6CheckImport

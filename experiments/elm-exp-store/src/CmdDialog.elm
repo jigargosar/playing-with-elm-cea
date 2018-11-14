@@ -4,7 +4,7 @@ import Array
 import BasicsX exposing (safeModBy)
 import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextStore)
-import Css exposing (absolute, left, none, pct, pointerEvents, pointerEventsAll, position, right, top, zero)
+import Css exposing (absolute, borderRadius, left, none, pct, pointerEvents, pointerEventsAll, position, px, right, top, zero)
 import DomX exposing (DomId)
 import Focus
 import Fuzzy
@@ -214,10 +214,10 @@ viewCmd isSelected ( result, command ) =
 
           else
             bg "inherit"
-        , rowCY
+        , dFlexRow
         ]
         [ class "pa2", onClick <| SelectCommand command ]
-        [ sDiv [ hs, fzPx 14 ] [] [ text command.prefix ]
+        [ sDiv [ rowCXY, hs, bg "#79b8ff", p2Rm 0 0.2, borderRadius (px 4) ] [] [ sDiv [ fzPx 10 ] [] [ text command.prefix ] ]
         , viewFuzzyString result command.name
 
         --        , sDiv [] [] [ text <| Debug.toString result ]

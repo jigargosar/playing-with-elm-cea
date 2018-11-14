@@ -1,4 +1,4 @@
-module UI exposing (appBar, backdrop, boolHtml, maybeHtml, noHtml, sDiv, section1)
+module UI exposing (appBar, backdrop, boolHtml, maybeHtml, noHtml, row, sDiv, section1)
 
 import BasicsX exposing (..)
 import Css exposing (..)
@@ -40,3 +40,30 @@ appBar =
 
 section1 =
     sDiv [ rowCY, w100, maxWidth (px 940) ]
+
+
+type alias HtmlNode msg =
+    List (Attribute msg) -> List (Html msg) -> Html msg
+
+
+type ContainerOption
+    = CX
+    | CY
+
+
+rowContainerOptionToStyle opt =
+    case opt of
+        CX ->
+            justifyContent center
+
+        CY ->
+            alignItems center
+
+
+rowStyles containerOptions =
+    [ dFlexRow, fa ] ++ List.map rowContainerOptionToStyle containerOptions
+
+
+row : List ContainerOption -> HtmlNode msg
+row containerOptions =
+    styled div (rowStyles containerOptions)
