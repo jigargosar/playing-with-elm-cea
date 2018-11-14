@@ -75,6 +75,7 @@ const app = Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
     now: Date.now(),
+    windowSize: {width:window.innerWidth, height:window.innerHeight},
     todos: initialTodos,
     contexts: initialContexts,
   },
