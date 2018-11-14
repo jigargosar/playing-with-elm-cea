@@ -12,7 +12,7 @@ import Element.Lazy
 import Elements
 import Focus
 import Fuzzy
-import HotKey
+import HotKey exposing (SoftKey(..))
 import Html exposing (input)
 import Html.Attributes exposing (class, id, placeholder, value)
 import Html.Events exposing (onInput)
@@ -75,6 +75,7 @@ type Msg
     | FocusResult Focus.FocusResult
     | QueryChanged String
     | GlobalKeyDown HotKey.Event
+    | GlobalKeyUp HotKey.Event
     | QueryInputKeyDown HotKey.Event
     | SelectCommand Command
 
@@ -87,6 +88,7 @@ type OutMsg
 subscriptions model =
     Sub.batch
         [ Browser.Events.onKeyDown (D.map GlobalKeyDown HotKey.decoder)
+        , Browser.Events.onKeyUp (D.map GlobalKeyUp HotKey.decoder)
         ]
 
 
@@ -126,7 +128,26 @@ update contextStore message =
                     andThen (cycleSelectedIdxBy contextStore -1)
                         >> withNoOutMsg
 
-                _ ->
+                ( _, "Shift" ) ->
+                    withNoOutMsg
+
+                ( _, key ) ->
+                    let
+                        _ =
+                            Debug.log "keyDown" key
+                    in
+                    withNoOutMsg
+
+        GlobalKeyUp ke ->
+            case ke of
+                ( _, "Shift" ) ->
+                    withNoOutMsg
+
+                ( _, key ) ->
+                    let
+                        _ =
+                            Debug.log "keyUp" key
+                    in
                     withNoOutMsg
 
         QueryInputKeyDown ke ->
