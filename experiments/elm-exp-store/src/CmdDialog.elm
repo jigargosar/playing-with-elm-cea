@@ -188,7 +188,7 @@ viewLazy contextStore windowSize model =
             Element.column
                 [ Elements.spacing2
                 , Element.width <|
-                    Element.minimum (windowSize.width // 100 * 20) <|
+                    Element.minimum (toFloat windowSize.width / 100 * 80 |> round) <|
                         Element.shrink
                 ]
                 [ Element.el [ Element.width Element.fill ]
