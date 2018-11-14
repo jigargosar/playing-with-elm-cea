@@ -181,7 +181,7 @@ type Msg
     | EditSelectedTodo
     | LayerMsg Layer.Msg
     | OnKeyDown HotKey.Event
-    | OnTodoFocusIn Todo
+    | OnTodoFocusIn TodoId
 
 
 type alias ContextItem =
@@ -246,7 +246,7 @@ cycleSelectedIndexBy num model =
         ( model, Cmd.none )
 
 
-setSelectedIndexOnFocusIn todo model =
+setSelectedIndexOnFocusIn todoId model =
     let
         ( active, completed ) =
             getSelectedContextTodoList model
@@ -255,7 +255,7 @@ setSelectedIndexOnFocusIn todo model =
         selectedIndex =
             Array.fromList active
                 |> Array.toIndexedList
-                |> List.filter (Tuple.second >> .id >> eqs todo.id)
+                |> List.filter (Tuple.second >> .id >> eqs todoId)
                 |> List.head
                 |> unwrapMaybe model.selectedIndex Tuple.first
     in
@@ -273,8 +273,8 @@ update message model =
                 |> pure
                 >> addCmd (Log.focusResult "Main.elm" r)
 
-        OnTodoFocusIn todo ->
-            setSelectedIndexOnFocusIn todo model
+        OnTodoFocusIn todoId ->
+            setSelectedIndexOnFocusIn todoId model
 
         OnWindowSize width height ->
             pure { model | windowSize = { width = width, height = height } }
@@ -560,6 +560,18 @@ type alias TodoViewModel msg =
     }
 
 
+type alias TodoListConfig msg =
+    { todoStore : TodoStore
+    , toggleShowCompleted : msg
+    , isShowingCompleted : Bool
+    , selectedIndex : Int
+    , markDone : TodoId -> msg
+    , unmarkDone : TodoId -> msg
+    , focusInMsg : TodoId -> msg
+    , editMsg : TodoId -> msg
+    }
+
+
 createTodoViewModel : Model -> Int -> Todo -> TodoViewModel Msg
 createTodoViewModel model idx todo =
     TodoViewModel
@@ -571,7 +583,7 @@ createTodoViewModel model idx todo =
         (MsgTodoStore <| TodoStore.unmarkDone todo.id)
         (idx == getComputedSelectedIndex model)
         (getTodoDomId todo)
-        (OnTodoFocusIn todo)
+        (OnTodoFocusIn todo.id)
         (OpenEditTodoDialog todo.id)
 
 
