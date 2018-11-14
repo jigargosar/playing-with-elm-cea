@@ -7,6 +7,7 @@ module TodoStore exposing
     , addNew
     , delete
     , get
+    , getActiveTodoListCountForContextId
     , isDone
     , isNotDone
     , list
@@ -239,3 +240,7 @@ isDone =
 
 isNotDone =
     isDone >> not
+
+
+getActiveTodoListCountForContextId cid =
+    listActiveForContextId cid >> List.length

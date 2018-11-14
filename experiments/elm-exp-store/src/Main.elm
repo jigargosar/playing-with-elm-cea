@@ -102,17 +102,12 @@ contextIdEq cid =
 
 getSelectedContextTodoList : Model -> List Todo
 getSelectedContextTodoList model =
-    getTodoListForContextId model.contextId model
+    model.todoStore |> TodoStore.listForContextId model.contextId
 
 
 getActiveTodoListCountForContextId : ContextId -> Model -> Int
 getActiveTodoListCountForContextId cid =
-    .todoStore >> TodoStore.listActiveForContextId cid >> List.length
-
-
-getTodoListForContextId : ContextId -> Model -> List Todo
-getTodoListForContextId cid =
-    .todoStore >> TodoStore.listForContextId cid
+    .todoStore >> TodoStore.getActiveTodoListCountForContextId cid
 
 
 getUserDefinedContextList : Model -> List Context
