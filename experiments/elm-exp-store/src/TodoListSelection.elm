@@ -114,6 +114,27 @@ update : Config -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
 update config message selectedIndex =
     (case message of
         Inc offset ->
+            let
+                ( active, completed ) =
+                    getSelectedContextTodoList config
+                        |> List.partition TodoStore.isNotDone
+
+                total =
+                    List.length active
+
+                _ =
+                    if total > 0 then
+                        let
+                            newSI =
+                                safeModBy total (config.selectedIndex + offset)
+                        in
+                        Array.fromList active
+                            |> Array.get newSI
+                            |> Maybe.map (\todo -> ( newSI, todo ))
+
+                    else
+                        Nothing
+            in
             withNoOutMsg
     )
     <|
