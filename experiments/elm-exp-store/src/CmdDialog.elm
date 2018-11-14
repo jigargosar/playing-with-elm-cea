@@ -158,12 +158,12 @@ getDomIdPrefix model =
     "cmd-dialog"
 
 
-getBackdropDomId =
-    getDomIdPrefix >> (++) "-backdrop"
+getBackdropDomId model =
+    getDomIdPrefix model ++ "-backdrop"
 
 
-getQueryInputId =
-    getDomIdPrefix >> (++) "-query-input"
+getQueryInputId model =
+    getDomIdPrefix model ++ "-query-input"
 
 
 
