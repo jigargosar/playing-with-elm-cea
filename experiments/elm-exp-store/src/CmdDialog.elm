@@ -176,20 +176,9 @@ view =
 
 
 viewBackdrop model =
-    Element.row
+    Elements.viewBackdrop
         [ getBackdropDomId model |> id |> Element.htmlAttribute
         , DomX.onClickTargetIdHtml BackDropClicked |> Element.htmlAttribute
-        , Element.width Element.fill
-        , Element.height Element.fill
-
-        --        , Element.centerX
-        --        , Element.centerY
-        ]
-        [ Element.el
-            [ Element.centerX
-            , Element.centerY
-            ]
-            (Element.text "Hello")
         ]
 
 

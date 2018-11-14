@@ -1,6 +1,6 @@
-module Elements exposing (highlightedChars, list, listItem, tag, wrapperLayout)
+module Elements exposing (highlightedChars, list, listItem, tag, viewBackdrop, wrapperLayout)
 
-import Element exposing (Element, centerX, centerY, column, el, fill, height, rgb, rgb255, row, width)
+import Element exposing (Element, centerX, centerY, column, el, fill, height, rgb, rgb255, rgba, row, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -12,6 +12,10 @@ tagColor =
 
 selectedColor =
     rgb255 205 236 255
+
+
+backdropColor =
+    rgba 0 0 0 0.2
 
 
 spacing1 =
@@ -99,6 +103,7 @@ viewBackdrop attrs =
          , height fill
          , centerX
          , centerY
+         , Background.color backdropColor
          ]
             ++ attrs
         )
