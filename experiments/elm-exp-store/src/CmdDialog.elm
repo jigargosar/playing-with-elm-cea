@@ -48,14 +48,6 @@ getFilteredCommands contextStore model =
 
         simpleMatch config separators needle hay =
             Fuzzy.match config separators needle hay
-
-        --        _ =
-        --            commands
-        --                |> List.map (\command -> ( simpleMatch [] [] model.query command.searchText, command ))
-        --                |> Debug.log "res"
-        _ =
-            commands
-                |> Simple.Fuzzy.filter .searchText model.query
     in
     commands
         |> List.map (\command -> ( simpleMatch [] [] model.query command.searchText, command ))
