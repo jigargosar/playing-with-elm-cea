@@ -107,17 +107,12 @@ getSelectedContextTodoList model =
 
 getActiveTodoListCountForContextId : ContextId -> Model -> Int
 getActiveTodoListCountForContextId cid =
-    getActiveTodoListForContextId cid >> List.length
-
-
-getActiveTodoListForContextId : ContextId -> Model -> List Todo
-getActiveTodoListForContextId cid =
-    .todoStore >> TodoStore.list >> List.filter (allPass [ contextIdEq cid, TodoStore.isNotDone ])
+    .todoStore >> TodoStore.listActiveForContextId cid >> List.length
 
 
 getTodoListForContextId : ContextId -> Model -> List Todo
 getTodoListForContextId cid =
-    .todoStore >> TodoStore.list >> List.filter (allPass [ contextIdEq cid ])
+    .todoStore >> TodoStore.listForContextId cid
 
 
 getUserDefinedContextList : Model -> List Context

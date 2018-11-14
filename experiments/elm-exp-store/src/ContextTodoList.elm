@@ -42,7 +42,7 @@ viewTodoList : TodoListConfig msg -> Html msg
 viewTodoList config =
     let
         ( active, completed ) =
-            TodoStore.filterByContextId config.selectedContextId config.todoStore
+            TodoStore.listForContextId config.selectedContextId config.todoStore
                 |> List.partition TodoStore.isNotDone
     in
     div [ css [] ]

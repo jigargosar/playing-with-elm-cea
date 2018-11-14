@@ -6,11 +6,12 @@ module TodoStore exposing
     , TodoStore
     , addNew
     , delete
-    , filterByContextId
     , get
     , isDone
     , isNotDone
     , list
+    , listActiveForContextId
+    , listForContextId
     , load
     , markDone
     , setContent
@@ -218,8 +219,12 @@ contextIdEq cid =
     propEq .contextId cid
 
 
-filterByContextId cid =
+listForContextId cid =
     list >> List.filter (allPass [ contextIdEq cid ])
+
+
+listActiveForContextId cid =
+    list >> List.filter (allPass [ contextIdEq cid, isNotDone ])
 
 
 get : TodoId -> TodoStore -> Maybe Todo
