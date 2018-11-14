@@ -128,7 +128,6 @@ type Msg
     | OpenEditContextDialog ContextId
     | OpenContextPopup ContextId
     | OpenCmdDialog
-    | EditSelectedTodo
     | LayerMsg Layer.Msg
     | OnKeyDown HotKey.Event
     | OnTodoFocusIn TodoId
@@ -207,7 +206,6 @@ update message model =
                         ( [], "e" ) ->
                             updateContextTodoList ContextTodoList.editSelected model
 
-                        --                            update EditSelectedTodo model
                         _ ->
                             ( model, Cmd.none )
 
@@ -252,9 +250,6 @@ update message model =
 
         OpenEditTodoDialog todoId ->
             updateLayer (Layer.OpenEditTodoDialog todoId) model
-
-        EditSelectedTodo ->
-            updateContextTodoList ContextTodoList.editSelected model
 
         OpenCreateContextDialog ->
             updateLayer Layer.OpenCreateContextDialog model
