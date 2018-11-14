@@ -301,7 +301,7 @@ updateLayer message model =
 updateContextTodoList message model =
     let
         ( contextTodoList, cmd, maybeOutMsg ) =
-            ContextTodoList.update message model.contextTodoList
+            ContextTodoList.update (contextTodoListConfig model) message model.contextTodoList
 
         handleOut out =
             case out of
@@ -385,28 +385,28 @@ viewSidebar model =
 -- TodoList Page
 
 
+contextTodoListConfig : TodoListConfig
+contextTodoListConfig model =
+    { todoStore = model.todoStore
+    , contextStore = model.contextStore
+
+    --            , toggleShowCompleted = ToggleCompletedTodos
+    --            , isShowingCompleted = model.showCompletedTodos
+    , selectedIndex = getComputedSelectedIndex model
+
+    --            , markDone = TodoStoreMsg << TodoStore.markDone
+    --            , unmarkDone = TodoStoreMsg << TodoStore.unmarkDone
+    --            , focusInMsg = OnTodoFocusIn
+    --            , editMsg = OpenEditTodoDialog
+    , selectedContextId = getSelectedContextId model
+
+    --            , addNewMsg = OpenCreateTodoDialog
+    }
+
+
 viewContextTodoList : Model -> Html Msg
 viewContextTodoList model =
-    let
-        config : TodoListConfig
-        config =
-            { todoStore = model.todoStore
-            , contextStore = model.contextStore
-
-            --            , toggleShowCompleted = ToggleCompletedTodos
-            --            , isShowingCompleted = model.showCompletedTodos
-            , selectedIndex = getComputedSelectedIndex model
-
-            --            , markDone = TodoStoreMsg << TodoStore.markDone
-            --            , unmarkDone = TodoStoreMsg << TodoStore.unmarkDone
-            --            , focusInMsg = OnTodoFocusIn
-            --            , editMsg = OpenEditTodoDialog
-            , selectedContextId = getSelectedContextId model
-
-            --            , addNewMsg = OpenCreateTodoDialog
-            }
-    in
-    ContextTodoList.view config model.contextTodoList |> Html.map ContextTodoListMsg
+    ContextTodoList.view (contextTodoListConfig model) model.contextTodoList |> Html.map ContextTodoListMsg
 
 
 

@@ -61,14 +61,17 @@ type OutMsg
     | LayerMsg Layer.Msg
 
 
-update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
-update message =
+update : TodoListConfig -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
+update config message =
     (case message of
         NoOp ->
             withNothingOutMsg
 
         FocusInMsg todoId ->
-            withNothingOutMsg
+            unwrapMaybe identity
+                (\selectedIndex -> identity)
+                (getMaybeSelectedIndexOnFocusIn todoId config)
+                >> withNothingOutMsg
 
         ToggleCompletedVisible ->
             mapModel (\model -> { model | completedVisible = not model.completedVisible })
@@ -80,14 +83,15 @@ update message =
         << pure
 
 
-type alias Config =
-    { todoStore : TodoStore
-    , selectedContextId : ContextId
-    , selectedIndex : Int
-    }
+
+--type alias Config =
+--    { todoStore : TodoStore
+--    , selectedContextId : ContextId
+--    , selectedIndex : Int
+--    }
 
 
-getSelectedContextTodoList : Config -> List Todo
+getSelectedContextTodoList : TodoListConfig -> List Todo
 getSelectedContextTodoList { todoStore, selectedContextId } =
     todoStore |> TodoStore.listForContextId selectedContextId
 
@@ -120,7 +124,7 @@ getMaybeSelectedTodo config =
         active |> Array.fromList |> Array.get (getComputedSelectedIndex config)
 
 
-cycleSelectedIndexBy : Int -> Config -> Maybe ( SelectedIndex, Todo )
+cycleSelectedIndexBy : Int -> TodoListConfig -> Maybe ( SelectedIndex, Todo )
 cycleSelectedIndexBy num config =
     let
         ( active, completed ) =
