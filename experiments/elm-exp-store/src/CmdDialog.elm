@@ -31,11 +31,11 @@ type alias Command =
 
 
 type alias Model =
-    { query : String, selectedIndex : Int }
+    { query : String, selectedIndex : Int, shiftDown : Bool }
 
 
 init =
-    { query = "", selectedIndex = 0 }
+    { query = "", selectedIndex = 0, shiftDown = False }
 
 
 createContextCommand : { x | name : String, id : ContextId } -> Command
@@ -129,7 +129,8 @@ update contextStore message =
                         >> withNoOutMsg
 
                 ( _, "Shift" ) ->
-                    withNoOutMsg
+                    mapModel (\model -> { model | shiftDown = True })
+                        >> withNoOutMsg
 
                 ( _, key ) ->
                     let
@@ -141,7 +142,8 @@ update contextStore message =
         GlobalKeyUp ke ->
             case ke of
                 ( _, "Shift" ) ->
-                    withNoOutMsg
+                    mapModel (\model -> { model | shiftDown = False })
+                        >> withNoOutMsg
 
                 ( _, key ) ->
                     let
