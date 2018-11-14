@@ -1,7 +1,7 @@
 module Elements exposing (highlightedChars, list, listItem, tag, viewModal, wrapperLayout)
 
 import BasicsX exposing (unwrapMaybe)
-import Element exposing (Element, centerX, centerY, column, el, fill, height, inFront, layout, moveDown, rgb, rgb255, rgba, row, width)
+import Element exposing (Element, centerX, centerY, column, el, fill, height, inFront, layout, minimum, moveDown, rgb, rgb255, rgba, row, shrink, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events exposing (onClick)
@@ -120,8 +120,11 @@ viewModalContent attrs content =
         ([ centerX
          , centerY
          , pa2
+         , Border.rounded 8
          , Background.color whiteColor
-         , Element.width (Element.shrink |> Element.minimum 200)
+         , width (shrink |> minimum 200)
+
+         --         , height (shrink |> minimum 200)
          ]
             ++ attrs
         )
