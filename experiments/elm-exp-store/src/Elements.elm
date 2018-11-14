@@ -98,14 +98,12 @@ list =
 
 
 viewBackdrop attrs =
-    row
+    el
         ([ width fill
          , height fill
-         , centerX
-         , centerY
          , Background.color backdropColor
+         , Font.color (rgb 1 1 1)
          ]
             ++ attrs
         )
-        [ Element.text "Hello"
-        ]
+        (Element.text "Hello")
