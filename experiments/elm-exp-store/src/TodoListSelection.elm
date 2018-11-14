@@ -107,7 +107,7 @@ type Msg
 
 
 type OutMsg
-    = Focus DomId
+    = Focus Todo
 
 
 update : Config -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
@@ -121,21 +121,18 @@ update config message selectedIndex =
 
                 total =
                     List.length active
-
-                _ =
-                    if total > 0 then
-                        let
-                            newSI =
-                                safeModBy total (config.selectedIndex + offset)
-                        in
-                        Array.fromList active
-                            |> Array.get newSI
-                            |> Maybe.map (\todo -> ( newSI, todo ))
-
-                    else
-                        Nothing
             in
-            withNoOutMsg
+            if total > 0 then
+                let
+                    newSI =
+                        safeModBy total (selectedIndex + offset)
+                in
+                unwrapMaybe withNoOutMsg
+                    (\todo -> mapModel (\_ -> newSI) >> withOutMsg (Focus todo))
+                    (Array.fromList active |> Array.get newSI)
+
+            else
+                withNoOutMsg
     )
     <|
         pure selectedIndex
