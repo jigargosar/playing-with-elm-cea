@@ -217,10 +217,6 @@ getMaybeSelectedTodo model =
         active |> Array.fromList |> Array.get (getComputedSelectedIndex model)
 
 
-getTodoDomId todo =
-    "todo-list-item" ++ todo.id
-
-
 cycleSelectedIndexBy num model =
     let
         ( active, completed ) =
@@ -238,7 +234,7 @@ cycleSelectedIndexBy num model =
             focusCmd =
                 Array.fromList active
                     |> Array.get selectedIndex
-                    |> Maybe.map getTodoDomId
+                    |> Maybe.map ContextTodoList.getTodoDomId
                     |> Focus.attemptMaybe FocusResult
         in
         ( { model | selectedIndex = selectedIndex }, focusCmd )

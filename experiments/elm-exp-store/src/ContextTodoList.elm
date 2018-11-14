@@ -1,4 +1,4 @@
-module ContextTodoList exposing (TodoListConfig, view, viewCompletedBtn, viewCompletedSection, viewKeyedTodo, viewTodoList, viewTodoListHeader)
+module ContextTodoList exposing (TodoListConfig, getTodoDomId, view, viewCompletedBtn, viewCompletedSection, viewKeyedTodo, viewTodoList, viewTodoListHeader)
 
 import Btn
 import ContextStore exposing (ContextId, ContextStore)
@@ -12,6 +12,10 @@ import Icons
 import Styles exposing (..)
 import TodoStore exposing (Todo, TodoId, TodoStore)
 import UI exposing (..)
+
+
+getTodoDomId todo =
+    "todo-list-item" ++ todo.id
 
 
 view config =
@@ -114,7 +118,7 @@ viewKeyedTodo config idx todo =
                 Btn.sIcon [ fg "gray" ] [ onClick <| config.markDone todo.id ] [ Icons.circle |> Icons.default ]
 
         domId =
-            "todo-list-item-" ++ todo.id
+            getTodoDomId todo
     in
     ( domId
     , sDiv
