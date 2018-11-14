@@ -470,6 +470,18 @@ createSideBarConfig model =
 
 viewTodoListMain model =
     let
+        config : TodoListConfig Msg
+        config =
+            { todoStore = model.todoStore
+            , toggleShowCompleted = ToggleCompletedTodos
+            , isShowingCompleted = model.showCompletedTodos
+            , selectedIndex = getComputedSelectedIndex model
+            , markDone = MsgTodoStore << TodoStore.markDone
+            , unmarkDone = MsgTodoStore << TodoStore.unmarkDone
+            , focusInMsg = OnTodoFocusIn
+            , editMsg = OpenEditTodoDialog
+            }
+
         selectedContextId =
             getSelectedContextId model
     in
