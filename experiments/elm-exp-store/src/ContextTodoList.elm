@@ -58,16 +58,18 @@ type OutMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
-update message model =
-    case message of
+update message =
+    (case message of
         NoOp ->
             withNothingOutMsg
 
         FocusInMsg todoId ->
-            ( model, Cmd.none )
+            withNothingOutMsg
 
         ToggleCompletedVisible ->
-            ( model, Cmd.none )
+            withNothingOutMsg
+    )
+        << pure
 
 
 type alias Config =
