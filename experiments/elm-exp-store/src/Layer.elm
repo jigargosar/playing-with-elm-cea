@@ -123,7 +123,7 @@ update { contextStore, todoStore } message layer =
         CmdDialogMsg msg ->
             case layer of
                 CmdDialog model ->
-                    updateCmdDialog msg model
+                    updateCmdDialog contextStore msg model
 
                 _ ->
                     logInvalidLayer
@@ -180,7 +180,7 @@ update { contextStore, todoStore } message layer =
         OpenCmdDialog ->
             case layer of
                 NoLayer ->
-                    updateCmdDialog CmdDialog.AutoFocus CmdDialog.init
+                    updateCmdDialog contextStore CmdDialog.AutoFocus CmdDialog.init
 
                 _ ->
                     logInvalidLayer
@@ -260,7 +260,7 @@ updateContextPopup =
         handleOut
 
 
-updateCmdDialog =
+updateCmdDialog contextStore =
     let
         handleOut out =
             (case out of
@@ -269,7 +269,7 @@ updateCmdDialog =
             )
                 << mapModel (\_ -> NoLayer)
     in
-    updateLayer CmdDialog.update
+    updateLayer (CmdDialog.update contextStore)
         CmdDialog
         CmdDialogMsg
         handleOut
@@ -288,7 +288,7 @@ viewLayer { layer, contextStore } =
             ContextDialog.view contextDialog |> Html.map ContextDialogMsg
 
         CmdDialog cmdDialog ->
-            CmdDialog.view cmdDialog |> Html.map CmdDialogMsg
+            CmdDialog.view contextStore cmdDialog |> Html.map CmdDialogMsg
 
         NoLayer ->
             noHtml

@@ -2,6 +2,7 @@ module CmdDialog exposing (Model, Msg(..), OutMsg(..), init, subscriptions, upda
 
 import BasicsX exposing (safeModBy)
 import Browser.Events
+import ContextStore exposing (Context, ContextStore)
 import Css exposing (absolute, left, none, pct, pointerEvents, pointerEventsAll, position, right, top, zero)
 import DomX exposing (DomId)
 import Focus
@@ -18,6 +19,10 @@ import UI exposing (..)
 import UpdateReturn exposing (..)
 
 
+type alias Command =
+    Context
+
+
 type alias Model =
     { query : String, selectedIndex : Int }
 
@@ -26,13 +31,13 @@ init =
     { query = "", selectedIndex = 0 }
 
 
-getFilteredCommands model =
-    [ "foo", "bar", "baz", "Bar Zoo" ]
-        |> Simple.Fuzzy.filter identity model.query
+getFilteredCommands contextStore model =
+    ContextStore.list contextStore
+        |> Simple.Fuzzy.filter .name model.query
 
 
-computeSelectedIndex model =
-    Basics.min model.selectedIndex <| List.length (getFilteredCommands model) - 1
+computeSelectedIndex contextStore model =
+    Basics.min model.selectedIndex <| List.length (getFilteredCommands contextStore model) - 1
 
 
 type Msg
@@ -41,22 +46,22 @@ type Msg
     | FocusResult Focus.FocusResult
     | QueryChanged String
     | OnKeyDown HotKey.Event
-    | SelectAction String
+    | SelectAction Command
 
 
 type OutMsg
     = Cancel
-    | Submit String
+    | Submit Command
 
 
 subscriptions model =
     Sub.batch [ Browser.Events.onKeyDown (D.map OnKeyDown HotKey.decoder) ]
 
 
-cycleSelectedIdxBy offset model =
+cycleSelectedIdxBy contextStore offset model =
     let
         total =
-            List.length (getFilteredCommands model)
+            List.length (getFilteredCommands contextStore model)
     in
     if total > 0 then
         let
@@ -69,8 +74,8 @@ cycleSelectedIdxBy offset model =
         ( model, Cmd.none )
 
 
-update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
-update message =
+update : ContextStore -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
+update contextStore message =
     (case message of
         AutoFocus ->
             addEffect (getQueryInputId >> Focus.attempt FocusResult)
@@ -82,11 +87,11 @@ update message =
                     withOutMsg (always Cancel)
 
                 ( [], "ArrowDown" ) ->
-                    andThen (cycleSelectedIdxBy 1)
+                    andThen (cycleSelectedIdxBy contextStore 1)
                         >> withNoOutMsg
 
                 ( [], "ArrowUp" ) ->
-                    andThen (cycleSelectedIdxBy -1)
+                    andThen (cycleSelectedIdxBy contextStore -1)
                         >> withNoOutMsg
 
                 _ ->
@@ -128,8 +133,8 @@ getQueryInputId =
     getDomIdPrefix >> (++) "-query-input"
 
 
-view : Model -> Html Msg
-view model =
+view : ContextStore -> Model -> Html Msg
+view contextStore model =
     div []
         [ UI.backdrop [ id <| getBackdropDomId model, DomX.onClickTargetId BackDropClicked ]
             []
@@ -151,18 +156,23 @@ view model =
                         ]
                         []
                     ]
-                , sDiv [] [] (viewCmdList model)
+                , sDiv [] [] (viewCmdList contextStore model)
                 ]
             ]
         ]
 
 
-viewCmdList : Model -> List (Html Msg)
-viewCmdList model =
-    getFilteredCommands model |> List.indexedMap (\idx -> viewCmd (idx == computeSelectedIndex model))
+viewCmdList : ContextStore -> Model -> List (Html Msg)
+viewCmdList contextStore model =
+    getFilteredCommands contextStore model
+        |> List.indexedMap (\idx -> viewCmd (idx == computeSelectedIndex contextStore model))
 
 
-viewCmd isSelected cmdName =
+viewCmd isSelected context =
+    let
+        nameString =
+            context.name
+    in
     sDiv
         [ if isSelected then
             bg "lightblue"
@@ -170,5 +180,5 @@ viewCmd isSelected cmdName =
           else
             bg "inherit"
         ]
-        [ class "pa2", onClick <| SelectAction cmdName ]
-        [ text cmdName ]
+        [ class "pa2", onClick <| SelectAction context ]
+        [ text nameString ]
