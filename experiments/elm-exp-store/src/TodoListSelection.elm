@@ -121,18 +121,21 @@ update config message selectedIndex =
 
                 total =
                     List.length active
-            in
-            if total > 0 then
-                let
-                    newSI =
-                        safeModBy total (selectedIndex + offset)
-                in
-                unwrapMaybe withNothingOutMsg
-                    (\todo -> mapModel (\_ -> newSI) >> withJustOutMsg (FocusTodoId todo.id))
-                    (Array.fromList active |> Array.get newSI)
 
-            else
-                withNothingOutMsg
+                res =
+                    if total > 0 then
+                        let
+                            newSI =
+                                safeModBy total (selectedIndex + offset)
+                        in
+                        unwrapMaybe withNothingOutMsg
+                            (\todo -> mapModel (\_ -> newSI) >> withJustOutMsg (FocusTodoId todo.id))
+                            (Array.fromList active |> Array.get newSI)
+
+                    else
+                        withNothingOutMsg
+            in
+            res
     )
     <|
         pure selectedIndex
