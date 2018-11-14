@@ -1,7 +1,7 @@
 module CmdDialog exposing (Model, Msg(..), OutMsg(..), init, subscriptions, update, view)
 
 import Array
-import BasicsX exposing (safeModBy)
+import BasicsX exposing (isWhitespaceOrEmptyString, safeModBy)
 import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextStore)
 import Css exposing (absolute, borderRadius, left, none, pct, pointerEvents, pointerEventsAll, position, px, right, top, zero)
@@ -53,8 +53,8 @@ getFilteredCommands contextStore model =
         simpleMatch config separators needle hay =
             Fuzzy.match config separators needle hay
 
-        sortIfQuery =
-            if String.trim model.query |> String.isEmpty then
+        sortIfQueryNotEmpty =
+            if isWhitespaceOrEmptyString model.query then
                 identity
 
             else
@@ -62,7 +62,7 @@ getFilteredCommands contextStore model =
     in
     commands
         |> List.map (\command -> ( simpleMatch [] [] model.query command.searchText, command ))
-        |> sortIfQuery
+        |> sortIfQueryNotEmpty
 
 
 computeSelectedIndex contextStore model =
