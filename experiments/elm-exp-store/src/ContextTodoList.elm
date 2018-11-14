@@ -67,7 +67,8 @@ update message =
             withNothingOutMsg
 
         ToggleCompletedVisible ->
-            withNothingOutMsg
+            mapModel (\model -> { model | completedVisible = not model.completedVisible })
+                >> withNothingOutMsg
     )
         << pure
 
