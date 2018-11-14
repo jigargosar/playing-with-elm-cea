@@ -1,4 +1,4 @@
-module TodoListSelection exposing (Model, SelectedIndex)
+module TodoListSelection exposing (SelectedIndex)
 
 import Array
 import BasicsX exposing (eqs, safeModBy, unwrapMaybe)
@@ -11,10 +11,6 @@ import TodoStore exposing (Todo, TodoStore)
 
 type alias SelectedIndex =
     Int
-
-
-type alias Model =
-    SelectedIndex
 
 
 type alias Config msg =
