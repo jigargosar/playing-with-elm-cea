@@ -52,10 +52,17 @@ getFilteredCommands contextStore model =
 
         simpleMatch config separators needle hay =
             Fuzzy.match config separators needle hay
+
+        sortIfQuery =
+            if String.trim model.query |> String.isEmpty then
+                identity
+
+            else
+                List.sortBy (Tuple.first >> .score)
     in
     commands
         |> List.map (\command -> ( simpleMatch [] [] model.query command.searchText, command ))
-        |> List.sortBy (Tuple.first >> .score)
+        |> sortIfQuery
 
 
 computeSelectedIndex contextStore model =
