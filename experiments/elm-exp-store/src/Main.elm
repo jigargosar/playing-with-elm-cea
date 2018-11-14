@@ -264,8 +264,7 @@ update message model =
             setSelectedIndexOnFocusIn todo model
 
         OnWindowSize width height ->
-            mapModel (\model -> { model | windowSize = { width = width, height = height } })
-                >> withNoOutMsg
+            pure { model | windowSize = { width = width, height = height } }
 
         OnKeyDown ke ->
             case model.layer of
