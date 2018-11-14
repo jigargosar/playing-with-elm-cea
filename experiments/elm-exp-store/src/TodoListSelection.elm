@@ -1,4 +1,4 @@
-module TodoListSelection exposing (SelectedIndex)
+module TodoListSelection exposing (Config, SelectedIndex, getComputedSelectedIndex)
 
 import Array
 import BasicsX exposing (eqs, safeModBy, unwrapMaybe)

@@ -39,6 +39,7 @@ import Svg.Styled exposing (svg)
 import Task
 import Time
 import TodoDialog
+import TodoListSelection
 import TodoStore exposing (Todo, TodoContent, TodoId, TodoStore)
 import UI exposing (..)
 import Update2
@@ -119,7 +120,7 @@ logCmd =
 type Msg
     = NoOp
     | OnWindowSize Int Int
-    | FocusResult Focus.FocusResult
+    | OnFocusResult Focus.FocusResult
     | NavigateToTodoListWithContextId ContextId
     | TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
@@ -141,6 +142,15 @@ type Msg
 
 type alias ContextItem =
     ( String, ContextId )
+
+
+selectionConfig : Model -> TodoListSelection.Config Msg
+selectionConfig model =
+    { todoStore = model.todoStore
+    , selectedContextId = model.contextId
+    , selectedIndex = model.selectedIndex
+    , onFocusResult = OnFocusResult
+    }
 
 
 getComputedSelectedIndex model =
@@ -189,7 +199,7 @@ cycleSelectedIndexBy num model =
                 Array.fromList active
                     |> Array.get selectedIndex
                     |> Maybe.map ContextTodoList.getTodoDomId
-                    |> Focus.attemptMaybe FocusResult
+                    |> Focus.attemptMaybe OnFocusResult
         in
         ( { model | selectedIndex = selectedIndex }, focusCmd )
 
@@ -219,7 +229,7 @@ update message model =
         NoOp ->
             pure model
 
-        FocusResult r ->
+        OnFocusResult r ->
             model
                 |> pure
                 >> addCmd (Log.focusResult "Main.elm" r)
