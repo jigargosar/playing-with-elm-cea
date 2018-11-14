@@ -482,11 +482,12 @@ viewContextTodoList model =
             , focusInMsg = OnTodoFocusIn
             , editMsg = OpenEditTodoDialog
             , selectedContextId = getSelectedContextId model
+            , addNewMsg = OpenCreateTodoDialog
             }
     in
     div [ class "bl br b--black-05 flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
         [ viewTodoListHeader config
-        , viewTodoList model
+        , viewTodoList config
         ]
 
 
@@ -503,52 +504,52 @@ viewTodoListHeader { selectedContextId, contextStore } =
         ]
 
 
-viewTodoList : Model -> Html Msg
-viewTodoList model =
+viewTodoList : TodoListConfig msg -> Html msg
+viewTodoList config =
     let
         ( active, completed ) =
-            getSelectedContextTodoList model
+            TodoStore.filterByContextId config.selectedContextId config.todoStore
                 |> List.partition TodoStore.isNotDone
     in
     div [ css [] ]
         [ active
-            |> List.indexedMap (\idx todo -> viewKeyedTodo (createTodoViewModel model idx todo))
+            |> List.indexedMap (\idx todo -> viewKeyedTodo config idx todo)
             |> HKeyed.node "div" [ css [ vs ] ]
         , div [ css [ rowCY ], class "pa3" ]
             [ styled Btn.flatPl0
                 [ fontSize (rem 0.8), fa ]
-                [ onClick OpenCreateTodoDialog ]
+                [ onClick config.addNewMsg ]
                 [ Icons.plusSmall
                 , text "Add Task"
                 ]
-            , viewCompletedBtn model.showCompletedTodos
+            , viewCompletedBtn config
             ]
-        , if model.showCompletedTodos then
-            viewCompletedSection model completed
+        , if config.isShowingCompleted then
+            viewCompletedSection config completed
 
           else
             noHtml
         ]
 
 
-viewCompletedSection model completed =
+viewCompletedSection config completed =
     if List.isEmpty completed then
         sDiv [ fgGray ] [ class "pa3" ] [ text "No Completed Tasks" ]
 
     else
         completed
-            |> List.indexedMap (\idx todo -> viewKeyedTodo (createTodoViewModel model idx todo))
+            |> List.indexedMap (\idx todo -> viewKeyedTodo config idx todo)
             |> HKeyed.node "div" [ css [ vs ] ]
 
 
-viewCompletedBtn showCompletedTodos =
+viewCompletedBtn { isShowingCompleted, toggleShowCompleted } =
     styled Btn.flatPr0
         [ fontSize (rem 0.8) ]
-        [ onClick ToggleCompletedTodos ]
+        [ onClick toggleShowCompleted ]
         [ sDiv [ rowCXY, hs ] [] [ text "Completed" ]
         , sDiv [ rowCXY, hs ]
             []
-            [ if showCompletedTodos then
+            [ if isShowingCompleted then
                 Icons.toggleRightDef
 
               else
@@ -582,6 +583,7 @@ type alias TodoListConfig msg =
     , focusInMsg : TodoId -> msg
     , editMsg : TodoId -> msg
     , selectedContextId : ContextId
+    , addNewMsg : msg
     }
 
 
@@ -600,35 +602,38 @@ createTodoViewModel model idx todo =
         (OpenEditTodoDialog todo.id)
 
 
-viewKeyedTodo : TodoViewModel msg -> ( String, Html msg )
-viewKeyedTodo { key, content, done, markDone, unmarkDone, contextName, editMsg, isSelected, domId, focusInMsg } =
+viewKeyedTodo : TodoListConfig msg -> Int -> Todo -> ( String, Html msg )
+viewKeyedTodo config idx todo =
     let
         doneIconBtn =
-            if done then
-                Btn.sIcon [ fg "green" ] [ onClick unmarkDone ] [ Icons.checkCircle |> Icons.default ]
+            if todo.done then
+                Btn.sIcon [ fg "green" ] [ onClick <| config.unmarkDone todo.id ] [ Icons.checkCircle |> Icons.default ]
 
             else
-                Btn.sIcon [ fg "gray" ] [ onClick markDone ] [ Icons.circle |> Icons.default ]
+                Btn.sIcon [ fg "gray" ] [ onClick <| config.markDone todo.id ] [ Icons.circle |> Icons.default ]
+
+        domId =
+            "todo-list-item-" ++ todo.id
     in
-    ( key
+    ( domId
     , sDiv
         [ rowCY
-        , if isSelected then
+        , if config.selectedIndex == idx then
             bg "lightblue"
 
           else
             bg "transparent"
         ]
-        [ id domId, class "pa3 bb b--light-gray", tabindex 0, DomX.onFocusIn focusInMsg ]
+        [ id domId, class "pa3 bb b--light-gray", tabindex 0, DomX.onFocusIn <| config.focusInMsg todo.id ]
         [ sDiv [ hs, rowCY ] [] [ doneIconBtn ]
         , sDiv [ hs ]
             [ class "flex-auto flex flex-column " ]
             [ div
                 [ class "pointer"
-                , classList [ ( "strike gray ", done ) ]
-                , onDoubleClick editMsg
+                , classList [ ( "strike gray ", todo.done ) ]
+                , onDoubleClick (config.editMsg todo.id)
                 ]
-                [ sDiv [ Css.property "word-break" "break-word" ] [] [ text content ] ]
+                [ sDiv [ Css.property "word-break" "break-word" ] [] [ text todo.content ] ]
             ]
         ]
     )

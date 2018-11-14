@@ -6,6 +6,7 @@ module TodoStore exposing
     , TodoStore
     , addNew
     , delete
+    , filterByContextId
     , get
     , isDone
     , isNotDone
@@ -210,6 +211,15 @@ andThenUpdate msg =
 
 list =
     .todoLookup >> Dict.values
+
+
+contextIdEq : ContextId -> Pred { a | contextId : ContextId }
+contextIdEq cid =
+    propEq .contextId cid
+
+
+filterByContextId cid =
+    list >> List.filter (allPass [ contextIdEq cid ])
 
 
 get : TodoId -> TodoStore -> Maybe Todo
