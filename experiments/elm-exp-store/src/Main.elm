@@ -56,7 +56,6 @@ type alias Model =
     , contextId : ContextId
     , layer : Layer
     , showArchivedContexts : Bool
-    , showCompletedTodos : Bool
     , showTempSidebar : Bool
     , selectedIndex : Int
     , windowSize : WindowSize
@@ -84,7 +83,6 @@ init flags =
             , contextId = ContextStore.defaultId
             , layer = Layer.NoLayer
             , showArchivedContexts = False
-            , showCompletedTodos = False
             , showTempSidebar = False
             , selectedIndex = 0
             , windowSize = flags.windowSize
@@ -124,7 +122,6 @@ type Msg
     | MenuClicked
     | TempSidebarBackdropClicked
     | ToggleShowArchivedContexts
-    | ToggleCompletedTodos
     | OpenCreateTodoDialog
     | OpenEditTodoDialog TodoId
     | OpenCreateContextDialog
@@ -276,9 +273,6 @@ update message model =
         ToggleShowArchivedContexts ->
             pure { model | showArchivedContexts = not model.showArchivedContexts }
 
-        ToggleCompletedTodos ->
-            pure { model | showCompletedTodos = not model.showCompletedTodos }
-
 
 updateLayer message model =
     let
@@ -400,7 +394,7 @@ viewContextTodoList model =
             , contextStore = model.contextStore
 
             --            , toggleShowCompleted = ToggleCompletedTodos
---            , isShowingCompleted = model.showCompletedTodos
+            --            , isShowingCompleted = model.showCompletedTodos
             , selectedIndex = getComputedSelectedIndex model
 
             --            , markDone = TodoStoreMsg << TodoStore.markDone
