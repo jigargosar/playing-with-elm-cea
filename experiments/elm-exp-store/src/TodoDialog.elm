@@ -59,7 +59,7 @@ type Msg
 
 withSubmitOutMsg : ( Model, Cmd Msg ) -> ( Model, Cmd Msg, Maybe OutMsg )
 withSubmitOutMsg =
-    andThenWithOutMsg
+    withJustOutMsgEffect
         (\{ dialogMode, content, contextId } ->
             if String.isEmpty content then
                 Cancel
@@ -71,7 +71,7 @@ withSubmitOutMsg =
 
 withCancelOutMsg : ( Model, Cmd Msg ) -> ( Model, Cmd Msg, Maybe OutMsg )
 withCancelOutMsg =
-    andThenWithOutMsg (always Cancel)
+    withJustOutMsgEffect (always Cancel)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
@@ -79,26 +79,26 @@ update message =
     (case message of
         AutoFocus ->
             addCmd (Focus.attempt FocusResult inputId)
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         FocusResult r ->
             addCmd (Log.focusResult "TodoDialog.elm" r)
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         BackdropClicked targetId ->
             if targetId == backdropId then
                 withSubmitOutMsg
 
             else
-                withNoOutMsg
+                withNothingOutMsg
 
         ContentChanged content ->
             mapModel (\model -> { model | content = content })
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         ContextIdChanged contextId ->
             mapModel (\model -> { model | contextId = contextId })
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         ContentInputKeyDown ke ->
             case ke of
@@ -109,7 +109,7 @@ update message =
                     withCancelOutMsg
 
                 _ ->
-                    withNoOutMsg
+                    withNothingOutMsg
 
         ContextIdSelectKeyDown ke ->
             case ke of
@@ -120,7 +120,7 @@ update message =
                     withCancelOutMsg
 
                 _ ->
-                    withNoOutMsg
+                    withNothingOutMsg
     )
         << pure
 

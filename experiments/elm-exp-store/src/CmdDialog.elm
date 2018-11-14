@@ -109,49 +109,49 @@ update contextStore message =
     (case message of
         AutoFocus ->
             addEffect (getQueryInputId >> Focus.attempt FocusResult)
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         GlobalKeyDown ke ->
             case ke of
                 ( [], "Escape" ) ->
-                    withOutMsg Dismiss
+                    withJustOutMsg Dismiss
 
                 ( [], "ArrowDown" ) ->
                     andThen (cycleSelectedIdxBy contextStore 1)
-                        >> withNoOutMsg
+                        >> withNothingOutMsg
 
                 ( [], "ArrowUp" ) ->
                     andThen (cycleSelectedIdxBy contextStore -1)
-                        >> withNoOutMsg
+                        >> withNothingOutMsg
 
                 ( _, "Shift" ) ->
                     mapModel (\model -> { model | shiftDown = True })
-                        >> withNoOutMsg
+                        >> withNothingOutMsg
 
                 ( _, key ) ->
                     --                    let
                     --                        _ =
                     --                            Debug.log "keyDown" key
                     --                    in
-                    withNoOutMsg
+                    withNothingOutMsg
 
         GlobalKeyUp ke ->
             case ke of
                 ( _, "Shift" ) ->
                     mapModel (\model -> { model | shiftDown = False })
-                        >> withNoOutMsg
+                        >> withNothingOutMsg
 
                 ( _, key ) ->
                     --                    let
                     --                        _ =
                     --                            Debug.log "keyUp" key
                     --                    in
-                    withNoOutMsg
+                    withNothingOutMsg
 
         QueryInputKeyDown ke ->
             case ke of
                 ( [], "Enter" ) ->
-                    andThenWithMaybeOutMsg
+                    withMaybeOutMsgEffect
                         (\model ->
                             getFilteredCommandResults contextStore model
                                 |> Array.fromList
@@ -160,21 +160,21 @@ update contextStore message =
                         )
 
                 _ ->
-                    withNoOutMsg
+                    withNothingOutMsg
 
         FocusResult r ->
             addCmd (Log.focusResult "CmdDialog.elm" r)
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         QueryChanged query ->
             mapModel (\model -> { model | query = query, selectedIndex = 0 })
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         BackDropClicked ->
-            withOutMsg Dismiss
+            withJustOutMsg Dismiss
 
         SelectCommand command ->
-            withOutMsg command.outMsg
+            withJustOutMsg command.outMsg
     )
         << pure
 

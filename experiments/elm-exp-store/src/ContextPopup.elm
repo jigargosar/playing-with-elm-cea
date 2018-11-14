@@ -114,29 +114,29 @@ update message =
     (case message of
         FocusResult r ->
             addCmd (Log.focusResult "ContextPopup.elm" r)
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         RefElementResult (Err _) ->
             addCmd (Log.warn "ContextPopup.elm" [ "Ref Element Not Found" ])
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         RefElementResult (Ok element) ->
             mapModel (\model -> { model | refEle = Just element })
                 >> addEffect (getAutoFocusDomId >> Focus.attempt FocusResult)
                 >> addEffect (attemptGetElement PopperElementResult << getPopperDomId)
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         PopperElementResult (Err _) ->
             addCmd (Log.warn "ContextPopup.elm" [ "Popper Element Not Found" ])
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         PopperElementResult (Ok element) ->
             mapModel (\model -> { model | popperEle = Just element })
                 >> addEffect (getAutoFocusDomId >> Focus.attempt FocusResult)
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         BackdropClicked targetId ->
-            andThenWithMaybeOutMsg
+            withMaybeOutMsgEffect
                 (\model ->
                     if targetId == getBackdropDomId model then
                         Just ClosedOut
@@ -146,12 +146,12 @@ update message =
                 )
 
         ActionClicked action ->
-            andThenWithOutMsg (\{ context } -> ActionOut context action)
+            withJustOutMsgEffect (\{ context } -> ActionOut context action)
 
         Open ->
             mapModel (\model -> { model | refEle = Nothing, popperEle = Nothing })
                 >> addEffect (attemptGetElement RefElementResult << getRefId)
-                >> withNoOutMsg
+                >> withNothingOutMsg
     )
         << pure
 

@@ -13,7 +13,6 @@ module UpdateReturn exposing
     , andThen
     , andThen3
     , andThenWhen
-    , andThenWithMaybeOutMsg
     , andThenWithOutMsg
     , attempt
     , foldlOutMsgList
@@ -34,8 +33,10 @@ module UpdateReturn exposing
        --    , updateMaybeSub
 
     , updateSub
-    , withNoOutMsg
-    , withOutMsg
+    , withJustOutMsg
+    , withJustOutMsgEffect
+    , withMaybeOutMsgEffect
+    , withNothingOutMsg
     )
 
 import BasicsX exposing (unwrapMaybe)
@@ -139,20 +140,28 @@ pure model =
     ( model, Cmd.none )
 
 
-withNoOutMsg ( m, c ) =
+withNothingOutMsg ( m, c ) =
     ( m, c, Nothing )
 
 
-andThenWithOutMsg fn ( m, c ) =
+withJustOutMsgEffect fn ( m, c ) =
     ( m, c, Just <| fn m )
 
 
-withOutMsg out ( m, c ) =
+withJustOutMsg out ( m, c ) =
     ( m, c, Just out )
 
 
-andThenWithMaybeOutMsg fn ( m, c ) =
+withMaybeOutMsgEffect fn ( m, c ) =
     ( m, c, fn m )
+
+
+andThenWithOutMsg fn ( m, c ) =
+    let
+        ( m2, c2, out ) =
+            fn m
+    in
+    ( m2, Cmd.batch [ c, c2 ], out )
 
 
 addCmd c2 ( m, c1 ) =

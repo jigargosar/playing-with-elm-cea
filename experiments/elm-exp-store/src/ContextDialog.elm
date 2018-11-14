@@ -56,7 +56,7 @@ type Msg
 
 withSubmitOutMsg : ( Model, Cmd Msg ) -> ( Model, Cmd Msg, Maybe OutMsg )
 withSubmitOutMsg =
-    andThenWithOutMsg
+    withJustOutMsgEffect
         (\{ dialogMode, name } ->
             if String.isEmpty name then
                 Cancel
@@ -68,7 +68,7 @@ withSubmitOutMsg =
 
 withCancelOutMsg : ( Model, Cmd Msg ) -> ( Model, Cmd Msg, Maybe OutMsg )
 withCancelOutMsg =
-    andThenWithOutMsg (always Cancel)
+    withJustOutMsgEffect (always Cancel)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
@@ -76,22 +76,22 @@ update message =
     (case message of
         AutoFocus ->
             addCmd (Focus.attempt FocusResult inputId)
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         FocusResult r ->
             addCmd (Log.focusResult "ContextDialog.elm" r)
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         BackdropClicked targetId ->
             if targetId == backdropId then
                 withSubmitOutMsg
 
             else
-                withNoOutMsg
+                withNothingOutMsg
 
         NameChanged name ->
             mapModel (\model -> { model | name = name })
-                >> withNoOutMsg
+                >> withNothingOutMsg
 
         NameInputKeyDown ke ->
             case ke of
@@ -102,7 +102,7 @@ update message =
                     withCancelOutMsg
 
                 _ ->
-                    withNoOutMsg
+                    withNothingOutMsg
     )
         << pure
 
