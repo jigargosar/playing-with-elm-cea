@@ -58,7 +58,7 @@ getMaybeSelectedTodo config =
         active |> Array.fromList |> Array.get (getComputedSelectedIndex config)
 
 
-cycleSelectedIndexBy : Int -> Config msg -> Html msg
+cycleSelectedIndexBy : Int -> Config msg -> ( SelectedIndex, Cmd msg )
 cycleSelectedIndexBy num config =
     let
         ( active, completed ) =
