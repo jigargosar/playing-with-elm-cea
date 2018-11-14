@@ -1,8 +1,8 @@
-module DomX exposing (DomId, domIdDecoder, onClickTargetId, onFocusIn, onFocusOut)
+module DomX exposing (DomId, domIdDecoder, onClickTargetId, onClickTargetIdHtml, onFocusIn, onFocusInHtml, onFocusOut, onFocusOutHtml)
 
-import Browser.Dom
-import Html.Styled exposing (Attribute)
-import Html.Styled.Events as SE
+import Html exposing (Attribute)
+import Html.Events
+import Html.Styled.Attributes
 import Json.Decode as D exposing (Decoder)
 import Task exposing (Task)
 
@@ -11,22 +11,34 @@ type alias DomId =
     String
 
 
-onFocusOut msg =
-    SE.on "focusout" (D.succeed msg)
+onFocusOutHtml msg =
+    Html.Events.on "focusout" (D.succeed msg)
 
 
-onFocusIn msg =
-    SE.on "focusin" (D.succeed msg)
+onFocusInHtml msg =
+    Html.Events.on "focusin" (D.succeed msg)
 
 
-onClickTargetId : (DomId -> msg) -> Attribute msg
-onClickTargetId toMsg =
+onFocusIn =
+    onFocusInHtml >> Html.Styled.Attributes.fromUnstyled
+
+
+onFocusOut =
+    onFocusOutHtml >> Html.Styled.Attributes.fromUnstyled
+
+
+onClickTargetIdHtml : (DomId -> msg) -> Attribute msg
+onClickTargetIdHtml toMsg =
     let
         targetIdDecoder : Decoder DomId
         targetIdDecoder =
             D.at [ "target", "id" ] D.string
     in
-    SE.on "click" <| D.map toMsg targetIdDecoder
+    Html.Events.on "click" <| D.map toMsg targetIdDecoder
+
+
+onClickTargetId =
+    onClickTargetIdHtml >> Html.Styled.Attributes.fromUnstyled
 
 
 domIdDecoder : Decoder DomId

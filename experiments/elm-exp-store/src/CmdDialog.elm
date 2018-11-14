@@ -7,14 +7,12 @@ import ContextStore exposing (Context, ContextId, ContextStore)
 import Css exposing (absolute, borderRadius, left, none, pct, pointerEvents, pointerEventsAll, position, px, right, top, zero)
 import DomX exposing (DomId)
 import Element exposing (Element)
+import Element.Lazy
 import Elements
 import Focus
 import Fuzzy
 import HotKey
-import Html.Styled as Html exposing (Html, div, input, span, styled, text)
-import Html.Styled.Attributes exposing (..)
-import Html.Styled.Events exposing (onClick, onInput)
-import Html.Styled.Lazy
+import Html.Attributes exposing (id)
 import Json.Decode as D
 import Json.Encode as E
 import Log
@@ -168,38 +166,41 @@ getQueryInputId =
     getDomIdPrefix >> (++) "-query-input"
 
 
-view : ContextStore -> Model -> Html Msg
+view : ContextStore -> Model -> Element Msg
 view =
-    Html.Styled.Lazy.lazy2 viewLazy
+    Element.Lazy.lazy2 viewLazy
 
 
-viewLazy : ContextStore -> Model -> Html Msg
+viewLazy : ContextStore -> Model -> Element Msg
 viewLazy contextStore model =
-    Html.Styled.Lazy.lazy2
-        div
+    Element.row
         []
-        [ UI.backdrop [ id <| getBackdropDomId model, DomX.onClickTargetId BackDropClicked ]
-            []
-        , sDiv [ position absolute, absFill, rowCXY, pointerEvents none ]
-            []
-            [ sDiv [ position absolute, top (pct 10), pointerEventsAll ]
-                [ class "bg-white br4 shadow-1 pa3 measure w-100"
-                ]
-                [ sDiv [ vs, w100, rowCY ]
-                    []
-                    [ input
-                        [ id <| getQueryInputId model
-                        , placeholder "Type Command Name"
-                        , class "flex-auto pa3"
-                        , value model.query
-                        , onInput QueryChanged
-                        , HotKey.onKeyDown QueryInputKeyDown
-                        ]
-                        []
-                    ]
-                , fromElement (viewCmdList contextStore model)
-                ]
+        [ Element.el
+            [ getBackdropDomId model |> id |> Element.htmlAttribute
+            , DomX.onClickTargetIdHtml BackDropClicked |> Element.htmlAttribute
             ]
+            (Element.text "")
+
+        --        , sDiv [ position absolute, absFill, rowCXY, pointerEvents none ]
+        --            []
+        --            [ sDiv [ position absolute, top (pct 10), pointerEventsAll ]
+        --                [ class "bg-white br4 shadow-1 pa3 measure w-100"
+        --                ]
+        --                [ sDiv [ vs, w100, rowCY ]
+        --                    []
+        --                    [ input
+        --                        [ id <| getQueryInputId model
+        --                        , placeholder "Type Command Name"
+        --                        , class "flex-auto pa3"
+        --                        , value model.query
+        --                        , onInput QueryChanged
+        --                        , HotKey.onKeyDown QueryInputKeyDown
+        --                        ]
+        --                        []
+        --                    ]
+        --                , fromElement (viewCmdList contextStore model)
+        --                ]
+        --            ]
         ]
 
 

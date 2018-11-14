@@ -5,11 +5,12 @@ import CmdDialog
 import ContextDialog
 import ContextPopup
 import ContextStore exposing (Context, ContextId, ContextStore)
-import Html.Styled as Html exposing (Html)
+import Element
+import Html.Styled as Html exposing (Html, fromUnstyled)
 import Log
 import TodoDialog
 import TodoStore exposing (Todo, TodoId, TodoStore)
-import UI exposing (noHtml)
+import UI exposing (fromElement, noHtml)
 import UpdateReturn exposing (..)
 
 
@@ -292,7 +293,7 @@ viewLayer { layer, contextStore } =
             ContextDialog.view contextDialog |> Html.map ContextDialogMsg
 
         CmdDialog cmdDialog ->
-            CmdDialog.view contextStore cmdDialog |> Html.map CmdDialogMsg
+            CmdDialog.view contextStore cmdDialog |> fromElement |> Html.map CmdDialogMsg
 
         NoLayer ->
             noHtml
