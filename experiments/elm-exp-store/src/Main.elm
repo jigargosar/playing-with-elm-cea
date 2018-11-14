@@ -18,7 +18,7 @@ import Focus
 import HotKey exposing (SoftKey(..))
 import Html.Styled as Html exposing (Attribute, Html, button, div, fromUnstyled, span, styled, text)
 import Html.Styled.Attributes exposing (class, classList, css, id, style, tabindex)
-import Html.Styled.Events exposing (onClick)
+import Html.Styled.Events exposing (onClick, onDoubleClick)
 import Html.Styled.Keyed as HKeyed exposing (node)
 import HtmlX
 import Icons
@@ -543,13 +543,12 @@ type alias TodoViewModel msg =
     , content : String
     , done : Bool
     , contextName : String
-    , contentClicked : msg
     , markDone : msg
     , unmarkDone : msg
-    , contextClicked : msg
     , isSelected : Bool
     , domId : DomId
     , focusInMsg : msg
+    , editMsg : msg
     }
 
 
@@ -560,17 +559,16 @@ createTodoViewModel model idx todo =
         (defaultEmptyStringTo "<empty>" todo.content)
         todo.done
         (ContextStore.getNameOrDefaultById todo.contextId model.contextStore)
-        (OpenEditTodoDialog todo.id)
         (MsgTodoStore <| TodoStore.markDone todo.id)
         (MsgTodoStore <| TodoStore.unmarkDone todo.id)
-        (OpenEditTodoDialog todo.id)
         (idx == getComputedSelectedIndex model)
         (getTodoDomId todo)
         (OnTodoFocusIn todo)
+        (OpenEditTodoDialog todo.id)
 
 
 viewKeyedTodo : TodoViewModel msg -> ( String, Html msg )
-viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contextName, contextClicked, isSelected, domId, focusInMsg } =
+viewKeyedTodo { key, content, done, markDone, unmarkDone, contextName, editMsg, isSelected, domId, focusInMsg } =
     let
         doneIconBtn =
             if done then
@@ -595,14 +593,9 @@ viewKeyedTodo { key, content, done, contentClicked, markDone, unmarkDone, contex
             [ div
                 [ class "pointer"
                 , classList [ ( "strike gray ", done ) ]
-                , onClick contentClicked
+                , onDoubleClick editMsg
                 ]
                 [ sDiv [ Css.property "word-break" "break-word" ] [] [ text content ] ]
-            , div
-                [ class "ttu f7 gray pointer dn"
-                , onClick contextClicked
-                ]
-                [ text <| "@" ++ contextName ]
             ]
         ]
     )
