@@ -127,26 +127,8 @@ getUserDefinedContextList model =
         |> List.sortBy .createdAt
 
 
-getNameByContextId : ContextId -> Model -> ContextName
-getNameByContextId contextId =
-    .contextStore >> ContextStore.getNameOrDefaultById contextId
-
-
-getCurrentContextItem : Model -> ContextItem
-getCurrentContextItem model =
-    ( getNameByContextId model.contextId model, model.contextId )
-
-
 getSelectedContextId =
     .contextId
-
-
-getMaybeSelectedContext model =
-    model.contextStore |> ContextStore.get (getSelectedContextId model)
-
-
-getMaybeContext cid =
-    .contextStore >> ContextStore.get cid
 
 
 
