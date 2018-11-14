@@ -57,7 +57,6 @@ type alias Model =
     , layer : Layer
     , showArchivedContexts : Bool
     , showTempSidebar : Bool
-    , selectedIndex : Int
     , windowSize : WindowSize
     , contextTodoList : ContextTodoList.Model
     }
@@ -84,7 +83,6 @@ init flags =
             , layer = Layer.NoLayer
             , showArchivedContexts = False
             , showTempSidebar = False
-            , selectedIndex = 0
             , windowSize = flags.windowSize
             , contextTodoList = ContextTodoList.init
             }
@@ -130,44 +128,7 @@ type Msg
     | OpenCmdDialog
     | LayerMsg Layer.Msg
     | OnKeyDown HotKey.Event
-    | OnTodoFocusIn TodoId
     | ContextTodoListMsg ContextTodoList.Msg
-
-
-type alias ContextItem =
-    ( String, ContextId )
-
-
-selectionConfig : Model -> TodoListSelection.Config
-selectionConfig model =
-    { todoStore = model.todoStore
-    , selectedContextId = model.contextId
-    , selectedIndex = model.selectedIndex
-    }
-
-
-getComputedSelectedIndex =
-    TodoListSelection.getComputedSelectedIndex << selectionConfig
-
-
-getMaybeSelectedTodo =
-    TodoListSelection.getMaybeSelectedTodo << selectionConfig
-
-
-cycleSelectedIndexBy num model =
-    unwrapMaybe (pure model)
-        (\( selectedIndex, todo ) ->
-            ( { model | selectedIndex = selectedIndex }
-            , Focus.attempt OnFocusResult <| ContextTodoList.getTodoDomId todo
-            )
-        )
-        (TodoListSelection.cycleSelectedIndexBy num (selectionConfig model))
-
-
-setSelectedIndexOnFocusIn todoId model =
-    TodoListSelection.getMaybeSelectedIndexOnFocusIn todoId (selectionConfig model)
-        |> unwrapMaybe model (\selectedIndex -> { model | selectedIndex = selectedIndex })
-        |> pure
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -180,9 +141,6 @@ update message model =
             model
                 |> pure
                 >> addCmd (Log.focusResult "Main.elm" r)
-
-        OnTodoFocusIn todoId ->
-            setSelectedIndexOnFocusIn todoId model
 
         OnWindowSize width height ->
             pure { model | windowSize = { width = width, height = height } }
