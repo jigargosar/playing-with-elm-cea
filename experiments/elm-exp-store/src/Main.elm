@@ -95,11 +95,6 @@ init flags =
     )
 
 
-contextIdEq : ContextId -> Pred { a | contextId : ContextId }
-contextIdEq cid =
-    propEq .contextId cid
-
-
 getSelectedContextTodoList : Model -> List Todo
 getSelectedContextTodoList model =
     model.todoStore |> TodoStore.listForContextId model.contextId
