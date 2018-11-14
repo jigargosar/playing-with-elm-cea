@@ -171,7 +171,7 @@ cycleSelectedIndexBy num model =
 
 
 setSelectedIndexOnFocusIn todoId model =
-    TodoListSelection.getMaybeSelectedIndexOnFocusIn todoId (selectionConfig model)
+    TodoListSelection.getMaybeSelectedIndexOnFocusIn__ todoId (selectionConfig model)
         |> unwrapMaybe model (\selectedIndex -> { model | selectedIndex = selectedIndex })
         |> pure
 
