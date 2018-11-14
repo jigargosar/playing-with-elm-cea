@@ -1,8 +1,10 @@
-module Elements exposing (highlightedChars, list, listItem, tag, viewBackdrop, wrapperLayout)
+module Elements exposing (highlightedChars, list, listItem, tag, viewModal, wrapperLayout)
 
-import Element exposing (Element, centerX, centerY, column, el, fill, height, rgb, rgb255, rgba, row, width)
+import BasicsX exposing (unwrapMaybe)
+import Element exposing (Element, centerX, centerY, column, el, fill, height, inFront, layout, moveDown, rgb, rgb255, rgba, row, width)
 import Element.Background as Background
 import Element.Border as Border
+import Element.Events exposing (onClick)
 import Element.Font as Font
 
 
@@ -18,11 +20,15 @@ backdropColor =
     rgba 0 0 0 0.2
 
 
+whiteColor =
+    rgb 1 1 1
+
+
 spacing1 =
     Element.spacing 4
 
 
-padding1 =
+pa1 =
     Element.padding 4
 
 
@@ -44,7 +50,7 @@ tag content =
         [ Font.size 10
         , Background.color tagColor
         , Border.rounded 4
-        , padding1
+        , pa1
         ]
         (Element.text content)
 
@@ -107,3 +113,28 @@ viewBackdrop attrs =
             ++ attrs
         )
         [ Element.text "" ]
+
+
+viewModalContent attrs content =
+    Element.row
+        ([ centerX
+         , centerY
+         , pa2
+         , Background.color whiteColor
+         , Element.width (Element.shrink |> Element.minimum 200)
+         ]
+            ++ attrs
+        )
+        [ content ]
+
+
+viewModal { onDismiss, attrs, content } =
+    let
+        backdropAttrs =
+            unwrapMaybe [] (onClick >> List.singleton) onDismiss
+    in
+    layout
+        [ inFront <| viewBackdrop backdropAttrs
+        , inFront <| viewModalContent attrs content
+        ]
+        (Element.text "")

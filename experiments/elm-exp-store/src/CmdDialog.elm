@@ -7,6 +7,7 @@ import ContextStore exposing (Context, ContextId, ContextStore)
 import Css exposing (absolute, borderRadius, left, none, pct, pointerEvents, pointerEventsAll, position, px, right, top, zero)
 import DomX exposing (DomId)
 import Element exposing (Element)
+import Element.Events
 import Element.Lazy
 import Elements
 import Focus
@@ -59,7 +60,7 @@ computeSelectedIndex contextStore model =
 
 
 type Msg
-    = BackDropClicked DomId
+    = BackDropClicked
     | AutoFocus
     | FocusResult Focus.FocusResult
     | QueryChanged String
@@ -138,15 +139,8 @@ update contextStore message =
             mapModel (\model -> { model | query = query })
                 >> withNoOutMsg
 
-        BackDropClicked targetId ->
-            withMaybeOutMsg
-                (\model ->
-                    if targetId == getBackdropDomId model then
-                        Just Cancel
-
-                    else
-                        Nothing
-                )
+        BackDropClicked ->
+            withOutMsg (always <| Cancel)
 
         SelectCommand command ->
             withOutMsg (always <| command.outMsg)
@@ -175,19 +169,19 @@ view =
     viewLazy
 
 
-viewBackdrop model =
-    Elements.viewBackdrop
-        [ getBackdropDomId model |> id |> Element.htmlAttribute
-        , DomX.onClickTargetIdHtml BackDropClicked |> Element.htmlAttribute
-        ]
-
-
 
 --viewLazy : ContextStore -> Model -> Element Msg
 
 
 viewLazy contextStore model =
-    Element.layout [ Element.inFront (viewBackdrop model) ] (Element.text "")
+    Elements.viewModal
+        { onDismiss = Just BackDropClicked
+        , attrs =
+            [ Element.alignTop
+            , Element.moveDown 100
+            ]
+        , content = Element.row [ Element.centerX ] [ Element.text "Hello World!" ]
+        }
 
 
 
