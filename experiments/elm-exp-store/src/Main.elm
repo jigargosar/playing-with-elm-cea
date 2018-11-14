@@ -178,6 +178,7 @@ type Msg
     | OpenEditContextDialog ContextId
     | OpenContextPopup ContextId
     | OpenCmdDialog
+    | EditSelectedTodo
     | LayerMsg Layer.Msg
     | OnKeyDown HotKey.Event
     | OnTodoFocusIn Todo
@@ -197,6 +198,22 @@ getComputedSelectedIndex model =
             List.length active
     in
     min (total - 1) model.selectedIndex
+
+
+getMaybeSelectedTodo model =
+    let
+        ( active, completed ) =
+            getSelectedContextTodoList model
+                |> List.partition TodoStore.isNotDone
+
+        total =
+            List.length active
+    in
+    if total <= 0 then
+        Nothing
+
+    else
+        active |> Array.fromList |> Array.get (getComputedSelectedIndex model)
 
 
 getTodoDomId todo =
@@ -278,6 +295,9 @@ update message model =
                         ( [ Shift, Meta ], "a" ) ->
                             update OpenCmdDialog model
 
+                        ( [], "e" ) ->
+                            update EditSelectedTodo model
+
                         _ ->
                             ( model, Cmd.none )
 
@@ -319,6 +339,12 @@ update message model =
 
         OpenEditTodoDialog todoId ->
             updateLayer (Layer.OpenEditTodoDialog todoId) model
+
+        EditSelectedTodo ->
+            pure model
+                |> unwrapMaybe identity
+                    (andThen << update << OpenEditTodoDialog << .id)
+                    (getMaybeSelectedTodo model)
 
         OpenCreateContextDialog ->
             updateLayer Layer.OpenCreateContextDialog model
