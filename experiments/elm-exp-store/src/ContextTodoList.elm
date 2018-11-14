@@ -83,14 +83,6 @@ update config message =
         << pure
 
 
-
---type alias Config =
---    { todoStore : TodoStore
---    , selectedContextId : ContextId
---    , selectedIndex : Int
---    }
-
-
 getSelectedContextTodoList : TodoListConfig -> List Todo
 getSelectedContextTodoList { todoStore, selectedContextId } =
     todoStore |> TodoStore.listForContextId selectedContextId

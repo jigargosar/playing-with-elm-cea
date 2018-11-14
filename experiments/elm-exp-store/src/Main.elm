@@ -385,7 +385,7 @@ viewSidebar model =
 -- TodoList Page
 
 
-contextTodoListConfig : TodoListConfig
+contextTodoListConfig : Model -> TodoListConfig
 contextTodoListConfig model =
     { todoStore = model.todoStore
     , contextStore = model.contextStore
