@@ -1,6 +1,6 @@
-module Elements exposing (highlightedChars, list, listItem, myElement, rootFontFamily, tag)
+module Elements exposing (highlightedChars, list, listItem, myElement, tag, wrapperLayout)
 
-import Element exposing (Element, centerY, column, el, fill, height, padding, paddingXY, rgb, rgb255, row)
+import Element exposing (Element, centerY, column, el, fill, height, rgb, rgb255, row, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -24,7 +24,23 @@ selectedColor =
 
 
 spacing1 =
-    Element.spacing 10
+    Element.spacing 4
+
+
+padding1 =
+    Element.padding 4
+
+
+spacing2 =
+    Element.spacing 8
+
+
+pa2 =
+    Element.padding 8
+
+
+wrapperLayout =
+    Element.layout [ rootFontFamily, rootFontSize ]
 
 
 tag : String -> Element msg
@@ -34,7 +50,7 @@ tag content =
         , height fill
         , Background.color tagColor
         , Border.rounded 4
-        , paddingXY 4 0
+        , padding1
         ]
         [ el
             [ Font.size 10
@@ -61,6 +77,10 @@ rootFontFamily =
         |> Font.family
 
 
+rootFontSize =
+    Font.size 16
+
+
 highlightedChars isHighlighted content =
     el [] (Element.text content)
 
@@ -78,10 +98,10 @@ boolAttrs bool attrs =
 listItem isSelected attrs =
     row
         (boolAttrs isSelected [ Background.color selectedColor ]
-            ++ [ spacing1 ]
+            ++ [ spacing2, width fill, pa2 ]
             ++ attrs
         )
 
 
 list =
-    column [ spacing1 ]
+    column [ width fill ]

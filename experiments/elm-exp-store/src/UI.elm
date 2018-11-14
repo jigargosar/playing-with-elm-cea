@@ -73,4 +73,4 @@ row containerOptions =
 
 
 fromElement el =
-    sDiv [] [] [ Html.fromUnstyled <| Element.layout [ Elements.rootFontFamily ] el ]
+    sDiv [] [] [ Html.fromUnstyled <| Elements.wrapperLayout el ]
