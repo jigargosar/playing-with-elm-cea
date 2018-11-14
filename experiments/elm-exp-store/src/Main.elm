@@ -417,10 +417,7 @@ view model =
             [ sDiv [ maxWidth (px 940) ]
                 [ class "flex-auto flex flex-row" ]
                 [ HtmlX.when (not << .showTempSidebar) viewPermanentSidebar model
-                , div [ class "bl br b--black-05 flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
-                    [ viewTodoListHeader model
-                    , viewTodoList model
-                    ]
+                , viewTodoListMain model
                 ]
             ]
         , HtmlX.when .showTempSidebar viewDrawerSidebar model
@@ -469,6 +466,13 @@ createSideBarConfig model =
 
 
 -- TodoList Page
+
+
+viewTodoListMain model =
+    div [ class "bl br b--black-05 flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
+        [ viewTodoListHeader model
+        , viewTodoList model
+        ]
 
 
 viewTodoListHeader : Model -> Html Msg
