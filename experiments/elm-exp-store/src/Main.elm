@@ -60,6 +60,7 @@ type alias Model =
     , showTempSidebar : Bool
     , selectedIndex : Int
     , windowSize : WindowSize
+    , contextTodoList : ContextTodoList.Model
     }
 
 
@@ -87,6 +88,7 @@ init flags =
             , showTempSidebar = False
             , selectedIndex = 0
             , windowSize = flags.windowSize
+            , contextTodoList = ContextTodoList.init
             }
     in
     ( model
@@ -94,11 +96,6 @@ init flags =
         |> List.filterMap (Maybe.map logCmd)
         |> Cmd.batch
     )
-
-
-getSelectedContextTodoList : Model -> List Todo
-getSelectedContextTodoList model =
-    model.todoStore |> TodoStore.listForContextId model.contextId
 
 
 getSelectedContextId =
@@ -375,6 +372,7 @@ viewSidebar model =
 -- TodoList Page
 
 
+viewContextTodoList : Model -> Html Msg
 viewContextTodoList model =
     let
         config : TodoListConfig Msg
@@ -392,7 +390,7 @@ viewContextTodoList model =
             , addNewMsg = OpenCreateTodoDialog
             }
     in
-    ContextTodoList.view config
+    ContextTodoList.view config model.contextTodoList
 
 
 
