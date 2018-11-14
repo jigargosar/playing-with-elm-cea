@@ -285,8 +285,8 @@ updateCmdDialog contextStore =
         handleOut
 
 
-viewLayer : { x | layer : Layer, contextStore : ContextStore } -> Html Msg
-viewLayer { layer, contextStore } =
+viewLayer : { x | layer : Layer, contextStore : ContextStore, windowSize : WindowSize } -> Html Msg
+viewLayer { layer, contextStore, windowSize } =
     case layer of
         ContextPopup contextPopup ->
             ContextPopup.view contextPopup |> Html.map ContextPopupMsg
@@ -298,7 +298,7 @@ viewLayer { layer, contextStore } =
             ContextDialog.view contextDialog |> Html.map ContextDialogMsg
 
         CmdDialog cmdDialog ->
-            CmdDialog.view contextStore cmdDialog |> fromUnstyled |> Html.map CmdDialogMsg
+            CmdDialog.view contextStore windowSize cmdDialog |> fromUnstyled |> Html.map CmdDialogMsg
 
         NoLayer ->
             noHtml

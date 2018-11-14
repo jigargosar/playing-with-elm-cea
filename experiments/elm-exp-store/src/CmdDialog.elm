@@ -177,12 +177,12 @@ view =
 --viewLazy : ContextStore -> Model -> Element Msg
 
 
-viewLazy contextStore model =
+viewLazy contextStore windowSize model =
     Elements.viewModal
         { onDismiss = Just BackDropClicked
         , attrs =
             [ Element.alignTop
-            , Element.moveDown 100
+            , Element.moveDown (toFloat windowSize.height / 100 * 20)
             ]
         , content =
             Element.column [ Elements.spacing2, Element.width <| Element.minimum 400 <| Element.shrink ]
