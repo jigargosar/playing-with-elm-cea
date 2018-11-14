@@ -19,10 +19,6 @@ import UI exposing (..)
 import UpdateReturn exposing (..)
 
 
-type alias Command =
-    Context
-
-
 type alias Model =
     { query : String, selectedIndex : Int }
 
@@ -46,12 +42,12 @@ type Msg
     | FocusResult Focus.FocusResult
     | QueryChanged String
     | OnKeyDown HotKey.Event
-    | SelectAction Command
+    | SelectContext Context
 
 
 type OutMsg
     = Cancel
-    | Submit Command
+    | GotoContextTodoList Context
 
 
 subscriptions model =
@@ -115,8 +111,8 @@ update contextStore message =
                         Nothing
                 )
 
-        SelectAction action ->
-            withOutMsg (always <| Submit action)
+        SelectContext context ->
+            withOutMsg (always <| GotoContextTodoList context)
     )
         << pure
 
@@ -180,5 +176,5 @@ viewCmd isSelected context =
           else
             bg "inherit"
         ]
-        [ class "pa2", onClick <| SelectAction context ]
+        [ class "pa2", onClick <| SelectContext context ]
         [ text nameString ]

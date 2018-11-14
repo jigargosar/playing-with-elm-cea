@@ -46,6 +46,7 @@ type Msg
 type OutMsg
     = TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
+    | GoToContextTodoListMsg Context
     | NoOut
 
 
@@ -264,7 +265,10 @@ updateCmdDialog contextStore =
     let
         handleOut out =
             (case out of
-                _ ->
+                CmdDialog.GotoContextTodoList context ->
+                    withOutMsg <| GoToContextTodoListMsg context
+
+                CmdDialog.Cancel ->
                     withNoOutMsg
             )
                 << mapModel (\_ -> NoLayer)
