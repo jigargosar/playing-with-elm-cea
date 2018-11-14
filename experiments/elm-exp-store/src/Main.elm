@@ -193,10 +193,10 @@ update message model =
                 Layer.NoLayer ->
                     case ke of
                         ( [], "ArrowDown" ) ->
-                            cycleSelectedIndexBy 1 model
+                            updateContextTodoList (ContextTodoList.cycleSelectionBy 1) model
 
                         ( [], "ArrowUp" ) ->
-                            cycleSelectedIndexBy -1 model
+                            updateContextTodoList (ContextTodoList.cycleSelectionBy -1) model
 
                         ( [], "q" ) ->
                             update OpenCreateTodoDialog model
@@ -392,8 +392,7 @@ contextTodoListConfig model =
 
     --            , toggleShowCompleted = ToggleCompletedTodos
     --            , isShowingCompleted = model.showCompletedTodos
---    , selectedIndex = getComputedSelectedIndex model
-
+    --    , selectedIndex = getComputedSelectedIndex model
     --            , markDone = TodoStoreMsg << TodoStore.markDone
     --            , unmarkDone = TodoStoreMsg << TodoStore.unmarkDone
     --            , focusInMsg = OnTodoFocusIn

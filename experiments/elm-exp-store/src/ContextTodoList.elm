@@ -2,6 +2,7 @@ module ContextTodoList exposing
     ( Model
     , Msg
     , TodoListConfig
+    , cycleSelectionBy
     , getTodoDomId
     , init
     , update
@@ -19,12 +20,14 @@ import Btn
 import ContextStore exposing (ContextId, ContextStore)
 import Css exposing (..)
 import DomX
+import Focus
 import Html.Styled exposing (Html, div, styled, text)
 import Html.Styled.Attributes exposing (class, classList, css, id, tabindex)
 import Html.Styled.Events exposing (onClick, onDoubleClick)
 import Html.Styled.Keyed as HKeyed exposing (node)
 import Icons
 import Layer
+import Log
 import Styles exposing (..)
 import TodoStore exposing (Todo, TodoId, TodoStore)
 import UI exposing (..)
@@ -54,6 +57,12 @@ type Msg
     | FocusInMsg TodoId
     | ToggleCompletedVisible
     | SendOutMsg OutMsg
+    | OnFocusResult Focus.FocusResult
+    | CycleSelectionBy Int
+
+
+cycleSelectionBy offset =
+    CycleSelectionBy offset
 
 
 type OutMsg
@@ -79,6 +88,23 @@ update config message =
 
         SendOutMsg outMsg ->
             withJustOutMsg outMsg
+
+        OnFocusResult r ->
+            addCmd (Log.focusResult "Main.elm" r)
+                >> withNothingOutMsg
+
+        CycleSelectionBy offset ->
+            andThen
+                (\model ->
+                    unwrapMaybe (pure model)
+                        (\( selectedIndex, todo ) ->
+                            ( { model | selectedIndex = selectedIndex }
+                            , Focus.attempt OnFocusResult <| getTodoDomId todo
+                            )
+                        )
+                        (cycleSelectedIndexBy offset config model)
+                )
+                >> withNothingOutMsg
     )
         << pure
 
