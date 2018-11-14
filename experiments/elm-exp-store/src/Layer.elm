@@ -293,7 +293,7 @@ viewLayer { layer, contextStore } =
             ContextDialog.view contextDialog |> Html.map ContextDialogMsg
 
         CmdDialog cmdDialog ->
-            CmdDialog.view contextStore cmdDialog |> fromElement |> Html.map CmdDialogMsg
+            CmdDialog.view contextStore cmdDialog |> fromUnstyled |> Html.map CmdDialogMsg
 
         NoLayer ->
             noHtml

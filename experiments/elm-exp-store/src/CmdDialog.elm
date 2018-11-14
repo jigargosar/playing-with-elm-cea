@@ -166,42 +166,63 @@ getQueryInputId =
     getDomIdPrefix >> (++) "-query-input"
 
 
-view : ContextStore -> Model -> Element Msg
+
+--view : ContextStore -> Model -> Element Msg
+
+
 view =
-    Element.Lazy.lazy2 viewLazy
+    {- Element.Lazy.lazy2 -}
+    viewLazy
 
 
-viewLazy : ContextStore -> Model -> Element Msg
-viewLazy contextStore model =
+viewBackdrop model =
     Element.row
-        []
-        [ Element.el
-            [ getBackdropDomId model |> id |> Element.htmlAttribute
-            , DomX.onClickTargetIdHtml BackDropClicked |> Element.htmlAttribute
-            ]
-            (Element.text "")
-
-        --        , sDiv [ position absolute, absFill, rowCXY, pointerEvents none ]
-        --            []
-        --            [ sDiv [ position absolute, top (pct 10), pointerEventsAll ]
-        --                [ class "bg-white br4 shadow-1 pa3 measure w-100"
-        --                ]
-        --                [ sDiv [ vs, w100, rowCY ]
-        --                    []
-        --                    [ input
-        --                        [ id <| getQueryInputId model
-        --                        , placeholder "Type Command Name"
-        --                        , class "flex-auto pa3"
-        --                        , value model.query
-        --                        , onInput QueryChanged
-        --                        , HotKey.onKeyDown QueryInputKeyDown
-        --                        ]
-        --                        []
-        --                    ]
-        --                , fromElement (viewCmdList contextStore model)
-        --                ]
-        --            ]
+        [ getBackdropDomId model |> id |> Element.htmlAttribute
+        , DomX.onClickTargetIdHtml BackDropClicked |> Element.htmlAttribute
+        , Element.width Element.fill
+        , Element.height Element.fill
+        , Element.centerX
+        , Element.centerY
         ]
+        [ Element.el
+            [ Element.centerX
+            , Element.centerY
+            ]
+            (Element.text "Hello")
+        ]
+
+
+
+--viewLazy : ContextStore -> Model -> Element Msg
+
+
+viewLazy contextStore model =
+    Element.layout [ Element.inFront (viewBackdrop model) ] (Element.text "")
+
+
+
+--    viewBackdrop model |> Element.inFront (viewBackdrop model)
+--        , sDiv [ position absolute, absFill, rowCXY, pointerEvents none ]
+--            []
+--            [ sDiv [ position absolute, top (pct 10), pointerEventsAll ]
+--                [ class "bg-white br4 shadow-1 pa3 measure w-100"
+--                ]
+--                [ sDiv [ vs, w100, rowCY ]
+--                    []
+--                    [ input
+--                        [ id <| getQueryInputId model
+--                        , placeholder "Type Command Name"
+--                        , class "flex-auto pa3"
+--                        , value model.query
+--                        , onInput QueryChanged
+--                        , HotKey.onKeyDown QueryInputKeyDown
+--                        ]
+--                        []
+--                    ]
+--                , fromElement (viewCmdList contextStore model)
+--                ]
+--            ]
+--        ]
 
 
 viewCmdList : ContextStore -> Model -> Element Msg
