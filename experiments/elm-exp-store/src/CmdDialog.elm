@@ -272,7 +272,7 @@ viewCmdList contextStore model =
 
 viewCmd isSelected ( result, command ) =
     Elements.listItem isSelected
-        [{- class "pa2", onClick <| SelectCommand command -}]
+        [ Element.Events.onClick <| SelectCommand command ]
         [ Elements.tag command.prefix
         , viewFuzzyString result command.name
         ]
