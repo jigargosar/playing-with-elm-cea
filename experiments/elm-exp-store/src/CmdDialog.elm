@@ -1,5 +1,6 @@
 module CmdDialog exposing (Model, Msg(..), OutMsg(..), init, subscriptions, update, view)
 
+import Array
 import BasicsX exposing (safeModBy)
 import Browser.Events
 import ContextStore exposing (Context, ContextStore)
@@ -41,7 +42,8 @@ type Msg
     | AutoFocus
     | FocusResult Focus.FocusResult
     | QueryChanged String
-    | OnKeyDown HotKey.Event
+    | GlobalKeyDown HotKey.Event
+    | QueryInputKeyDown HotKey.Event
     | SelectContext Context
 
 
@@ -51,7 +53,7 @@ type OutMsg
 
 
 subscriptions model =
-    Sub.batch [ Browser.Events.onKeyDown (D.map OnKeyDown HotKey.decoder) ]
+    Sub.batch [ Browser.Events.onKeyDown (D.map GlobalKeyDown HotKey.decoder) ]
 
 
 cycleSelectedIdxBy contextStore offset model =
@@ -77,7 +79,7 @@ update contextStore message =
             addEffect (getQueryInputId >> Focus.attempt FocusResult)
                 >> withNoOutMsg
 
-        OnKeyDown ke ->
+        GlobalKeyDown ke ->
             case ke of
                 ( [], "Escape" ) ->
                     withOutMsg (always Cancel)
@@ -89,6 +91,20 @@ update contextStore message =
                 ( [], "ArrowUp" ) ->
                     andThen (cycleSelectedIdxBy contextStore -1)
                         >> withNoOutMsg
+
+                _ ->
+                    withNoOutMsg
+
+        QueryInputKeyDown ke ->
+            case ke of
+                ( [], "Enter" ) ->
+                    withMaybeOutMsg
+                        (\model ->
+                            getFilteredCommands contextStore model
+                                |> Array.fromList
+                                |> Array.get (computeSelectedIndex contextStore model)
+                                |> Maybe.map GotoContextTodoList
+                        )
 
                 _ ->
                     withNoOutMsg
@@ -147,8 +163,7 @@ view contextStore model =
                         , class "flex-auto pa3"
                         , value model.query
                         , onInput QueryChanged
-
-                        --                                                  , HotKey.onKeyDown ContentInputKeyDown
+                        , HotKey.onKeyDown QueryInputKeyDown
                         ]
                         []
                     ]
