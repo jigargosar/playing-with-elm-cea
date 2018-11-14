@@ -234,31 +234,6 @@ viewLazy contextStore windowSize model =
         }
 
 
-
---    viewBackdrop model |> Element.inFront (viewBackdrop model)
---        , sDiv [ position absolute, absFill, rowCXY, pointerEvents none ]
---            []
---            [ sDiv [ position absolute, top (pct 10), pointerEventsAll ]
---                [ class "bg-white br4 shadow-1 pa3 measure w-100"
---                ]
---                [ sDiv [ vs, w100, rowCY ]
---                    []
---                    [ input
---                        [ id <| getQueryInputId model
---                        , placeholder "Type Command Name"
---                        , class "flex-auto pa3"
---                        , value model.query
---                        , onInput QueryChanged
---                        , HotKey.onKeyDown QueryInputKeyDown
---                        ]
---                        []
---                    ]
---                , fromElement (viewCmdList contextStore model)
---                ]
---            ]
---        ]
-
-
 viewCmdList : ContextStore -> Model -> Element Msg
 viewCmdList contextStore model =
     getFilteredCommandResults contextStore model
@@ -274,7 +249,7 @@ viewCmd isSelected ( result, command ) =
         ]
 
 
-viewFuzzyString result str =
+viewFuzzyString result =
     let
         isKey index =
             List.foldl
@@ -317,4 +292,4 @@ viewFuzzyString result str =
         --        indexCharPair =
         --            String.foldl accumulateChar ( [], 0 ) str
     in
-    Elements.highlightedChars isKey str
+    Elements.highlightedChars isKey
