@@ -21,7 +21,7 @@ import UpdateReturn exposing (..)
 
 
 type alias Command =
-    { name : String, outMsg : OutMsg }
+    { name : String, outMsg : OutMsg, searchText : String }
 
 
 type alias Model =
@@ -32,11 +32,16 @@ init =
     { query = "", selectedIndex = 0 }
 
 
+createContextCommand : { x | name : String, id : ContextId } -> Command
+createContextCommand { name, id } =
+    { name = name, outMsg = GotoContextTodoList id, searchText = name }
+
+
 getFilteredCommands contextStore model =
     ContextStore.listActive contextStore
-        |> List.map (\context -> Command context.name <| GotoContextTodoList context.id)
-        |> (::) (Command ContextStore.defaultName <| GotoContextTodoList ContextStore.defaultId)
-        |> Simple.Fuzzy.filter .name model.query
+        |> List.map createContextCommand
+        |> (::) (createContextCommand ContextStore.inbox)
+        |> Simple.Fuzzy.filter .searchText model.query
 
 
 computeSelectedIndex contextStore model =

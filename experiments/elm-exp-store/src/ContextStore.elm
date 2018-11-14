@@ -10,6 +10,7 @@ module ContextStore exposing
     , defaultName
     , get
     , getNameOrDefaultById
+    , inbox
     , list
     , listActive
     , load
@@ -231,3 +232,7 @@ isActive =
 
 listActive =
     list >> List.filter isActive
+
+
+inbox =
+    { id = defaultId, name = defaultName }
