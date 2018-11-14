@@ -1,7 +1,11 @@
 module TodoListSelection exposing (Model, SelectedIndex)
 
 import Array
+import BasicsX exposing (eqs, safeModBy, unwrapMaybe)
 import ContextStore exposing (ContextId)
+import ContextTodoList
+import Focus exposing (FocusResult)
+import Html.Styled exposing (Html)
 import TodoStore exposing (Todo, TodoStore)
 
 
@@ -13,14 +17,15 @@ type alias Model =
     SelectedIndex
 
 
-type alias Config =
+type alias Config msg =
     { todoStore : TodoStore
     , selectedContextId : ContextId
     , selectedIndex : Int
+    , onFocusResult : Focus.FocusResult -> msg
     }
 
 
-getSelectedContextTodoList : Config -> List Todo
+getSelectedContextTodoList : Config msg -> List Todo
 getSelectedContextTodoList { todoStore, selectedContextId } =
     todoStore |> TodoStore.listForContextId selectedContextId
 
@@ -51,3 +56,46 @@ getMaybeSelectedTodo config =
 
     else
         active |> Array.fromList |> Array.get (getComputedSelectedIndex config)
+
+
+cycleSelectedIndexBy : Int -> Config msg -> Html msg
+cycleSelectedIndexBy num config =
+    let
+        ( active, completed ) =
+            getSelectedContextTodoList config
+                |> List.partition TodoStore.isNotDone
+
+        total =
+            List.length active
+    in
+    if total > 0 then
+        let
+            selectedIndex =
+                safeModBy total (config.selectedIndex + num)
+
+            focusCmd =
+                Array.fromList active
+                    |> Array.get selectedIndex
+                    |> Maybe.map ContextTodoList.getTodoDomId
+                    |> Focus.attemptMaybe config.onFocusResult
+        in
+        ( selectedIndex, focusCmd )
+
+    else
+        ( config.selectedIndex, Cmd.none )
+
+
+setSelectedIndexOnFocusIn todoId model =
+    let
+        ( active, completed ) =
+            getSelectedContextTodoList model
+                |> List.partition TodoStore.isNotDone
+
+        selectedIndex =
+            Array.fromList active
+                |> Array.toIndexedList
+                |> List.filter (Tuple.second >> .id >> eqs todoId)
+                |> List.head
+                |> unwrapMaybe model.selectedIndex Tuple.first
+    in
+    ( selectedIndex, Cmd.none )
