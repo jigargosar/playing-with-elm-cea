@@ -219,20 +219,7 @@ viewCmd isSelected ( result, command ) =
         , dFlexRow
         ]
         [ class "pa2", onClick <| SelectCommand command ]
-        [ sDiv
-            [ rowCXY
-            , hs
-            , bg "#79b8ff"
-            , p2Rm 0 0.2
-            , borderRadius (px 4)
-            ]
-            []
-            [ {- sDiv [ fzPx 10 ] [] [ text command.prefix ]
-                 ,
-              -}
-              fromElement <| Elements.tag command.prefix
-            ]
-        , fromElement <| Elements.tag command.prefix
+        [ fromElement <| Elements.tag command.prefix
         , viewFuzzyString result command.name
 
         --        , sDiv [] [] [ text <| Debug.toString result ]
