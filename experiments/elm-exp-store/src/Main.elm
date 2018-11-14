@@ -60,8 +60,12 @@ type alias Model =
     }
 
 
+type alias WindowSize =
+    { width : Int, height : Int }
+
+
 type alias Flags =
-    { now : Millis, todos : Value, contexts : Value }
+    { now : Millis, windowSize : WindowSize, todos : Value, contexts : Value }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -83,6 +87,7 @@ init flags =
             , showCompletedTodos = False
             , showTempSidebar = False
             , selectedIndex = 0
+            , windowSize = flags.windowSize
             }
     in
     ( model
@@ -161,6 +166,7 @@ logCmd =
 
 type Msg
     = NoOp
+    | OnWindowSize Int Int
     | FocusResult Focus.FocusResult
     | NavigateToTodoListWithContextId ContextId
     | MsgTodoStore TodoStore.Msg
@@ -255,6 +261,10 @@ update message model =
 
         OnTodoFocusIn todo ->
             setSelectedIndexOnFocusIn todo model
+
+        OnWindowSize width height ->
+            mapModel (\model -> { model | windowSize = { width = width, height = height } })
+                >> withNoOutMsg
 
         OnKeyDown ke ->
             case model.layer of
@@ -362,6 +372,7 @@ subscriptions model =
     Sub.batch
         [ Browser.Events.onKeyDown <| D.map OnKeyDown HotKey.decoder
         , Layer.subscriptions model.layer |> Sub.map LayerMsg
+        , Browser.Events.onResize OnWindowSize
         ]
 
 
