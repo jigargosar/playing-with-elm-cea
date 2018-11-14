@@ -20,6 +20,10 @@ type alias SelectedIndex =
     Int
 
 
+type alias Model =
+    SelectedIndex
+
+
 type alias Config =
     { todoStore : TodoStore
     , selectedContextId : ContextId
@@ -94,3 +98,14 @@ getMaybeSelectedIndexOnFocusIn todoId config =
         |> List.filter (Tuple.second >> .id >> eqs todoId)
         |> List.head
         |> Maybe.map Tuple.first
+
+
+type Msg
+    = NoOp
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update message model =
+    case message of
+        NoOp ->
+            ( model, Cmd.none )
