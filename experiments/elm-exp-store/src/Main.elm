@@ -473,6 +473,7 @@ viewTodoListMain model =
         config : TodoListConfig Msg
         config =
             { todoStore = model.todoStore
+            , contextStore = model.contextStore
             , toggleShowCompleted = ToggleCompletedTodos
             , isShowingCompleted = model.showCompletedTodos
             , selectedIndex = getComputedSelectedIndex model
@@ -480,22 +481,20 @@ viewTodoListMain model =
             , unmarkDone = MsgTodoStore << TodoStore.unmarkDone
             , focusInMsg = OnTodoFocusIn
             , editMsg = OpenEditTodoDialog
+            , selectedContextId = getSelectedContextId model
             }
-
-        selectedContextId =
-            getSelectedContextId model
     in
     div [ class "bl br b--black-05 flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
-        [ viewTodoListHeader selectedContextId model.contextStore
+        [ viewTodoListHeader config
         , viewTodoList model
         ]
 
 
-viewTodoListHeader : ContextId -> ContextStore -> Html Msg
-viewTodoListHeader contextId contextStore =
+viewTodoListHeader : TodoListConfig msg -> Html msg
+viewTodoListHeader { selectedContextId, contextStore } =
     let
         name =
-            ContextStore.getNameOrDefaultById contextId contextStore
+            ContextStore.getNameOrDefaultById selectedContextId contextStore
     in
     div
         [ class "ph3 flex flex-row" ]
@@ -574,6 +573,7 @@ type alias TodoViewModel msg =
 
 type alias TodoListConfig msg =
     { todoStore : TodoStore
+    , contextStore : ContextStore
     , toggleShowCompleted : msg
     , isShowingCompleted : Bool
     , selectedIndex : Int
@@ -581,6 +581,7 @@ type alias TodoListConfig msg =
     , unmarkDone : TodoId -> msg
     , focusInMsg : TodoId -> msg
     , editMsg : TodoId -> msg
+    , selectedContextId : ContextId
     }
 
 
