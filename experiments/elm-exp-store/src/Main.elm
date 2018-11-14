@@ -144,12 +144,11 @@ type alias ContextItem =
     ( String, ContextId )
 
 
-selectionConfig : Model -> TodoListSelection.Config Msg
+selectionConfig : Model -> TodoListSelection.Config
 selectionConfig model =
     { todoStore = model.todoStore
     , selectedContextId = model.contextId
     , selectedIndex = model.selectedIndex
-    , onFocusResult = OnFocusResult
     }
 
 

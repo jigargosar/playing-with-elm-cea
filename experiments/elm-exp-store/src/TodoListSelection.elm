@@ -4,6 +4,7 @@ module TodoListSelection exposing
     , cycleSelectedIndexBy
     , getComputedSelectedIndex
     , getMaybeSelectedTodo
+    , getSelectedIndexOnFocusIn
     )
 
 import Array
@@ -19,15 +20,14 @@ type alias SelectedIndex =
     Int
 
 
-type alias Config msg =
+type alias Config =
     { todoStore : TodoStore
     , selectedContextId : ContextId
     , selectedIndex : Int
-    , onFocusResult : Focus.FocusResult -> msg
     }
 
 
-getSelectedContextTodoList : Config msg -> List Todo
+getSelectedContextTodoList : Config -> List Todo
 getSelectedContextTodoList { todoStore, selectedContextId } =
     todoStore |> TodoStore.listForContextId selectedContextId
 
@@ -60,7 +60,7 @@ getMaybeSelectedTodo config =
         active |> Array.fromList |> Array.get (getComputedSelectedIndex config)
 
 
-cycleSelectedIndexBy : Int -> Config msg -> Maybe ( SelectedIndex, Todo )
+cycleSelectedIndexBy : Int -> Config -> Maybe ( SelectedIndex, Todo )
 cycleSelectedIndexBy num config =
     let
         ( active, completed ) =
@@ -83,17 +83,14 @@ cycleSelectedIndexBy num config =
         Nothing
 
 
-setSelectedIndexOnFocusIn todoId model =
+getSelectedIndexOnFocusIn todoId config =
     let
         ( active, completed ) =
-            getSelectedContextTodoList model
+            getSelectedContextTodoList config
                 |> List.partition TodoStore.isNotDone
-
-        selectedIndex =
-            Array.fromList active
-                |> Array.toIndexedList
-                |> List.filter (Tuple.second >> .id >> eqs todoId)
-                |> List.head
-                |> unwrapMaybe model.selectedIndex Tuple.first
     in
-    ( selectedIndex, Cmd.none )
+    Array.fromList active
+        |> Array.toIndexedList
+        |> List.filter (Tuple.second >> .id >> eqs todoId)
+        |> List.head
+        |> Maybe.map Tuple.first
