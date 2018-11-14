@@ -254,10 +254,7 @@ update message model =
             updateLayer (Layer.OpenEditTodoDialog todoId) model
 
         EditSelectedTodo ->
-            pure model
-                |> unwrapMaybe identity
-                    (andThen << update << OpenEditTodoDialog << .id)
-                    (getMaybeSelectedTodo model)
+            updateContextTodoList ContextTodoList.editSelected model
 
         OpenCreateContextDialog ->
             updateLayer Layer.OpenCreateContextDialog model
