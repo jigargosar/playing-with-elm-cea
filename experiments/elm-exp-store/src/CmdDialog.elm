@@ -4,8 +4,6 @@ import Array
 import BasicsX exposing (isWhitespaceOrEmptyString, safeModBy)
 import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextStore)
-import Css exposing (absolute, borderRadius, left, none, pct, pointerEvents, pointerEventsAll, position, px, right, top, zero)
-import DomX exposing (DomId)
 import Element exposing (Element)
 import Element.Events
 import Element.Lazy
@@ -13,7 +11,7 @@ import Elements
 import Focus
 import Fuzzy
 import HotKey exposing (SoftKey(..))
-import Html exposing (input)
+import Html
 import Html.Attributes exposing (class, id, placeholder, value)
 import Html.Events exposing (onInput)
 import Html.Lazy
@@ -21,8 +19,6 @@ import Json.Decode as D
 import Json.Encode as E
 import Log
 import Simple.Fuzzy
-import Styles exposing (..)
-import UI exposing (..)
 import UpdateReturn exposing (..)
 
 
@@ -222,7 +218,7 @@ viewLazy contextStore windowSize model =
                         Element.shrink
                 ]
                 [ Element.el [ Element.width Element.fill ]
-                    (input
+                    (Html.input
                         [ id <| getQueryInputId model
                         , placeholder "Type Command Name"
                         , class "flex-auto pa3"
@@ -304,21 +300,19 @@ viewFuzzyString result str =
                 False
                 result.matches
 
-        stylesAt index =
-            [ if isKey index then
-                [ fg "red" ]
-
-              else
-                []
-
-            --            , if isMatch index then
-            --                [ bg "yellow" ]
-            --
-            --              else
-            --                []
-            ]
-                |> List.concat
-
+        --        stylesAt index =
+        --            [ if isKey index then
+        --                [ fg "red" ]
+        --
+        --              else
+        --                []
+        --            , if isMatch index then
+        --                [ bg "yellow" ]
+        --
+        --              else
+        --                []
+        --            ]
+        --                |> List.concat
         accumulateChar c ( sum, index ) =
             ( sum ++ [ ( index, c ) ], index + 1 )
 
