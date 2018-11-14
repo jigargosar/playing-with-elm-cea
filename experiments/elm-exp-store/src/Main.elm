@@ -205,8 +205,9 @@ update message model =
                             update OpenCmdDialog model
 
                         ( [], "e" ) ->
-                            update EditSelectedTodo model
+                            updateContextTodoList ContextTodoList.editSelected model
 
+                        --                            update EditSelectedTodo model
                         _ ->
                             ( model, Cmd.none )
 

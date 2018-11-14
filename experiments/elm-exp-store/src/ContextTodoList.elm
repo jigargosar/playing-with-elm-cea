@@ -3,6 +3,7 @@ module ContextTodoList exposing
     , Msg
     , TodoListConfig
     , cycleSelectionBy
+    , editSelected
     , getTodoDomId
     , init
     , update
@@ -59,10 +60,15 @@ type Msg
     | SendOutMsg OutMsg
     | OnFocusResult Focus.FocusResult
     | CycleSelectionBy Int
+    | EditSelected
 
 
 cycleSelectionBy offset =
     CycleSelectionBy offset
+
+
+editSelected =
+    EditSelected
 
 
 type OutMsg
@@ -105,6 +111,14 @@ update config message =
                         (cycleSelectedIndexBy offset config model)
                 )
                 >> withNothingOutMsg
+
+        EditSelected ->
+            withMaybeOutMsgEffect
+                (\model ->
+                    unwrapMaybe Nothing
+                        (Just << LayerMsg << Layer.OpenEditTodoDialog << .id)
+                        (getMaybeSelectedTodo config model)
+                )
     )
         << pure
 
