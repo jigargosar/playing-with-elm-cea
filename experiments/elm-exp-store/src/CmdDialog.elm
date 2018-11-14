@@ -288,17 +288,17 @@ viewFuzzyString result str =
                 False
                 result.matches
 
-        isMatch index =
-            List.foldl
-                (\e sum ->
-                    if not sum then
-                        e.offset <= index && (e.offset + e.length) > index
-
-                    else
-                        sum
-                )
-                False
-                result.matches
+--        isMatch index =
+--            List.foldl
+--                (\e sum ->
+--                    if not sum then
+--                        e.offset <= index && (e.offset + e.length) > index
+--
+--                    else
+--                        sum
+--                )
+--                False
+--                result.matches
 
         --        stylesAt index =
         --            [ if isKey index then
