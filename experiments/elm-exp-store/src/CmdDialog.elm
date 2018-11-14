@@ -288,18 +288,17 @@ viewFuzzyString result str =
                 False
                 result.matches
 
---        isMatch index =
---            List.foldl
---                (\e sum ->
---                    if not sum then
---                        e.offset <= index && (e.offset + e.length) > index
---
---                    else
---                        sum
---                )
---                False
---                result.matches
-
+        --        isMatch index =
+        --            List.foldl
+        --                (\e sum ->
+        --                    if not sum then
+        --                        e.offset <= index && (e.offset + e.length) > index
+        --
+        --                    else
+        --                        sum
+        --                )
+        --                False
+        --                result.matches
         --        stylesAt index =
         --            [ if isKey index then
         --                [ fg "red" ]
@@ -313,10 +312,9 @@ viewFuzzyString result str =
         --                []
         --            ]
         --                |> List.concat
-        accumulateChar c ( sum, index ) =
-            ( sum ++ [ ( index, c ) ], index + 1 )
-
-        indexCharPair =
-            String.foldl accumulateChar ( [], 0 ) str
+        --        accumulateChar c ( sum, index ) =
+        --            ( sum ++ [ ( index, c ) ], index + 1 )
+        --        indexCharPair =
+        --            String.foldl accumulateChar ( [], 0 ) str
     in
     Elements.highlightedChars isKey str
