@@ -30,11 +30,11 @@ type alias Command =
 
 
 type alias Model =
-    { query : String, selectedIndex : Int }
+    { query : String, selectedIndex : Int, windowSize : { width : Int, height : Int } }
 
 
 init =
-    { query = "", selectedIndex = 0 }
+    { query = "", selectedIndex = 0, windowSize = { width = 0, height = 0 } }
 
 
 createContextCommand : { x | name : String, id : ContextId } -> Command
@@ -67,6 +67,7 @@ type Msg
     | FocusResult Focus.FocusResult
     | QueryChanged String
     | GlobalKeyDown HotKey.Event
+    | WindowSize Int Int
     | QueryInputKeyDown HotKey.Event
     | SelectCommand Command
 
@@ -77,7 +78,10 @@ type OutMsg
 
 
 subscriptions model =
-    Sub.batch [ Browser.Events.onKeyDown (D.map GlobalKeyDown HotKey.decoder) ]
+    Sub.batch
+        [ Browser.Events.onKeyDown (D.map GlobalKeyDown HotKey.decoder)
+        , Browser.Events.onResize WindowSize
+        ]
 
 
 cycleSelectedIdxBy contextStore offset model =
@@ -101,6 +105,10 @@ update contextStore message =
     (case message of
         AutoFocus ->
             addEffect (getQueryInputId >> Focus.attempt FocusResult)
+                >> withNoOutMsg
+
+        WindowSize width height ->
+            mapModel (\model -> { model | windowSize = { width = width, height = height } })
                 >> withNoOutMsg
 
         GlobalKeyDown ke ->
