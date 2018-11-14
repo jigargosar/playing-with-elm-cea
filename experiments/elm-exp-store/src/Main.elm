@@ -153,16 +153,8 @@ selectionConfig model =
     }
 
 
-getComputedSelectedIndex model =
-    let
-        ( active, completed ) =
-            getSelectedContextTodoList model
-                |> List.partition TodoStore.isNotDone
-
-        total =
-            List.length active
-    in
-    min (total - 1) model.selectedIndex
+getComputedSelectedIndex =
+    TodoListSelection.getComputedSelectedIndex << selectionConfig
 
 
 getMaybeSelectedTodo model =
