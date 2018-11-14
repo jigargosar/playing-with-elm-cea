@@ -171,7 +171,7 @@ update contextStore message =
                 >> withNoOutMsg
 
         QueryChanged query ->
-            mapModel (\model -> { model | query = query })
+            mapModel (\model -> { model | query = query, selectedIndex = 0 })
                 >> withNoOutMsg
 
         BackDropClicked ->
