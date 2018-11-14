@@ -380,13 +380,6 @@ subscriptions model =
 ---- VIEW ----
 
 
-getAllContextsNameIdPairs =
-    .contextStore
-        >> ContextStore.list
-        >> List.map (\c -> ( c.name, c.id ))
-        >> (::) ( ContextStore.defaultName, ContextStore.defaultId )
-
-
 view : Model -> Html Msg
 view model =
     div [ class "flex flex-column min-h-100 w-100" ]
@@ -424,22 +417,22 @@ viewDrawerSidebar model =
         ]
 
 
-viewSidebar =
-    Sidebar.view << createSideBarConfig
-
-
-createSideBarConfig : Model -> Sidebar.Config Msg
-createSideBarConfig model =
-    { contexts = getUserDefinedContextList model
-    , addContextClicked = OpenCreateContextDialog
-    , showArchived = model.showArchivedContexts
-    , toggleShowArchived = ToggleShowArchivedContexts
-    , isSelected = eqs <| getSelectedContextId model
-    , navigateToTodoList = NavigateToTodoListWithContextId
-    , activeTodoCount = \id -> getActiveTodoListCountForContextId id model
-    , moreClicked = OpenContextPopup
-    , moreOpen = \id -> Layer.eqContextPopupFor id model.layer
-    }
+viewSidebar model =
+    let
+        config : Sidebar.Config Msg
+        config =
+            { contexts = getUserDefinedContextList model
+            , addContextClicked = OpenCreateContextDialog
+            , showArchived = model.showArchivedContexts
+            , toggleShowArchived = ToggleShowArchivedContexts
+            , isSelected = eqs <| getSelectedContextId model
+            , navigateToTodoList = NavigateToTodoListWithContextId
+            , activeTodoCount = \id -> getActiveTodoListCountForContextId id model
+            , moreClicked = OpenContextPopup
+            , moreOpen = \id -> Layer.eqContextPopupFor id model.layer
+            }
+    in
+    Sidebar.view config
 
 
 
