@@ -159,7 +159,6 @@ getMaybeSelectedIndexOnFocusIn todoId config =
 type alias TodoListConfig =
     { todoStore : TodoStore
     , contextStore : ContextStore
-    , isShowingCompleted : Bool
     , selectedIndex : Int
     , selectedContextId : ContextId
     }
@@ -206,7 +205,7 @@ viewTodoList config model =
                 ]
             , viewCompletedBtn model.completedVisible
             ]
-        , if config.isShowingCompleted then
+        , if model.completedVisible then
             viewCompletedSection config completed
 
           else

@@ -400,7 +400,7 @@ viewContextTodoList model =
             , contextStore = model.contextStore
 
             --            , toggleShowCompleted = ToggleCompletedTodos
-            , isShowingCompleted = model.showCompletedTodos
+--            , isShowingCompleted = model.showCompletedTodos
             , selectedIndex = getComputedSelectedIndex model
 
             --            , markDone = TodoStoreMsg << TodoStore.markDone
