@@ -392,7 +392,7 @@ contextTodoListConfig model =
 
     --            , toggleShowCompleted = ToggleCompletedTodos
     --            , isShowingCompleted = model.showCompletedTodos
-    , selectedIndex = getComputedSelectedIndex model
+--    , selectedIndex = getComputedSelectedIndex model
 
     --            , markDone = TodoStoreMsg << TodoStore.markDone
     --            , unmarkDone = TodoStoreMsg << TodoStore.unmarkDone

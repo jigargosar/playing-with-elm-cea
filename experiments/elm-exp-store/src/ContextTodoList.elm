@@ -155,7 +155,6 @@ getMaybeSelectedIndexOnFocusIn todoId config =
 type alias TodoListConfig =
     { todoStore : TodoStore
     , contextStore : ContextStore
-    , selectedIndex : Int
     , selectedContextId : ContextId
     }
 
