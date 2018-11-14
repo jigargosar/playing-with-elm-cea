@@ -1,6 +1,6 @@
-module Elements exposing (myElement, rootFontFamily, tag)
+module Elements exposing (highlightedChars, list, listItem, myElement, rootFontFamily, tag)
 
-import Element exposing (Element, centerY, el, fill, height, padding, paddingXY, rgb, rgb255, row, spacing)
+import Element exposing (Element, centerY, column, el, fill, height, padding, paddingXY, rgb, rgb255, row)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -17,6 +17,14 @@ myElement =
 
 tagColor =
     rgb255 121 184 255
+
+
+selectedColor =
+    rgb255 205 236 255
+
+
+spacing1 =
+    Element.spacing 10
 
 
 tag : String -> Element msg
@@ -51,3 +59,29 @@ rootFontFamily =
     ]
         |> List.map Font.typeface
         |> Font.family
+
+
+highlightedChars isHighlighted content =
+    el [] (Element.text content)
+
+
+boolAttrs bool attrs =
+    [ if bool then
+        attrs
+
+      else
+        []
+    ]
+        |> List.concat
+
+
+listItem isSelected attrs =
+    row
+        (boolAttrs isSelected [ Background.color selectedColor ]
+            ++ [ spacing1 ]
+            ++ attrs
+        )
+
+
+list =
+    column [ spacing1 ]

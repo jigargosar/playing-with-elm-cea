@@ -6,7 +6,7 @@ import Browser.Events
 import ContextStore exposing (Context, ContextId, ContextStore)
 import Css exposing (absolute, borderRadius, left, none, pct, pointerEvents, pointerEventsAll, position, px, right, top, zero)
 import DomX exposing (DomId)
-import Element
+import Element exposing (Element)
 import Elements
 import Focus
 import Fuzzy
@@ -197,29 +197,23 @@ viewLazy contextStore model =
                         ]
                         []
                     ]
-                , sDiv [] [] (viewCmdList contextStore model)
+                , fromElement (viewCmdList contextStore model)
                 ]
             ]
         ]
 
 
-viewCmdList : ContextStore -> Model -> List (Html Msg)
+viewCmdList : ContextStore -> Model -> Element Msg
 viewCmdList contextStore model =
     getFilteredCommands contextStore model
         |> List.indexedMap (\idx -> viewCmd (idx == computeSelectedIndex contextStore model))
+        |> Elements.list
 
 
 viewCmd isSelected ( result, command ) =
-    sDiv
-        [ if isSelected then
-            bg "#cdecff"
-
-          else
-            bg "inherit"
-        , dFlexRow
-        ]
-        [ class "pa2", onClick <| SelectCommand command ]
-        [ fromElement <| Elements.tag command.prefix
+    Elements.listItem isSelected
+        [{- class "pa2", onClick <| SelectCommand command -}]
+        [ Elements.tag command.prefix
         , viewFuzzyString result command.name
 
         --        , sDiv [] [] [ text <| Debug.toString result ]
@@ -268,18 +262,19 @@ viewFuzzyString result str =
                 |> List.concat
 
         accumulateChar c ( sum, index ) =
-            ( sum ++ [ styled span (stylesAt index) [] [ c |> String.fromChar |> text ] ], index + 1 )
+            ( sum ++ [ ( index, c ) ], index + 1 )
 
-        highlight =
+        indexCharPair =
             String.foldl accumulateChar ( [], 0 ) str
     in
-    sDiv []
-        []
-        [ {- span
-                 [ style "color" "red"
-                 ]
-                 [ text (String.fromInt result.score ++ " ") ]
-             ,
-          -}
-          span [] (Tuple.first highlight)
-        ]
+    --    sDiv []
+    --        []
+    --        [ {- span
+    --                 [ style "color" "red"
+    --                 ]
+    --                 [ text (String.fromInt result.score ++ " ") ]
+    --             ,
+    --          -}
+    --          span [] (Tuple.first highlight)
+    --        ]
+    Elements.highlightedChars isKey str
