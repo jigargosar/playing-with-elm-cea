@@ -3,7 +3,7 @@ module CmdDialog exposing (Model, Msg(..), OutMsg(..), init, subscriptions, upda
 import Array
 import BasicsX exposing (safeModBy)
 import Browser.Events
-import ContextStore exposing (Context, ContextStore)
+import ContextStore exposing (Context, ContextId, ContextStore)
 import Css exposing (absolute, left, none, pct, pointerEvents, pointerEventsAll, position, right, top, zero)
 import DomX exposing (DomId)
 import Focus
@@ -20,6 +20,10 @@ import UI exposing (..)
 import UpdateReturn exposing (..)
 
 
+type alias Command =
+    { name : String, outMsg : OutMsg }
+
+
 type alias Model =
     { query : String, selectedIndex : Int }
 
@@ -29,7 +33,9 @@ init =
 
 
 getFilteredCommands contextStore model =
-    ContextStore.list contextStore
+    ContextStore.listActive contextStore
+        |> List.map (\context -> Command context.name <| GotoContextTodoList context.id)
+        |> (::) (Command ContextStore.defaultName <| GotoContextTodoList ContextStore.defaultId)
         |> Simple.Fuzzy.filter .name model.query
 
 
@@ -44,12 +50,12 @@ type Msg
     | QueryChanged String
     | GlobalKeyDown HotKey.Event
     | QueryInputKeyDown HotKey.Event
-    | SelectContext Context
+    | SelectCommand Command
 
 
 type OutMsg
     = Cancel
-    | GotoContextTodoList Context
+    | GotoContextTodoList ContextId
 
 
 subscriptions model =
@@ -103,7 +109,7 @@ update contextStore message =
                             getFilteredCommands contextStore model
                                 |> Array.fromList
                                 |> Array.get (computeSelectedIndex contextStore model)
-                                |> Maybe.map GotoContextTodoList
+                                |> Maybe.map .outMsg
                         )
 
                 _ ->
@@ -127,8 +133,8 @@ update contextStore message =
                         Nothing
                 )
 
-        SelectContext context ->
-            withOutMsg (always <| GotoContextTodoList context)
+        SelectCommand command ->
+            withOutMsg (always <| command.outMsg)
     )
         << pure
 
@@ -179,11 +185,7 @@ viewCmdList contextStore model =
         |> List.indexedMap (\idx -> viewCmd (idx == computeSelectedIndex contextStore model))
 
 
-viewCmd isSelected context =
-    let
-        nameString =
-            context.name
-    in
+viewCmd isSelected command =
     sDiv
         [ if isSelected then
             bg "lightblue"
@@ -191,5 +193,5 @@ viewCmd isSelected context =
           else
             bg "inherit"
         ]
-        [ class "pa2", onClick <| SelectContext context ]
-        [ text nameString ]
+        [ class "pa2", onClick <| SelectCommand command ]
+        [ text command.name ]
