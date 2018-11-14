@@ -157,46 +157,18 @@ getComputedSelectedIndex =
     TodoListSelection.getComputedSelectedIndex << selectionConfig
 
 
-getMaybeSelectedTodo model =
-    let
-        ( active, completed ) =
-            getSelectedContextTodoList model
-                |> List.partition TodoStore.isNotDone
-
-        total =
-            List.length active
-    in
-    if total <= 0 then
-        Nothing
-
-    else
-        active |> Array.fromList |> Array.get (getComputedSelectedIndex model)
+getMaybeSelectedTodo =
+    TodoListSelection.getMaybeSelectedTodo << selectionConfig
 
 
 cycleSelectedIndexBy num model =
-    let
-        ( active, completed ) =
-            getSelectedContextTodoList model
-                |> List.partition TodoStore.isNotDone
-
-        total =
-            List.length active
-    in
-    if total > 0 then
-        let
-            selectedIndex =
-                safeModBy total (model.selectedIndex + num)
-
-            focusCmd =
-                Array.fromList active
-                    |> Array.get selectedIndex
-                    |> Maybe.map ContextTodoList.getTodoDomId
-                    |> Focus.attemptMaybe OnFocusResult
-        in
-        ( { model | selectedIndex = selectedIndex }, focusCmd )
-
-    else
-        ( model, Cmd.none )
+    unwrapMaybe (pure model)
+        (\( selectedIndex, todo ) ->
+            ( { model | selectedIndex = selectedIndex }
+            , Focus.attempt OnFocusResult <| ContextTodoList.getTodoDomId todo
+            )
+        )
+        (TodoListSelection.cycleSelectedIndexBy num (selectionConfig model))
 
 
 setSelectedIndexOnFocusIn todoId model =

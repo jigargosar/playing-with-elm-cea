@@ -1,4 +1,10 @@
-module TodoListSelection exposing (Config, SelectedIndex, getComputedSelectedIndex)
+module TodoListSelection exposing
+    ( Config
+    , SelectedIndex
+    , cycleSelectedIndexBy
+    , getComputedSelectedIndex
+    , getMaybeSelectedTodo
+    )
 
 import Array
 import BasicsX exposing (eqs, safeModBy, unwrapMaybe)
@@ -54,7 +60,7 @@ getMaybeSelectedTodo config =
         active |> Array.fromList |> Array.get (getComputedSelectedIndex config)
 
 
-cycleSelectedIndexBy : Int -> Config msg -> ( SelectedIndex, Cmd msg )
+cycleSelectedIndexBy : Int -> Config msg -> Maybe ( SelectedIndex, Todo )
 cycleSelectedIndexBy num config =
     let
         ( active, completed ) =
@@ -68,17 +74,13 @@ cycleSelectedIndexBy num config =
         let
             selectedIndex =
                 safeModBy total (config.selectedIndex + num)
-
-            focusCmd =
-                Array.fromList active
-                    |> Array.get selectedIndex
-                    |> Maybe.map ContextTodoList.getTodoDomId
-                    |> Focus.attemptMaybe config.onFocusResult
         in
-        ( selectedIndex, focusCmd )
+        Array.fromList active
+            |> Array.get selectedIndex
+            |> Maybe.map (\todo -> ( selectedIndex, todo ))
 
     else
-        ( config.selectedIndex, Cmd.none )
+        Nothing
 
 
 setSelectedIndexOnFocusIn todoId model =
