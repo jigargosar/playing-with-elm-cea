@@ -1,9 +1,9 @@
 module TodoListSelection exposing
     ( Config
     , SelectedIndex
-    , cycleSelectedIndexBy
+    , cycleSelectedIndexBy__
     , getComputedSelectedIndex
-    , getMaybeSelectedIndexOnFocusIn__
+    , getMaybeSelectedIndexOnFocusIn
     , getMaybeSelectedTodo
     )
 
@@ -14,7 +14,7 @@ import ContextTodoList
 import DomX exposing (DomId)
 import Focus exposing (FocusResult)
 import Html.Styled exposing (Html)
-import TodoStore exposing (Todo, TodoStore)
+import TodoStore exposing (Todo, TodoId, TodoStore)
 import UpdateReturn exposing (..)
 
 
@@ -66,8 +66,8 @@ getMaybeSelectedTodo config =
         active |> Array.fromList |> Array.get (getComputedSelectedIndex config)
 
 
-cycleSelectedIndexBy : Int -> Config -> Maybe ( SelectedIndex, Todo )
-cycleSelectedIndexBy num config =
+cycleSelectedIndexBy__ : Int -> Config -> Maybe ( SelectedIndex, Todo )
+cycleSelectedIndexBy__ num config =
     let
         ( active, completed ) =
             getSelectedContextTodoList config
@@ -89,7 +89,7 @@ cycleSelectedIndexBy num config =
         Nothing
 
 
-getMaybeSelectedIndexOnFocusIn__ todoId config =
+getMaybeSelectedIndexOnFocusIn todoId config =
     let
         ( active, completed ) =
             getSelectedContextTodoList config
@@ -107,7 +107,7 @@ type Msg
 
 
 type OutMsg
-    = Focus Todo
+    = FocusTodoId TodoId
 
 
 update : Config -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
@@ -128,7 +128,7 @@ update config message selectedIndex =
                         safeModBy total (selectedIndex + offset)
                 in
                 unwrapMaybe withNoOutMsg
-                    (\todo -> mapModel (\_ -> newSI) >> withOutMsg (Focus todo))
+                    (\todo -> mapModel (\_ -> newSI) >> withOutMsg (FocusTodoId todo))
                     (Array.fromList active |> Array.get newSI)
 
             else
