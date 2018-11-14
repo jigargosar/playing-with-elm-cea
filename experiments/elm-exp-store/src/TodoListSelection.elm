@@ -134,6 +134,16 @@ update config message selectedIndex =
 
                     else
                         withNothingOutMsg
+
+                _ =
+                    andThenWithOutMsg
+                        (\model ->
+                            let
+                                _ =
+                                    1
+                            in
+                            ( model, Cmd.none, Nothing )
+                        )
             in
             res
     )
