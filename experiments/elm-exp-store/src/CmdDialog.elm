@@ -185,7 +185,12 @@ viewLazy contextStore windowSize model =
             , Element.moveDown (toFloat windowSize.height / 100 * 20)
             ]
         , content =
-            Element.column [ Elements.spacing2, Element.width <| Element.minimum 400 <| Element.shrink ]
+            Element.column
+                [ Elements.spacing2
+                , Element.width <|
+                    Element.minimum (windowSize.width // 100 * 20) <|
+                        Element.shrink
+                ]
                 [ Element.el [ Element.width Element.fill ]
                     (input
                         [ id <| getQueryInputId model
