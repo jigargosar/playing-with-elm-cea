@@ -394,22 +394,25 @@ viewSidebar model =
 viewContextTodoList : Model -> Html Msg
 viewContextTodoList model =
     let
-        config : TodoListConfig Msg
+        config : TodoListConfig
         config =
             { todoStore = model.todoStore
             , contextStore = model.contextStore
-            , toggleShowCompleted = ToggleCompletedTodos
+
+            --            , toggleShowCompleted = ToggleCompletedTodos
             , isShowingCompleted = model.showCompletedTodos
             , selectedIndex = getComputedSelectedIndex model
-            , markDone = TodoStoreMsg << TodoStore.markDone
-            , unmarkDone = TodoStoreMsg << TodoStore.unmarkDone
-            , focusInMsg = OnTodoFocusIn
-            , editMsg = OpenEditTodoDialog
+
+            --            , markDone = TodoStoreMsg << TodoStore.markDone
+            --            , unmarkDone = TodoStoreMsg << TodoStore.unmarkDone
+            --            , focusInMsg = OnTodoFocusIn
+            --            , editMsg = OpenEditTodoDialog
             , selectedContextId = getSelectedContextId model
-            , addNewMsg = OpenCreateTodoDialog
+
+            --            , addNewMsg = OpenCreateTodoDialog
             }
     in
-    ContextTodoList.view config model.contextTodoList
+    ContextTodoList.view config model.contextTodoList |> Html.map ContextTodoListMsg
 
 
 

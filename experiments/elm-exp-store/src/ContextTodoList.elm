@@ -24,6 +24,7 @@ import Html.Styled.Attributes exposing (class, classList, css, id, tabindex)
 import Html.Styled.Events exposing (onClick, onDoubleClick)
 import Html.Styled.Keyed as HKeyed exposing (node)
 import Icons
+import Layer
 import Styles exposing (..)
 import TodoStore exposing (Todo, TodoId, TodoStore)
 import UI exposing (..)
@@ -52,10 +53,12 @@ type Msg
     = NoOp
     | FocusInMsg TodoId
     | ToggleCompletedVisible
+    | SendOutMsg OutMsg
 
 
 type OutMsg
-    = None
+    = TodoStoreMsg TodoStore.Msg
+    | LayerMsg Layer.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
@@ -70,6 +73,9 @@ update message =
         ToggleCompletedVisible ->
             mapModel (\model -> { model | completedVisible = not model.completedVisible })
                 >> withNothingOutMsg
+
+        SendOutMsg outMsg ->
+            withJustOutMsg outMsg
     )
         << pure
 
@@ -150,29 +156,33 @@ getMaybeSelectedIndexOnFocusIn todoId config =
         |> Maybe.map Tuple.first
 
 
-type alias TodoListConfig msg =
+type alias TodoListConfig =
     { todoStore : TodoStore
     , contextStore : ContextStore
-    , toggleShowCompleted : msg
+
+    --    , toggleShowCompleted : msg
     , isShowingCompleted : Bool
     , selectedIndex : Int
-    , markDone : TodoId -> msg
-    , unmarkDone : TodoId -> msg
-    , focusInMsg : TodoId -> msg
-    , editMsg : TodoId -> msg
+
+    --    , markDone : TodoId -> msg
+    --    , unmarkDone : TodoId -> msg
+    --    , focusInMsg : TodoId -> msg
+    --    , editMsg : TodoId -> msg
     , selectedContextId : ContextId
-    , addNewMsg : msg
+
+    --    , addNewMsg : msg
     }
 
 
+view : TodoListConfig -> Model -> Html Msg
 view config model =
     div [ class "bl br b--black-05 flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
         [ viewTodoListHeader config
-        , viewTodoList config
+        , viewTodoList config model
         ]
 
 
-viewTodoListHeader : TodoListConfig msg -> Html msg
+viewTodoListHeader : TodoListConfig -> Html Msg
 viewTodoListHeader { selectedContextId, contextStore } =
     let
         name =
@@ -185,8 +195,8 @@ viewTodoListHeader { selectedContextId, contextStore } =
         ]
 
 
-viewTodoList : TodoListConfig msg -> Html msg
-viewTodoList config =
+viewTodoList : TodoListConfig -> Model -> Html Msg
+viewTodoList config model =
     let
         ( active, completed ) =
             TodoStore.listForContextId config.selectedContextId config.todoStore
@@ -199,11 +209,11 @@ viewTodoList config =
         , div [ css [ rowCY ], class "pa3" ]
             [ styled Btn.flatPl0
                 [ fontSize (rem 0.8), fa ]
-                [ onClick config.addNewMsg ]
+                [ onClick <| SendOutMsg <| LayerMsg <| Layer.OpenCreateTodoDialog config.selectedContextId ]
                 [ Icons.plusSmall
                 , text "Add Task"
                 ]
-            , viewCompletedBtn config
+            , viewCompletedBtn model.completedVisible
             ]
         , if config.isShowingCompleted then
             viewCompletedSection config completed
@@ -223,14 +233,14 @@ viewCompletedSection config completed =
             |> HKeyed.node "div" [ css [ vs ] ]
 
 
-viewCompletedBtn { isShowingCompleted, toggleShowCompleted } =
+viewCompletedBtn completedVisible =
     styled Btn.flatPr0
         [ fontSize (rem 0.8) ]
-        [ onClick toggleShowCompleted ]
+        [ onClick ToggleCompletedVisible ]
         [ sDiv [ rowCXY, hs ] [] [ text "Completed" ]
         , sDiv [ rowCXY, hs ]
             []
-            [ if isShowingCompleted then
+            [ if completedVisible then
                 Icons.toggleRightDef
 
               else
@@ -239,15 +249,27 @@ viewCompletedBtn { isShowingCompleted, toggleShowCompleted } =
         ]
 
 
-viewKeyedTodo : TodoListConfig msg -> Int -> Todo -> ( String, Html msg )
+viewKeyedTodo : TodoListConfig -> Int -> Todo -> ( String, Html Msg )
 viewKeyedTodo config idx todo =
     let
         doneIconBtn =
             if todo.done then
-                Btn.sIcon [ fg "green" ] [ onClick <| config.unmarkDone todo.id ] [ Icons.checkCircle |> Icons.default ]
+                Btn.sIcon [ fg "green" ]
+                    [ onClick <|
+                        SendOutMsg <|
+                            TodoStoreMsg <|
+                                TodoStore.unmarkDone todo.id
+                    ]
+                    [ Icons.checkCircle |> Icons.default ]
 
             else
-                Btn.sIcon [ fg "gray" ] [ onClick <| config.markDone todo.id ] [ Icons.circle |> Icons.default ]
+                Btn.sIcon [ fg "gray" ]
+                    [ onClick <|
+                        SendOutMsg <|
+                            TodoStoreMsg <|
+                                TodoStore.markDone todo.id
+                    ]
+                    [ Icons.circle |> Icons.default ]
 
         domId =
             getTodoDomId todo
@@ -261,14 +283,14 @@ viewKeyedTodo config idx todo =
           else
             bg "transparent"
         ]
-        [ id domId, class "pa3 bb b--light-gray", tabindex 0, DomX.onFocusIn <| config.focusInMsg todo.id ]
+        [ id domId, class "pa3 bb b--light-gray", tabindex 0, DomX.onFocusIn <| FocusInMsg todo.id ]
         [ sDiv [ hs, rowCY ] [] [ doneIconBtn ]
         , sDiv [ hs ]
             [ class "flex-auto flex flex-column " ]
             [ div
                 [ class "pointer"
                 , classList [ ( "strike gray ", todo.done ) ]
-                , onDoubleClick (config.editMsg todo.id)
+                , onDoubleClick <| SendOutMsg <| LayerMsg <| Layer.OpenEditTodoDialog todo.id
                 ]
                 [ sDiv [ Css.property "word-break" "break-word" ] [] [ text todo.content ] ]
             ]
