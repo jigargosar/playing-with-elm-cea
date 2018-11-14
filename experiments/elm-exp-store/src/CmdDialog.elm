@@ -43,7 +43,7 @@ createContextCommand { name, id } =
     { name = name, prefix = "Context", outMsg = GotoContextTodoList id, searchText = name }
 
 
-getFilteredCommands contextStore model =
+getFilteredCommandResults contextStore model =
     let
         commands =
             ContextStore.listActive contextStore
@@ -66,7 +66,7 @@ getFilteredCommands contextStore model =
 
 
 computeSelectedIndex contextStore model =
-    Basics.min model.selectedIndex <| List.length (getFilteredCommands contextStore model) - 1
+    Basics.min model.selectedIndex <| List.length (getFilteredCommandResults contextStore model) - 1
 
 
 type Msg
@@ -93,7 +93,7 @@ subscriptions model =
 cycleSelectedIdxBy contextStore offset model =
     let
         total =
-            List.length (getFilteredCommands contextStore model)
+            List.length (getFilteredCommandResults contextStore model)
     in
     if total > 0 then
         let
@@ -134,7 +134,7 @@ update contextStore message =
                 ( [], "Enter" ) ->
                     withMaybeOutMsg
                         (\model ->
-                            getFilteredCommands contextStore model
+                            getFilteredCommandResults contextStore model
                                 |> Array.fromList
                                 |> Array.get (computeSelectedIndex contextStore model)
                                 |> Maybe.map (Tuple.second >> .outMsg)
@@ -242,7 +242,7 @@ viewLazy contextStore windowSize model =
 
 viewCmdList : ContextStore -> Model -> Element Msg
 viewCmdList contextStore model =
-    getFilteredCommands contextStore model
+    getFilteredCommandResults contextStore model
         |> List.indexedMap (\idx -> viewCmd (idx == computeSelectedIndex contextStore model))
         |> Elements.list
 
