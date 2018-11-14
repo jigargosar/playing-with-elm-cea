@@ -151,7 +151,7 @@ update contextStore message =
         QueryInputKeyDown ke ->
             case ke of
                 ( [], "Enter" ) ->
-                    withMaybeOutMsg
+                    andThenWithMaybeOutMsg
                         (\model ->
                             getFilteredCommandResults contextStore model
                                 |> Array.fromList

@@ -13,6 +13,7 @@ module UpdateReturn exposing
     , andThen
     , andThen3
     , andThenWhen
+    , andThenWithMaybeOutMsg
     , andThenWithOutMsg
     , attempt
     , foldlOutMsgList
@@ -33,7 +34,6 @@ module UpdateReturn exposing
        --    , updateMaybeSub
 
     , updateSub
-    , withMaybeOutMsg
     , withNoOutMsg
     , withOutMsg
     )
@@ -151,7 +151,7 @@ withOutMsg out ( m, c ) =
     ( m, c, Just out )
 
 
-withMaybeOutMsg fn ( m, c ) =
+andThenWithMaybeOutMsg fn ( m, c ) =
     ( m, c, fn m )
 
 

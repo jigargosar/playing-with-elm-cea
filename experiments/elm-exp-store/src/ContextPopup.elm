@@ -136,7 +136,7 @@ update message =
                 >> withNoOutMsg
 
         BackdropClicked targetId ->
-            withMaybeOutMsg
+            andThenWithMaybeOutMsg
                 (\model ->
                     if targetId == getBackdropDomId model then
                         Just ClosedOut

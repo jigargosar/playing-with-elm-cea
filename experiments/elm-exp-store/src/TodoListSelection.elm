@@ -128,7 +128,7 @@ update config message selectedIndex =
                         safeModBy total (selectedIndex + offset)
                 in
                 unwrapMaybe withNoOutMsg
-                    (\todo -> mapModel (\_ -> newSI) >> withOutMsg (FocusTodoId todo))
+                    (\todo -> mapModel (\_ -> newSI) >> withOutMsg (FocusTodoId todo.id))
                     (Array.fromList active |> Array.get newSI)
 
             else
