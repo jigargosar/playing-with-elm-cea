@@ -275,8 +275,6 @@ viewCmd isSelected ( result, command ) =
         [{- class "pa2", onClick <| SelectCommand command -}]
         [ Elements.tag command.prefix
         , viewFuzzyString result command.name
-
-        --        , sDiv [] [] [ text <| Debug.toString result ]
         ]
 
 
