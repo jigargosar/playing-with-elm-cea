@@ -274,7 +274,7 @@ updateCmdDialog contextStore =
                 CmdDialog.GotoContextTodoList contextId ->
                     withOutMsg <| GoToContextTodoListMsg contextId
 
-                CmdDialog.Cancel ->
+                CmdDialog.Dismiss ->
                     withNoOutMsg
             )
                 << mapModel (\_ -> NoLayer)

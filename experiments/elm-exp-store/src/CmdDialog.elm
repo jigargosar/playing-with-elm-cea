@@ -81,7 +81,7 @@ type Msg
 
 
 type OutMsg
-    = Cancel
+    = Dismiss
     | GotoContextTodoList ContextId
 
 
@@ -118,7 +118,7 @@ update contextStore message =
         GlobalKeyDown ke ->
             case ke of
                 ( [], "Escape" ) ->
-                    withOutMsg Cancel
+                    withOutMsg Dismiss
 
                 ( [], "ArrowDown" ) ->
                     andThen (cycleSelectedIdxBy contextStore 1)
@@ -175,7 +175,7 @@ update contextStore message =
                 >> withNoOutMsg
 
         BackDropClicked ->
-            withOutMsg Cancel
+            withOutMsg Dismiss
 
         SelectCommand command ->
             withOutMsg command.outMsg
