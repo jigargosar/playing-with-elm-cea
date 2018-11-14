@@ -16,6 +16,7 @@ import HotKey
 import Html exposing (input)
 import Html.Attributes exposing (class, id, placeholder, value)
 import Html.Events exposing (onInput)
+import Html.Lazy
 import Json.Decode as D
 import Json.Encode as E
 import Log
@@ -169,8 +170,7 @@ getQueryInputId model =
 
 
 view =
-    {- Element.Lazy.lazy2 -}
-    viewLazy
+    Html.Lazy.lazy3 viewLazy
 
 
 
