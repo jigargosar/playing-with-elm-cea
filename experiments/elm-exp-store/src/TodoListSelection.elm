@@ -108,34 +108,3 @@ type Msg
 
 type OutMsg
     = FocusTodoId TodoId
-
-
-update : Config -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
-update config message model =
-    (case message of
-        Inc offset ->
-            let
-                ( active, completed ) =
-                    getSelectedContextTodoList config
-                        |> List.partition TodoStore.isNotDone
-
-                total =
-                    List.length active
-            in
-            andThenWithOutMsg
-                (\selectedIndex ->
-                    if total > 0 then
-                        let
-                            newSI =
-                                safeModBy total (selectedIndex + offset)
-                        in
-                        unwrapMaybe ( selectedIndex, Cmd.none, Nothing )
-                            (\todo -> ( newSI, Cmd.none, Just <| FocusTodoId todo.id ))
-                            (Array.fromList active |> Array.get newSI)
-
-                    else
-                        ( selectedIndex, Cmd.none, Nothing )
-                )
-    )
-    <|
-        pure model
