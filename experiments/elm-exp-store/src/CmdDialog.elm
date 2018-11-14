@@ -7,6 +7,7 @@ import ContextStore exposing (Context, ContextId, ContextStore)
 import Css exposing (absolute, left, none, pct, pointerEvents, pointerEventsAll, position, right, top, zero)
 import DomX exposing (DomId)
 import Focus
+import Fuzzy
 import HotKey
 import Html.Styled exposing (Html, div, input, text)
 import Html.Styled.Attributes exposing (..)
@@ -38,10 +39,26 @@ createContextCommand { name, id } =
 
 
 getFilteredCommands contextStore model =
-    ContextStore.listActive contextStore
-        |> List.map createContextCommand
-        |> (::) (createContextCommand ContextStore.inbox)
-        |> Simple.Fuzzy.filter .searchText model.query
+    let
+        commands =
+            ContextStore.listActive contextStore
+                |> List.map createContextCommand
+                |> (::) (createContextCommand ContextStore.inbox)
+
+        simpleMatch config separators needle hay =
+            Fuzzy.match config separators needle hay
+
+        --        _ =
+        --            commands
+        --                |> List.map (\command -> ( simpleMatch [] [] model.query command.searchText, command ))
+        --                |> Debug.log "res"
+        _ =
+            commands
+                |> Simple.Fuzzy.filter .searchText model.query
+    in
+    commands
+        |> List.map (\command -> ( simpleMatch [] [] model.query command.searchText, command ))
+        |> List.sortBy (Tuple.first >> .score)
 
 
 computeSelectedIndex contextStore model =
@@ -114,7 +131,7 @@ update contextStore message =
                             getFilteredCommands contextStore model
                                 |> Array.fromList
                                 |> Array.get (computeSelectedIndex contextStore model)
-                                |> Maybe.map .outMsg
+                                |> Maybe.map (Tuple.second >> .outMsg)
                         )
 
                 _ ->
@@ -190,7 +207,7 @@ viewCmdList contextStore model =
         |> List.indexedMap (\idx -> viewCmd (idx == computeSelectedIndex contextStore model))
 
 
-viewCmd isSelected command =
+viewCmd isSelected ( match, command ) =
     sDiv
         [ if isSelected then
             bg "lightblue"
