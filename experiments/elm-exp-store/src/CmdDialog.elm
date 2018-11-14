@@ -129,10 +129,10 @@ update contextStore message =
                         >> withNoOutMsg
 
                 ( _, key ) ->
-                    let
-                        _ =
-                            Debug.log "keyDown" key
-                    in
+                    --                    let
+                    --                        _ =
+                    --                            Debug.log "keyDown" key
+                    --                    in
                     withNoOutMsg
 
         GlobalKeyUp ke ->
@@ -142,10 +142,10 @@ update contextStore message =
                         >> withNoOutMsg
 
                 ( _, key ) ->
-                    let
-                        _ =
-                            Debug.log "keyUp" key
-                    in
+                    --                    let
+                    --                        _ =
+                    --                            Debug.log "keyUp" key
+                    --                    in
                     withNoOutMsg
 
         QueryInputKeyDown ke ->
