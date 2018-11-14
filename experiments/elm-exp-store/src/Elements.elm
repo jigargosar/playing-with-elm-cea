@@ -1,18 +1,9 @@
-module Elements exposing (highlightedChars, list, listItem, myElement, tag, wrapperLayout)
+module Elements exposing (highlightedChars, list, listItem, tag, wrapperLayout)
 
 import Element exposing (Element, centerY, column, el, fill, height, rgb, rgb255, row, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
-
-
-myElement : Element msg
-myElement =
-    el
-        [ Background.color (rgb 0 0.5 0)
-        , Border.color (rgb 0 0.7 0)
-        ]
-        (Element.text "You've made a stylish element!")
 
 
 tagColor =
@@ -45,18 +36,13 @@ wrapperLayout =
 
 tag : String -> Element msg
 tag content =
-    row
-        [ centerY
-        , height fill
+    el
+        [ Font.size 10
         , Background.color tagColor
         , Border.rounded 4
         , padding1
         ]
-        [ el
-            [ Font.size 10
-            ]
-            (Element.text content)
-        ]
+        (Element.text content)
 
 
 rootFontFamily =
