@@ -469,17 +469,21 @@ createSideBarConfig model =
 
 
 viewTodoListMain model =
+    let
+        selectedContextId =
+            getSelectedContextId model
+    in
     div [ class "bl br b--black-05 flex-auto  overflow-y-scroll  pv3 flex flex-column vs3" ]
-        [ viewTodoListHeader model
+        [ viewTodoListHeader selectedContextId model.contextStore
         , viewTodoList model
         ]
 
 
-viewTodoListHeader : Model -> Html Msg
-viewTodoListHeader model =
+viewTodoListHeader : ContextId -> ContextStore -> Html Msg
+viewTodoListHeader contextId contextStore =
     let
-        ( name, contextId ) =
-            getCurrentContextItem model
+        name =
+            ContextStore.getNameOrDefaultById contextId contextStore
     in
     div
         [ class "ph3 flex flex-row" ]
