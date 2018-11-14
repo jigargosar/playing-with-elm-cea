@@ -100,18 +100,6 @@ getSelectedContextTodoList model =
     model.todoStore |> TodoStore.listForContextId model.contextId
 
 
-getActiveTodoListCountForContextId : ContextId -> Model -> Int
-getActiveTodoListCountForContextId cid =
-    .todoStore >> TodoStore.getActiveTodoListCountForContextId cid
-
-
-getUserDefinedContextList : Model -> List Context
-getUserDefinedContextList model =
-    model.contextStore
-        |> ContextStore.list
-        |> List.sortBy .createdAt
-
-
 getSelectedContextId =
     .contextId
 
@@ -406,13 +394,13 @@ viewSidebar model =
     let
         config : Sidebar.Config Msg
         config =
-            { contexts = getUserDefinedContextList model
+            { contextStore = model.contextStore
+            , todoStore = model.todoStore
             , addContextClicked = OpenCreateContextDialog
             , showArchived = model.showArchivedContexts
             , toggleShowArchived = ToggleShowArchivedContexts
             , isSelected = eqs <| getSelectedContextId model
             , navigateToTodoList = NavigateToTodoListWithContextId
-            , activeTodoCount = \id -> getActiveTodoListCountForContextId id model
             , moreClicked = OpenContextPopup
             , moreOpen = \id -> Layer.eqContextPopupFor id model.layer
             }

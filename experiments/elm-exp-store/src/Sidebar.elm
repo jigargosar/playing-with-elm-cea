@@ -3,7 +3,7 @@ module Sidebar exposing (Config, view)
 import BasicsX exposing (..)
 import Btn
 import ContextPopup
-import ContextStore exposing (Context, ContextId, ContextName)
+import ContextStore exposing (Context, ContextId, ContextName, ContextStore)
 import Css exposing (..)
 import Html.Styled as Html exposing (Html, button, div, styled, text)
 import Html.Styled.Attributes exposing (class, css, id, style)
@@ -12,17 +12,18 @@ import Html.Styled.Keyed exposing (node)
 import HtmlX
 import Icons
 import Styles exposing (..)
+import TodoStore exposing (TodoStore)
 import UI exposing (..)
 
 
 type alias Config msg =
-    { contexts : List Context
+    { contextStore : ContextStore
+    , todoStore : TodoStore
     , addContextClicked : msg
     , showArchived : Bool
     , toggleShowArchived : msg
     , isSelected : ContextId -> Bool
     , navigateToTodoList : ContextId -> msg
-    , activeTodoCount : ContextId -> Int
     , moreClicked : ContextId -> msg
     , moreOpen : ContextId -> Bool
     }
@@ -31,8 +32,8 @@ type alias Config msg =
 view : Config msg -> Html msg
 view config =
     let
-        { contexts, addContextClicked } =
-            config
+        contexts =
+            ContextStore.list config.contextStore
 
         ( archived, active ) =
             List.partition .archived contexts
@@ -40,10 +41,14 @@ view config =
     sDiv []
         [ class "min-h-100 bg-black-05" ]
         [ viewInbox config
-        , viewContextsSubHeading addContextClicked
+        , viewContextsSubHeading config.addContextClicked
         , viewContexts config active
         , viewArchived config archived
         ]
+
+
+getActiveTodoCount cid =
+    .todoStore >> TodoStore.getActiveTodoListCountForContextId cid
 
 
 viewInbox config =
@@ -62,7 +67,7 @@ viewInbox config =
         [ viewContextName
             { name = name
             , onClickMsg = config.navigateToTodoList cid
-            , count = config.activeTodoCount cid
+            , count = getActiveTodoCount cid config
             }
         ]
 
@@ -78,7 +83,7 @@ viewContexts config =
                 [ viewContextName
                     { name = name
                     , onClickMsg = config.navigateToTodoList id
-                    , count = config.activeTodoCount id
+                    , count = getActiveTodoCount id config
                     }
                 , viewMoreMenuIcon { isOpen = config.moreOpen id, clickMsg = config.moreClicked id }
                 ]
