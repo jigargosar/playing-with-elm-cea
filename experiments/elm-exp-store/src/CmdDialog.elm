@@ -12,6 +12,7 @@ import HotKey
 import Html.Styled exposing (Html, div, input, span, styled, text)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput)
+import Html.Styled.Lazy
 import Json.Decode as D
 import Json.Encode as E
 import Log
@@ -174,8 +175,15 @@ getQueryInputId =
 
 
 view : ContextStore -> Model -> Html Msg
-view contextStore model =
-    div []
+view =
+    Html.Styled.Lazy.lazy2 viewLazy
+
+
+viewLazy : ContextStore -> Model -> Html Msg
+viewLazy contextStore model =
+    Html.Styled.Lazy.lazy2
+        div
+        []
         [ UI.backdrop [ id <| getBackdropDomId model, DomX.onClickTargetId BackDropClicked ]
             []
         , sDiv [ position absolute, absFill, rowCXY, pointerEvents none ]
@@ -208,10 +216,6 @@ viewCmdList contextStore model =
 
 
 viewCmd isSelected ( result, command ) =
-    let
-        _ =
-            Debug.log "match" result
-    in
     sDiv
         [ if isSelected then
             bg "lightblue"
@@ -221,7 +225,8 @@ viewCmd isSelected ( result, command ) =
         ]
         [ class "pa2", onClick <| SelectCommand command ]
         [ viewFuzzyString result command.name
-        , sDiv [] [] [ text <| Debug.toString result ]
+
+        --        , sDiv [] [] [ text <| Debug.toString result ]
         ]
 
 
@@ -273,9 +278,11 @@ viewFuzzyString result str =
     in
     sDiv []
         []
-        [ span
-            [ style "color" "red"
-            ]
-            [ text (String.fromInt result.score ++ " ") ]
-        , span [] (Tuple.first highlight)
+        [ {- span
+                 [ style "color" "red"
+                 ]
+                 [ text (String.fromInt result.score ++ " ") ]
+             ,
+          -}
+          span [] (Tuple.first highlight)
         ]
