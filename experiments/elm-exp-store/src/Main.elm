@@ -417,7 +417,7 @@ view model =
             [ sDiv [ maxWidth (px 940) ]
                 [ class "flex-auto flex flex-row" ]
                 [ HtmlX.when (not << .showTempSidebar) viewPermanentSidebar model
-                , viewTodoListMain model
+                , viewContextTodoList model
                 ]
             ]
         , HtmlX.when .showTempSidebar viewDrawerSidebar model
@@ -468,7 +468,7 @@ createSideBarConfig model =
 -- TodoList Page
 
 
-viewTodoListMain model =
+viewContextTodoList model =
     let
         config : TodoListConfig Msg
         config =
