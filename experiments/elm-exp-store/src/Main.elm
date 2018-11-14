@@ -135,6 +135,7 @@ type Msg
     | LayerMsg Layer.Msg
     | OnKeyDown HotKey.Event
     | OnTodoFocusIn TodoId
+    | ContextTodoListMsg ContextTodoList.Msg
 
 
 type alias ContextItem =
@@ -236,6 +237,9 @@ update message model =
                 msg
                 model
 
+        ContextTodoListMsg msg ->
+            updateContextTodoList msg model
+
         OpenEditContextDialog cid ->
             updateLayer (Layer.OpenEditContextDialog cid) model
 
@@ -298,6 +302,21 @@ updateLayer message model =
     pure { model | layer = layer }
         |> addTaggedCmd LayerMsg cmd
         |> handleOut
+
+
+updateContextTodoList message model =
+    let
+        ( contextTodoList, cmd, maybeOutMsg ) =
+            ContextTodoList.update message model.contextTodoList
+
+        handleOut out =
+            case out of
+                _ ->
+                    identity
+    in
+    pure { model | contextTodoList = contextTodoList }
+        |> addTaggedCmd ContextTodoListMsg cmd
+        |> unwrapMaybe identity handleOut maybeOutMsg
 
 
 subscriptions : Model -> Sub Msg

@@ -1,5 +1,6 @@
 module ContextTodoList exposing
     ( Model
+    , Msg
     , TodoListConfig
     , getTodoDomId
     , init
