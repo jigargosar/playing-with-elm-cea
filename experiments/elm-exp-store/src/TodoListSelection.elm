@@ -15,6 +15,7 @@ import DomX exposing (DomId)
 import Focus exposing (FocusResult)
 import Html.Styled exposing (Html)
 import TodoStore exposing (Todo, TodoStore)
+import UpdateReturn exposing (..)
 
 
 type alias SelectedIndex =
@@ -102,19 +103,18 @@ getMaybeSelectedIndexOnFocusIn todoId config =
 
 
 type Msg
-    = Inc
-    | Dec
+    = Inc Int
 
 
 type OutMsg
     = Focus DomId
 
 
-update : Config -> Msg -> Model -> ( Model, Cmd Msg )
-update config message model =
-    case message of
-        Inc ->
-            ( model, Cmd.none )
-
-        Dec ->
-            ( model, Cmd.none )
+update : Config -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
+update config message selectedIndex =
+    (case message of
+        Inc offset ->
+            withNoOutMsg
+    )
+    <|
+        pure selectedIndex
