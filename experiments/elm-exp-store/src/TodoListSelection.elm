@@ -3,8 +3,8 @@ module TodoListSelection exposing
     , SelectedIndex
     , cycleSelectedIndexBy
     , getComputedSelectedIndex
+    , getMaybeSelectedIndexOnFocusIn
     , getMaybeSelectedTodo
-    , getSelectedIndexOnFocusIn
     )
 
 import Array
@@ -83,7 +83,7 @@ cycleSelectedIndexBy num config =
         Nothing
 
 
-getSelectedIndexOnFocusIn todoId config =
+getMaybeSelectedIndexOnFocusIn todoId config =
     let
         ( active, completed ) =
             getSelectedContextTodoList config

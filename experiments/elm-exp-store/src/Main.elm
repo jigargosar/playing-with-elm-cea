@@ -171,19 +171,9 @@ cycleSelectedIndexBy num model =
 
 
 setSelectedIndexOnFocusIn todoId model =
-    let
-        ( active, completed ) =
-            getSelectedContextTodoList model
-                |> List.partition TodoStore.isNotDone
-
-        selectedIndex =
-            Array.fromList active
-                |> Array.toIndexedList
-                |> List.filter (Tuple.second >> .id >> eqs todoId)
-                |> List.head
-                |> unwrapMaybe model.selectedIndex Tuple.first
-    in
-    ( { model | selectedIndex = selectedIndex }, Cmd.none )
+    TodoListSelection.getMaybeSelectedIndexOnFocusIn todoId (selectionConfig model)
+        |> unwrapMaybe model (\selectedIndex -> { model | selectedIndex = selectedIndex })
+        |> pure
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
