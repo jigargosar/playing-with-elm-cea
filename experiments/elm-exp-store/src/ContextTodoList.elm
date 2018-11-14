@@ -159,18 +159,9 @@ getMaybeSelectedIndexOnFocusIn todoId config =
 type alias TodoListConfig =
     { todoStore : TodoStore
     , contextStore : ContextStore
-
-    --    , toggleShowCompleted : msg
     , isShowingCompleted : Bool
     , selectedIndex : Int
-
-    --    , markDone : TodoId -> msg
-    --    , unmarkDone : TodoId -> msg
-    --    , focusInMsg : TodoId -> msg
-    --    , editMsg : TodoId -> msg
     , selectedContextId : ContextId
-
-    --    , addNewMsg : msg
     }
 
 
