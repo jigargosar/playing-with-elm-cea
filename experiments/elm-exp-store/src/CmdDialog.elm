@@ -210,13 +210,15 @@ viewCmdList contextStore model =
 viewCmd isSelected ( result, command ) =
     sDiv
         [ if isSelected then
-            bg "lightblue"
+            bg "#cdecff"
 
           else
             bg "inherit"
+        , rowCY
         ]
         [ class "pa2", onClick <| SelectCommand command ]
-        [ viewFuzzyString result command.name
+        [ sDiv [ hs, fzPx 14 ] [] [ text command.prefix ]
+        , viewFuzzyString result command.name
 
         --        , sDiv [] [] [ text <| Debug.toString result ]
         ]
