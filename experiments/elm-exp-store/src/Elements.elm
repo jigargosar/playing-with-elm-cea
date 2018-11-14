@@ -1,6 +1,6 @@
 module Elements exposing (highlightedChars, list, listItem, tag, wrapperLayout)
 
-import Element exposing (Element, centerY, column, el, fill, height, rgb, rgb255, row, width)
+import Element exposing (Element, centerX, centerY, column, el, fill, height, rgb, rgb255, row, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -91,3 +91,16 @@ listItem isSelected attrs =
 
 list =
     column [ width fill ]
+
+
+viewBackdrop attrs =
+    row
+        ([ width fill
+         , height fill
+         , centerX
+         , centerY
+         ]
+            ++ attrs
+        )
+        [ Element.text "Hello"
+        ]

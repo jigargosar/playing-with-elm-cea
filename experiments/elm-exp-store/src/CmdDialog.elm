@@ -181,8 +181,9 @@ viewBackdrop model =
         , DomX.onClickTargetIdHtml BackDropClicked |> Element.htmlAttribute
         , Element.width Element.fill
         , Element.height Element.fill
-        , Element.centerX
-        , Element.centerY
+
+        --        , Element.centerX
+        --        , Element.centerY
         ]
         [ Element.el
             [ Element.centerX
