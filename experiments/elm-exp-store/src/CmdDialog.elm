@@ -213,15 +213,14 @@ viewCmd isSelected ( result, command ) =
             Debug.log "match" result
     in
     sDiv
-        [ rowCY
-        , if isSelected then
+        [ if isSelected then
             bg "lightblue"
 
           else
             bg "inherit"
         ]
         [ class "pa2", onClick <| SelectCommand command ]
-        [ sDiv [] [] [ viewFuzzyString result command.name ]
+        [ viewFuzzyString result command.name
         , sDiv [] [] [ text <| Debug.toString result ]
         ]
 
@@ -251,5 +250,32 @@ viewFuzzyString result str =
                 )
                 False
                 result.matches
+
+        stylesAt index =
+            [ if isKey index then
+                [ fg "red" ]
+
+              else
+                []
+            , if isMatch index then
+                [ bg "yellow" ]
+
+              else
+                []
+            ]
+                |> List.concat
+
+        accumulateChar c ( sum, index ) =
+            ( sum ++ [ styled span (stylesAt index) [] [ c |> String.fromChar |> text ] ], index + 1 )
+
+        highlight =
+            String.foldl accumulateChar ( [], 0 ) str
     in
-    span [] []
+    sDiv []
+        []
+        [ span
+            [ style "color" "red"
+            ]
+            [ text (String.fromInt result.score ++ " ") ]
+        , span [] (Tuple.first highlight)
+        ]
