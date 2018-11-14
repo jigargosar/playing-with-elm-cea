@@ -3,7 +3,6 @@ module TodoListSelection exposing
     , SelectedIndex
     , cycleSelectedIndexBy
     , getComputedSelectedIndex
-    , getMaybeSelectedIndexOnFocusIn
     , getMaybeSelectedTodo
     )
 
@@ -87,19 +86,6 @@ cycleSelectedIndexBy num config =
 
     else
         Nothing
-
-
-getMaybeSelectedIndexOnFocusIn todoId config =
-    let
-        ( active, completed ) =
-            getSelectedContextTodoList config
-                |> List.partition TodoStore.isNotDone
-    in
-    Array.fromList active
-        |> Array.toIndexedList
-        |> List.filter (Tuple.second >> .id >> eqs todoId)
-        |> List.head
-        |> Maybe.map Tuple.first
 
 
 type Msg
