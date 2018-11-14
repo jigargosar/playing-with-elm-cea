@@ -111,7 +111,7 @@ type OutMsg
 
 
 update : Config -> Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
-update config message selectedIndex =
+update config message model =
     (case message of
         Inc offset ->
             let
@@ -121,31 +121,21 @@ update config message selectedIndex =
 
                 total =
                     List.length active
-
-                res =
+            in
+            andThenWithOutMsg
+                (\selectedIndex ->
                     if total > 0 then
                         let
                             newSI =
                                 safeModBy total (selectedIndex + offset)
                         in
-                        unwrapMaybe withNothingOutMsg
-                            (\todo -> mapModel (\_ -> newSI) >> withJustOutMsg (FocusTodoId todo.id))
+                        unwrapMaybe ( selectedIndex, Cmd.none, Nothing )
+                            (\todo -> ( newSI, Cmd.none, Just <| FocusTodoId todo.id ))
                             (Array.fromList active |> Array.get newSI)
 
                     else
-                        withNothingOutMsg
-
-                _ =
-                    andThenWithOutMsg
-                        (\model ->
-                            let
-                                _ =
-                                    1
-                            in
-                            ( model, Cmd.none, Nothing )
-                        )
-            in
-            res
+                        ( selectedIndex, Cmd.none, Nothing )
+                )
     )
     <|
-        pure selectedIndex
+        pure model
