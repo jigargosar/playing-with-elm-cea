@@ -356,7 +356,7 @@ updateLayer message model =
                 Layer.ContextStoreMsg msg ->
                     andThenUpdate (MsgContextStore msg)
 
-                Layer.GoToContextTodoListMsg contextId ->
+                Layer.NavigateToTodoListWithContextId contextId ->
                     andThenUpdate <| NavigateToTodoListWithContextId contextId
 
                 Layer.NoOut ->

@@ -48,7 +48,7 @@ type Msg
 type OutMsg
     = TodoStoreMsg TodoStore.Msg
     | ContextStoreMsg ContextStore.Msg
-    | GoToContextTodoListMsg ContextId
+    | NavigateToTodoListWithContextId ContextId
     | NoOut
 
 
@@ -272,7 +272,7 @@ updateCmdDialog contextStore =
         handleOut out =
             (case out of
                 CmdDialog.GotoContextTodoList contextId ->
-                    withOutMsg <| GoToContextTodoListMsg contextId
+                    withOutMsg <| NavigateToTodoListWithContextId contextId
 
                 CmdDialog.Dismiss ->
                     withNoOutMsg
