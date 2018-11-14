@@ -56,7 +56,7 @@ type Msg
 
 withSubmitOutMsg : ( Model, Cmd Msg ) -> ( Model, Cmd Msg, Maybe OutMsg )
 withSubmitOutMsg =
-    withOutMsg
+    andThenWithOutMsg
         (\{ dialogMode, name } ->
             if String.isEmpty name then
                 Cancel
@@ -68,7 +68,7 @@ withSubmitOutMsg =
 
 withCancelOutMsg : ( Model, Cmd Msg ) -> ( Model, Cmd Msg, Maybe OutMsg )
 withCancelOutMsg =
-    withOutMsg (always Cancel)
+    andThenWithOutMsg (always Cancel)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )

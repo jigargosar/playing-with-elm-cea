@@ -146,7 +146,7 @@ update message =
                 )
 
         ActionClicked action ->
-            withOutMsg (\{ context } -> ActionOut context action)
+            andThenWithOutMsg (\{ context } -> ActionOut context action)
 
         Open ->
             mapModel (\model -> { model | refEle = Nothing, popperEle = Nothing })

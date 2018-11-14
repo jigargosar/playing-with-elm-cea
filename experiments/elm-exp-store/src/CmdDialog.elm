@@ -118,7 +118,7 @@ update contextStore message =
         GlobalKeyDown ke ->
             case ke of
                 ( [], "Escape" ) ->
-                    withOutMsg (always Cancel)
+                    withOutMsg Cancel
 
                 ( [], "ArrowDown" ) ->
                     andThen (cycleSelectedIdxBy contextStore 1)
@@ -175,10 +175,10 @@ update contextStore message =
                 >> withNoOutMsg
 
         BackDropClicked ->
-            withOutMsg (always <| Cancel)
+            withOutMsg Cancel
 
         SelectCommand command ->
-            withOutMsg (always <| command.outMsg)
+            withOutMsg command.outMsg
     )
         << pure
 
