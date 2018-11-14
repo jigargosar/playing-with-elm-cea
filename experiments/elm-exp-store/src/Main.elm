@@ -148,8 +148,8 @@ type Msg
     | OnWindowSize Int Int
     | FocusResult Focus.FocusResult
     | NavigateToTodoListWithContextId ContextId
-    | MsgTodoStore TodoStore.Msg
-    | MsgContextStore ContextStore.Msg
+    | TodoStoreMsg TodoStore.Msg
+    | ContextStoreMsg ContextStore.Msg
     | MenuClicked
     | TempSidebarBackdropClicked
     | ToggleShowArchivedContexts
@@ -285,20 +285,20 @@ update message model =
         NavigateToTodoListWithContextId contextId ->
             pure { model | contextId = contextId, showTempSidebar = False }
 
-        MsgTodoStore msg ->
+        TodoStoreMsg msg ->
             Update2.lift
                 .todoStore
                 (\s b -> { b | todoStore = s })
-                MsgTodoStore
+                TodoStoreMsg
                 TodoStore.update
                 msg
                 model
 
-        MsgContextStore msg ->
+        ContextStoreMsg msg ->
             Update2.lift
                 .contextStore
                 (\s b -> { b | contextStore = s })
-                MsgContextStore
+                ContextStoreMsg
                 ContextStore.update
                 msg
                 model
@@ -351,10 +351,10 @@ updateLayer message model =
         handleOut =
             case outMsg of
                 Layer.TodoStoreMsg msg ->
-                    andThenUpdate (MsgTodoStore msg)
+                    andThenUpdate (TodoStoreMsg msg)
 
                 Layer.ContextStoreMsg msg ->
-                    andThenUpdate (MsgContextStore msg)
+                    andThenUpdate (ContextStoreMsg msg)
 
                 Layer.NavigateToTodoListWithContextId contextId ->
                     andThenUpdate <| NavigateToTodoListWithContextId contextId
@@ -448,8 +448,8 @@ viewContextTodoList model =
             , toggleShowCompleted = ToggleCompletedTodos
             , isShowingCompleted = model.showCompletedTodos
             , selectedIndex = getComputedSelectedIndex model
-            , markDone = MsgTodoStore << TodoStore.markDone
-            , unmarkDone = MsgTodoStore << TodoStore.unmarkDone
+            , markDone = TodoStoreMsg << TodoStore.markDone
+            , unmarkDone = TodoStoreMsg << TodoStore.unmarkDone
             , focusInMsg = OnTodoFocusIn
             , editMsg = OpenEditTodoDialog
             , selectedContextId = getSelectedContextId model
