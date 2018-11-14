@@ -1,4 +1,4 @@
-module Elements exposing (highlightedChars, list, listItem, tag, viewModal, wrapperLayout)
+module Elements exposing (highlightedChars, list, listItem, spacing1, spacing2, tag, viewModal, wrapperLayout)
 
 import BasicsX exposing (unwrapMaybe)
 import Element exposing (Element, centerX, centerY, column, el, fill, height, inFront, layout, minimum, moveDown, rgb, rgb255, rgba, row, shrink, width)

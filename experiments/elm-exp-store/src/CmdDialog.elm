@@ -183,17 +183,20 @@ viewLazy contextStore model =
             , Element.moveDown 100
             ]
         , content =
-            Element.row [ Element.centerX ]
-                [ input
-                    [ id <| getQueryInputId model
-                    , placeholder "Type Command Name"
-                    , class "flex-auto pa3"
-                    , value model.query
-                    , onInput QueryChanged
-                    , HotKey.onKeyDownHtml QueryInputKeyDown
-                    ]
-                    []
-                    |> Element.html
+            Element.column [ Elements.spacing2, Element.width <| Element.minimum 400 <| Element.shrink ]
+                [ Element.el [ Element.width Element.fill ]
+                    (input
+                        [ id <| getQueryInputId model
+                        , placeholder "Type Command Name"
+                        , class "flex-auto pa3"
+                        , value model.query
+                        , onInput QueryChanged
+                        , HotKey.onKeyDownHtml QueryInputKeyDown
+                        ]
+                        []
+                        |> Element.html
+                    )
+                , viewCmdList contextStore model
                 ]
         }
 
